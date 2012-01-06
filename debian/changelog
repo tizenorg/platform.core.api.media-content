@@ -1,0 +1,15 @@
+capi-content-media-content (0.1.0-10) unstable; urgency=low
+
+  * Update the version.
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Thu, 15 Dec 2011 13:38:10 +0900
+
+
+capi-content-media-content (0.0.1-1) unstable; urgency=low
+
+ 
+  * Initial release.
+ 
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 07 Dec 2011 12:46:25 +0900
+
