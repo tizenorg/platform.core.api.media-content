@@ -17,17 +17,14 @@
 
 #include <media_content.h>
 #include <media_info_private.h>
-#include <media-info-error.h>
-#include <media-svc-error.h>
-#include <media-info.h>
+#include <media-svc.h>
 #include <audio-svc.h>
 #include <audio-svc-error.h>
 #include <audio-svc-types.h>
 
-#include <media-svc-error.h>
-#include <minfo-types.h>
-#include <minfo-api.h>
-#include <media-info.h>
+#include <visual-svc-error.h>
+#include <visual-svc-types.h>
+#include <visual-svc.h>
 
 #include <drm-service.h>
 #include <aul.h>
@@ -40,9 +37,11 @@
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
 
+extern MediaSvcHandle* db_handle;
 
-#define SELECT_AUDIO_FROM_MEDIA "select audio_id,genre,album,artist,author,year,copyright,description,format,bitrate,track_num,duration,rating,played_count,last_played_time,added_time,size,category from audio_media where audio_id='%s' "
-#define SELECT_TAG_LIST_FROM_MEDIA "select t._id, t.tag_name from (select _id, tag_name from visual_tag ORDER BY tag_name ASC ) t, ( select media_uuid, tag_id from visual_tag_map where media_uuid='%s' ) tm, ( select uuid, folder_uuid from visual_media) m, ( select uuid, lock_status from visual_folder where valid=1 ) f where tm.tag_id = t._id and m.uuid = tm.media_uuid and m.folder_uuid = f.uuid and f.lock_status=0; "
+
+#define SELECT_AUDIO_FROM_MEDIA "select audio_uuid,genre,album,artist,author,year,copyright,description,format,bitrate,track_num,duration,rating,played_count,last_played_time,added_time,size,category from audio_media where audio_uuid='%s' "
+#define SELECT_TAG_LIST_FROM_MEDIA "select t._id, t.tag_name from (select _id, tag_name from visual_tag ORDER BY tag_name ASC ) t, ( select visual_uuid, tag_id from visual_tag_map where visual_uuid='%s' ) tm, ( select visual_uuid, folder_uuid from visual_media) m, ( select folder_uuid, lock_status from visual_folder where valid=1 ) f where tm.tag_id = t._id and m.visual_uuid = tm.visual_uuid and m.folder_uuid = f.folder_uuid and f.lock_status=0; "
 
 int media_info_insert_to_db(media_content_type_e type,const char* path)
 {
@@ -60,12 +59,12 @@ int media_info_insert_to_db(media_content_type_e type,const char* path)
 	{
 		case MEDIA_CONTENT_TYPE_IMAGE:
 			_type = MINFO_ITEM_IMAGE;
-			ret = minfo_add_media(path, _type);
+			ret = minfo_add_media(db_handle, path, _type);
 			ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		break;
 		case MEDIA_CONTENT_TYPE_VIDEO:
 			_type = MINFO_ITEM_VIDEO;
-			ret = minfo_add_media(path, _type);
+			ret = minfo_add_media(db_handle, path, _type);
 			ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);			
 		break;
 
@@ -74,7 +73,7 @@ int media_info_insert_to_db(media_content_type_e type,const char* path)
 			ret = _content_get_audio_category(path,&category);
 			if(ret >= 0)
 			{
-				ret = audio_svc_insert_item(storage_type,path,category);				
+				ret = audio_svc_insert_item(db_handle, storage_type,path,category);				
 			}
 			else
 			{
@@ -369,16 +368,16 @@ int media_info_update_favorite_to_db(media_info_h media, int favorite)
 		{
 			if(favorite)
 			{
-				ret = audio_svc_add_item_to_playlist( AUDIO_SVC_FAVORITE_LIST_ID, _media->item_id);
+				ret = audio_svc_add_item_to_playlist( db_handle, AUDIO_SVC_FAVORITE_LIST_ID, _media->item_id);
 			}
 			else
 			{
-				ret = audio_svc_remove_item_from_playlist_by_audio_id(AUDIO_SVC_FAVORITE_LIST_ID, _media->item_id);
+				ret = audio_svc_remove_item_from_playlist_by_audio_id(db_handle, AUDIO_SVC_FAVORITE_LIST_ID, _media->item_id);
 			}
 		}
 		else
 		{	
-			ret = minfo_update_media_favorite(_media->item_id,favorite);
+			ret = minfo_update_media_favorite(db_handle, _media->item_id,favorite);
 		}
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 	}
@@ -516,11 +515,11 @@ int media_info_foreach_media_from_db(media_info_filter_h filter,media_info_cb ca
 	}
 	else if(_filter->order == MEDIA_CONTENT_SORT_BY_DATE_ASC)
 	{
-		snprintf(order_query,sizeof(order_query),"%s %s",QUERY_KEYWORD_ORDER_BY,DB_FILED_MODIFIED_DATE);
+		snprintf(order_query,sizeof(order_query),"%s %s",QUERY_KEYWORD_ORDER_BY,DB_FILED_DATE_MODIFIED);
 	}
 	else if(_filter->order == MEDIA_CONTENT_SORT_BY_DATE_DESC)
 	{
-		snprintf(order_query,sizeof(order_query),"%s %s %s",QUERY_KEYWORD_ORDER_BY,DB_FILED_MODIFIED_DATE,QUERY_KEYWORD_DESC);		
+		snprintf(order_query,sizeof(order_query),"%s %s %s",QUERY_KEYWORD_ORDER_BY,DB_FILED_DATE_MODIFIED,QUERY_KEYWORD_DESC);		
 	}
 
 	
@@ -586,12 +585,12 @@ int media_info_get_image_from_db(media_info_h item, image_meta_h* image)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	p_ret = minfo_get_item_by_id(_item->item_id,&p_item);
+	p_ret = minfo_get_item_by_id(db_handle, _item->item_id,&p_item);
 
 	ret =  _content_error_capi(MEDIA_CONTENT_TYPE,p_ret);
 	if( (ret == MEDIA_CONTENT_ERROR_NONE) && ( p_item != NULL))
 	{
-		ret = minfo_get_meta_info(_item->item_id,&(p_item->meta_info));
+		ret = minfo_get_meta_info(db_handle, _item->item_id,&(p_item->meta_info));
 		ret =  _content_error_capi(MEDIA_CONTENT_TYPE,p_ret);	
 
 		if( ret != MEDIA_CONTENT_ERROR_NONE)
@@ -663,13 +662,13 @@ int media_info_get_video_from_db(media_info_h item, video_meta_h* video)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	p_ret = minfo_get_item_by_id(_item->item_id,&p_item);
+	p_ret = minfo_get_item_by_id(db_handle, _item->item_id,&p_item);
 
 
 	ret =  _content_error_capi(MEDIA_CONTENT_TYPE,p_ret);
 	if( (ret == MEDIA_CONTENT_ERROR_NONE) && ( p_item != NULL))
 	{
-		ret = minfo_get_meta_info(_item->item_id,&(p_item->meta_info));
+		ret = minfo_get_meta_info(db_handle, _item->item_id,&(p_item->meta_info));
 		ret =  _content_error_capi(MEDIA_CONTENT_TYPE,p_ret);	
 		if( ret != MEDIA_CONTENT_ERROR_NONE)
 		{
@@ -1005,7 +1004,7 @@ int _content_get_audio_category(const char* file_full_path,int* category)
 			*category = FEX_CATEGORY_MUSIC;
 			*category = *category | FEX_CATEGORY_DRM;
 		}
-		else //check music file in soun files.
+		else //check music file in sound files.
 		{
 			int prefix_len = strlen(content_category[0].content_type);
 

@@ -16,11 +16,10 @@
 
 #include <media_content.h>
 #include <media_info_private.h>
-#include <media-info-error.h>
-#include <media-svc-error.h>
-#include <minfo-types.h>
-#include <minfo-api.h>
-#include <media-info.h>
+#include <visual-svc-error.h>
+#include <visual-svc-types.h>
+#include <visual-svc.h>
+#include <media-svc.h>
 
 #include <dlog.h>
 
@@ -29,6 +28,8 @@
 #endif
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
+
+extern MediaSvcHandle* db_handle;
 
 
 int video_meta_destroy(video_meta_h video)
@@ -466,7 +467,7 @@ int video_meta_update_time_played_to_db(video_meta_h video, int time_played)
 
 	if(_video != NULL )
 	{
-		ret = minfo_update_video_meta_info_int(_video->video_id,MINFO_VIDEO_META_BOOKMARK_LAST_PLAYED,time_played);
+		ret = minfo_update_video_meta_info_int(db_handle,_video->video_id,MINFO_VIDEO_META_BOOKMARK_LAST_PLAYED,time_played);
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);		
 	}
 	else
@@ -703,7 +704,7 @@ int video_bookmark_insert_to_db(video_meta_h video, time_t time, const char* thu
 
 	if(_video != NULL)
 	{
-		ret = minfo_add_bookmark(_video->video_id,time,thumbnail_path);
+		ret = minfo_add_bookmark(db_handle,_video->video_id,time,thumbnail_path);
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);		
 	}
 	else
@@ -724,7 +725,7 @@ int video_bookmark_delete_from_db(video_bookmark_h bookmark)
 
 	if( _bookmark != NULL)
 	{
-		ret = minfo_delete_bookmark(_bookmark->bookmark_id);
+		ret = minfo_delete_bookmark(db_handle,_bookmark->bookmark_id);
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);	
 	}
 	else

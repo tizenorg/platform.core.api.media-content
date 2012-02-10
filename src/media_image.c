@@ -19,11 +19,9 @@
 #include <media_image.h>
 #include <media_content.h>
 #include <media_info_private.h>
-#include <media-info-error.h>
-#include <media-svc-error.h>
-#include <minfo-types.h>
-#include <minfo-api.h>
-#include <media-info.h>
+#include <visual-svc-types.h>
+#include <visual-svc.h>
+#include <media-svc.h>
 
 #include <dlog.h>
 

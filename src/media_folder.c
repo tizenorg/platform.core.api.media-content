@@ -21,10 +21,8 @@
 #include <audio-svc.h>
 #include <audio-svc-error.h>
 #include <audio-svc-types.h>
-#include <media-info-error.h>
-#include <media-svc-error.h>
-#include <minfo-types.h>
-#include <minfo-api.h>
+#include <visual-svc-types.h>
+#include <visual-svc.h>
 
 #include <dlog.h>
 

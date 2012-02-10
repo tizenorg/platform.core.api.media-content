@@ -262,7 +262,7 @@ int video_meta_update_time_played_to_db(video_meta_h video, int time_played);
  * @details This function gets all video bookmarks associated with the given folder and meeting desired filter option and 
 calls registered callback function for every retrieved item. If NULL is passed to the @a filter, no filtering is applied. 
  * @remarks Only start position and offset details of filter can be set,
- * beacuse searching by bookmark name information is not supported.
+ * because searching by bookmark name information is not supported.
  *
  * @param [in] video The handle to video metadata
  * @param [in] filter The handle to video bookmark filter

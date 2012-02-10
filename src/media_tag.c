@@ -20,10 +20,8 @@
 #include <audio-svc.h>
 #include <audio-svc-error.h>
 #include <audio-svc-types.h>
-#include <media-info-error.h>
-#include <media-svc-error.h>
-#include <minfo-types.h>
-#include <minfo-api.h>
+#include <visual-svc-types.h>
+#include <visual-svc.h>
 #include <dlog.h>
 
 #ifdef LOG_TAG
@@ -32,6 +30,7 @@
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
 
+extern MediaSvcHandle* db_handle;
 
 
 int media_tag_foreach_tag_from_db(media_tag_filter_h filter, media_tag_cb callback,void* user_data)
@@ -177,7 +176,7 @@ int media_tag_insert_to_db(const char* tag_name,media_tag_h* tag)
 		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 	}
 
-	ret = minfo_add_tag(NULL,tag_name);
+	ret = minfo_add_tag(db_handle,NULL,tag_name);
 
 	if(ret == MB_SVC_ERROR_NONE)
 	{
@@ -203,7 +202,7 @@ int media_tag_delete_from_db(media_tag_h tag)
 	media_tag_s* _tag = (media_tag_s*)tag;
 	
 	
-	ret = minfo_delete_tag(NULL, _tag->name);
+	ret = minfo_delete_tag(db_handle, NULL, _tag->name);
 	
 	return _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 
@@ -237,7 +236,7 @@ int media_tag_add_media_to_db(media_tag_h tag,media_info_h media)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;	
 	}
 	
-	ret = minfo_add_tag(_item->item_id,_tag->name);
+	ret = minfo_add_tag(db_handle, _item->item_id,_tag->name);
 
 	return _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 
@@ -269,7 +268,7 @@ int media_tag_remove_media_from_db(media_tag_h tag,media_info_h media)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	query_string = sqlite3_mprintf("DELETE FROM visual_tag_map WHERE media_id=%s and tag_name=%d",
+	query_string = sqlite3_mprintf("DELETE FROM visual_tag_map WHERE visual_uuid=%s and tag_name=%d",
 			      _item->item_id, _tag->name);
 
 	
@@ -387,7 +386,7 @@ int media_tag_update_name_to_db(media_tag_h tag, const char* name)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	ret = minfo_rename_tag(_tag->name,name);
+	ret = minfo_rename_tag(db_handle,_tag->name,name);
 
 	if(ret == MB_SVC_ERROR_NONE)
 	{
@@ -502,7 +501,7 @@ int media_tag_foreach_media_from_db(media_tag_h tag,media_info_filter_h filter, 
 		}
 		memset(_item,0x00,sizeof(media_info_s));
 		media_id = (char*)sqlite3_column_text(stmt, 1);
-		ret = minfo_get_item_by_id(media_id, &mitem);
+		ret = minfo_get_item_by_id(db_handle,media_id, &mitem);
 
 		if(ret < 0)
 		{

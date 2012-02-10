@@ -55,8 +55,8 @@ typedef enum
  */
 typedef enum
 {
-    MEDIA_CONTENT_STORAGE_INTERNAL = 0x01 << 0,      /**< The device's internal storage */		
-    MEDIA_CONTENT_STORAGE_EXTERNAL = 0x01 << 1,    /**< The device's external storage */   
+    MEDIA_CONTENT_STORAGE_INTERNAL,    /**< The device's internal storage */		
+    MEDIA_CONTENT_STORAGE_EXTERNAL,   /**< The device's external storage */   
     //MEDIA_CONTENT_STORAGE_WEB = 0x01<< 2,
 } media_content_storage_e;
 
@@ -132,7 +132,7 @@ typedef enum
 typedef enum
 {
 	MEDIA_FOLDER_SEARCH_NONE = 0x00,				/**< No Search */
-	MEDIA_FOLDER_SEARCH_BY_FOLDER_NAME = 0x01 << 0,		/**< The searchabe type folder name */
+	MEDIA_FOLDER_SEARCH_BY_FOLDER_NAME = 0x01 << 0,		/**< The searchable type folder name */
 }media_folder_search_type_e;
 
 /**
@@ -142,11 +142,11 @@ typedef enum
 typedef enum
 {
 	MEDIA_AUDIO_SEARCH_NONE = 0x00,				/**< No Search */
-	MEDIA_AUDIO_SEARCH_BY_PLAYLIST = 0x01 << 0,		/**< The searchabe type of playlist */
-	MEDIA_AUDIO_SEARCH_BY_ARTIST = 0x01 << 1,		/**< The searchabe type of  artist */
-	MEDIA_AUDIO_SEARCH_BY_ALBUM = 0x01 << 2,		/**< The searchabe type of  album */
-	MEDIA_AUDIO_SEARCH_BY_AUTHOR = 0x01 << 3,		/**< The searchabe type of  author */
-	MEDIA_AUDIO_SEARCH_BY_GENRE = 0x01 << 4,		/**< The searchabe type of  genre */
+	MEDIA_AUDIO_SEARCH_BY_PLAYLIST = 0x01 << 0,		/**< The searchable type of playlist */
+	MEDIA_AUDIO_SEARCH_BY_ARTIST = 0x01 << 1,		/**< The searchable type of  artist */
+	MEDIA_AUDIO_SEARCH_BY_ALBUM = 0x01 << 2,		/**< The searchable type of  album */
+	MEDIA_AUDIO_SEARCH_BY_AUTHOR = 0x01 << 3,		/**< The searchable type of  author */
+	MEDIA_AUDIO_SEARCH_BY_GENRE = 0x01 << 4,		/**< The searchable type of  genre */
 }media_audio_search_type_e;
 
 /**
@@ -156,7 +156,7 @@ typedef enum
 typedef enum
 {
 	MEDIA_TAG_SEARCH_NONE = 0x00,				/**< No Search */
-	MEDIA_TAG_SEARCH_BY_TAG_NAME = 0x01 << 0,		/**< The searchabe type folder name */
+	MEDIA_TAG_SEARCH_BY_TAG_NAME = 0x01 << 0,		/**< The searchable type folder name */
 }media_tag_search_type_e;
 
 
@@ -165,7 +165,7 @@ typedef enum
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_FILTER_INFO_MODULE
- * @brief  The handle to media infon filter.
+ * @brief  The handle to media info filter.
  */
 typedef struct media_info_filter_s* media_info_filter_h;
 
@@ -294,7 +294,7 @@ typedef bool (*media_folder_cb)(media_folder_h folder, void *user_data);
  *
  * @remarks To use the @a media outside this function, copy the handle with #media_info_clone() function. 
  *
- * @param[in] media  The hande to media info
+ * @param[in] media  The handle to media info
  * @param[in] user_data The user data passed from the foreach function 
  * @return true to continue with the next iteration of the loop, 
  * @return false to break out of the loop.

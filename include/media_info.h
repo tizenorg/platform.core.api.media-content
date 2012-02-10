@@ -104,7 +104,7 @@ int media_info_clone(media_info_h* dst, media_info_h src);
 
 /**
  * @brief Destroys the media info.
- * @details The function frees all resources related to the meida info handle. This handle
+ * @details The function frees all resources related to the media info handle. This handle
  * no longer can be used to perform any operation. New media info handle has to
  * be created before next usage.
  *

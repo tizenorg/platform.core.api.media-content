@@ -169,10 +169,10 @@ int media_folder_get_name(media_folder_h folder, char **folder_name);
 int media_folder_get_storage_type(media_folder_h folder, media_content_storage_e *storage_type);
 
 /**
- * @brief Gets the modifed date of the folder.
+ * @brief Gets the modified date of the folder.
  *
  * @param[in] folder The handle to media folder
- * @param[out] date The modifed date of folder 
+ * @param[out] date The modified date of folder 
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter

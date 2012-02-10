@@ -21,11 +21,9 @@
 #include <audio-svc.h>
 #include <audio-svc-error.h>
 #include <audio-svc-types.h>
-#include <media-info-error.h>
-#include <media-svc-error.h>
-#include <minfo-types.h>
-#include <minfo-api.h>
-#include <media-info.h>
+#include <visual-svc-types.h>
+#include <visual-svc.h>
+#include <media-svc.h>
 
 
 #include <dlog.h>
@@ -36,23 +34,27 @@
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
 
-static sqlite3* db_handle;
-
+MediaSvcHandle* db_handle = NULL;
+static int ref_count = 0;
 
 
 
 int media_content_connect()
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-	int _ret;
-	_ret  = mediainfo_connect_db_with_handle(&db_handle);
 
-	ret =  _content_error_capi(MEDIA_CONTENT_TYPE,_ret);
-	if( ret == MEDIA_CONTENT_ERROR_NONE)
+	if(ref_count == 0)
 	{
-		_ret = mediainfo_open();
-		ret =  _content_error_capi(MEDIA_CONTENT_TYPE,_ret);
+		if(db_handle == NULL)
+	{
+			ret = media_svc_connect(&db_handle);
 	}
+
+		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);
+	}
+
+	ref_count++;
+	
 	return ret;
 }
 
@@ -60,18 +62,29 @@ int media_content_connect()
 int media_content_disconnect()
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-	int _ret;
 	
+	if(ref_count > 0)
+	{
+		ref_count--;
+	}
+	else
+	{
+		LOGE("[%s]DB_FAILED(0x%08x) database is not connected", __FUNCTION__, MEDIA_CONTENT_ERROR_DB_FAILED);
+		return MEDIA_CONTENT_ERROR_DB_FAILED;
+	}
+
+	if(ref_count == 0)
+	{
 	if(db_handle != NULL)
 	{
-		_ret = mediainfo_disconnect_db_with_handle(db_handle);
-		ret =  _content_error_capi(MEDIA_CONTENT_TYPE,_ret);
+			ret = media_svc_disconnect(db_handle);
+			ret =  _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 		if( ret == MEDIA_CONTENT_ERROR_NONE)
 		{		
-			_ret = mediainfo_close();
-			ret =  _content_error_capi(MEDIA_CONTENT_TYPE,_ret);
 			db_handle = NULL;
 		}
+	}
+	
 	}
 	
 	return ret;
@@ -121,9 +134,9 @@ int _content_query_prepare(sqlite3_stmt** stmt,char* select_query,char* conditio
 		snprintf(query,len_query,"%s %s %s %s %s",select_query,condition_query,search_query,order,limit_query );
 
 		LOGV("[%s]Query : %s",__func__,query); 
-		if( sqlite3_prepare(db_handle, query, strlen(query),stmt, NULL) != SQLITE_OK )
+		if( sqlite3_prepare((sqlite3*)db_handle, query, strlen(query),stmt, NULL) != SQLITE_OK )
 		{
-			LOGE("[%s]DB_FAILED(0x%08x) fail to sqlite3_prepare(), %s", __FUNCTION__, MEDIA_CONTENT_ERROR_DB_FAILED,sqlite3_errmsg(db_handle));
+			LOGE("[%s]DB_FAILED(0x%08x) fail to sqlite3_prepare(), %s", __FUNCTION__, MEDIA_CONTENT_ERROR_DB_FAILED,sqlite3_errmsg((sqlite3*)db_handle));
 			exit(1);
 		}	
 		free(query);
