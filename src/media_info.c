@@ -380,6 +380,10 @@ int media_info_update_favorite_to_db(media_info_h media, int favorite)
 			ret = minfo_update_media_favorite(db_handle, _media->item_id,favorite);
 		}
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);
+		if(ret == MEDIA_CONTENT_ERROR_NONE)
+		{
+			_media->favorite = favorite;
+		}
 	}
 	else
 	{
