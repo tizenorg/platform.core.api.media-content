@@ -24,6 +24,8 @@
 #include <sqlite3.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <media-svc.h>
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -247,7 +249,7 @@ typedef struct
 #define DB_FIELD_ADDED_TIME "added_time"
 
 #define SELECT_MEDIA_ITEM "select item_id, file_path, display_name, thumbnail, date_modified,content_type, favourite from item_view where 1"
-#define SELECT_ALL_FOLDER "select folder_uuid, path, name, storage_type,modified_date from (select folder_uuid, path, folder_name as name, storage_type,modified_date from visual_folder where valid=1 union select audio_uuid, path, folder_name as name, storage_type,modified_date from audio_folder) where 1"
+#define SELECT_ALL_FOLDER "select folder_uuid, path, name, storage_type,modified_date from (select folder_uuid, path, folder_name as name, storage_type,modified_date from visual_folder where valid=1 union select folder_uuid, path, folder_name as name, storage_type,modified_date from audio_folder) where 1"
 #define SELECT_COUNT_ITEM "select count(*) from item_view where 1"
 #define SELECT_TAG_LIST "select _id, tag_name from visual_tag where 1"
 #define SELECT_MEDIA_FROM_TAG "SELECT t._id, tm.visual_uuid, m.display_name as display_name, modified_date  from ( select _id, tag_name from visual_tag WHERE tag_name='%s' ORDER BY tag_name ASC  ) t, ( select visual_uuid, tag_id from visual_tag_map ) tm, ( select visual_uuid, folder_uuid, display_name, modified_date from visual_media) m, ( select folder_uuid, lock_status from visual_folder where valid=1 ) f where tm.tag_id = t._id and m.visual_uuid = tm.visual_uuid and m.folder_uuid = f.folder_uuid and f.lock_status=0 "
@@ -258,13 +260,13 @@ typedef struct
 #define SELECT_MEDIA_COUNT_FROM_GENRE "select count(*) from audio_media where valid=1 and genre='%s'"
 #define SELECT_ALBUM_LIST "select distinct album as name from audio_media where valid=1 "
 #define SELECT_MEDIA_FROM_ALBUM "select audio_uuid ,path ,title as display_name,thumbnail_path,modified_date, content_type, favourite,valid,folder_uuid from audio_media where valid=1 and album='%s'"
-#define SELECT_MEDIA_COUNT_FROM_ALBUM "select count(*) from audio_media where valid=1 and genre='%s'"
+#define SELECT_MEDIA_COUNT_FROM_ALBUM "select count(*) from audio_media where valid=1 and album='%s'"
 #define SELECT_AUTHOR_LIST "select distinct author as name from audio_media where valid=1 "
 #define SELECT_MEDIA_FROM_AUTHOR "select audio_uuid ,path ,title as display_name,thumbnail_path,modified_date, content_type, favourite,valid,folder_uuid from audio_media where valid=1 and  author='%s'"
-#define SELECT_MEDIA_COUNT_FROM_AUTHOR "select count(*) from audio_media where valid=1 and genre='%s'"
+#define SELECT_MEDIA_COUNT_FROM_AUTHOR "select count(*) from audio_media where valid=1 and author='%s'"
 #define SELECT_MEDIA_ARTIST_LIST "select distinct artist as name from audio_media where valid=1"
 #define SELECT_MEDIA_FROM_ARTIST "select audio_uuid ,path ,title as display_name,thumbnail_path,modified_date, content_type, favourite,valid,folder_uuid from audio_media where valid=1 and artist='%s'"
-#define SELECT_MEDIA_COUNT_FROM_ARTIST "select count(*) from audio_media where valid=1 and genre='%s'"
+#define SELECT_MEDIA_COUNT_FROM_ARTIST "select count(*) from audio_media where valid=1 and artist='%s'"
 #define SELECT_BOOKMARK_FROM_VIDEO "select _id,visual_uuid,marked_time,thumbnail_path from video_bookmark where visual_uuid='%s' "
 
 
@@ -303,6 +305,11 @@ int _content_get_audio_category(const char* file_full_path,int* category);
  *@internal
  */
 int _content_query_sql(char *query_str);
+
+/**
+ *@internal
+ */
+MediaSvcHandle* _content_get_db_handle();
 
 
 #ifdef __cplusplus

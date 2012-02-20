@@ -29,8 +29,6 @@
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
 
-extern MediaSvcHandle* db_handle;
-
 int audio_meta_destroy(audio_meta_h audio)
 {
 	int ret;
@@ -613,7 +611,7 @@ int audio_meta_update_count_played_to_db(audio_meta_h audio,int count)
 
 	if(_audio != NULL)
 	{
-		ret  = audio_svc_update_item_metadata(db_handle,_audio->audio_id,AUDIO_SVC_TRACK_DATA_PLAYED_COUNT,count,-1);
+		ret  = audio_svc_update_item_metadata(_content_get_db_handle(),_audio->audio_id,AUDIO_SVC_TRACK_DATA_PLAYED_COUNT,count,-1);
 
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 	}
@@ -635,7 +633,7 @@ int audio_meta_update_time_played_to_db(audio_meta_h audio,time_t time)
 	
 	if(_audio != NULL)
 	{
-		ret = audio_svc_update_item_metadata(db_handle,_audio->audio_id,AUDIO_SVC_TRACK_DATA_PLAYED_TIME,time,-1);
+		ret = audio_svc_update_item_metadata(_content_get_db_handle(),_audio->audio_id,AUDIO_SVC_TRACK_DATA_PLAYED_TIME,time,-1);
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);		
 	}
 	else
@@ -889,7 +887,7 @@ int audio_playlist_get_media_count_from_db(audio_playlist_h playlist,int* count)
 
 	if(_playlist != NULL)
 	{
-		ret = audio_svc_count_playlist_item(db_handle,_playlist->playlist_id,NULL,NULL, count);
+		ret = audio_svc_count_playlist_item(_content_get_db_handle(),_playlist->playlist_id,NULL,NULL, count);
 
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 	}
@@ -920,7 +918,7 @@ int audio_playlist_insert_to_db(const char* name, audio_playlist_h* playlist)
 		}
 		
 			
-		ret = audio_svc_add_playlist(db_handle,name,&playlist_id);
+		ret = audio_svc_add_playlist(_content_get_db_handle(),name,&playlist_id);
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 		if(ret != MEDIA_CONTENT_ERROR_NONE)
 		{
@@ -957,7 +955,7 @@ int audio_playlist_delete_from_db(audio_playlist_h playlist)
 
 	if(_playlist != NULL)
 	{
-		ret = audio_svc_delete_playlist(db_handle,_playlist->playlist_id);
+		ret = audio_svc_delete_playlist(_content_get_db_handle(),_playlist->playlist_id);
 
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 	}
@@ -1075,7 +1073,7 @@ int audio_playlist_update_name_to_db(audio_playlist_h playlist,const char* name)
 	
 	if(_playlist != NULL && name != NULL)
 	{
-		ret = audio_svc_update_playlist_name(db_handle,_playlist->playlist_id,name);
+		ret = audio_svc_update_playlist_name(_content_get_db_handle(),_playlist->playlist_id,name);
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 		if(ret == MEDIA_CONTENT_ERROR_NONE)
 		{
@@ -1109,7 +1107,7 @@ int audio_playlist_add_media_to_db(audio_playlist_h playlist, media_info_h item)
 	if(_playlist != NULL && _item != NULL && _item->media_type == 4)
 	{
 
-		ret = audio_svc_add_item_to_playlist(db_handle,_playlist->playlist_id,_item->item_id);
+		ret = audio_svc_add_item_to_playlist(_content_get_db_handle(),_playlist->playlist_id,_item->item_id);
 
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 	
@@ -1134,7 +1132,7 @@ int audio_playlist_remove_media_from_db(audio_playlist_h playlist, media_info_h 
 	if(_playlist != NULL && _item != NULL && _item->media_type == 4)
 	{
 
-		ret = audio_svc_remove_item_from_playlist_by_audio_id(db_handle,_playlist->playlist_id,_item->item_id);
+		ret = audio_svc_remove_item_from_playlist_by_audio_id(_content_get_db_handle(),_playlist->playlist_id,_item->item_id);
 
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);	
 	}

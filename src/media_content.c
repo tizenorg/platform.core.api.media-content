@@ -23,7 +23,6 @@
 #include <audio-svc-types.h>
 #include <visual-svc-types.h>
 #include <visual-svc.h>
-#include <media-svc.h>
 
 
 #include <dlog.h>
@@ -34,10 +33,8 @@
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
 
-MediaSvcHandle* db_handle = NULL;
+static MediaSvcHandle* db_handle = NULL;
 static int ref_count = 0;
-
-
 
 int media_content_connect()
 {
@@ -88,6 +85,11 @@ int media_content_disconnect()
 	}
 	
 	return ret;
+}
+
+MediaSvcHandle* _content_get_db_handle()
+{
+	return db_handle;
 }
 
 

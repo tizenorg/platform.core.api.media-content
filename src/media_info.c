@@ -37,8 +37,6 @@
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
 
-extern MediaSvcHandle* db_handle;
-
 
 #define SELECT_AUDIO_FROM_MEDIA "select audio_uuid,genre,album,artist,author,year,copyright,description,format,bitrate,track_num,duration,rating,played_count,last_played_time,added_time,size,category from audio_media where audio_uuid='%s' "
 #define SELECT_TAG_LIST_FROM_MEDIA "select t._id, t.tag_name from (select _id, tag_name from visual_tag ORDER BY tag_name ASC ) t, ( select visual_uuid, tag_id from visual_tag_map where visual_uuid='%s' ) tm, ( select visual_uuid, folder_uuid from visual_media) m, ( select folder_uuid, lock_status from visual_folder where valid=1 ) f where tm.tag_id = t._id and m.visual_uuid = tm.visual_uuid and m.folder_uuid = f.folder_uuid and f.lock_status=0; "
@@ -59,12 +57,12 @@ int media_info_insert_to_db(media_content_type_e type,const char* path)
 	{
 		case MEDIA_CONTENT_TYPE_IMAGE:
 			_type = MINFO_ITEM_IMAGE;
-			ret = minfo_add_media(db_handle, path, _type);
+			ret = minfo_add_media(_content_get_db_handle(), path, _type);
 			ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		break;
 		case MEDIA_CONTENT_TYPE_VIDEO:
 			_type = MINFO_ITEM_VIDEO;
-			ret = minfo_add_media(db_handle, path, _type);
+			ret = minfo_add_media(_content_get_db_handle(), path, _type);
 			ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);			
 		break;
 
@@ -73,7 +71,7 @@ int media_info_insert_to_db(media_content_type_e type,const char* path)
 			ret = _content_get_audio_category(path,&category);
 			if(ret >= 0)
 			{
-				ret = audio_svc_insert_item(db_handle, storage_type,path,category);				
+				ret = audio_svc_insert_item(_content_get_db_handle(), storage_type,path,category);				
 			}
 			else
 			{
@@ -368,16 +366,16 @@ int media_info_update_favorite_to_db(media_info_h media, int favorite)
 		{
 			if(favorite)
 			{
-				ret = audio_svc_add_item_to_playlist( db_handle, AUDIO_SVC_FAVORITE_LIST_ID, _media->item_id);
+				ret = audio_svc_add_item_to_playlist( _content_get_db_handle(), AUDIO_SVC_FAVORITE_LIST_ID, _media->item_id);
 			}
 			else
 			{
-				ret = audio_svc_remove_item_from_playlist_by_audio_id(db_handle, AUDIO_SVC_FAVORITE_LIST_ID, _media->item_id);
+				ret = audio_svc_remove_item_from_playlist_by_audio_id(_content_get_db_handle(), AUDIO_SVC_FAVORITE_LIST_ID, _media->item_id);
 			}
 		}
 		else
 		{	
-			ret = minfo_update_media_favorite(db_handle, _media->item_id,favorite);
+			ret = minfo_update_media_favorite(_content_get_db_handle(), _media->item_id,favorite);
 		}
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE,ret);
 		if(ret == MEDIA_CONTENT_ERROR_NONE)
@@ -589,12 +587,12 @@ int media_info_get_image_from_db(media_info_h item, image_meta_h* image)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	p_ret = minfo_get_item_by_id(db_handle, _item->item_id,&p_item);
+	p_ret = minfo_get_item_by_id(_content_get_db_handle(), _item->item_id,&p_item);
 
 	ret =  _content_error_capi(MEDIA_CONTENT_TYPE,p_ret);
 	if( (ret == MEDIA_CONTENT_ERROR_NONE) && ( p_item != NULL))
 	{
-		ret = minfo_get_meta_info(db_handle, _item->item_id,&(p_item->meta_info));
+		ret = minfo_get_meta_info(_content_get_db_handle(), _item->item_id,&(p_item->meta_info));
 		ret =  _content_error_capi(MEDIA_CONTENT_TYPE,p_ret);	
 
 		if( ret != MEDIA_CONTENT_ERROR_NONE)
@@ -666,13 +664,13 @@ int media_info_get_video_from_db(media_info_h item, video_meta_h* video)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	p_ret = minfo_get_item_by_id(db_handle, _item->item_id,&p_item);
+	p_ret = minfo_get_item_by_id(_content_get_db_handle(), _item->item_id,&p_item);
 
 
 	ret =  _content_error_capi(MEDIA_CONTENT_TYPE,p_ret);
 	if( (ret == MEDIA_CONTENT_ERROR_NONE) && ( p_item != NULL))
 	{
-		ret = minfo_get_meta_info(db_handle, _item->item_id,&(p_item->meta_info));
+		ret = minfo_get_meta_info(_content_get_db_handle(), _item->item_id,&(p_item->meta_info));
 		ret =  _content_error_capi(MEDIA_CONTENT_TYPE,p_ret);	
 		if( ret != MEDIA_CONTENT_ERROR_NONE)
 		{
