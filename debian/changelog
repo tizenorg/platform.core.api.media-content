@@ -1,3 +1,11 @@
+capi-content-media-content (0.1.0-17) unstable; urgency=low
+
+  * chagne the code to avoid conflict
+  * Git: api/media-content
+  * Tag: capi-content-media-content_0.1.0-17
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Mon, 20 Feb 2012 22:13:55 +0900
+
 capi-content-media-content (0.1.0-14) unstable; urgency=low
 
   * fixed an error
