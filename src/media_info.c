@@ -37,6 +37,8 @@
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
 
+//extern MediaSvcHandle* db_handle;
+
 
 #define SELECT_AUDIO_FROM_MEDIA "select audio_uuid,genre,album,artist,author,year,copyright,description,format,bitrate,track_num,duration,rating,played_count,last_played_time,added_time,size,category from audio_media where audio_uuid='%s' "
 #define SELECT_TAG_LIST_FROM_MEDIA "select t._id, t.tag_name from (select _id, tag_name from visual_tag ORDER BY tag_name ASC ) t, ( select visual_uuid, tag_id from visual_tag_map where visual_uuid='%s' ) tm, ( select visual_uuid, folder_uuid from visual_media) m, ( select folder_uuid, lock_status from visual_folder where valid=1 ) f where tm.tag_id = t._id and m.visual_uuid = tm.visual_uuid and m.folder_uuid = f.folder_uuid and f.lock_status=0; "

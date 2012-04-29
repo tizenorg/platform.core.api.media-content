@@ -29,6 +29,9 @@
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
 
+//extern MediaSvcHandle* db_handle;
+
+
 int video_meta_destroy(video_meta_h video)
 {
 	int ret;

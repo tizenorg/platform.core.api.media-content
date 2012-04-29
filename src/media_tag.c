@@ -30,6 +30,9 @@
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
 
+//extern MediaSvcHandle* db_handle;
+
+
 int media_tag_foreach_tag_from_db(media_tag_filter_h filter, media_tag_cb callback,void* user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;

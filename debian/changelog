@@ -1,3 +1,11 @@
+capi-content-media-content (0.1.0-19) unstable; urgency=low
+
+  * update for Tizen1.0
+  * Git: api/media-content
+  * Tag: capi-content-media-content_0.1.0-19
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Mon, 19 Mar 2012 11:27:57 +0900
+
 capi-content-media-content (0.1.0-17) unstable; urgency=low
 
   * chagne the code to avoid conflict

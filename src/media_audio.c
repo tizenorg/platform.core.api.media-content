@@ -107,6 +107,38 @@ int audio_meta_clone(audio_meta_h* dst, audio_meta_h src)
 		_dst->size = _src->size;
 		_dst->category = _src->category;
 		
+		if((_src->album != NULL) && (strlen(_src->album) > 0))
+		{
+			_dst->album = strdup(_src->album);
+			if(_dst->album == NULL)
+			{
+				audio_meta_destroy((audio_meta_h)_dst);
+				LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		
+		if((_src->artist != NULL) && (strlen(_src->artist) > 0))
+		{
+			_dst->artist = strdup(_src->artist);
+			if(_dst->artist == NULL)
+			{
+				audio_meta_destroy((audio_meta_h)_dst);
+				LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		
+		if((_src->author != NULL) && (strlen(_src->author) > 0))
+		{
+			_dst->author = strdup(_src->author);
+			if(_dst->author == NULL)
+			{
+				audio_meta_destroy((audio_meta_h)_dst);
+				LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}		
 					
 		if((_src->genre != NULL) && (strlen(_src->genre) > 0))
 		{
