@@ -11,7 +11,7 @@
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
-* limitations under the License. 
+* limitations under the License.
 */
 
 
@@ -35,7 +35,7 @@ extern "C" {
  * @brief Clones image metadata.
  * @details Function copies the image metadata handle from source to destination.
  *
- * @remark The destination handle must be released with image_meta_destroy() by you. 
+ * @remark The destination handle must be released with image_meta_destroy() by you.
  *
  * @param [out] dst A destination handle to image metadata
  * @param [in] src The source handle to image metadata
@@ -46,7 +46,6 @@ extern "C" {
  * @see image_meta_destroy()
  */
 int image_meta_clone(image_meta_h *dst, image_meta_h src);
-
 
 /**
  * @brief Destroys image metadata.
@@ -62,50 +61,16 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src);
  */
 int image_meta_destroy(image_meta_h image);
 
-
-
 /**
- * @brief Gets the longitude from image metadata.
- * @details Function gives geographic position: longitude value in degrees,
- * which is positive for east and negative for west.
+ * @brief Gets the ID of image.
  *
  * @param [in] image The handle to image metadata
- * @param [out] longitude The image longitude in degrees
+ * @param [out] media_id The ID of image
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  */
-int image_meta_get_longitude(image_meta_h image, double *longitude);
-
-
-/**
- * @brief Gets the latitude from image metadata.
- * @details Function gives geographic position: latitude value in degrees,
- * which is positive for north and negative for south.
- *
- * @param [in] image The handle to image metadata
- * @param [out] latitude The image latitude in degrees
- * @return 0 on success, otherwise a negative error value.
- * @retval #MEDIA_CONTENT_ERROR_NONE Successful
- * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- */
-int image_meta_get_latitude(image_meta_h image, double *latitude);
-
-
-/**
- * @brief Gets the image description.
- *
- * @remarks @a description must be released with free() by you.
- *
- * @param [in] image The handle to image metadata
- * @param [out] description The image description or NULL
- * @return 0 on success, otherwise a negative error value.
- * @retval #MEDIA_CONTENT_ERROR_NONE Successful
- * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory 
- */
-int image_meta_get_description(image_meta_h image, char **description);
-
+int image_meta_get_media_id(image_meta_h image, char **media_id);
 
 /**
  * @brief Gets image's width in pixels.
@@ -118,7 +83,6 @@ int image_meta_get_description(image_meta_h image, char **description);
  */
 int image_meta_get_width(image_meta_h image, int *width);
 
-
 /**
  * @brief Gets image's height in pixels.
  *
@@ -129,7 +93,6 @@ int image_meta_get_width(image_meta_h image, int *width);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  */
 int image_meta_get_height(image_meta_h image, int *height);
-
 
 /**
  * @brief Gets the image orientation.
@@ -142,7 +105,6 @@ int image_meta_get_height(image_meta_h image, int *height);
  */
 int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *orientation);
 
-
 /**
  * @brief Gets the date, when image was created as time_t structure.
  *
@@ -152,8 +114,37 @@ int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  */
-int image_meta_get_date_taken(image_meta_h image, time_t *date_taken);
+int image_meta_get_date_taken(image_meta_h image, char **date_taken);
 
+/**
+ * @brief Sets the image orientation.
+ *
+ * @param [in] image The handle to image metadata
+ * @param [in] orientation The image orientation
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @post image_meta_update_to_db()
+ */
+int image_meta_set_orientation(image_meta_h image, media_content_orientation_e orientation);
+
+/**
+ * @brief Updates the image to the media database.
+ *
+ * @details The function updates the given image meta in the media database. The function should be called after any change in image attributes, to be updated to the media 
+ * database. For example, after using image_meta_set_orientation() for setting the orientation of the image, image_meta_update_to_db() function should be called so as to update 
+ * the given image attibutes in the media database.
+ *
+ * @param[in] image The handle to image
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @pre This function requires opened connection to content service by media_content_connect().
+ * @see media_content_connect()
+ * @see image_meta_set_orientation()
+ *
+ */
+int image_meta_update_to_db(image_meta_h image);
 
 /**
  * @}

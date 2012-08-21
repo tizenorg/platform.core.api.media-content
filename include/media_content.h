@@ -11,7 +11,7 @@
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
-* limitations under the License. 
+* limitations under the License.
 */
 
 #ifndef __TIZEN_MEDIA_CONTENT_H__
@@ -25,6 +25,9 @@
 #include <media_info.h>
 #include <media_tag.h>
 #include <media_video.h>
+#include <media_group.h>
+#include <media_playlist.h>
+#include <media_bookmark.h>
 
 
 #ifdef __cplusplus
@@ -73,5 +76,3 @@ int media_content_disconnect(void);
 #endif /* __cplusplus */
 
 #endif /* __TIZEN_MEDIA_CONTENT_H__ */
-
-

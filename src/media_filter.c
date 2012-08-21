@@ -11,1125 +11,1136 @@
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
-* limitations under the License. 
+* limitations under the License.
 */
 
 
 #include <media_content.h>
 #include <media_info_private.h>
-#include <audio-svc.h>
-#include <audio-svc-error.h>
-#include <audio-svc-types.h>
-#include <visual-svc-types.h>
-#include <visual-svc.h>
 #include <media-svc.h>
 
-#include <dlog.h>
+static char *media_token[] =
+{
+	" ",
+	"\"",
+	"'",
+	"(",
+	")",
+	"=",
+	"<=",
+	"<",
+	">=",
+	">",
+};
 
-#ifdef LOG_TAG
-#undef LOG_TAG
-#endif
 
-#define LOG_TAG "TIZEN_N_MEDIACONTENT"
+typedef struct _token_t
+{
+	int type;
+	char *str;
+}token_t;
 
 
-int media_info_filter_create(media_info_filter_h* filter)
+#define MAX_LEFT_VALUE 512
+#define SPACE_LEN 1
+#define SPACE " "
+#define UNKNOWN_TYPE 1000
+#define STRING_TYPE 100
+
+static char *__get_order_str(media_content_order_e order_enum);
+static char *__get_collate_str(media_content_collation_e collate_type);
+static void __filter_attribute_free_value(gpointer key, gpointer value, gpointer user_data);
+static char *__media_filter_replace_attr(attribute_h attr, char *name);
+static int __tokenize_operator(token_t *token, const char *str, int op_type);
+static int __tokenize(GList **token_list, const char *str);
+
+static char *__get_order_str(media_content_order_e order_enum)
+{
+	switch(order_enum) {
+		case MEDIA_CONTENT_ORDER_ASC:
+			return "ASC";
+		case MEDIA_CONTENT_ORDER_DESC:
+			return "DESC";
+		default:
+			return " ";
+	}
+}
+
+static char *__get_collate_str(media_content_collation_e collate_type)
+{
+	switch(collate_type) {
+		case MEDIA_CONTENT_COLLATE_NOCASE:
+			return "NOCASE";
+		case MEDIA_CONTENT_COLLATE_RTRIM:
+			return "RTRIM";
+		default: return " ";
+	}
+}
+
+static void __filter_attribute_free_value(gpointer key, gpointer value, gpointer user_data)
+{
+	SAFE_FREE(key);
+	SAFE_FREE(value);
+}
+
+static char *__media_filter_replace_attr(attribute_h attr, char *name)
+{
+	char *key_temp;
+	char *generated_value;
+	attribute_s *_attr = (attribute_s *)attr;
+
+	if(!g_hash_table_lookup_extended(_attr->attr_map,
+										name,
+										(gpointer)&key_temp, (gpointer)&generated_value))
+	{
+		//can't find the value
+		//media_content_error("NOT_FOUND_VALUE(%s)", name);
+		return NULL;
+	}
+
+	if(STRING_VALID(generated_value))
+	{
+		return strdup(generated_value);
+	}
+
+	media_content_error("__media_filter_replace_attr fail");
+
+	return NULL;
+}
+
+static int __tokenize_operator(token_t *token, const char *str, int op_type)
+{
+	int ret = 0;
+	const char *tmp = str;
+
+	if(token != NULL && STRING_VALID(tmp))
+	{
+		token->type = op_type;
+		int token_size = strlen(media_token[op_type]);
+		token->str = (char*)calloc(token_size+1, sizeof(char));
+		strncpy(token->str, tmp, token_size);
+		media_content_debug("type : [%d] str : [%s] \n", token->type, token->str);
+		ret = token_size;
+	}
+	else
+	{
+		ret = -1;
+	}
+
+	return ret;
+}
+
+static int __tokenize_string(token_t *token, const char *str, int size)
+{
+	int ret = size;
+	const char *tmp = str;
+
+	if(token != NULL && STRING_VALID(tmp) && size > 0)
+	{
+		token->str	= (char*)calloc(size+1, sizeof(char));
+		token->type = UNKNOWN_TYPE;
+		strncpy(token->str, tmp, size);
+		media_content_debug("type : [%d] str : [%s] \n", token->type, token->str);
+	}
+	else
+	{
+		ret = -1;
+	}
+
+	return ret;
+}
+
+static int __tokenize_attribute(GList **token_list, const char *str)
+{
+	int ret = 0;
+	int idx = 0;
+
+	if(!STRING_VALID(str)) {
+		media_content_error("Parameter string in invalid");
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	const char *tmp = str;
+	const char *dst_ptr = str + strlen(str);
+
+	for (idx = 0; (*(tmp+idx)) && (tmp < dst_ptr); idx++)
+	{
+		//media_content_debug("[%d] '%c'", idx, tmp[idx]);
+		if(tmp[idx] == ' ')		//" "
+		{
+			if(idx == 0)		// ignore the space.
+			{
+				tmp++;
+				idx = -1;
+				continue;
+			}
+
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			token->type = UNKNOWN_TYPE;
+			token->str = (char*)calloc(idx+1, sizeof(char));
+			strncpy(token->str, tmp, idx);
+			media_content_debug("type : [%d] str : [%s] \n", token->type, token->str);
+			*token_list = g_list_append(*token_list, token);
+			tmp = tmp +idx + strlen(media_token[0]);
+			idx = -1;
+		}
+		else if(tmp[idx] == ',')	// " , "
+		{
+			if(idx != 0)
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				ret = __tokenize_string(token, tmp, idx);
+				if (ret < 0)
+				{
+					media_content_error("tokenize error occued");
+					return -1;
+				}
+				else
+				{
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + idx;
+				}
+			}
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			int size = __tokenize_operator(token, tmp,3);
+
+			if(token != NULL && STRING_VALID(token->str))
+			{
+				*token_list = g_list_append(*token_list, token);
+				tmp += size;
+				idx = -1;
+			}
+			else
+			{
+				media_content_error("tokenize error occued");
+				return -1;
+			}
+		}
+	}
+
+	if(*tmp)			//remained string
+	{
+		token_t *token = (token_t*)calloc(1, sizeof(token_t));
+		__tokenize_string(token, tmp, idx);
+		if(token != NULL && STRING_VALID(token->str))
+		{
+			*token_list = g_list_append(*token_list, token);
+		}
+		else
+		{
+			media_content_error("tokenize error occued");
+			return -1;
+		}
+	}
+
+	return MEDIA_CONTENT_ERROR_NONE;
+}
+
+static int __tokenize(GList **token_list, const char *str)
+{
+	int ret = 0;
+	int idx = 0;
+
+	if(!STRING_VALID(str)) {
+		media_content_error("Parameter string in invalid");
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	const char *tmp = str;
+	const char *dst_ptr = str + strlen(str);
+
+	for (idx = 0; (*(tmp+idx)) && (tmp < dst_ptr); idx++)
+	{
+		//media_content_debug("[%d] '%c'", idx, tmp[idx]);
+		if(tmp[idx] == media_token[0][0])		//" "
+		{
+			if(idx == 0)		// ignore the space.
+			{
+				tmp++;
+				idx = -1;
+				continue;
+			}
+
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			token->type = UNKNOWN_TYPE;
+			token->str = (char*)calloc(idx+1, sizeof(char));
+			strncpy(token->str, tmp, idx);
+			media_content_debug("type : [%d] str : [%s] \n", token->type, token->str);
+			*token_list = g_list_append(*token_list, token);
+			tmp = tmp +idx + strlen(media_token[0]);
+			idx = -1;
+		}
+		else if(tmp[idx] == media_token[1][0])	// " \" "
+		{
+			int j;
+			for(j = idx+1; tmp[j]; j++)	//find next quotation
+			{
+				if(tmp[j] == media_token[1][0] && tmp[j+1] == media_token[1][0])
+				{
+					j += 2;
+					continue;
+				}
+				if(tmp[j] == media_token[1][0])
+				{
+					token_t *token = (token_t*)calloc(1, sizeof(token_t));
+					token->str = (char*) calloc(j+1+1, sizeof(char));
+					token->type = STRING_TYPE;
+					strncpy(token->str, tmp, j+1);
+					media_content_debug("type : [%d] str : [%s], j : %d \n", token->type, token->str, j);
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + strlen(token->str);
+					idx = -1;
+					break;
+				}
+			}
+
+			if(*tmp != '\0' && tmp[j]=='\0')
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				token->str = (char*) calloc(j+1,sizeof(char));
+				token->type = UNKNOWN_TYPE;
+				strncpy(token->str, tmp,j);
+				media_content_debug("type : [%d] str : [%s] \n", token->type, token->str);
+				*token_list = g_list_append(*token_list, token);
+				tmp = tmp +strlen(token->str);
+				idx = -1;
+			}
+		}
+		else if(tmp[idx] == media_token[2][0])	// " \' "
+		{
+			int j;
+			for(j = idx+1; tmp[j]; j++)
+			{
+				if(tmp[j] == media_token[2][0] && tmp[j+1] == media_token[2][0])
+				{
+					j += 2;
+					continue;
+				}
+				if(tmp[j] == media_token[2][0])
+				{
+					token_t *token = (token_t*)calloc(1, sizeof(token_t));
+					token->str = (char*) calloc(j+1+1, sizeof(char));
+					token->type = STRING_TYPE;
+					strncpy(token->str, tmp, j+1);
+					media_content_debug("type : [%d] str : [%s] \n", token->type, token->str);
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + strlen(token->str);
+					idx = -1;
+					break;
+				}
+			}
+
+			if(*tmp != '\0' && tmp[j]=='\0')
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				token->str = (char*) calloc(j+1,sizeof(char));
+				token->type = UNKNOWN_TYPE;
+				strncpy(token->str, tmp,j);
+				media_content_debug("type : [%d] str : [%s] \n", token->type, token->str);
+				*token_list = g_list_append(*token_list, token);
+				tmp = tmp + strlen(token->str);
+				idx = -1;
+			}
+		}
+		else if(tmp[idx] == media_token[3][0])	//"("
+		{
+			if(idx != 0)
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				ret = __tokenize_string(token, tmp, idx);
+				if (ret < 0)
+				{
+					media_content_error("tokenize error occued");
+					return -1;
+				}
+				else
+				{
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + idx;
+				}
+			}
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			int size = __tokenize_operator(token, tmp,3);
+
+			if(token != NULL && STRING_VALID(token->str))
+			{
+				*token_list = g_list_append(*token_list, token);
+				tmp += size;
+				idx = -1;
+			}
+			else
+			{
+				media_content_error("tokenize error occued");
+				return -1;
+			}
+
+		}
+		else if(tmp[idx] == media_token[4][0])	//")"
+		{
+			if(idx != 0)
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				ret = __tokenize_string(token, tmp, idx);
+				if (ret < 0)
+				{
+					media_content_error("tokenize error occued");
+					return -1;
+				}
+				else
+				{
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + idx;
+				}
+			}
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			int size = __tokenize_operator(token, tmp,4);
+
+			if(token != NULL && STRING_VALID(token->str))
+			{
+				*token_list = g_list_append(*token_list, token);
+				tmp += size;
+				idx = -1;
+			}
+			else
+			{
+				media_content_error("tokenize error occued");
+				return -1;
+			}
+
+		}
+		else if(tmp[idx] == media_token[5][0])	//"="
+		{
+			if(idx != 0)
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				ret = __tokenize_string(token, tmp, idx);
+				if (ret < 0)
+				{
+					media_content_error("tokenize error occued");
+					return -1;
+				}
+				else
+				{
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + idx;
+				}
+			}
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			int size = __tokenize_operator(token, tmp,5);
+
+			if(token != NULL && STRING_VALID(token->str))
+			{
+				*token_list = g_list_append(*token_list, token);
+				tmp += size;
+				idx = -1;
+			}
+			else
+			{
+				media_content_error("tokenize error occued");
+				return -1;
+			}
+
+		}
+		else if(tmp[idx] == media_token[6][0] && tmp[idx+1] == media_token[6][1])	//"<=",
+		{
+			if(idx != 0)
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				ret = __tokenize_string(token, tmp, idx);
+				if (ret < 0)
+				{
+					media_content_error("tokenize error occued");
+					return -1;
+				}
+				else
+				{
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + idx;
+				}
+			}
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			int size = __tokenize_operator(token, tmp,6);
+
+			if(token != NULL && STRING_VALID(token->str))
+			{
+				*token_list = g_list_append(*token_list, token);
+				tmp += size;
+				idx = -1;
+			}
+			else
+			{
+				media_content_error("tokenize error occued");
+				return -1;
+			}
+
+		}
+		else if(tmp[idx] == media_token[7][0])	//"<",
+		{
+			if(idx != 0)
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				ret = __tokenize_string(token, tmp, idx);
+				if (ret < 0)
+				{
+					media_content_error("tokenize error occued");
+					return -1;
+				}
+				else
+				{
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + idx;
+				}
+			}
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			int size = __tokenize_operator(token, tmp,7);
+
+			if(token != NULL && STRING_VALID(token->str))
+			{
+				*token_list = g_list_append(*token_list, token);
+				tmp += size;
+				idx = -1;
+			}
+			else
+			{
+				media_content_error("tokenize error occued");
+				return -1;
+			}
+
+		}
+		else if(tmp[idx] == media_token[8][0] && tmp[idx+1] == media_token[8][1])	//">=",
+		{
+			if(idx != 0)
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				ret = __tokenize_string(token, tmp, idx);
+				if (ret < 0)
+				{
+					media_content_error("tokenize error occued");
+					return -1;
+				}
+				else
+				{
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + idx;
+				}
+			}
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			int size = __tokenize_operator(token, tmp,8);
+
+			if(token != NULL && STRING_VALID(token->str))
+			{
+				*token_list = g_list_append(*token_list, token);
+				tmp += size;
+				idx = -1;
+			}
+			else
+			{
+				media_content_error("tokenize error occued");
+				return -1;
+			}
+
+		}
+		else if(tmp[idx] == media_token[9][0])	//">",
+		{
+			if(idx != 0)
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				ret = __tokenize_string(token, tmp, idx);
+				if (ret < 0)
+				{
+					media_content_error("tokenize error occued");
+					return -1;
+				}
+				else
+				{
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + idx;
+				}
+			}
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			int size = __tokenize_operator(token, tmp,9);
+
+			if(token != NULL && STRING_VALID(token->str))
+			{
+				*token_list = g_list_append(*token_list, token);
+				tmp += size;
+				idx = -1;
+			}
+			else
+			{
+				media_content_error("tokenize error occued");
+				return -1;
+			}
+
+		}
+	}
+
+	if(*tmp)			//remained string
+	{
+		token_t *token = (token_t*)calloc(1, sizeof(token_t));
+		__tokenize_string(token, tmp, idx);
+		if(token != NULL && STRING_VALID(token->str))
+		{
+			*token_list = g_list_append(*token_list, token);
+		}
+		else
+		{
+			media_content_error("tokenize error occued");
+			return -1;
+		}
+	}
+
+	return MEDIA_CONTENT_ERROR_NONE;
+}
+
+int _media_filter_attribute_create(attribute_h *attr)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	if(attr == NULL)
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	attribute_s *_attr = (attribute_s*)calloc(1, sizeof(attribute_s));
+
+	if(_attr == NULL)
+	{
+		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+		ret = MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
+	else
+	{
+		_attr->attr_map = g_hash_table_new (g_str_hash, g_str_equal);
+		*attr = (attribute_h)_attr;
+	}
+
+	return ret;
+}
+
+int _media_filter_attribute_add(attribute_h attr, char *user_attr, char *platform_attr)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char *_user = NULL;
+	char *_platform = NULL;
+	attribute_s *_attr = (attribute_s*)attr;
+
+	if(_attr != NULL)
+	{
+		if(STRING_VALID(user_attr) && STRING_VALID(platform_attr))
+		{
+			_user = strdup(user_attr);
+			if(_user == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+
+			_platform = strdup(platform_attr);
+			if(_platform == NULL)
+			{
+				SAFE_FREE(_user);
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+
+			g_hash_table_insert (_attr->attr_map, _user, _platform);
+		}
+		else
+		{
+			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int _media_filter_attribute_remove(attribute_h attr, char *user_attr)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	attribute_s *_attr = (attribute_s*)attr;
+
+	if(attr != NULL)
+	{
+		if(STRING_VALID(user_attr))
+		{
+			g_hash_table_remove(_attr->attr_map, user_attr);
+		}
+		else
+		{
+			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int _media_filter_attribute_destory(attribute_h attr)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	attribute_s *_attr = (attribute_s*)attr;
+
+	if(_attr != NULL)
+	{
+		if(_attr->attr_map != NULL)
+		{
+			g_hash_table_foreach(_attr->attr_map, __filter_attribute_free_value, NULL);
+			g_hash_table_destroy(_attr->attr_map);
+		}
+
+		SAFE_FREE(_attr);
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int _media_filter_attribute_generate(attribute_h attr, char *condition, media_content_collation_e collate_type, char **generated_condition)
+{
+	int idx = 0;
+	GList *token_list = NULL;
+	int size = 0;
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int total_str_size = 0;
+	token_t *token;
+
+	if((condition == NULL) || (generated_condition == NULL))
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x):Invalid the condition", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	if(attr != NULL)
+	{
+		if(__tokenize(&token_list, condition) < 0)
+		{
+			media_content_error("INVALID_PARAMETER(0x%08x):Invalid the condition", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
+
+		for(idx = 0; idx < g_list_length(token_list); idx++)
+		{
+			token = (token_t*)g_list_nth_data(token_list, idx);
+
+			if(token->type == UNKNOWN_TYPE)
+			{
+				char *replace_str = __media_filter_replace_attr(attr, token->str);
+				if(STRING_VALID(replace_str))
+				{
+					SAFE_FREE(token->str);
+					token->str = replace_str;
+				}
+			}
+
+			total_str_size += strlen(token->str)+1;
+			media_content_debug("[%d][type:%d]:%s\n", idx, token->type, token->str);
+		}
+
+		//make the statment
+		size = total_str_size + COLLATE_STR_SIZE + 1;
+		* generated_condition = (char*)calloc(size, sizeof(char));
+
+		for(idx = 0; idx < g_list_length(token_list); idx++)
+		{
+			token = (token_t*)g_list_nth_data(token_list, idx);
+
+			if((token != NULL) && STRING_VALID(token->str))
+			{
+				SAFE_STRLCAT(*generated_condition, token->str, size);
+				SAFE_STRLCAT(*generated_condition, SPACE, size);
+
+				SAFE_FREE(token->str);
+				SAFE_FREE(token);
+			}
+		}
+
+		if(collate_type == MEDIA_CONTENT_COLLATE_NOCASE || collate_type == MEDIA_CONTENT_COLLATE_RTRIM) {
+			SAFE_STRLCAT(*generated_condition, "COLLATE ", size);
+			SAFE_STRLCAT(*generated_condition, __get_collate_str(collate_type), size);
+			SAFE_STRLCAT(*generated_condition, SPACE, size);
+		}
+
+		media_content_debug("statement : %s(%d) (total:%d) \n", *generated_condition, strlen(*generated_condition), total_str_size);
+		media_content_debug("Condition : %s", *generated_condition);
+
+		//if(*generated_condition != NULL)
+		//	res = 1;
+
+		if(token_list != NULL)
+			g_list_free(token_list);
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, char **generated_option)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_s *_filter = NULL;
+	char option_query[DEFAULT_QUERY_SIZE] = {0, };
+	char condition[DEFAULT_QUERY_SIZE] = {0, };
+	int size = 0;
+	//bool order_by = true;
+
+	media_content_debug_func();
+
+	if(filter == NULL)
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	if(attr == NULL)
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	_filter = (filter_s*)filter;
+
+	memset(option_query, 0x00, sizeof(option_query));
+
+	/* Order by*/
+	if(STRING_VALID(_filter->order_keyword) && ((_filter->order_type == MEDIA_CONTENT_ORDER_ASC) ||(_filter->order_type == MEDIA_CONTENT_ORDER_DESC)))
+	{
+		int idx = 0;
+		int total_str_size = 0;
+		GList *token_list = NULL;
+		token_t *token;
+		char *attr_str;
+
+		media_content_debug("Tokenize for [%s]", _filter->order_keyword);
+		if(__tokenize_attribute(&token_list, _filter->order_keyword) < 0)
+		{
+			media_content_error("INVALID_PARAMETER(0x%08x):Invalid the condition", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
+
+		for(idx = 0; idx < g_list_length(token_list); idx++)
+		{
+			token = (token_t*)g_list_nth_data(token_list, idx);
+
+			if(token->type == UNKNOWN_TYPE)
+			{
+				char *replace_str = __media_filter_replace_attr(attr, token->str);
+				if(STRING_VALID(replace_str))
+				{
+					attr_str = (char*)calloc(strlen(replace_str) + COLLATE_STR_SIZE + 1, sizeof(char));
+
+					if(_filter->order_collate_type == MEDIA_CONTENT_COLLATE_NOCASE || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_RTRIM) {
+						snprintf(attr_str, strlen(replace_str) + COLLATE_STR_SIZE + 1, "%s COLLATE %s %s", replace_str, __get_collate_str(_filter->order_collate_type), __get_order_str(_filter->order_type));
+					} else {
+						snprintf(attr_str, strlen(replace_str) + COLLATE_STR_SIZE + 1, "%s %s", replace_str, __get_order_str(_filter->order_type));
+					}
+
+					SAFE_FREE(token->str);
+					token->str = attr_str;
+					SAFE_FREE(replace_str);
+				}
+				else
+				{
+					media_content_error("There is no matched db field for %s", token->str);
+				}
+			}
+
+			total_str_size += strlen(token->str) + 1;
+			media_content_debug("[%d][type:%d]:%s\n", idx, token->type, token->str);
+		}
+
+		//make the statment
+		char *generated_condition = NULL;
+		size = total_str_size + COLLATE_STR_SIZE + 1;
+		generated_condition = (char*)calloc(size, sizeof(char));
+
+		for(idx = 0; idx < g_list_length(token_list); idx++)
+		{
+			token = (token_t*)g_list_nth_data(token_list, idx);
+
+			if((token != NULL) && STRING_VALID(token->str))
+			{
+				media_content_debug("[%d] %s", idx, token->str);
+				SAFE_STRLCAT(generated_condition, token->str, size);
+				SAFE_STRLCAT(generated_condition, SPACE, size);
+
+				SAFE_FREE(token->str);
+				SAFE_FREE(token);
+			}
+		}
+
+		snprintf(condition, sizeof(condition), "ORDER BY %s", generated_condition);
+		SAFE_STRLCAT(option_query, condition, sizeof(option_query));
+
+		if(token_list != NULL)
+			g_list_free(token_list);
+	}
+
+	/* offset */
+	if((_filter->offset >= 0) && (_filter->count >= 0))
+	{
+		SAFE_STRLCAT(option_query, SPACE, sizeof(option_query));
+		snprintf(condition, sizeof(condition), "LIMIT %d, %d", _filter->offset, _filter->count);
+		SAFE_STRLCAT(option_query, condition, sizeof(option_query));
+	}
+
+	if(STRING_VALID(option_query))
+	{
+		*generated_option = strdup(option_query);
+	}
+	else
+	{
+		*generated_option = NULL;
+	}
+
+	return ret;
+}
+
+int media_filter_create(filter_h *filter)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	if(filter == NULL)
 	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
-	
-	media_info_filter_s* _filter = (media_info_filter_s*)calloc(1, sizeof(media_info_filter_s));
 
-	if(_filter == NULL)	
+	filter_s *_filter = (filter_s*)calloc(1, sizeof(filter_s));
+
+	if(_filter == NULL)
 	{
-		LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		ret = MEDIA_CONTENT_ERROR_OUT_OF_MEMORY ;
-	}	
-	else {
-		_filter->media_type = MEDIA_CONTENT_TYPE_ALL;		
+		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+		ret = MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
+	else
+	{
+		_filter->condition = NULL;
+		_filter->order_keyword = NULL;
+		_filter->order_type = -1;
+		_filter->condition_collate_type = MEDIA_CONTENT_COLLATE_DEFAULT;
+		_filter->order_collate_type = MEDIA_CONTENT_COLLATE_DEFAULT;
 		_filter->offset = -1;
 		_filter->count = -1;
-		_filter->order = MEDIA_CONTENT_SORT_NONE;
-		_filter->search_type = MEDIA_INFO_SEARCH_NONE;
-		_filter->keyword = NULL;
 
-		*filter = (media_info_filter_h)_filter;
-		
-		ret = MEDIA_CONTENT_ERROR_NONE;
+		*filter = (filter_h)_filter;
 	}
-	return ret;
 
+	return ret;
 }
 
-
-
-int media_info_filter_destroy(media_info_filter_h filter)
+int media_filter_destroy(filter_h filter)
 {
-	int ret;
-	media_info_filter_s* _filter = (media_info_filter_s*)filter;	
-	if(_filter) 
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_s *_filter = (filter_s*)filter;
+
+	if(_filter)
 	{
-		if(_filter->keyword) 
-		{
-			free(_filter->keyword);
-		}						
-		free(_filter);
+		SAFE_FREE(_filter->condition);
+		SAFE_FREE(_filter->order_keyword);
+		SAFE_FREE(_filter);
+
 		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
-	else 
-	{	
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
-	return ret;
 
+	return ret;
 }
 
-int media_info_filter_set_offset(media_info_filter_h filter, int offset, int count)
+int media_filter_set_offset(filter_h filter, int offset, int count)
 {
-	int ret;
-	media_info_filter_s* _filter = (media_info_filter_s*)filter;	
-	if(_filter) 
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_s *_filter = (filter_s*)filter;
+
+	if((_filter != NULL) && (offset >= 0) && (count > 0))
 	{
 		_filter->offset = offset;
 		_filter->count = count;
-		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
-	else 
+	else
 	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
-	return ret;	
-
-}
-
-
-int media_info_filter_set_search_keyword(media_info_filter_h filter,media_info_search_type_e search_type,const char *search_keyword)
-{
-	int ret;
-	media_info_filter_s* _filter = (media_info_filter_s*)filter;
-	if(_filter) 
-	{
-		if((_filter->keyword != NULL) && (strlen(_filter->keyword) > 0))
-		{
-			free(_filter->keyword);
-			_filter->keyword = NULL;
-		}
-
-		if(search_type == MEDIA_INFO_SEARCH_BY_DISPLAY_NAME)
-		{	
-			if((search_keyword != NULL) && (strlen(search_keyword) > 0))
-			{
-				_filter->search_type = search_type;
-				_filter->keyword = strdup(search_keyword);
-				if(_filter->keyword == NULL)
-				{
-					LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-				}
-			}
-			else
-			{
-				LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
-		}
-		else if(search_type == MEDIA_INFO_SEARCH_NONE)
-		{
-			_filter->search_type = search_type;
-		}
-		else
-		{
-			LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		}
-
-		ret = MEDIA_CONTENT_ERROR_NONE; 				
-
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}	
 
 	return ret;
-
 }
 
-
-int media_info_filter_set_order(media_info_filter_h filter, media_content_order_e order)
+int media_filter_set_condition(filter_h filter, const char *condition, media_content_collation_e collate_type)
 {
-	int ret;
-	media_info_filter_s* _filter = (media_info_filter_s*)filter;	
-	if(_filter) 
-	{
-		_filter->order = order;
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_s *_filter = (filter_s*)filter;
 
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
+	if((_filter != NULL) && STRING_VALID(condition)
+		&& ((collate_type >= MEDIA_CONTENT_COLLATE_DEFAULT) && (collate_type <= MEDIA_CONTENT_COLLATE_RTRIM)))
 	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-int media_info_filter_set_media_type(media_info_filter_h filter,int media_type)
-{
-	int ret;
-	media_info_filter_s* _filter = (media_info_filter_s*)filter;	
-	if(_filter) 
-	{
-		if( !(media_type & MEDIA_CONTENT_TYPE_ALL))
+		if(STRING_VALID(_filter->condition))
 		{
-			LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+			SAFE_FREE(_filter->condition);
 		}
-		
-		_filter->media_type = media_type;
 
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_info_filter_get_offset(media_info_filter_h filter, int* offset, int* count)
-{
-	int ret;
-	media_info_filter_s* _filter = (media_info_filter_s*)filter;	
-	if(_filter) 
-	{
-		
-		*offset = _filter->offset;
-		*count = _filter->count;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_info_filter_get_search_keyword(media_info_filter_h filter,media_info_search_type_e* search_type, char **search_keyword)
-{
-	int ret;
-	media_info_filter_s* _filter = (media_info_filter_s*)filter;
-	if(_filter && (search_type != NULL)) 
-	{
-		if((_filter->keyword != NULL) && (strlen(_filter->keyword) > 0))
+		_filter->condition = strdup(condition);
+		if(_filter->condition == NULL)
 		{
-			*search_keyword = strdup(_filter->keyword);
-			if(*search_keyword == NULL)
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
+
+		media_content_debug("Condition string : %s", _filter->condition);
+
+		_filter->condition_collate_type = collate_type;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_filter_set_order(filter_h filter, media_content_order_e order_type, const char *order_keyword, media_content_collation_e collate_type)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_s *_filter = (filter_s*)filter;
+
+	if((_filter != NULL) && STRING_VALID(order_keyword)
+		&& ((order_type == MEDIA_CONTENT_ORDER_ASC) ||(order_type == MEDIA_CONTENT_ORDER_DESC))
+		&& ((collate_type >= MEDIA_CONTENT_COLLATE_DEFAULT) && (collate_type <= MEDIA_CONTENT_COLLATE_RTRIM)))
+	{
+		SAFE_FREE(_filter->order_keyword);
+
+		if(STRING_VALID(order_keyword))
+		{
+			_filter->order_keyword = strdup(order_keyword);
+
+			if(_filter->order_keyword == NULL)
 			{
-				LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
-			*search_type = _filter->search_type;
+			_filter->order_type = order_type;
+			_filter->order_collate_type = collate_type;
 		}
 		else
 		{
-			*search_type = _filter->search_type;
-			*search_keyword = NULL;
+			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 		}
-		ret = MEDIA_CONTENT_ERROR_NONE; 				
-
 	}
-	else 
+	else
 	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}	
-
-	return ret;
-
-}
-
-
-int media_info_filter_get_order(media_info_filter_h filter, media_content_order_e* order)
-{
-	int ret;
-	media_info_filter_s* _filter = (media_info_filter_s*)filter;	
-	if(_filter) 
-	{
-		*order = _filter->order;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-int media_info_filter_get_media_type(media_info_filter_h filter,int* media_type)
-{
-	int ret;
-	media_info_filter_s* _filter = (media_info_filter_s*)filter;	
-	if(_filter) 
-	{
-		*media_type = _filter->media_type;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_folder_filter_create(media_folder_filter_h* filter)
-{
-	int ret= MEDIA_CONTENT_ERROR_NONE;
-	if(filter == NULL)
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	media_folder_filter_s* _filter = (media_folder_filter_s*)calloc(1, sizeof(media_folder_filter_s));
-
-	if(_filter == NULL)	
-	{
-		LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		ret = MEDIA_CONTENT_ERROR_OUT_OF_MEMORY ;
-	}	
-	else 
-	{
-	
-		_filter->offset = -1;
-		_filter->count = -1;
-		_filter->order = MEDIA_CONTENT_SORT_NONE;;
-		_filter->search_type = MEDIA_FOLDER_SEARCH_NONE;
-		_filter->keyword = NULL;
-		
-		*filter = (media_folder_filter_h)_filter;
-		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
 
 	return ret;
-
 }
 
-int media_folder_filter_destroy(media_folder_filter_h filter)
+int media_filter_get_offset(filter_h filter, int *offset, int *count)
 {
-	int ret;
-	media_folder_filter_s* _filter = (media_folder_filter_s*)filter;	
-	if(_filter) 
-	{
-		if(_filter->keyword) 
-		{
-			free(_filter->keyword);
-		}						
-		free(_filter);
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_s *_filter = (filter_s*)filter;
 
-}
-
-
-
-int media_folder_filter_set_offset(media_folder_filter_h filter, int offset, int count)
-{
-	int ret;
-	media_folder_filter_s* _filter = (media_folder_filter_s*)filter;	
-	if(_filter) 
-	{
-		_filter->offset = offset;
-		_filter->count = count;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_folder_filter_set_search_keyword(media_folder_filter_h filter,media_folder_search_type_e search_type,const char *search_keyword)
-{
-	int ret;
-	media_folder_filter_s* _filter = (media_folder_filter_s*)filter;
-	if(_filter) 
-	{
-
-		if((_filter->keyword != NULL) && (strlen(_filter->keyword) > 0))
-		{
-			free(_filter->keyword);
-			_filter->keyword = NULL;
-		}
-	
-		if(search_type == MEDIA_FOLDER_SEARCH_BY_FOLDER_NAME)
-		{	
-			if((search_keyword != NULL) && (strlen(search_keyword) > 0))
-			{
-				_filter->search_type = search_type;
-				_filter->keyword = strdup(search_keyword);
-				if(_filter->keyword == NULL)
-				{
-					LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-				}
-			}
-			else
-			{
-				LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
-		}
-		else if(search_type == MEDIA_FOLDER_SEARCH_NONE)
-		{
-			_filter->search_type = search_type;
-		}
-		else
-		{
-			LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		}
-	
-		ret = MEDIA_CONTENT_ERROR_NONE; 	
-
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}	
-
-	return ret;
-
-}
-
-
-int media_folder_filter_set_order(media_folder_filter_h filter, media_content_order_e order)
-{
-	int ret;
-	media_folder_filter_s* _filter = (media_folder_filter_s*)filter;	
-	if(_filter) 
-	{
-		_filter->order = order;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-//-----------------------------------------
-int media_folder_filter_get_offset(media_folder_filter_h filter, int* offset, int* count)
-{
-	int ret;
-	media_folder_filter_s* _filter = (media_folder_filter_s*)filter;	
-	if(_filter) 
+	if(_filter)
 	{
 		*offset = _filter->offset;
 		*count = _filter->count;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
-	else 
+	else
 	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
-	return ret;	
 
+	return ret;
 }
 
-
-int media_folder_filter_get_search_keyword(media_folder_filter_h filter,media_folder_search_type_e* search_type, char **search_keyword)
+int media_filter_get_condition(filter_h filter, char **condition, media_content_collation_e *collate_type)
 {
-	int ret;
-	media_folder_filter_s* _filter = (media_folder_filter_s*)filter;
-	if(_filter && (search_type != NULL)) 
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_s *_filter = (filter_s*)filter;
+
+	if(_filter)
 	{
-		if((_filter->keyword != NULL) && (strlen(_filter->keyword) > 0))
+		if(STRING_VALID(_filter->condition))
 		{
-			*search_keyword = strdup(_filter->keyword);
-			if(*search_keyword == NULL)
+			*condition = strdup(_filter->condition);
+			if(*condition == NULL)
 			{
-				LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
-
-			*search_type  =_filter->search_type;
 		}
 		else
 		{
-			*search_type = _filter->search_type;
-			*search_keyword = NULL;
-		}
-		ret = MEDIA_CONTENT_ERROR_NONE; 				
-
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}	
-
-	return ret;
-
-}
-
-
-int media_folder_filter_get_order(media_folder_filter_h filter, media_content_order_e* order)
-{
-	int ret;
-	media_folder_filter_s* _filter = (media_folder_filter_s*)filter;	
-	if(_filter) 
-	{
-		*order = _filter->order;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_tag_filter_create( media_tag_filter_h* filter)
-{
-	int ret= MEDIA_CONTENT_ERROR_NONE;
-	if(filter == NULL)
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	media_tag_filter_s* _filter = (media_tag_filter_s*)calloc(1, sizeof(media_tag_filter_s));
-
-	if(_filter == NULL)	
-	{
-		LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		ret = MEDIA_CONTENT_ERROR_OUT_OF_MEMORY ;
-	}	
-	else 
-	{
-		_filter->offset = -1;
-		_filter->count = -1;
-		_filter->order = MEDIA_CONTENT_SORT_NONE;
-		_filter->search_type = MEDIA_INFO_SEARCH_NONE;
-		_filter->keyword = NULL;
-
-		*filter = (media_tag_filter_h)_filter;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-
-	return ret;
-
-}
-
-int media_tag_filter_destroy(media_tag_filter_h filter)
-{
-	int ret;
-	media_tag_filter_s* _filter = (media_tag_filter_s*)filter;	
-	if(_filter) 
-	{
-		if(_filter->keyword) 
-		{
-			free(_filter->keyword);
-		}						
-		free(_filter);
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;
-
-}
-
-
-
-
-int media_tag_filter_set_offset(media_tag_filter_h filter, int offset, int count)
-{
-	int ret;
-	media_tag_filter_s* _filter = (media_tag_filter_s*)filter;	
-	if(_filter) 
-	{
-		_filter->offset = offset;
-		_filter->count = count;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_tag_filter_set_search_keyword(media_tag_filter_h filter,media_tag_search_type_e search_type,const char *search_keyword)
-{
-	int ret;
-	media_tag_filter_s* _filter = (media_tag_filter_s*)filter;
-	if(_filter) 
-	{
-
-		if((_filter->keyword != NULL) && (strlen(_filter->keyword) > 0))
-		{
-			free(_filter->keyword);
-			_filter->keyword = NULL;
+			*condition = NULL;
 		}
 
-		if(search_type == MEDIA_TAG_SEARCH_BY_TAG_NAME)
-		{	
-			if((search_keyword != NULL) && (strlen(search_keyword) > 0))
+		*collate_type = _filter->condition_collate_type;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_filter_get_order(filter_h filter, media_content_order_e* order_type, char **order_keyword, media_content_collation_e *collate_type)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_s *_filter = (filter_s*)filter;
+
+	if(_filter)
+	{
+		if(STRING_VALID(_filter->order_keyword))
+		{
+			*order_keyword = strdup(_filter->order_keyword);
+			if(*order_keyword == NULL)
 			{
-				_filter->search_type = search_type;
-				_filter->keyword = strdup(search_keyword);			
-				if(_filter->keyword == NULL)
-				{
-					LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-				}
-			}
-			else
-			{
-				LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
-		}
-		else if(search_type == MEDIA_TAG_SEARCH_NONE)
-		{
-			_filter->search_type = search_type;
-		}
-		else
-		{
-			LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		}
-
-		ret = MEDIA_CONTENT_ERROR_NONE; 	
-
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}	
-
-	return ret;
-
-}
-
-
-int media_tag_filter_set_order(media_tag_filter_h filter, media_content_order_e order)
-{
-	int ret;
-	media_tag_filter_s* _filter = (media_tag_filter_s*)filter;	
-	if(_filter) 
-	{
-		_filter->order = order;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_tag_filter_get_offset(media_tag_filter_h filter, int* offset, int* count)
-{
-	int ret;
-	media_tag_filter_s* _filter = (media_tag_filter_s*)filter;	
-	if(_filter) 
-	{
-		*offset = _filter->offset;
-		*count = _filter->count;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_tag_filter_get_search_keyword(media_tag_filter_h filter,media_tag_search_type_e *search_type, char **search_keyword)
-{
-	int ret;
-	media_tag_filter_s* _filter = (media_tag_filter_s*)filter;
-	if(_filter && (search_type != NULL)) 
-	{
-		if((_filter->keyword != NULL) && (strlen(_filter->keyword) > 0))
-		{
-			*search_keyword = strdup(_filter->keyword);
-			if(*search_keyword == NULL)
-			{
-				LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
-
-			*search_type = _filter->search_type;
 		}
 		else
 		{
-			*search_type = _filter->search_type;
-			*search_keyword = NULL;
+			*order_keyword = NULL;
 		}
-		ret = MEDIA_CONTENT_ERROR_NONE; 				
 
+		*order_type = _filter->order_type;
+		*collate_type = _filter->order_collate_type;
 	}
-	else 
-	{	
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}	
-
-	return ret;
-
-}
-
-
-int media_tag_filter_get_order(media_tag_filter_h filter, media_content_order_e* order)
-{
-	int ret;
-	media_tag_filter_s* _filter = (media_tag_filter_s*)filter;	
-	if(_filter) 
-	{
-		*order = _filter->order;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_audio_filter_create(media_audio_filter_h* filter)
-{
-	int ret= MEDIA_CONTENT_ERROR_NONE;
-	if(filter == NULL)
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	media_audio_filter_s* _filter = (media_audio_filter_s*)calloc(1, sizeof(media_audio_filter_s));
-
-	if(_filter == NULL)	
-	{
-		LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		ret = MEDIA_CONTENT_ERROR_OUT_OF_MEMORY ;
-	}	
-	else 
-	{
-		_filter->offset = -1;
-		_filter->count = -1;
-		_filter->order = MEDIA_CONTENT_SORT_NONE;
-		_filter->search_type = MEDIA_AUDIO_SEARCH_NONE;
-		_filter->keyword = NULL;
-
-		*filter = (media_audio_filter_h)_filter;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
 
 	return ret;
-
 }
-
-
-int media_audio_filter_destroy(media_audio_filter_h filter)
-{
-	int ret;
-	media_audio_filter_s* _filter = (media_audio_filter_s*)filter;	
-	if(_filter) 
-	{
-		if(_filter->keyword) 
-		{
-			free(_filter->keyword);
-		}						
-		free(_filter);
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;
-
-}
-
-
-int media_audio_filter_set_offset(media_audio_filter_h filter, int offset, int count)
-{
-	int ret;
-	media_audio_filter_s* _filter = (media_audio_filter_s*)filter;	
-	if(_filter) 
-	{
-		_filter->offset = offset;
-		_filter->count = count;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_audio_filter_set_search_keyword(media_audio_filter_h filter,media_audio_search_type_e search_type,const char *search_keyword)
-{
-	int ret;
-	media_audio_filter_s* _filter = (media_audio_filter_s*)filter;
-	if(_filter) 
-	{
-
-
-		if((_filter->keyword != NULL) && (strlen(_filter->keyword) > 0))
-		{
-			free(_filter->keyword);
-			_filter->keyword = NULL;
-		}
-
-		if((search_type == MEDIA_AUDIO_SEARCH_BY_PLAYLIST) || 
-				(search_type == MEDIA_AUDIO_SEARCH_BY_ARTIST) ||
-				(search_type == MEDIA_AUDIO_SEARCH_BY_GENRE) ||
-				(search_type == MEDIA_AUDIO_SEARCH_BY_ALBUM) ||
-				(search_type == MEDIA_AUDIO_SEARCH_BY_AUTHOR) ||
-				(search_type == MEDIA_AUDIO_SEARCH_NONE) )
-		{	
-			if((search_keyword != NULL) && (strlen(search_keyword) > 0))
-			{
-				_filter->search_type = search_type;
-				_filter->keyword = strdup(search_keyword);			
-				if(_filter->keyword == NULL)
-				{
-					LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-				}
-			}
-			else
-			{
-				LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
-		}
-		else if(search_type == MEDIA_AUDIO_SEARCH_NONE)
-		{
-			_filter->search_type = search_type;
-		}
-		else
-		{
-			LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		}
-
-		ret = MEDIA_CONTENT_ERROR_NONE; 				
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}	
-
-	return ret;
-
-}
-
-
-int media_audio_filter_set_order(media_audio_filter_h filter, media_content_order_e order)
-{
-	int ret;
-	media_audio_filter_s* _filter = (media_audio_filter_s*)filter;	
-	if(_filter) 
-	{
-		_filter->order = order;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-int media_audio_filter_get_offset(media_audio_filter_h filter, int* offset, int* count)
-{
-	int ret;
-	media_audio_filter_s* _filter = (media_audio_filter_s*)filter;	
-	if(_filter) 
-	{
-		*offset = _filter->offset;
-		*count = _filter->count;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{	
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int media_audio_filter_get_search_keyword(media_audio_filter_h filter,media_audio_search_type_e* search_type,char **keyword)
-{
-	int ret;
-	media_audio_filter_s* _filter = (media_audio_filter_s*)filter;
-	if(_filter && (search_type != NULL)) 
-	{
-		if((_filter->keyword != NULL) && (strlen(_filter->keyword) > 0))
-		{
-			*keyword = strdup(_filter->keyword);
-			if(*keyword == NULL)
-			{
-				LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
-
-			*search_type = _filter->search_type;
-		}
-		else
-		{
-			*search_type = _filter->search_type;
-			*keyword = NULL;
-		}
-		ret = MEDIA_CONTENT_ERROR_NONE; 				
-
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}	
-
-	return ret;
-
-}
-
-
-int media_audio_filter_get_order(media_audio_filter_h filter, media_content_order_e* order)
-{
-	int ret;
-	media_audio_filter_s* _filter = (media_audio_filter_s*)filter;	
-	if(_filter) 
-	{
-		*order = _filter->order;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-
-int video_bookmark_filter_create(video_bookmark_filter_h* filter)
-{
-	int ret= MEDIA_CONTENT_ERROR_NONE;
-	if(filter == NULL)
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	video_bookmark_filter_s* _filter = (video_bookmark_filter_s*)calloc(1, sizeof(video_bookmark_filter_s));
-
-	if(_filter == NULL)	
-	{
-		LOGE("[%s]OUT_OF_MEMORY(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		ret = MEDIA_CONTENT_ERROR_OUT_OF_MEMORY ;
-	}	
-	else 
-	{
-
-		_filter->offset = -1;
-		_filter->count = -1;
-		_filter->order = MEDIA_CONTENT_SORT_NONE;
-
-		*filter = (video_bookmark_filter_h)_filter;
-		
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-
-	return ret;
-
-}
-
-
-int video_bookmark_filter_destroy(video_bookmark_filter_h filter)
-{
-	int ret;
-	video_bookmark_filter_s* _filter = (video_bookmark_filter_s*)filter;	
-	if(_filter) 
-	{				
-		free(_filter);
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;
-
-}
-
-
-int video_bookmark_filter_set_offset(video_bookmark_filter_h filter, int offset, int count)
-{
-	int ret;
-	video_bookmark_filter_s* _filter = (video_bookmark_filter_s*)filter;	
-	if(_filter) 
-	{
-		_filter->offset = offset;
-		_filter->count = count;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-int video_bookmark_filter_set_order(video_bookmark_filter_h filter, media_content_order_e order)
-{
-	int ret;
-	video_bookmark_filter_s* _filter = (video_bookmark_filter_s*)filter;	
-	if(_filter) 
-	{
-		_filter->order = order;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-int video_bookmark_filter_get_offset(video_bookmark_filter_h filter, int* offset, int* count)
-{
-	int ret;
-	video_bookmark_filter_s* _filter = (video_bookmark_filter_s*)filter;	
-	if(_filter) 
-	{
-		*offset = _filter->offset;
-		*count = _filter->count;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-
-int video_bookmark_filter_get_order(video_bookmark_filter_h filter, media_content_order_e* order)
-{
-	int ret;
-	video_bookmark_filter_s* _filter = (video_bookmark_filter_s*)filter;	
-	if(_filter) 
-	{
-		*order = _filter->order;
-
-		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else 
-	{
-		LOGE("[%s]INVALID_PARAMETER(0x%08x)", __FUNCTION__, MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-	return ret;	
-
-}
-

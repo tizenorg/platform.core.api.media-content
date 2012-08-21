@@ -1,47 +1,261 @@
+capi-content-media-content (0.2.13-0) unstable; urgency=low
+
+  * media_info_get_size change to use unsigned long long type
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.13-0
+
+ -- Hyunjun Ko <zzoon.ko@samsung.com>  Thu, 16 Aug 2012 20:00:00 +0900
+
+capi-content-media-content (0.2.12-0) unstable; urgency=low
+
+  * Bug fix in tag/playlist count
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.12-0
+
+ -- Hyunjun Ko <zzoon.ko@samsung.com>  Tue, 7 Aug 2012 20:00:00 +0900
+
+capi-content-media-content (0.2.11-0) unstable; urgency=low
+
+  * Create tag view
+  * Fix to return valid error type
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.11-0
+
+ -- Hyunjun Ko <zzoon.ko@samsung.com>  Mon, 30 Jul 2012 20:00:00 +0900
+
+capi-content-media-content (0.2.10-0) unstable; urgency=low
+
+  * Create playlist view
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.10-0
+
+ -- Hyunjun Ko <zzoon.ko@samsung.com>  Wed, 25 Jul 2012 20:00:00 +0900
+
+capi-content-media-content (0.2.7-0) unstable; urgency=low
+
+  * Packaging
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.6-0
+
+ -- Hyunjun Ko <zzoon.ko@samsung.com>  Wed, 1 Jul 2012 12:00:00 +0900
+
+capi-content-media-content (0.2.6-0) unstable; urgency=low
+
+  * bug fix of memory leak
+  * Modify TCs
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.6-0
+
+ -- Hyunjun Ko <zzoon.ko@samsung.com>  Wed, 1 Jul 2012 12:00:00 +0900
+
+capi-content-media-content (0.2.0-5) unstable; urgency=low
+
+  * bug fix of memory leak
+  * bug fix of getting audio meta 
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.0-5
+
+ -- Haejeong kim <backto.kim@samsung.com>  Mon, 09 Jul 2012 17:08:35 +0900
+
+capi-content-media-content (0.2.0-4) unstable; urgency=low
+
+  * Modify media_folder_update_to_db
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.0-4
+
+ -- Hyunjun Ko <zzoon.ko@samsung.com>  Fri, 6 Jul 2012 19:00:00 +0900
+
+capi-content-media-content (0.2.0-3) unstable; urgency=low
+
+  * bug fix of playlist
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.0-3
+
+ -- root <backto.kim@samsung.com>  Thu, 05 Jul 2012 17:32:25 +0900
+
+capi-content-media-content (0.2.0-2) unstable; urgency=low
+
+  * added time value is time_t
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.0-2
+
+ -- Haejeong Kim <backto.kim@samsung.com>  Wed, 20 Jun 2012 11:56:20 +0900
+
+capi-content-media-content (0.2.0-1) unstable; urgency=low
+
+  * new Media-Content released
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.2.0-1
+
+ -- Haejeong Kim <backto.kim@samsung.com>  Mon, 18 Jun 2012 10:06:18 +0900
+
+capi-content-media-content (0.1.0-20) unstable; urgency=low
+
+  * Change DRM apis
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-20
+
+ -- Hyunjun Ko <zzoon.ko@samsung.com>  Fri, 1 Jun 2012 15:00:00 +0900
+
 capi-content-media-content (0.1.0-19) unstable; urgency=low
 
-  * update for Tizen1.0
-  * Git: api/media-content
+  * Fix dependency
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
   * Tag: capi-content-media-content_0.1.0-19
 
- -- Dongyoung Kim <dydot1.kim@samsung.com>  Mon, 19 Mar 2012 11:27:57 +0900
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Thu, 15 Mar 2012 14:34:54 +0900
+
+capi-content-media-content (0.1.0-18) unstable; urgency=low
+
+  * change the clone function
+  * Git: slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-18
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Tue, 21 Feb 2012 10:24:53 +0900
 
 capi-content-media-content (0.1.0-17) unstable; urgency=low
 
-  * chagne the code to avoid conflict
-  * Git: api/media-content
-  * Tag: capi-content-media-content_0.1.0-17
+  * change the CMakefile for test code
+  * Git: slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-17 
 
- -- Dongyoung Kim <dydot1.kim@samsung.com>  Mon, 20 Feb 2012 22:13:55 +0900
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Mon, 20 Feb 2012 18:35:05 +0900
+
+capi-content-media-content (0.1.0-16) unstable; urgency=low
+
+  * hide the db handle to avoid conflict
+  * Git: slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-16
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Mon, 20 Feb 2012 18:17:15 +0900
+
+capi-content-media-content (0.1.0-15) unstable; urgency=low
+
+  * changed the query
+  * Git: slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-15
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 15 Feb 2012 10:54:39 +0900
 
 capi-content-media-content (0.1.0-14) unstable; urgency=low
 
-  * fixed an error
-  * Git: api/media-content
+  * fix an error for updating favorite
+  * Git: slp/api/media-content
   * Tag: capi-content-media-content_0.1.0-14
 
  -- Dongyoung Kim <dydot1.kim@samsung.com>  Tue, 14 Feb 2012 19:13:07 +0900
 
 capi-content-media-content (0.1.0-13) unstable; urgency=low
 
-  * changed the query
-  * Git: api/media-content
+  * change the query as framework is changed
+  * Git: slp/api/media-content
   * Tag: capi-content-media-content_0.1.0-13
 
  -- Dongyoung Kim <dydot1.kim@samsung.com>  Fri, 10 Feb 2012 16:27:25 +0900
 
+capi-content-media-content (0.1.0-12) unstable; urgency=low
+
+  * change the code as framework is changed
+  * Git: slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-12
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 18 Jan 2012 18:10:16 +0900
+
+capi-content-media-content (0.1.0-11) unstable; urgency=low
+
+  * change the code by bug report
+  * Git: slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-11
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 11 Jan 2012 13:49:07 +0900
+
 capi-content-media-content (0.1.0-10) unstable; urgency=low
 
-  * Update the version.
+  * change the name of internal library
+  * Git: slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-10
 
- -- Dongyoung Kim <dydot1.kim@samsung.com>  Thu, 15 Dec 2011 13:38:10 +0900
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 07 Dec 2011 13:25:20 +0900
 
+capi-content-media-content (0.1.0-9) unstable; urgency=low
+
+  * Replace the Error type
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-9
+ 
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Mon, 05 Dec 2011 13:30:20 +0900
+
+capi-content-media-content (0.1.0-8) unstable; urgency=low
+
+  * Add the log
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-8
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 30 Nov 2011 20:19:43 +0900
+
+capi-content-media-content (0.1.0-7) unstable; urgency=low
+
+  * change the code by code review 
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-7
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Thu, 24 Nov 2011 15:55:16 +0900
+
+capi-content-media-content (0.1.0-6) unstable; urgency=low
+
+  * Convert SLP into TIZEN 
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-6
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 23 Nov 2011 14:00:33 +0900
+
+capi-content-media-content (0.1.0-5) unstable; urgency=low
+
+  * change the TC code
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-5 
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Fri, 04 Nov 2011 16:12:19 +0900
+
+capi-content-media-content (0.1.0-4) unstable; urgency=low
+
+  * change the type of internal id
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-4
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 02 Nov 2011 18:06:27 +0900
+
+capi-content-media-content (0.1.0-3) unstable; urgency=low
+
+  * change the query for audio
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-3
+
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Mon, 10 Oct 2011 18:41:43 +0900
+
+capi-content-media-content (0.1.0-2) unstable; urgency=low
+
+  * change the name of function in TC
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-2
+ 
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 05 Oct 2011 18:41:24 +0900
+
+capi-content-media-content (0.1.0-1) unstable; urgency=low
+
+  * Development 1.0 
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.1.0-1
+
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 05 Oct 2011 13:39:25 +0900
 
 capi-content-media-content (0.0.1-1) unstable; urgency=low
 
- 
-  * Initial release.
- 
+  * Initial Upload
+  * Git: slp-source.sec.samsung.net:slp/api/media-content
+  * Tag: capi-content-media-content_0.0.1-1
 
- -- Dongyoung Kim <dydot1.kim@samsung.com>  Wed, 07 Dec 2011 12:46:25 +0900
 
+ -- Dongyoung Kim <dydot1.kim@samsung.com>  Thu, 22 Sep 2011 17:37:04 +0900

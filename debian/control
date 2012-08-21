@@ -1,23 +1,21 @@
 Source: capi-content-media-content
 Section: libs
 Priority: extra
-Maintainer: Dongyoung Kim <dydot1.kim@samsung.com>, Jongchul Park <jc0204.park@samsung.com>
-Build-Depends: debhelper (>= 5), dlog-dev, libmedia-service-dev, drm-service-dev, libaul-1-dev, capi-base-common-dev
-Standards-Version: 0.1
+Maintainer: Dongyoung Kim <dydot1.kim@samsung.com>
+Build-Depends: debhelper (>= 5), dlog-dev, libmedia-service-dev, capi-base-common-dev, libmedia-utils-dev
 
 Package: capi-content-media-content
-Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: A Media content library in Tizen Native API
 
 Package: capi-content-media-content-dev
 Architecture: any
-Depends: capi-content-media-content (= ${Source-Version}), dlog-dev, libmedia-service-dev, drm-service-dev, libaul-1-dev, capi-base-common-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, capi-content-media-content (= ${Source-Version}), dlog-dev, libmedia-service-dev, capi-base-common-dev, libmedia-utils-dev
 Description: A Media content library in Tizen Native API (DEV)
 
 Package: capi-content-media-content-dbg
 Architecture: any
-Depends: ${misc:Depends}, capi-content-media-content (= ${Source-Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, capi-content-media-content (= ${Source-Version})
 Description: A Media content library in Tizen Native API (DBG)
 
