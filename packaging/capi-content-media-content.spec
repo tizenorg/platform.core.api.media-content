@@ -1,4 +1,3 @@
-#sbs-git:slp/api/media-content capi-content-media-content 0.1.0 718ef86b8c37cf9e8f110ada62eed01ab9d9e2f6
 Name:       capi-content-media-content
 Summary:    A Media content library in SLP C API
 Version: 0.2.13
