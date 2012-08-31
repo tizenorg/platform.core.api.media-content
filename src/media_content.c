@@ -15,7 +15,7 @@
 */
 
 
-
+#include <media-thumb-error.h>
 #include <media_content.h>
 #include <media_info_private.h>
 #include <media-util-err.h>
@@ -470,6 +470,8 @@ int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condit
 
 int _content_error_capi(int type, int content_error)
 {
+	media_content_debug("[type : %d] content_error : %d ", type, content_error);
+
 	if(type == MEDIA_CONTENT_TYPE)
 	{
 		if(content_error == MEDIA_INFO_ERROR_NONE)
@@ -484,6 +486,29 @@ int _content_error_capi(int type, int content_error)
 			return MEDIA_CONTENT_ERROR_DB_FAILED;
 		else if(content_error == MEDIA_INFO_ERROR_DATABASE_NO_RECORD)
 			return MEDIA_CONTENT_ERROR_DB_FAILED;
+
+	} else if(type == MEDIA_THUMBNAIL_TYPE) {
+		if(content_error == MEDIA_THUMB_ERROR_NONE)
+			return MEDIA_CONTENT_ERROR_NONE;
+		else if(content_error == MEDIA_THUMB_ERROR_INVALID_PARAMETER)
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		else if(content_error == MEDIA_THUMB_ERROR_DB)
+			return MEDIA_CONTENT_ERROR_DB_FAILED;
+		else if(content_error == MEDIA_THUMB_ERROR_DB)
+			return MEDIA_CONTENT_ERROR_DB_FAILED;
+		else if(content_error == MEDIA_THUMB_ERROR_NETWORK)
+			return MEDIA_CONTENT_ERROR_NETWORK;
+		else if(content_error == MEDIA_THUMB_ERROR_TIMEOUT)
+			return MEDIA_CONTENT_ERROR_NETWORK;
+		else if(content_error == MEDIA_THUMB_ERROR_MM_UTIL)			/* Error in mm-util lib */
+			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+		else if(content_error == MEDIA_THUMB_ERROR_HASHCODE)		/* Failed to generate hash code */
+			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+		else if(content_error == MEDIA_THUMB_ERROR_TOO_BIG)			/* Original is too big to make thumb */
+			return MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT;
+		else if(content_error == MEDIA_THUMB_ERROR_UNSUPPORTED)	/* Unsupported type */
+			return MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT;
+
 	} else if(type == MEDIA_REGISTER_TYPE) {
 		if(content_error == MS_MEDIA_ERR_NONE)
 			return MEDIA_CONTENT_ERROR_NONE;
@@ -493,8 +518,7 @@ int _content_error_capi(int type, int content_error)
 			return MEDIA_CONTENT_ERROR_DB_FAILED;
 	}
 
-	media_content_error("content_error : %d [ type :%d ]", content_error, type);
-	return MEDIA_CONTENT_ERROR_DB_FAILED;
+	return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 }
 
 int _content_query_sql(char *query_str)

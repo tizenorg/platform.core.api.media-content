@@ -68,6 +68,12 @@ int media_bookmark_get_bookmark_count_from_db(filter_h filter, int *bookmark_cou
 
 	media_content_debug_func();
 
+	if (bookmark_count == NULL)
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
 	ret = _media_db_get_group_count(filter, MEDIA_GROUP_BOOKMARK, bookmark_count);
 
 	return ret;
@@ -98,7 +104,7 @@ int media_bookmark_destroy(media_bookmark_h bookmark)
 	if(_bookmark)
 	{
 		SAFE_FREE(_bookmark->media_id);
-		SAFE_FREE(_bookmark->thumbnail);
+		SAFE_FREE(_bookmark->thumbnail_path);
 		free(_bookmark);
 		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
@@ -140,10 +146,10 @@ int media_bookmark_clone(media_bookmark_h *dst, media_bookmark_h src)
 
 		_dst->marked_time = _src->marked_time;
 
-		if(STRING_VALID(_src->thumbnail))
+		if(STRING_VALID(_src->thumbnail_path))
 		{
-			_dst->thumbnail = (char*)strdup(_src->thumbnail);
-			if(_dst->thumbnail == NULL)
+			_dst->thumbnail_path = (char*)strdup(_src->thumbnail_path);
+			if(_dst->thumbnail_path == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_bookmark_destroy((media_bookmark_h)_dst);
@@ -234,17 +240,17 @@ int media_bookmark_get_marked_time(media_bookmark_h bookmark, time_t* marked_tim
 	return ret;
 }
 
-int media_bookmark_get_thumbnail_path(media_bookmark_h bookmark, char **thumbnail)
+int media_bookmark_get_thumbnail_path(media_bookmark_h bookmark, char **path)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_bookmark_s *_bookmark = (media_bookmark_s*)bookmark;
 
 	if(_bookmark)
 	{
-		if(STRING_VALID(_bookmark->thumbnail))
+		if(STRING_VALID(_bookmark->thumbnail_path))
 		{
-			*thumbnail = strdup(_bookmark->thumbnail);
-			if(*thumbnail == NULL)
+			*path = strdup(_bookmark->thumbnail_path);
+			if(*path == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -252,7 +258,7 @@ int media_bookmark_get_thumbnail_path(media_bookmark_h bookmark, char **thumbnai
 		}
 		else
 		{
-			*thumbnail = NULL;
+			*path = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;

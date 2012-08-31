@@ -45,7 +45,7 @@ extern "C" {
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @pre This function requires opened connection to content service by media_content_connect().
- * @see #media_content_type_e media_content_connect()
+ * @see media_content_connect()
  */
 int media_info_insert_to_db (const char *path, media_info_h *info);
 
@@ -59,7 +59,7 @@ int media_info_insert_to_db (const char *path, media_info_h *info);
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @pre This function requires opened connection to content service by media_content_connect().
- * @see #media_content_type_e media_content_connect()
+ * @see media_content_connect()
  */
 int media_info_delete_from_db(const char *media_id);
 
@@ -721,7 +721,6 @@ int media_info_set_author(media_info_h media, const char *author);
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- 
  *
  */
 int media_info_set_provider(media_info_h media, const char *provider);
@@ -799,8 +798,8 @@ int media_info_set_keyword(media_info_h media, const char *keyword);
 /**
  * @brief Updates the media info to the media database.
  *
- * @details The function updates the given media info in the media database. The function should be called after any change in media, to be updated to the media 
- * database. For example, after using media_info_set_display_name() for setting the name of the media, media_info_update_to_db() function should be called so as to update 
+ * @details The function updates the given media info in the media database. The function should be called after any change in media, to be updated to the media
+ * database. For example, after using media_info_set_display_name() for setting the name of the media, media_info_update_to_db() function should be called so as to update
  * the given media info attibutes in the media database.
  *
  * @param[in] media The handle to media info
@@ -867,7 +866,26 @@ int media_info_set_added_time(media_info_h media, time_t added_time);
  * @see media_content_connect()
  *
  */
+int media_info_move_to_db(media_info_h media, const char* dst_path);
 int media_info_move_media_to_db(media_info_h media, const char* dst_path);
+
+
+/**
+ * @brief Creates a thumbnail image for given the media, asynchronously.
+ * @details This function creates an thumbnail image for given media item and and calls registered callback function for completion of creating the thumbnail.
+ * If there already exist a thumbnail for given media, then the path of thumbnail will be return in callback function.
+ *
+ * @param[in] media The handle to media info
+ * @param[in] callback The callback function to invoke
+ * @param[in] user_data The user data to be passed to the callback function
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED DB operation failed
+ * @pre This function requires opened connection to content service by media_content_connect().
+ * @see media_content_connect()
+ */
+int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb callback, void *user_data);
 
 /**
  * @}

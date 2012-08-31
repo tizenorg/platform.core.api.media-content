@@ -29,10 +29,6 @@ extern "C" {
  */
 int _media_util_get_store_type_by_path(const char *path, int *storage_type);
 
-/**
- *@internal
- */
-int _media_util_get_file_dir_modified_time(const char *path);
 
 #ifdef __cplusplus
 }

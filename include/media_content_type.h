@@ -102,11 +102,14 @@ typedef enum
  */
 typedef enum
 {
-	MEDIA_CONTENT_ERROR_NONE						= TIZEN_ERROR_NONE,					/**< Successful */
-	MEDIA_CONTENT_ERROR_INVALID_PARAMETER		= TIZEN_ERROR_INVALID_PARAMETER,		/**< Invalid parameter */
-	MEDIA_CONTENT_ERROR_OUT_OF_MEMORY 		= TIZEN_ERROR_OUT_OF_MEMORY,			/**< Out of memory */
+	MEDIA_CONTENT_ERROR_NONE					= TIZEN_ERROR_NONE,					/**< Successful */
+	MEDIA_CONTENT_ERROR_INVALID_PARAMETER		= TIZEN_ERROR_INVALID_PARAMETER,	/**< Invalid parameter */
+	MEDIA_CONTENT_ERROR_OUT_OF_MEMORY 			= TIZEN_ERROR_OUT_OF_MEMORY,		/**< Out of memory */
 	MEDIA_CONTENT_ERROR_DB_FAILED 				= TIZEN_ERROR_CONTENT_CLASS | 0x01,	/**< DB operation failed */
 	MEDIA_CONTENT_ERROR_DB_BUSY 				= TIZEN_ERROR_CONTENT_CLASS | 0x02,	/**< DB operation BUSY */
+	MEDIA_CONTENT_ERROR_NETWORK					= TIZEN_ERROR_CONTENT_CLASS | 0x03,	/**< Network Fail */
+	MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT		= TIZEN_ERROR_CONTENT_CLASS | 0x04,	/**< Unsupported Content */
+	MEDIA_CONTENT_ERROR_INVALID_OPERATION		= TIZEN_ERROR_CONTENT_CLASS | 0x05,	/**< Invalid Operation */
 } media_content_error_e;
 
 /**
@@ -234,6 +237,22 @@ typedef struct filter_s *filter_h;
  * @see media_folder_foreach_media_from_db()
  */
 typedef bool (*media_info_cb)(media_info_h media, void *user_data);
+
+
+/**
+ * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
+ * @brief Creates a thumbnail image.
+ *
+ * @details This callback is called for completion of generating the thumbnail image.\n
+ *
+ * @param[in] error The Error code
+ * @param[in] path The Path of thumbnail which is generated
+ * @param[in] user_data The user data passed from the foreach function
+ * @pre media_info_create_thumbnail()
+ * @see media_info_create_thumbnail()
+ */
+typedef void (*media_thumbnail_completed_cb)(media_content_error_e error, const char *path, void *user_data);
+
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_FOLDER_MODULE

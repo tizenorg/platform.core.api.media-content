@@ -136,16 +136,16 @@ int media_bookmark_get_marked_time(media_bookmark_h bookmark, time_t *marked_tim
 /**
  * @brief Gets the media bookmark's thumbnail.
  *
- * @remarks thumbnail must be released with free() by you.
+ * @remarks @a path must be released with free() by you.
  *
  * @param [in] bookmark The handle to media bookmark
- * @param [out] thumbnail_path The thumbnail path of media bookmark
+ * @param [out] path The thumbnail path of media bookmark
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
  */
-int media_bookmark_get_thumbnail_path(media_bookmark_h bookmark, char **thumbnail_path);
+int media_bookmark_get_thumbnail_path(media_bookmark_h bookmark, char **path);
 
 
 /**

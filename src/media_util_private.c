@@ -43,26 +43,3 @@ int _media_util_get_store_type_by_path(const char *path, int *storage_type)
 
 	return MEDIA_CONTENT_ERROR_NONE;
 }
-
-int _media_util_get_file_dir_modified_time(const char *path)
-{
-	struct stat statbuf;
-	int fd = 0;
-	int err = 0;
-
-	if(!STRING_VALID(path))
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	memset(&statbuf, 0, sizeof(struct stat));
-	fd = stat(path, &statbuf);
-	if(fd == -1) {
-		err = errno;
-		media_content_error("stat(%s) fails. err[%d]", path, err);
-		return -1;
-	}
-
-	return statbuf.st_mtime;
-}

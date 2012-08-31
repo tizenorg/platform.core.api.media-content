@@ -1,6 +1,6 @@
 Name:       capi-content-media-content
 Summary:    A Media content library in SLP C API
-Version: 0.2.13
+Version: 0.2.14
 Release:    1
 Group:      System/Libraries
 License:    Apache-2.0
@@ -9,6 +9,7 @@ BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(capi-base-common)
 BuildRequires:  pkgconfig(libmedia-service)
+BuildRequires:  pkgconfig(media-thumbnail)
 BuildRequires:  pkgconfig(libmedia-utils)
 
 

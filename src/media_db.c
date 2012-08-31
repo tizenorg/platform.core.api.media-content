@@ -25,57 +25,57 @@ static char * __media_db_get_group_name(media_group_e group)
 	switch(group)
 	{
 		case MEDIA_CONTENT_GROUP_DISPLAY_NAME:
-			return "file_name";
+			return DB_FIELD_MEDIA_DISPLAY_NAME;
 		case MEDIA_CONTENT_GROUP_TYPE:
-			return "media_type";
+			return DB_FIELD_MEDIA_TYPE;
 		case MEDIA_CONTENT_GROUP_MIME_TYPE:
-			return "mime_type";
+			return DB_FIELD_MEDIA_MIME_TYPE;
 		case MEDIA_CONTENT_GROUP_SIZE:
-			return "size";
+			return DB_FIELD_MEDIA_SIZE;
 		case MEDIA_CONTENT_GROUP_ADDED_TIME:
-			return "added_time";
+			return DB_FIELD_MEDIA_ADDED_TIME;
 		case MEDIA_CONTENT_GROUP_MODIFIED_TIME:
-			return "modified_time";
+			return DB_FIELD_MEDIA_MODIFIED_TIME;
 		case MEDIA_CONTENT_GROUP_TITLE:
-			return "title";
+			return DB_FIELD_MEDIA_TITLE;
 		case MEDIA_CONTENT_GROUP_ARTIST:
-			return "artist";
+			return DB_FIELD_MEDIA_ARTIST;
 		case MEDIA_CONTENT_GROUP_GENRE:
-			return "genre";
+			return DB_FIELD_MEDIA_GENRE;
 		case MEDIA_CONTENT_GROUP_COMPOSER:
-			return "composer";
+			return DB_FIELD_MEDIA_COMPOSER;
 		case MEDIA_CONTENT_GROUP_YEAR:
-			return "year";
+			return DB_FIELD_MEDIA_YEAR;
 		case MEDIA_CONTENT_GROUP_RECORDED_DATE:
-			return "recorded_date";
+			return DB_FIELD_MEDIA_RECORDED_DATE;
 		case MEDIA_CONTENT_GROUP_COPYRIGHT:
-			return "copyright";
+			return DB_FIELD_MEDIA_COPYRIGHT;
 		case MEDIA_CONTENT_GROUP_TRACK_NUM:
-			return "track_num";
+			return DB_FIELD_MEDIA_TRACK_NUM;
 		case MEDIA_CONTENT_GROUP_DESCRIPTION:
-			return "description";
+			return DB_FIELD_MEDIA_DESCRIPTION;
 		case MEDIA_CONTENT_GROUP_LONGITUDE:
-			return "longitude";
+			return DB_FIELD_MEDIA_LONGITUDE;
 		case MEDIA_CONTENT_GROUP_LATIITUDE:
-			return "latitude";
+			return DB_FIELD_MEDIA_LATITUDE;
 		case MEDIA_CONTENT_GROUP_ALTITUDE:
-			return "altitude";
+			return DB_FIELD_MEDIA_ALTITUDE;
 		case MEDIA_CONTENT_GROUP_RATING:
-			return "rating";
+			return DB_FIELD_MEDIA_RATING;
 		case MEDIA_CONTENT_GROUP_AUTHOR:
-			return "author";
+			return DB_FIELD_MEDIA_AUTHOR;
 		case MEDIA_CONTENT_GROUP_PROVIDER:
-			return "provider";
+			return DB_FIELD_MEDIA_PROVIDER;
 		case MEDIA_CONTENT_GROUP_CONTENT_NAME:
-			return "content_name";
+			return DB_FIELD_MEDIA_CONTENT_NAME;
 		case MEDIA_CONTENT_GROUP_CATEGORY:
-			return "category";
+			return DB_FIELD_MEDIA_CATEGORY;
 		case MEDIA_CONTENT_GROUP_LOCATION_TAG:
-			return "location_tag";
+			return DB_FIELD_MEDIA_LOCATION_TAG;
 		case MEDIA_CONTENT_GROUP_AGE_RATING:
-			return "age_rating";
+			return DB_FIELD_MEDIA_AGE_RATING;
 		case MEDIA_CONTENT_GROUP_KEYWORD:
-			return "keyword";
+			return DB_FIELD_MEDIA_KEYWORD;
 		default:
 			return NULL;
 	}
@@ -110,35 +110,49 @@ int _media_db_get_group_count(filter_h filter, group_list_e group_type, int *gro
 			break;
 		case MEDIA_GROUP_ALBUM:
 			attr = _content_get_alias_attirbute_handle();
-			snprintf(select_query, sizeof(select_query), SELECT_ALBUM_COUNT);
-			break;
-		case MEDIA_GROUP_ARTIST:
-			snprintf(select_query, sizeof(select_query), SELECT_ARTIST_COUNT);
-			break;
-		case MEDIA_GROUP_GENRE:
-			snprintf(select_query, sizeof(select_query), SELECT_GENRE_COUNT);
-			break;
-		case MEDIA_GROUP_COMPOSER:
-			snprintf(select_query, sizeof(select_query), SELECT_COMPOSER_COUNT);
-			break;
-		case MEDIA_GROUP_YEAR:
-			snprintf(select_query, sizeof(select_query), SELECT_YEAR_COUNT);
+			//snprintf(select_query, sizeof(select_query), SELECT_ALBUM_COUNT);
+			if(!SAFE_STRLCPY(select_query, SELECT_ALBUM_COUNT, sizeof(select_query)))
+			{
+				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+			}
+
 			break;
 		case MEDIA_GROUP_FOLDER:
 			attr = _content_get_alias_attirbute_handle();
-			snprintf(select_query, sizeof(select_query), SELECT_FOLDER_COUNT);
+			//snprintf(select_query, sizeof(select_query), SELECT_FOLDER_COUNT);
+			if(!SAFE_STRLCPY(select_query, SELECT_FOLDER_COUNT, sizeof(select_query)))
+			{
+				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+			}
 			break;
 		case MEDIA_GROUP_PLAYLIST:
 			//attr = _content_get_alias_attirbute_handle();
-			snprintf(select_query, sizeof(select_query), SELECT_PLAYLIST_COUNT);
+			//snprintf(select_query, sizeof(select_query), SELECT_PLAYLIST_COUNT);
+			if(!SAFE_STRLCPY(select_query, SELECT_PLAYLIST_COUNT, sizeof(select_query)))
+			{
+				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+			}
 			break;
 		case MEDIA_GROUP_TAG:
 			//attr = _content_get_alias_attirbute_handle();
-			snprintf(select_query, sizeof(select_query), SELECT_TAG_COUNT);
+			//snprintf(select_query, sizeof(select_query), SELECT_TAG_COUNT);
+			if(!SAFE_STRLCPY(select_query, SELECT_TAG_COUNT, sizeof(select_query)))
+			{
+				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+			}
 			break;
 		case MEDIA_GROUP_BOOKMARK:
 			attr = _content_get_alias_attirbute_handle();
-			snprintf(select_query, sizeof(select_query), SELECT_BOOKMARK_COUNT);
+			//snprintf(select_query, sizeof(select_query), SELECT_BOOKMARK_COUNT);
+			if(!SAFE_STRLCPY(select_query, SELECT_BOOKMARK_COUNT, sizeof(select_query)))
+			{
+				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+			}
 			break;
 	}
 
@@ -312,7 +326,12 @@ int _media_db_get_album(filter_h filter, media_album_cb callback, void *user_dat
 
 	memset(select_query, 0x00, sizeof(select_query));
 
-	snprintf(select_query, sizeof(select_query), SELECT_ALBUM_LIST);
+	//snprintf(select_query, sizeof(select_query), SELECT_ALBUM_LIST);
+	if(!SAFE_STRLCPY(select_query, SELECT_ALBUM_LIST, sizeof(select_query)))
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
 
 	if(filter != NULL)
 	{
@@ -386,7 +405,12 @@ int _media_db_get_folder(filter_h filter, media_folder_cb callback, void *user_d
 
 	memset(select_query, 0x00, sizeof(select_query));
 
-	snprintf(select_query, sizeof(select_query), SELECT_FOLDER_LIST);
+	//snprintf(select_query, sizeof(select_query), SELECT_FOLDER_LIST);
+	if(!SAFE_STRLCPY(select_query, SELECT_FOLDER_LIST, sizeof(select_query)))
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
 
 	if(filter != NULL)
 	{
@@ -462,7 +486,13 @@ int _media_db_get_playlist(filter_h filter, media_playlist_cb callback, void *us
 
 	memset(select_query, 0x00, sizeof(select_query));
 
-	snprintf(select_query, sizeof(select_query), SELECT_PLAYLIST_LIST);
+	//snprintf(select_query, sizeof(select_query), SELECT_PLAYLIST_LIST);
+	if(!SAFE_STRLCPY(select_query, SELECT_PLAYLIST_LIST, sizeof(select_query)))
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
 
 	if(filter != NULL)
 	{
@@ -604,7 +634,12 @@ int _media_db_get_tag(const char *media_id, filter_h filter, media_tag_cb callba
 	{
 		//attr = _content_get_alias_attirbute_handle();
 		attr = _content_get_attirbute_handle();
-		snprintf(select_query, sizeof(select_query), SELECT_TAG_LIST);
+		//snprintf(select_query, sizeof(select_query), SELECT_TAG_LIST);
+		if(!SAFE_STRLCPY(select_query, SELECT_TAG_LIST, sizeof(select_query)))
+		{
+			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
 	}
 	else
 	{
@@ -683,7 +718,12 @@ int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark
 	if(!STRING_VALID(media_id))
 	{
 		attr = _content_get_alias_attirbute_handle();
-		snprintf(select_query, sizeof(select_query), SELECT_BOOKMARK_LIST);
+		//snprintf(select_query, sizeof(select_query), SELECT_BOOKMARK_LIST);
+		if(!SAFE_STRLCPY(select_query, SELECT_BOOKMARK_LIST, sizeof(select_query)))
+		{
+			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
 	}
 	else
 	{
@@ -735,7 +775,7 @@ int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark
 		bookmark->marked_time = (int)sqlite3_column_int(stmt, 2);
 
 		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
-			bookmark->thumbnail = strdup((const char *)sqlite3_column_text(stmt, 3));
+			bookmark->thumbnail_path = strdup((const char *)sqlite3_column_text(stmt, 3));
 
 		if(callback((media_bookmark_h)bookmark, user_data) == false)
 		{
@@ -750,87 +790,6 @@ int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark
 
 	return ret;
 
-}
-
-int _media_db_get_group(filter_h filter, media_group_cb callback, void *user_data, group_list_e group_type)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-	char select_query[DEFAULT_QUERY_SIZE];
-	char *condition_query = NULL;
-	char *option_query = NULL;
-	char *name = NULL;
-	sqlite3_stmt *stmt = NULL;
-	filter_s *_filter = NULL;
-
-	memset(select_query, 0x00, sizeof(select_query));
-
-	if(group_type == MEDIA_GROUP_ARTIST)
-	{
-		snprintf(select_query, sizeof(select_query), SELECT_ARTIST_LIST);
-	}
-	else if(group_type == MEDIA_GROUP_GENRE)
-	{
-		snprintf(select_query, sizeof(select_query), SELECT_GENRE_LIST);
-	}
-	else if(group_type == MEDIA_GROUP_COMPOSER)
-	{
-		snprintf(select_query, sizeof(select_query), SELECT_COMPOSER_LIST);
-	}
-	else if(group_type == MEDIA_GROUP_YEAR)
-	{
-		snprintf(select_query, sizeof(select_query), SELECT_YEAR_LIST);
-	}
-	else
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if(filter != NULL)
-	{
-		_filter = (filter_s*)filter;
-
-		if(_filter->condition)
-		{
-			ret = _media_filter_attribute_generate(_content_get_attirbute_handle(), _filter->condition, _filter->condition_collate_type, &condition_query);
-			media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-		}
-
-		ret = _media_filter_attribute_option_generate(_content_get_attirbute_handle(), filter, &option_query);
-		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-
-		if(STRING_VALID(condition_query))
-		{
-			SAFE_STRLCAT(select_query, QUERY_KEYWORD_SPACE, sizeof(select_query));
-			SAFE_STRLCAT(select_query, QUERY_KEYWORD_AND, sizeof(select_query));
-		}
-	}
-
-	ret = _content_query_prepare(&stmt, select_query, condition_query, option_query);
-	SAFE_FREE(condition_query);
-	SAFE_FREE(option_query);
-	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-
-	while(sqlite3_step(stmt) == SQLITE_ROW)
-	{
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
-		{
-			name = strdup((const char *)sqlite3_column_text(stmt, 0));
-			media_content_debug("group name : [%s]", name);
-		}
-
-		if(callback(name, user_data) == false)
-		{
-			SAFE_FREE(name);
-			break;
-		}
-
-		SAFE_FREE(name);
-	}
-
-	SQLITE3_FINALIZE(stmt);
-
-	return ret;
 }
 
 int _media_db_get_group_item_count_by_id(int group_id, filter_h filter, group_list_e group_type, int *item_count)
@@ -888,7 +847,7 @@ int _media_db_get_group_item_count_by_id(int group_id, filter_h filter, group_li
 			SAFE_STRLCAT(select_query, QUERY_KEYWORD_AND, sizeof(select_query));
 		}
 	}
-
+/*
 	if((group_type == MEDIA_GROUP_PLAYLIST) || (group_type == MEDIA_GROUP_TAG))
 	{
 		strncat(select_query, QUERY_KEYWORD_SPACE, strlen(QUERY_KEYWORD_SPACE));
@@ -903,7 +862,7 @@ int _media_db_get_group_item_count_by_id(int group_id, filter_h filter, group_li
 		SAFE_FREE(condition_query);
 		SAFE_FREE(option_query);
 	}
-
+*/
 	ret = _content_query_prepare(&stmt, select_query, condition_query, option_query);
 	SAFE_FREE(condition_query);
 	SAFE_FREE(option_query);
@@ -935,22 +894,6 @@ int _media_db_get_group_item_count(const char *group_name, filter_h filter, grou
 	if(group_type == MEDIA_GROUP_NONE)
 	{
 		select_query = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_MEDIA);
-	}
-	else if(group_type == MEDIA_GROUP_ARTIST)
-	{
-		select_query = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_ARTIST, group_name);
-	}
-	else if(group_type == MEDIA_GROUP_GENRE)
-	{
-		select_query = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_GENRE, group_name);
-	}
-	else if(group_type == MEDIA_GROUP_COMPOSER)
-	{
-		select_query = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_COMPOSER, group_name);
-	}
-	else if(group_type == MEDIA_GROUP_YEAR)
-	{
-		select_query = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_YEAR, group_name);
 	}
 	else if(group_type == MEDIA_GROUP_FOLDER)
 	{
@@ -1127,22 +1070,6 @@ int _media_db_get_group_item(const char *group_name, filter_h filter, media_info
 	if(group_type == MEDIA_GROUP_NONE)
 	{
 		select_query = sqlite3_mprintf(SELECT_MEDIA_ITEM);
-	}
-	else if(group_type == MEDIA_GROUP_ARTIST)
-	{
-		select_query = sqlite3_mprintf(SELECT_MEDIA_FROM_ARTIST, group_name);
-	}
-	else if(group_type == MEDIA_GROUP_GENRE)
-	{
-		select_query = sqlite3_mprintf(SELECT_MEDIA_FROM_GENRE, group_name);
-	}
-	else if(group_type == MEDIA_GROUP_COMPOSER)
-	{
-		select_query = sqlite3_mprintf(SELECT_MEDIA_FROM_COMPOSER, group_name);
-	}
-	else if(group_type == MEDIA_GROUP_YEAR)
-	{
-		select_query = sqlite3_mprintf(SELECT_MEDIA_FROM_YEAR, group_name);
 	}
 	else if(group_type == MEDIA_GROUP_FOLDER)
 	{

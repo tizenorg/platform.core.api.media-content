@@ -662,32 +662,6 @@ int _media_filter_attribute_add(attribute_h attr, char *user_attr, char *platfor
 	return ret;
 }
 
-int _media_filter_attribute_remove(attribute_h attr, char *user_attr)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-	attribute_s *_attr = (attribute_s*)attr;
-
-	if(attr != NULL)
-	{
-		if(STRING_VALID(user_attr))
-		{
-			g_hash_table_remove(_attr->attr_map, user_attr);
-		}
-		else
-		{
-			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		}
-	}
-	else
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	return ret;
-}
-
 int _media_filter_attribute_destory(attribute_h attr)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;

@@ -32,6 +32,9 @@
 filter_h g_filter = NULL;
 filter_h g_filter_g = NULL;	//filter for group like folder, tag, playlist, album, year ...
 
+GMainLoop *g_loop = NULL;
+static int g_cnt = 0;
+static int g_media_cnt = 0;
 
 #define test_audio_id	"0f999626-6218-450c-a4ad-181a3bab6ebf"
 #define test_video_id	"c1a92494-cc5b-4d74-aa7d-253199234548"
@@ -658,7 +661,7 @@ int test_filter_create(void)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	/* Filter for media */
-	char *condition = "MEDIA_TYPE=3";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
+	char *condition = "MEDIA_TYPE=0";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&g_filter);
 
@@ -1650,11 +1653,11 @@ int test_update_operation()
 				image_meta_h image_handle;
 				media_content_orientation_e orientation;
 
-				ret = media_info_get_image_from_db(media_id, &image_handle);
+				ret = media_info_get_image(media_handle, &image_handle);
 				if(ret < 0) {
-					media_content_error("media_info_get_image_from_db failed: %d", ret);
+					media_content_error("media_info_get_image failed: %d", ret);
 				} else {
-					media_content_debug("media_info_get_image_from_db success");
+					media_content_debug("media_info_get_image success");
 
 					//update image meta
 					orientation = MEDIA_CONTENT_ORIENTATION_ROT_180;
@@ -1671,11 +1674,11 @@ int test_update_operation()
 			} else if(media_type == MEDIA_CONTENT_TYPE_VIDEO) {
 				video_meta_h video_handle;
 
-				ret = media_info_get_video_from_db(media_id, &video_handle);
+				ret = media_info_get_video(media_handle, &video_handle);
 				if(ret < 0) {
-					media_content_error("media_info_get_video_from_db failed: %d", ret);
+					media_content_error("media_info_get_video failed: %d", ret);
 				} else {
-					media_content_debug("media_info_get_video_from_db success");
+					media_content_debug("media_info_get_video success");
 
 					//update video meta
 					video_meta_set_played_count(video_handle,5);
@@ -1692,11 +1695,11 @@ int test_update_operation()
 				}
 			} else if(media_type == MEDIA_CONTENT_TYPE_MUSIC) {//update audio meta
 				audio_meta_h audio_handle = NULL;
-				ret = media_info_get_audio_from_db(media_id, &audio_handle);
+				ret = media_info_get_audio(media_handle, &audio_handle);
 				if(ret < 0) {
-					media_content_error("media_info_get_audio_from_db failed: %d", ret);
+					media_content_error("media_info_get_audio failed: %d", ret);
 				} else {
-					media_content_debug("media_info_get_audio_from_db success");
+					media_content_debug("media_info_get_audio success");
 
 					audio_meta_set_played_count(audio_handle,5);
 					audio_meta_set_played_time(audio_handle,1000);
@@ -1765,7 +1768,7 @@ int test_move(void)
 	media_content_debug("\n============DB Move Test============\n\n");
 
 	if(move_media) {
-		ret = media_info_move_media_to_db(move_media, dst_path);
+		ret = media_info_move_to_db(move_media, dst_path);
 
 		if(ret == MEDIA_CONTENT_ERROR_NONE)
 			media_content_debug("Move is success\n\n");
@@ -1774,6 +1777,88 @@ int test_move(void)
 	} else {
 		media_content_debug("There is no item : %s\n", move_media_id);
 	}
+
+	return ret;
+}
+
+void thumbnail_completed_cb(media_content_error_e error, const char *path, void *user_data)
+{
+	char *thumbnail_path = NULL;
+	g_cnt++;
+
+	printf("=================[%d][%d]\n", g_media_cnt, g_cnt);
+	printf("error_code [%d]\n", error);
+	printf("thumbnail_path [%s]\n", path);
+	if(user_data != NULL)
+	{
+		media_info_h media = (media_info_h)user_data;
+		media_info_get_thumbnail_path(media, &thumbnail_path);
+		printf("thumbnail_path get from media[%s]\n", thumbnail_path);
+		SAFE_FREE(thumbnail_path);
+		media_info_destroy(media);
+	}
+
+	if(g_cnt == g_media_cnt)
+		g_main_loop_quit(g_loop);
+
+	return;
+}
+
+bool thumbnail_create_cb(media_info_h media, void *user_data)
+{
+	char *media_id = NULL;
+	media_info_h dst = NULL;
+
+	if(media == NULL)
+	{
+		media_content_debug("NO Item \n");
+		return true;
+	}
+
+	media_info_get_media_id(media, &media_id);
+	media_content_debug("media_id : [%s] \n", media_id);
+
+	media_info_clone(&dst, media);
+	media_info_create_thumbnail(dst, thumbnail_completed_cb, dst);
+
+	return true;
+}
+
+gboolean create_thumbnail_start(gpointer data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	ret = media_info_foreach_media_from_db(g_filter, thumbnail_create_cb, NULL);
+
+	if(ret == MEDIA_CONTENT_ERROR_NONE)
+		media_content_debug("media_info_foreach_media_from_db is success\n\n");
+	else
+		media_content_error("media_info_foreach_media_from_db is failed\n\n");
+
+	return false;
+}
+
+int test_create_thumbnail(void)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	GSource *source = NULL;
+	GMainContext *context = NULL;
+
+	test_filter_create();
+
+	media_info_get_media_count_from_db(g_filter, &g_media_cnt);
+	media_content_debug("media_count : [%d],\n", g_media_cnt);
+
+	g_loop = g_main_loop_new(NULL, FALSE);
+	context = g_main_loop_get_context(g_loop);
+	source = g_idle_source_new();
+	g_source_set_callback (source, create_thumbnail_start, NULL, NULL);
+	g_source_attach (source, context);
+
+	g_main_loop_run(g_loop);
+	g_main_loop_unref(g_loop);
+
+	test_filter_destroy();
 
 	return ret;
 }
@@ -2021,6 +2106,10 @@ int main(int argc, char *argv[])
 		return ret;
 
 	ret = test_move();
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		return ret;
+
+	ret = test_create_thumbnail();
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		return ret;
 

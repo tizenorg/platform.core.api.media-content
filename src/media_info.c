@@ -16,6 +16,7 @@
 
 
 #include <media_content.h>
+#include <media-thumbnail.h>
 #include <media_info_private.h>
 #include <media_util_private.h>
 #include <media-svc.h>
@@ -24,9 +25,7 @@
 
 
 static int __media_info_get_media_info_from_db(char *path, media_info_h media);
-static void __media_info_image_item_get_detail(sqlite3_stmt* stmt, image_meta_h image);
-static void __media_info_video_item_get_detail(sqlite3_stmt* stmt, video_meta_h video);
-static void __media_info_audio_item_get_detail(sqlite3_stmt* stmt, audio_meta_h audio);
+static void __media_info_thumbnail_completed_cb(int error, const char *path, void *user_data);
 
 static int __media_info_get_media_info_from_db(char *path, media_info_h media)
 {
@@ -66,111 +65,28 @@ static int __media_info_get_media_info_from_db(char *path, media_info_h media)
 	return ret;
 }
 
-static void __media_info_image_item_get_detail(sqlite3_stmt* stmt, image_meta_h image)
+static void __media_info_thumbnail_completed_cb(int error, const char *path, void *user_data)
 {
-	image_meta_s *_image = (image_meta_s*)image;
+	int error_value = MEDIA_CONTENT_ERROR_NONE;
 
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
-		_image->media_id = strdup((const char *)sqlite3_column_text(stmt, 0));
+	media_thumbnail_cb_s *_thumb_cb = (media_thumbnail_cb_s *)user_data;
+	media_info_s *media = NULL;
 
-	_image->width = sqlite3_column_int(stmt, 1);
+	if(_thumb_cb != NULL)
+	{
+		media = _thumb_cb->handle;
+		if((media != NULL) && STRING_VALID(path))
+		{
+			SAFE_FREE(media->thumbnail_path);
+			media->thumbnail_path = strdup(path);
+		}
 
-	_image->height = sqlite3_column_int(stmt, 2);
+		media_content_debug("error [%d], thumbnail_path [%s]", error, path);
+		error_value = _content_error_capi(MEDIA_THUMBNAIL_TYPE, error);
+		_thumb_cb->thumbnail_completed_cb(error_value, path, _thumb_cb->user_data);
+	}
 
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
-		_image->date_taken = strdup((const char *)sqlite3_column_text(stmt, 3));
-
-	_image->orientation = sqlite3_column_int(stmt, 4);
-
-	return;
-}
-
-static void __media_info_video_item_get_detail(sqlite3_stmt* stmt, video_meta_h video)
-{
-	video_meta_s *_video = (video_meta_s*)video;
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
-		_video->media_id = strdup((const char *)sqlite3_column_text(stmt, 0));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-		_video->title = strdup((const char *)sqlite3_column_text(stmt, 1));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
-		_video->album = strdup((const char *)sqlite3_column_text(stmt, 2));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
-		_video->artist = strdup((const char *)sqlite3_column_text(stmt, 3));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 4)))
-		_video->genre = strdup((const char *)sqlite3_column_text(stmt, 4));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 5)))
-		_video->composer = strdup((const char *)sqlite3_column_text(stmt, 5));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 6)))
-		_video->year = strdup((const char *)sqlite3_column_text(stmt, 6));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 7)))
-		_video->recorded_date = strdup((const char *)sqlite3_column_text(stmt, 7));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 8)))
-		_video->copyright = strdup((const char *)sqlite3_column_text(stmt, 8));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 9)))
-		_video->track_num = strdup((const char *)sqlite3_column_text(stmt, 9));
-
-	_video->bitrate = sqlite3_column_int(stmt, 10);
-	_video->duration = sqlite3_column_int(stmt, 11);
-	_video->played_count = sqlite3_column_int(stmt, 12);
-	_video->played_time = sqlite3_column_int(stmt, 13);
-	_video->played_position = sqlite3_column_int(stmt, 14);
-	_video->width = sqlite3_column_int(stmt, 15);
-	_video->height = sqlite3_column_int(stmt, 16);
-
-	return;
-}
-
-static void __media_info_audio_item_get_detail(sqlite3_stmt* stmt, audio_meta_h audio)
-{
-	audio_meta_s *_audio = (audio_meta_s*)audio;
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
-		_audio->media_id = strdup((const char *)sqlite3_column_text(stmt, 0));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-		_audio->title = strdup((const char *)sqlite3_column_text(stmt, 1));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
-		_audio->album = strdup((const char *)sqlite3_column_text(stmt, 2));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
-		_audio->artist = strdup((const char *)sqlite3_column_text(stmt, 3));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 4)))
-		_audio->genre = strdup((const char *)sqlite3_column_text(stmt, 4));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 5)))
-		_audio->composer = strdup((const char *)sqlite3_column_text(stmt, 5));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 6)))
-		_audio->year = strdup((const char *)sqlite3_column_text(stmt, 6));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 7)))
-		_audio->recorded_date = strdup((const char *)sqlite3_column_text(stmt, 7));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 8)))
-		_audio->copyright = strdup((const char *)sqlite3_column_text(stmt, 8));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 9)))
-		_audio->track_num = strdup((const char *)sqlite3_column_text(stmt, 9));
-
-	_audio->bitrate = sqlite3_column_int(stmt, 10);
-	_audio->duration = sqlite3_column_int(stmt, 11);
-	_audio->played_count = sqlite3_column_int(stmt, 12);
-	_audio->played_time = sqlite3_column_int(stmt, 13);
-	_audio->played_position = sqlite3_column_int(stmt, 14);
-	_audio->samplerate = sqlite3_column_int(stmt, 15);
-	_audio->channel = sqlite3_column_int(stmt, 16);
+	SAFE_FREE(_thumb_cb);
 
 	return;
 }
@@ -203,7 +119,7 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 	_media->modified_time = (int)sqlite3_column_int(stmt, 7);
 
 	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 8)))
-		_media->thumbnail = strdup((const char *)sqlite3_column_text(stmt, 8));
+		_media->thumbnail_path= strdup((const char *)sqlite3_column_text(stmt, 8));
 
 	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 9)))
 		_media->description = strdup((const char *)sqlite3_column_text(stmt, 9));
@@ -344,22 +260,6 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 	}
 }
 
-int _content_get_storage_type(const char *full_path)
-{
-	if(STRING_VALID(full_path)) {
-		if(strncmp(full_path, MEDIA_CONTENT_PATH_PHONE, strlen(MEDIA_CONTENT_PATH_PHONE)) == 0)
-		{
-			return MEDIA_CONTENT_STORAGE_INTERNAL;
-		}
-		else if(strncmp(full_path, MEDIA_CONTENT_PATH_MMC, strlen(MEDIA_CONTENT_PATH_MMC)) == 0)
-		{
-			return MEDIA_CONTENT_STORAGE_EXTERNAL;
-		}
-	}
-
-	return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-}
-
 int media_info_insert_to_db (const char *path, media_info_h *info)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -438,7 +338,7 @@ int media_info_destroy(media_info_h media)
 		SAFE_FREE(_media->file_path);
 		SAFE_FREE(_media->display_name);
 		SAFE_FREE(_media->mime_type);
-		SAFE_FREE(_media->thumbnail);
+		SAFE_FREE(_media->thumbnail_path);
 		SAFE_FREE(_media->description);
 		SAFE_FREE(_media->author);
 		SAFE_FREE(_media->provider);
@@ -550,10 +450,10 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if(STRING_VALID(_src->thumbnail))
+		if(STRING_VALID(_src->thumbnail_path))
 		{
-			_dst->thumbnail = strdup(_src->thumbnail);
-			if(_dst->thumbnail == NULL)
+			_dst->thumbnail_path = strdup(_src->thumbnail_path);
+			if(_dst->thumbnail_path == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -1254,126 +1154,6 @@ int media_info_get_audio(media_info_h media, audio_meta_h *audio)
 	return ret;
 }
 
-int media_info_get_image_from_db(const char *media_id, image_meta_h *image)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-	char select_query[DEFAULT_QUERY_SIZE];
-	sqlite3_stmt *stmt = NULL;
-
-	media_content_debug_func();
-
-	if(!STRING_VALID(media_id))
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	memset(select_query,0x00, sizeof(select_query));
-
-	snprintf(select_query, sizeof(select_query), SELECT_IMAGE_FROM_MEDIA, media_id);
-
-	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
-	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-
-	image_meta_s *_image = (image_meta_s*)calloc(1, sizeof(image_meta_s));
-	if(_image == NULL)
-	{
-		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-	}
-
-	while(sqlite3_step(stmt) == SQLITE_ROW)
-	{
-		__media_info_image_item_get_detail(stmt, (image_meta_h)_image);
-	}
-
-	*image = (image_meta_h)_image;
-
-	SQLITE3_FINALIZE(stmt);
-
-	return ret;
-}
-
-int media_info_get_video_from_db(const char *media_id, video_meta_h *video)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-	char select_query[DEFAULT_QUERY_SIZE];
-	sqlite3_stmt *stmt = NULL;
-
-	media_content_debug_func();
-
-	if(!STRING_VALID(media_id))
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	memset(select_query,0x00, sizeof(select_query));
-
-	snprintf(select_query, sizeof(select_query), SELECT_VIDEO_FROM_MEDIA, media_id);
-
-	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
-	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-
-	video_meta_s *_video = (video_meta_s*)calloc(1, sizeof(video_meta_s));
-	if(_video == NULL)
-	{
-		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-	}
-
-	while(sqlite3_step(stmt) == SQLITE_ROW)
-	{
-		__media_info_video_item_get_detail(stmt, (video_meta_h)_video);
-	}
-
-	*video = (video_meta_h)_video;
-
-	SQLITE3_FINALIZE(stmt);
-
-	return ret;
-}
-
-int media_info_get_audio_from_db(const char *media_id, audio_meta_h *audio)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-	char select_query[DEFAULT_QUERY_SIZE];
-	sqlite3_stmt *stmt = NULL;
-
-	media_content_debug_func();
-
-	if(!STRING_VALID(media_id))
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	memset(select_query,0x00, sizeof(select_query));
-
-	snprintf(select_query, sizeof(select_query), SELECT_AUDIO_FROM_MEDIA, media_id);
-
-	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
-	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-
-	audio_meta_s *_audio = (audio_meta_s*)calloc(1, sizeof(audio_meta_s));
-	if(_audio == NULL)
-	{
-		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-	}
-
-	while(sqlite3_step(stmt) == SQLITE_ROW)
-	{
-		__media_info_audio_item_get_detail(stmt, (audio_meta_h)_audio);
-	}
-
-	*audio = (audio_meta_h)_audio;
-
-	SQLITE3_FINALIZE(stmt);
-
-	return ret;
-}
-
 int media_info_get_media_id(media_info_h media, char **media_id)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -1578,9 +1358,9 @@ int media_info_get_thumbnail_path(media_info_h media, char **path)
 	media_info_s *_media = (media_info_s*)media;
 	if(_media && path)
 	{
-		if(STRING_VALID(_media->thumbnail))
+		if(STRING_VALID(_media->thumbnail_path))
 		{
-			*path = strdup(_media->thumbnail);
+			*path = strdup(_media->thumbnail_path);
 			if(*path == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -2494,6 +2274,30 @@ int media_info_refresh_metadata_to_db(const char *media_id)
 	return ret;
 }
 
+int media_info_move_to_db(media_info_h media, const char* dst_path)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	int src_storage_type = 0;
+	int dst_storage_type = 0;
+
+	if(media == NULL || !STRING_VALID(dst_path))
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	media_info_s *_media = (media_info_s*)media;
+
+	ret = _media_util_get_store_type_by_path(_media->file_path, &src_storage_type);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+	ret = _media_util_get_store_type_by_path(dst_path, &dst_storage_type);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = media_svc_move_item(_content_get_db_handle(), src_storage_type, _media->file_path, dst_storage_type, dst_path);
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+}
+
 int media_info_move_media_to_db(media_info_h media, const char* dst_path)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -2518,3 +2322,26 @@ int media_info_move_media_to_db(media_info_h media, const char* dst_path)
 	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
+int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb callback, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if(_media != NULL && STRING_VALID(_media->media_id) && STRING_VALID(_media->file_path))
+	{
+		media_thumbnail_cb_s *_thumb_cb = (media_thumbnail_cb_s*)calloc(1, sizeof(media_thumbnail_cb_s));
+		_thumb_cb->handle = _media;
+		_thumb_cb->user_data = user_data;
+		_thumb_cb->thumbnail_completed_cb = callback;
+
+		ret = thumbnail_request_from_db_async(_media->file_path, (ThumbFunc)__media_info_thumbnail_completed_cb, (void *)_thumb_cb);
+		_content_error_capi(MEDIA_THUMBNAIL_TYPE, ret);
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}

@@ -21,56 +21,7 @@
 
 static char *g_src_path = NULL;
 
-static void __media_folder_get_detail(sqlite3_stmt *stmt, media_folder_h folder);
-static int __media_folder_get_folder_info_from_db(const char *path, media_folder_h folder);
 static char *__media_folder_get_update_folder_sql(media_folder_h folder);
-
-static void __media_folder_get_detail(sqlite3_stmt* stmt, media_folder_h folder)
-{
-	media_folder_s *_folder = (media_folder_s*)folder;
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
-		_folder->folder_id = strdup((const char *)sqlite3_column_text(stmt, 0));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-		_folder->path = strdup((const char *)sqlite3_column_text(stmt, 1));
-
-	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
-		_folder->name = strdup((const char *)sqlite3_column_text(stmt, 2));
-
-	_folder->storage_type = (int)sqlite3_column_int(stmt,3);
-
-	_folder->modified_time = (int)sqlite3_column_int(stmt,4);
-}
-
-static int __media_folder_get_folder_info_from_db(const char *path, media_folder_h folder)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-	sqlite3_stmt *stmt = NULL;
-	char *select_query = NULL;
-	media_folder_s *_folder = (media_folder_s*)folder;
-
-	if(_folder == NULL)
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	select_query = sqlite3_mprintf(SELECT_FOLDER_BY_PATH, path);
-
-	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
-	sqlite3_free(select_query);
-	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-
-	while(sqlite3_step(stmt) == SQLITE_ROW)
-	{
-		__media_folder_get_detail(stmt, (media_folder_h)_folder);
-	}
-
-	SQLITE3_FINALIZE(stmt);
-
-	return ret;
-}
 
 static char *__media_folder_get_update_folder_sql(media_folder_h folder)
 {
@@ -83,41 +34,6 @@ static char *__media_folder_get_update_folder_sql(media_folder_h folder)
 											DB_FIELD_FOLDER_MODIFIED_TIME, _folder->modified_time);
 
 	return return_sql;
-}
-
-int media_folder_insert_to_db(const char *path, media_folder_h *folder)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-	int storage_type = -1;
-
-	if(!STRING_VALID(path))
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	media_folder_s *_folder = (media_folder_s*)calloc(1, sizeof(media_folder_s));
-
-	_folder->path = strdup(path);
-	_media_util_get_store_type_by_path(path, &storage_type);
-	_folder->storage_type = storage_type;
-
-	if(_folder->path == NULL)
-	{
-		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-	}
-
-	/* New media svc api */
-	ret = media_svc_insert_folder(_content_get_db_handle(), _folder->storage_type, _folder->path);
-
-	if(ret == MEDIA_INFO_ERROR_NONE)
-	{
-		ret = __media_folder_get_folder_info_from_db(_folder->path, (media_folder_h)_folder);
-		*folder = (media_folder_h)_folder;
-	}
-
-	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
 int media_folder_delete_from_db(const char *folder_id)

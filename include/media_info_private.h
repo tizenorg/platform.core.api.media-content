@@ -38,13 +38,11 @@ extern "C" {
 
 #define LOG_TAG "TIZEN_N_MEDIACONTENT"
 
+#define SAFE_STRLCPY(dst, src, n)	((g_strlcpy(dst, src, n) < n) ? TRUE : FALSE)
 #define SAFE_STRLCAT(dst, src, n)	g_strlcat(dst, src, n);
 #define SAFE_FREE(src)		{if(src) {free(src); src = NULL;}}
 #define STRING_VALID(str)		((str != NULL && strlen(str) > 0) ? TRUE : FALSE)
 #define SQLITE3_FINALIZE(x)	{if(x != NULL) {sqlite3_finalize(x);}}
-
-#define MEDIA_CONTENT_TYPE 5
-#define MEDIA_REGISTER_TYPE 6
 
 #define MEDIA_CONTENT_PATH_PHONE 	"/opt/media" 	/**< File path prefix of files stored in phone */
 #define MEDIA_CONTENT_PATH_MMC 		"/mnt/mmc"		/**< File path prefix of files stored in mmc card */
@@ -55,6 +53,12 @@ extern "C" {
 #define MAX_KEYWORD_SIZE 2048
 #define COLLATE_STR_SIZE 32
 #define MEDIA_CONTENT_UUID_SIZE	36
+
+typedef enum {
+	MEDIA_CONTENT_TYPE = 0,
+	MEDIA_THUMBNAIL_TYPE,
+	MEDIA_REGISTER_TYPE
+} media_info_error_type_e;
 
 typedef enum {
 	Table_Media,
@@ -80,10 +84,6 @@ typedef enum {
 typedef enum {
 	MEDIA_GROUP_NONE,
 	MEDIA_GROUP_ALBUM,
-	MEDIA_GROUP_ARTIST,
-	MEDIA_GROUP_GENRE,
-	MEDIA_GROUP_COMPOSER,
-	MEDIA_GROUP_YEAR,
 	MEDIA_GROUP_FOLDER,
 	MEDIA_GROUP_PLAYLIST,
 	MEDIA_GROUP_TAG,
@@ -123,7 +123,7 @@ typedef struct
 	int bookmark_id;
 	char *media_id;
 	time_t marked_time;
-	char *thumbnail;
+	char *thumbnail_path;
 }media_bookmark_s;
 
 typedef struct
@@ -201,7 +201,7 @@ typedef struct
 	unsigned long long size;
 	time_t added_time;
 	time_t modified_time;
-	char *thumbnail;
+	char *thumbnail_path;
 	char *description;
 	double longitude;
 	double latitude;
@@ -262,6 +262,13 @@ typedef struct _attribute_map_s
 {
 	GHashTable *attr_map;
 }attribute_s;
+
+typedef struct
+{
+	media_info_s *handle;
+	void *user_data;
+	media_thumbnail_completed_cb thumbnail_completed_cb;
+}media_thumbnail_cb_s;
 
 typedef struct attribute_s *attribute_h;
 
@@ -426,12 +433,10 @@ typedef struct attribute_s *attribute_h;
 #define SELECT_MEDIA_COUNT_FROM_GROUP			"SELECT COUNT(*) FROM ("SELECT_MEDIA_FROM_GROUP		//to apply limit condition.
 #define SELECT_MEDIA_COUNT_FROM_GROUP_NULL		"SELECT COUNT(*) FROM ("SELECT_MEDIA_FROM_GROUP_NULL	//to apply limit condition.
 #define SELECT_MEDIA_COUNT_FROM_FOLDER			"SELECT COUNT(*) FROM "DB_TABLE_MEDIA" WHERE validity=1 AND folder_uuid='%q'"
-#define SELECT_MEDIA_COUNT_FROM_TAG				"SELECT COUNT(*) FROM "DB_TABLE_TAG_MAP" WHERE tag_id=%d AND media_uuid IN \
-													(SELECT media_uuid FROM "DB_TABLE_MEDIA" WHERE validity=1"
-#define SELECT_MEDIA_COUNT_FROM_PLAYLIST		"SELECT COUNT(*) FROM "DB_TABLE_PLAYLIST_MAP" WHERE playlist_id=%d AND media_uuid IN \
-													(SELECT media_uuid FROM "DB_TABLE_MEDIA" WHERE validity=1"
-//#define SELECT_MEDIA_COUNT_FROM_TAG				"SELECT COUNT(*) FROM "DB_VIEW_TAG" WHERE (tag_id=%d AND media_count>0) "
-//#define SELECT_MEDIA_COUNT_FROM_PLAYLIST		"SELECT COUNT(*) FROM "DB_VIEW_PLAYLIST" WHERE (playlist_id=%d and media_count>0) "
+//#define SELECT_MEDIA_COUNT_FROM_TAG				"SELECT COUNT(*) FROM "DB_TABLE_TAG_MAP" WHERE tag_id=%d AND media_uuid IN 													(SELECT media_uuid FROM "DB_TABLE_MEDIA" WHERE validity=1"
+//#define SELECT_MEDIA_COUNT_FROM_PLAYLIST		"SELECT COUNT(*) FROM "DB_TABLE_PLAYLIST_MAP" WHERE playlist_id=%d AND media_uuid IN  													(SELECT media_uuid FROM "DB_TABLE_MEDIA" WHERE validity=1"
+#define SELECT_MEDIA_COUNT_FROM_TAG				"SELECT COUNT(*) FROM "DB_VIEW_TAG" WHERE (tag_id=%d AND media_count>0) "
+#define SELECT_MEDIA_COUNT_FROM_PLAYLIST		"SELECT COUNT(*) FROM "DB_VIEW_PLAYLIST" WHERE (playlist_id=%d and media_count>0) "
 
 /* Get Group Info by Group ID*/
 #define SELECT_ALBUM_FROM_ALBUM		"SELECT * FROM "DB_TABLE_ALBUM" WHERE album_id=%d"
@@ -522,11 +527,6 @@ int _content_error_capi(int type, int cotent_error);
 /**
  *@internal
  */
-int _content_get_storage_type(const char *full_path);
-
-/**
- *@internal
- */
 int _content_query_sql(char *query_str);
 
 /**
@@ -597,11 +597,6 @@ int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark
 /**
  *@internal
  */
-int _media_db_get_group(filter_h filter, media_group_cb callback, void *user_data, group_list_e group_type);
-
-/**
- *@internal
- */
 int _media_db_get_group_item_count_by_id(int group_id, filter_h filter, group_list_e group_type, int *item_count);
 
 /**
@@ -658,21 +653,6 @@ int _media_filter_attribute_create(attribute_h *attr);
  *
  */
 int _media_filter_attribute_add(attribute_h atrr, char *user_attr, char *platform_attr);
-
-/**
- * @brief Remove the attributes from the handle.
- * @details This function remove the attribute from handle.
- * @param[in] filter The handle to media filter attribute
- * @param[in] user_attr The user attribute
- * @param[in] platform_attr The platform attribute
- * @return 0 on success, otherwise a negative error value.
- * @retval #MEDIA_CONTENT_ERROR_NONE Successful
- * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
- * @see media_filter_attribute_remove()
- *
- */
-int _media_filter_attribute_remove(attribute_h atrr, char *user_attr);
 
 /**
  * @brief Destroys a media filter attribute handle.
