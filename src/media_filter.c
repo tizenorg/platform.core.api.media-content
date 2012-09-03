@@ -950,7 +950,7 @@ int media_filter_set_offset(filter_h filter, int offset, int count)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	filter_s *_filter = (filter_s*)filter;
 
-	if((_filter != NULL) && (offset >= 0) && (count > 0))
+	if(_filter != NULL)
 	{
 		_filter->offset = offset;
 		_filter->count = count;
