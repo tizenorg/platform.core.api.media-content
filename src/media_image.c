@@ -32,6 +32,7 @@ int image_meta_destroy(image_meta_h image)
 	{
 		SAFE_FREE(_image->media_id);
 		SAFE_FREE(_image->date_taken);
+		SAFE_FREE(_image->burst_id);
 		SAFE_FREE(_image);
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -70,7 +71,6 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src)
 				image_meta_destroy((image_meta_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
-			_dst->media_id = strdup(_src->media_id);
 		}
 
 		if(STRING_VALID(_src->date_taken))
@@ -82,7 +82,17 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src)
 				image_meta_destroy((image_meta_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
-			_dst->date_taken = strdup(_src->date_taken);
+		}
+
+		if(STRING_VALID(_src->burst_id))
+		{
+			_dst->burst_id = strdup(_src->burst_id);
+			if(_dst->burst_id == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				image_meta_destroy((image_meta_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
 		}
 
 		_dst->width = _src->width;
@@ -107,7 +117,7 @@ int image_meta_get_media_id(image_meta_h image, char **media_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	image_meta_s *_image = (image_meta_s*)image;
 
-	if(_image)
+	if(_image && media_id)
 	{
 		if(STRING_VALID(_image->media_id))
 		{
@@ -177,7 +187,8 @@ int image_meta_get_orientation(image_meta_h image, media_content_orientation_e* 
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	image_meta_s *_image = (image_meta_s*)image;
-	if(_image)
+
+	if(_image && orientation)
 	{
 		*orientation = _image->orientation;
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -196,7 +207,7 @@ int image_meta_get_date_taken(image_meta_h image, char **date_taken)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	image_meta_s *_image = (image_meta_s*)image;
 
-	if(_image)
+	if(_image && date_taken)
 	{
 		if(STRING_VALID(_image->date_taken))
 		{
@@ -224,6 +235,59 @@ int image_meta_get_date_taken(image_meta_h image, char **date_taken)
 	return ret;
 }
 
+int image_meta_get_burst_id(image_meta_h image, char **burst_id)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	image_meta_s *_image = (image_meta_s*)image;
+
+	if(_image && burst_id)
+	{
+		if(STRING_VALID(_image->burst_id))
+		{
+			*burst_id = strdup(_image->burst_id);
+			if(*burst_id == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*burst_id = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int image_meta_is_burst_shot(image_meta_h image, bool *is_burst_shot)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	image_meta_s *_image = (image_meta_s*)image;
+
+	if(_image && is_burst_shot)
+	{
+		if(STRING_VALID(_image->burst_id))
+			*is_burst_shot = true;
+		else
+			*is_burst_shot = false;
+
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
 int image_meta_set_orientation(image_meta_h image, media_content_orientation_e orientation)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;

@@ -73,6 +73,7 @@ int media_content_disconnect(void);
  * @param[in] path The file path
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @pre This function requires opened connection to content service by media_content_connect().
  *
  */
 int media_content_scan_file(const char *path);
@@ -85,6 +86,8 @@ int media_content_scan_file(const char *path);
  * The sub folders are also scanned, if there are sub folder in that folder. \n
  * If you want that the any folders are not scanned, you have to create a blank file ".scan_ignore" in that folder.
  * @param[in] path The folder path
+ * @param[in] is_recursive /@a true if scan recursively subdirectories,
+ *                    /@a false if scan only current directory,
  * @param[in] callback The callback to invoke when the scanning is finished
  * @param[in] user_data The user data to be passed to the callback function
  * @return 0 on success, otherwise a negative error value.
@@ -92,8 +95,33 @@ int media_content_scan_file(const char *path);
  * @see media_scan_completed_cb()
  *
  */
-int media_content_scan_folder(const char *path, media_scan_completed_cb callback, void *user_data);
+int media_content_scan_folder(const char *path, bool is_recursive, media_scan_completed_cb callback, void *user_data);
 
+/**
+ * @brief Subscribe notifications of media db change.
+ * @details This function subscribes notifications of media db change, which are published by media server or other apps.
+ * #media_content_db_update_cb() function will be called when notification of media db change is subscribed.
+ * @param[in] callback The callback to invoke when the scanning is finished
+ * @param[in] user_data The user data to be passed to the callback function
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @see media_content_db_update_cb()
+ * @see media_content_unset_db_updated_cb()
+ *
+ */
+int media_content_set_db_updated_cb(media_content_db_update_cb callback, void *user_data);
+
+/**
+
+ * @brief Unsubscribe notifications of media db change.
+ * @details This function unsubscribes notifications of media db change, which are published by media server or other apps.
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @pre media_content_set_db_updated_cb()
+ * @see media_content_set_db_updated_cb()
+ *
+ */
+int media_content_unset_db_updated_cb(void);
 
 /**
  * @}

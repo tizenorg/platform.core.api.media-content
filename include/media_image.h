@@ -117,6 +117,34 @@ int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *
 int image_meta_get_date_taken(image_meta_h image, char **date_taken);
 
 /**
+ * @brief Gets the burst shot id.
+ *
+ * @remarks @a burst id must be released with free() by you.
+ *
+ * @param[in] media The handle toimage metadata
+ * @param[out] burst_id The id of burst shot. if burst_id is NULL, this is not burst shot.
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ */
+int image_meta_get_burst_id(image_meta_h image, char **burst_id);
+
+/**
+ * @brief Checks whether the media is burst shot image.
+ *
+ * @param[in] media The handle to image metadata
+ * @param[out] is_burst_shot /@a true if the burst shot image,
+ *                    /@a false if not burst shot image.
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ */
+int image_meta_is_burst_shot(image_meta_h image, bool *is_burst_shot);
+
+/**
  * @brief Sets the image orientation.
  *
  * @param [in] image The handle to image metadata

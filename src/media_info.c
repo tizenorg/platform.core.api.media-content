@@ -26,6 +26,7 @@ static int __media_info_get_media_info_from_db(char *path, media_info_h media);
 static void __media_info_insert_completed_cb(media_request_result_s *result, void *user_data);
 static void __media_info_thumbnail_completed_cb(int error, const char *path, void *user_data);
 static bool __media_info_delete_batch_cb(media_info_h media, void *user_data);
+static int __media_info_insert_batch(media_batch_insert_e insert_type, const char **path_array, unsigned int array_length, media_insert_completed_cb completed_cb, void *user_data);
 
 static int __media_info_get_media_info_from_db(char *path, media_info_h media)
 {
@@ -60,6 +61,39 @@ static int __media_info_get_media_info_from_db(char *path, media_info_h media)
 		media_content_debug("New Media ID: %s", _media->media_id);
 	}
 */
+	SQLITE3_FINALIZE(stmt);
+
+	return ret;
+}
+
+static int __media_info_get_media_path_by_id_from_db(const char *media_id, char **path)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	sqlite3_stmt *stmt = NULL;
+	char *select_query = NULL;
+
+	if(!STRING_VALID(media_id))
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	select_query = sqlite3_mprintf(SELECT_MEDIA_PATH_BY_ID, media_id);
+
+	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
+	sqlite3_free(select_query);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	if(sqlite3_step(stmt) == SQLITE_ROW)
+	{
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
+			*path = strdup((const char *)sqlite3_column_text(stmt, 0));
+	} else {
+		media_content_debug("There's no media with this ID : %s", media_id);
+		*path = NULL;
+		ret = MEDIA_CONTENT_ERROR_DB_FAILED;
+	}
+
 	SQLITE3_FINALIZE(stmt);
 
 	return ret;
@@ -225,6 +259,9 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 				_media->image_meta->date_taken = strdup((const char *)sqlite3_column_text(stmt, 26));
 		
 			_media->image_meta->orientation = sqlite3_column_int(stmt, 27);
+
+			if(STRING_VALID((const char *)sqlite3_column_text(stmt, 44)))
+				_media->image_meta->burst_id = strdup((const char *)sqlite3_column_text(stmt, 44));
 		}
 
 	} else if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) {
@@ -331,6 +368,7 @@ int media_info_insert_to_db (const char *path, media_info_h *info)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
+#if 0
 	media_content_debug("Register: %s", path);
 	ret = media_file_register(path);
 	if(ret != MS_MEDIA_ERR_NONE)
@@ -338,6 +376,46 @@ int media_info_insert_to_db (const char *path, media_info_h *info)
 		media_content_error("media_file_register failed");
 		return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 	}
+
+#else
+	ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
+	if (ret == MEDIA_INFO_ERROR_DATABASE_NO_RECORD) {
+		media_content_debug("media_svc_check_item_exist_by_path : no record : %s", path);
+
+		media_svc_media_type_e media_type;
+		media_svc_storage_type_e storage_type;
+		char mime_type[255] = {0, };
+
+		ret = media_svc_get_storage_type(path, &storage_type);
+		if (ret < 0) {
+			media_content_error("media_svc_get_storage_type failed : %d (%s)", ret, path);
+			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		}
+
+		ret = media_svc_get_mime_type(path, mime_type);
+		if (ret < 0) {
+			media_content_error("media_svc_get_mime_type failed : %d (%s)", ret, path);
+			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		}
+
+		ret = media_svc_get_media_type(path, mime_type, &media_type);
+		if (ret < 0) {
+			media_content_error("media_svc_get_media_type failed : %d (%s)", ret, path);
+			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		}
+
+		media_content_debug("media_svc_insert_item_immediately: %s", path);
+		ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path, mime_type, media_type);
+
+		if (ret < 0) {
+			media_content_error("media_svc_insert_item_immediately failed : %d (%s)", ret, path);
+			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		}
+	} else if (ret != MEDIA_INFO_ERROR_NONE) {
+		media_content_error("media_svc_check_item_exist_by_path failed : %d (%s)", ret, path);
+		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+	}
+#endif
 
 	media_info_s *_media = (media_info_s*)calloc(1, sizeof(media_info_s));
 	if(_media == NULL)
@@ -357,37 +435,22 @@ int media_info_insert_to_db (const char *path, media_info_h *info)
 	ret = __media_info_get_media_info_from_db(_media->file_path, (media_info_h)_media);
 
 	*info = (media_info_h)_media;
-
 	return ret;
 }
 
-int media_info_insert_batch_to_db(
-					const char **path_array,
+static int __media_info_insert_batch(media_batch_insert_e insert_type, const char **path_array,
 					unsigned int array_length,
 					media_insert_completed_cb completed_cb,
 					void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
-	if (path_array == NULL)
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if (array_length <= 0)
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
 	FILE *fp = NULL;
 	char list_path[255] = {0,};
-	int i;
+	int idx = 0;
 	int nwrites = 0;
 
-	for (i = 0; i < BATCH_REQUEST_MAX; i++) {
-		snprintf(list_path, sizeof(list_path), "%s/request-%ld-%d", MEDIA_CONTENT_INSERT_FILES_PATH, media_content_gettid(), i);
+	for (idx = 0; idx < BATCH_REQUEST_MAX; idx++) {
+		snprintf(list_path, sizeof(list_path), "%s/request-%ld-%d", MEDIA_CONTENT_INSERT_FILES_PATH, media_content_gettid(), idx);
 
 		if (g_file_test(list_path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
 			memset(list_path, 0x00, sizeof(list_path));
@@ -398,7 +461,7 @@ int media_info_insert_batch_to_db(
 		}
 	}
 
-	if (i == BATCH_REQUEST_MAX) {
+	if (idx == BATCH_REQUEST_MAX) {
 		media_content_error("Too many batch request for one thread");
 		return MEDIA_CONTENT_ERROR_DB_BUSY;
 	}
@@ -409,11 +472,11 @@ int media_info_insert_batch_to_db(
 		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 	}
 
-	for (i = 0; i < array_length; i++) {
-		if (STRING_VALID(path_array[i])) {
-			int size = strlen(path_array[i]);
+	for (idx = 0; idx < array_length; idx++) {
+		if (STRING_VALID(path_array[idx])) {
+			int size = strlen(path_array[idx]);
 
-			nwrites = fwrite(path_array[i], 1, size, fp);
+			nwrites = fwrite(path_array[idx], 1, size, fp);
 			if (nwrites != size) {
 				media_content_error("failed to write thumbnail : %s", strerror(errno));
 				fclose(fp);
@@ -433,7 +496,7 @@ int media_info_insert_batch_to_db(
 				return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 			}
 		} else {
-			media_content_error("path[%d] is invalid string", i);
+			media_content_error("path[%d] is invalid string", idx);
 		}
 	}
 
@@ -444,9 +507,14 @@ int media_info_insert_batch_to_db(
 	_cb_data->user_data = user_data;
 	_cb_data->insert_list_path = strdup(list_path);
 
-	ret = media_files_register(list_path, __media_info_insert_completed_cb, _cb_data);
+	if(insert_type == MEDIA_BATCH_INSERT_NORMAL)
+		ret = media_files_register(list_path, __media_info_insert_completed_cb, _cb_data);
+	else if(insert_type == MEDIA_BATCH_INSERT_BURSTSHOT)
+		ret = media_burstshot_register(list_path, __media_info_insert_completed_cb, _cb_data);
+	else
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 
-	if (ret < 0) {
+	if (ret != MEDIA_CONTENT_ERROR_NONE) {
 		media_content_error("media_files_register failed : %d", ret);
 		if (unlink(list_path) < 0) {
 			media_content_error("failed to delete : %s", strerror(errno));
@@ -454,67 +522,50 @@ int media_info_insert_batch_to_db(
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 	}
 
-#if 0
-	ret = media_svc_insert_item_begin(_content_get_db_handle(), array_length);
-	if (ret < 0)
-	{
-		media_content_error("media_svc_insert_item_begin failed : %d", ret);
-		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-	}
-
-	char *path = NULL;
-	media_svc_media_type_e media_type;
-	media_svc_storage_type_e storage_type;
-	char mime_type[255];
-
-	for (i = 0; i < array_length; i++) {
-		memset(mime_type, 0x00, sizeof(mime_type));
-		path = (char*)path_array[i];
-
-		ret = media_svc_get_storage_type(path, &storage_type);
-		if (ret < 0) {
-			media_content_error("media_svc_get_storage_type failed : %d (%s)", ret, path);
-			continue;
-		}
-
-		ret = media_svc_get_mime_type(path, mime_type);
-		if (ret < 0) {
-			media_content_error("media_svc_get_mime_type failed : %d (%s)", ret, path);
-			continue;
-		}
-
-		ret = media_svc_get_media_type(path, mime_type, &media_type);
-		if (ret < 0) {
-			media_content_error("media_svc_get_media_type failed : %d (%s)", ret, path);
-			continue;
-		}
-
-		ret = media_svc_insert_item_bulk(_content_get_db_handle(), storage_type, path, mime_type, media_type);
-		if (ret < 0) {
-			media_content_error("media_svc_insert_item_bulk failed : %d (%s)", ret, path);
-			continue;
-		}
-	}
-
-	ret = media_svc_insert_item_end(_content_get_db_handle());
-	if (ret < 0)
-	{
-		media_content_error("media_svc_insert_item_end failed : %d", ret);
-		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-	}
-
-	if (completed_cb) {
-		completed_cb(MEDIA_CONTENT_ERROR_NONE, user_data);
-	}
-#endif
 	return ret;
+}
+
+int media_info_insert_batch_to_db(
+					const char **path_array,
+					unsigned int array_length,
+					media_insert_completed_cb completed_cb,
+					void *user_data)
+{
+	if (path_array == NULL)
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	if (array_length <= 0)
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return __media_info_insert_batch(MEDIA_BATCH_INSERT_NORMAL, path_array, array_length, completed_cb, user_data);
+}
+
+int media_info_insert_burst_shot_to_db(const char **path_array, unsigned int array_length, media_insert_burst_shot_completed_cb callback, void *user_data)
+{
+	if (path_array == NULL)
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	if (array_length <= 0)
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return __media_info_insert_batch(MEDIA_BATCH_INSERT_BURSTSHOT, path_array, array_length, callback, user_data);
 }
 
 int media_info_delete_from_db(const char *media_id)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
-	char *query_string = NULL;
 
 	if(!STRING_VALID(media_id))
 	{
@@ -522,6 +573,8 @@ int media_info_delete_from_db(const char *media_id)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
+#if 0
+	char *query_string = NULL;
 	query_string = sqlite3_mprintf(DELETE_MEDIA_FROM_MEDIA, media_id);
 
 	ret = _content_query_sql(query_string);
@@ -529,6 +582,21 @@ int media_info_delete_from_db(const char *media_id)
 	sqlite3_free(query_string);
 
 	return ret;
+#else
+	char *path = NULL;
+
+	ret = __media_info_get_media_path_by_id_from_db(media_id, &path);
+	if (ret < MEDIA_CONTENT_ERROR_NONE) {
+		media_content_error("__media_info_get_media_path_by_id_from_db failed : %d", ret);
+		SAFE_FREE(path);
+		return ret;
+	}
+
+	ret = media_svc_delete_item_by_path(_content_get_db_handle(), path);
+	SAFE_FREE(path);
+
+	return _content_error_capi(ret,MEDIA_CONTENT_TYPE);
+#endif
 }
 
 int media_info_delete_batch_from_db(filter_h filter)
@@ -569,6 +637,14 @@ int media_info_delete_batch_from_db(filter_h filter)
 	}
 
 	ret = _content_query_sql(query_string);
+	if (ret == MEDIA_CONTENT_ERROR_NONE) {
+		/*  Send notification for this
+			In this case, send noti for internal storage and external storage
+		*/
+		media_content_debug("Batch deletion is successfull. Send notification for this");
+		media_db_update_send(getpid(), MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, MEDIA_CONTENT_PATH_PHONE, NULL, -1, NULL);
+		media_db_update_send(getpid(), MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, MEDIA_CONTENT_PATH_MMC, NULL, -1, NULL);
+	}
 
 	SAFE_FREE(condition_query);
 	sqlite3_free(query_string);
@@ -600,6 +676,7 @@ int media_info_destroy(media_info_h media)
 		if(_media->image_meta) {
 			SAFE_FREE(_media->image_meta->media_id);
 			SAFE_FREE(_media->image_meta->date_taken);
+			SAFE_FREE(_media->image_meta->burst_id);
 
 			SAFE_FREE(_media->image_meta);
 		} else if(_media->video_meta) {
@@ -800,6 +877,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		_dst->rating = _src->rating;
 		_dst->favourite = _src->favourite;
 		_dst->is_drm = _src->is_drm;
+		_dst->storage_type = _src->storage_type;
 
 		if(_src->media_type == MEDIA_CONTENT_TYPE_IMAGE && _src->image_meta) {
 			_dst->image_meta = (image_meta_s *)calloc(1, sizeof(image_meta_s));
@@ -820,6 +898,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
+
 			if(STRING_VALID(_src->image_meta->date_taken))
 			{
 				_dst->image_meta->date_taken = strdup(_src->image_meta->date_taken);
@@ -831,6 +910,16 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 
+			if(STRING_VALID(_src->image_meta->burst_id))
+			{
+				_dst->image_meta->burst_id = strdup(_src->image_meta->burst_id);
+				if(_dst->image_meta->burst_id == NULL)
+				{
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+					media_info_destroy((media_info_h)_dst);
+					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+				}
+			}
 			_dst->image_meta->width = _src->image_meta->width;
 			_dst->image_meta->height = _src->image_meta->height;
 			_dst->image_meta->orientation = _src->image_meta->orientation;
@@ -1240,6 +1329,10 @@ int media_info_get_image(media_info_h media, image_meta_h *image)
 
 	if(STRING_VALID(_media->image_meta->date_taken)) {
 		_image->date_taken = strdup(_media->image_meta->date_taken);
+	}
+
+	if(STRING_VALID(_media->image_meta->burst_id)) {
+		_image->burst_id = strdup(_media->image_meta->burst_id);
 	}
 
 	*image = (image_meta_h)_image;
@@ -2472,6 +2565,15 @@ int media_info_update_to_db(media_info_h media)
 		}
 
 		ret = _content_query_sql(sql);
+		if (ret == MEDIA_CONTENT_ERROR_NONE) {
+			/*  Send notification for this update */
+			media_content_debug("Update is successfull. Send notification for this");
+			if (_media->file_path && _media->mime_type) {
+				media_db_update_send(getpid(), MS_MEDIA_ITEM_FILE, MS_MEDIA_ITEM_UPDATE, _media->file_path, _media->media_id, _media->media_type, _media->mime_type);
+			} else {
+				media_content_error("Can't media_db_update_send : path or mime type is NULL");
+			}
+		}
 	}
 	else
 	{

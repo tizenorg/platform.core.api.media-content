@@ -60,6 +60,8 @@ static char * __media_db_get_group_name(media_group_e group)
 			return DB_FIELD_MEDIA_LATITUDE;
 		case MEDIA_CONTENT_GROUP_ALTITUDE:
 			return DB_FIELD_MEDIA_ALTITUDE;
+		case MEDIA_CONTENT_GROUP_BURST_IMAGE:
+			return DB_FIELD_MEDIA_BURST_ID;
 		case MEDIA_CONTENT_GROUP_RATING:
 			return DB_FIELD_MEDIA_RATING;
 		case MEDIA_CONTENT_GROUP_AUTHOR:
@@ -561,6 +563,9 @@ int _media_db_get_playlist(filter_h filter, media_playlist_cb callback, void *us
 		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
 			_playlist->name = strdup((const char *)sqlite3_column_text(stmt, 1));
 
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
+			_playlist->thumbnail_path = strdup((const char *)sqlite3_column_text(stmt, 2));
+
 		if(callback((media_playlist_h)_playlist, user_data) == false)
 		{
 			media_playlist_destroy((media_playlist_h)_playlist);
@@ -928,12 +933,26 @@ int _media_db_get_group_item_count(const char *group_name, filter_h filter, grou
 	char *select_query = NULL;
 	char *condition_query = NULL;
 	char *option_query = NULL;
+	bool is_simple = FALSE;
 
 	media_content_debug_func();
 
 	if(group_type == MEDIA_GROUP_NONE)
 	{
-		select_query = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_MEDIA);
+		/* There are 2 ways to get count for media table for performance 
+			If user wants to set offset and count, use SQL SELECT_MEDIA_COUNT_FROM_MEDIA.
+			If user wants to get count without setting count, SELECT_MEDIA_COUNT_FROM_MEDIA_SIMPLE */
+		_filter = (filter_s *)filter;
+		if (_filter) {
+			if ((_filter->offset < 0) && (_filter->count < 0)) {
+				select_query = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_MEDIA_SIMPLE);
+				is_simple = TRUE;
+			} else {
+				select_query = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_MEDIA);
+			}
+		} else {
+			select_query = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_MEDIA);
+		}
 	}
 	else if(group_type == MEDIA_GROUP_FOLDER)
 	{
@@ -995,7 +1014,8 @@ int _media_db_get_group_item_count(const char *group_name, filter_h filter, grou
 		if(STRING_VALID(option_query))
 			SAFE_STRLCAT(complete_select_query, option_query, sizeof(complete_select_query));
 
-		SAFE_STRLCAT(complete_select_query, QUERY_KEYWORD_BRACKET, sizeof(complete_select_query));
+		if (!is_simple)
+			SAFE_STRLCAT(complete_select_query, QUERY_KEYWORD_BRACKET, sizeof(complete_select_query));
 
 		SAFE_FREE(condition_query);
 		SAFE_FREE(option_query);

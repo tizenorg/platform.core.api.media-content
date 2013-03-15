@@ -115,6 +115,10 @@ int media_playlist_foreach_media_from_db(int playlist_id, filter_h filter, playl
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid Operation
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY DB Operation BUSY
+ * @retval #MEDIA_CONTENT_ERROR_NETWORK Network Fail
  * @pre This function requires opened connection to content service by media_content_connect().
  * @see media_content_connect()
  * @see media_playlist_delete_from_db()
@@ -145,7 +149,6 @@ int media_playlist_delete_from_db(int playlist_id);
  * @remarks @a playlist must be released with media_playlist_destroy() by you.
  *
  * @param[in] playlist_id The ID of media playlist
- * @param [in] filter The handle to audio filter
  * @param[out] playlist The media playlist handle associated with the playlist ID
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -155,7 +158,7 @@ int media_playlist_delete_from_db(int playlist_id);
  * @see media_playlist_destroy()
  *
  */
-int media_playlist_get_playlist_from_db(int playlist_id, filter_h filter, media_playlist_h *playlist);
+int media_playlist_get_playlist_from_db(int playlist_id, media_playlist_h *playlist);
 
 /**
  * @brief Destroys a playlist handle.
@@ -233,6 +236,36 @@ int media_playlist_get_name(media_playlist_h playlist, char **playlist_name);
  *
  */
 int media_playlist_set_name(media_playlist_h playlist, const char *playlist_name);
+
+/**
+ * @brief Gets a thumbnail path of the playlist.
+ *
+ * @remarks @a path must be released with free() by you.
+ *
+ * @param [in] playlist The handle to media playlist
+ * @param [out] path The path of thumbnail
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ *
+ */
+int media_playlist_get_thumbnail_path(media_playlist_h playlist, char **path);
+
+/**
+ * @brief Sets the thumbnail path of the playlist.
+ *
+ * @param[in] playlist The handle to media playlist
+ * @param[in] path The path of thumbnail
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @post media_playlist_update_to_db()
+ *
+ */
+int media_playlist_set_thumbnail_path(media_playlist_h playlist, const char *path);
+
 
 /**
  * @brief Sets the played order in the playlist.

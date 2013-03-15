@@ -70,6 +70,24 @@ int media_info_insert_to_db (const char *path, media_info_h *info);
  */
 int media_info_insert_batch_to_db(const char **path_array,unsigned int array_length, media_insert_completed_cb callback, void *user_data);
 
+/**
+ * @brief Insert the burst shot images into the media database, asynchronously.
+ * @details This function insert the busrt images into the content storage.
+ * #media_insert_burst_shot_completed_cb will be called when insertion to media database is finished.
+ *
+ * @param[in] path_array The path array to the burst shot images
+ * @param[in] array_length The length of array
+ * @param[in] callback The callback to invoke when the images inserted completely
+ * @param[in] user_data The user data to be passed to the callback function
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED DB operation failed
+ * @pre This function requires opened connection to content service by media_content_connect().
+ * @see media_content_connect()
+ * @see media_insert_burst_shot_completed_cb()
+ */
+int media_info_insert_burst_shot_to_db(const char **path_array,unsigned int array_length, media_insert_burst_shot_completed_cb callback, void *user_data);
 
 /**
  * @brief Deletes media file from the media database.
@@ -377,7 +395,7 @@ int media_info_get_size(media_info_h media, unsigned long long *size);
  * @brief Gets added time.
  *
  * @param[in] media The handle to media info
- * @param[out] added_time The added time
+ * @param[out] added_time The added time to DB
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
@@ -389,7 +407,7 @@ int media_info_get_added_time(media_info_h media, time_t *added_time);
  * @brief Gets media info's date of modification.
  *
  * @param[in] media The handle to media info
- * @param[out] time The date of modification
+ * @param[out] time The date of modification of File. Get from File
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
@@ -913,7 +931,7 @@ int media_info_move_to_db(media_info_h media, const char* dst_path);
  * @param[in] user_data The user data to be passed to the callback function
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
- * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter ( Especially, if the request is duplicated, this error returns. )
  * @retval #MEDIA_CONTENT_ERROR_DB_FAILED DB operation failed
  * @pre This function requires opened connection to content service by media_content_connect().
  * @see media_content_connect()

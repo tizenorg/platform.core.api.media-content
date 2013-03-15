@@ -60,6 +60,25 @@ typedef enum
 } media_content_storage_e;
 
 /**
+ * @ingroup CAPI_MEDIA_CONTENT_MODULE
+ * @brief The enumerations of media content db update item
+ */
+typedef enum {
+	MEDIA_ITEM_FILE			= 0,				/**< File type ,an item updated to db */
+	MEDIA_ITEM_DIRECTORY 	= 1,				/**< Directory type, an item updated to db */
+} media_content_db_update_item_type_e;
+
+/**
+ * @ingroup CAPI_MEDIA_CONTENT_MODULE
+ * @brief The enumerations of media content db update type
+ */
+typedef enum {
+	MEDIA_CONTENT_INSERT	= 0,				/**< Insert, the type of DB update */
+	MEDIA_CONTENT_DELETE 	= 1,				/**< Delete, The type of DB update */
+	MEDIA_CONTENT_UPDATE	= 2,				/**< Update, The type of DB update */
+} media_content_db_update_type_e;
+
+/**
  * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
  * @brief The type of orientation.
  */
@@ -136,6 +155,7 @@ typedef enum {
 	MEDIA_CONTENT_GROUP_LONGITUDE,
 	MEDIA_CONTENT_GROUP_LATITUDE,
 	MEDIA_CONTENT_GROUP_ALTITUDE,
+	MEDIA_CONTENT_GROUP_BURST_IMAGE,
 	MEDIA_CONTENT_GROUP_RATING,
 	MEDIA_CONTENT_GROUP_AUTHOR,
 	MEDIA_CONTENT_GROUP_PROVIDER,
@@ -224,6 +244,34 @@ typedef struct filter_s *filter_h;
  */
 typedef void (*media_scan_completed_cb)(media_content_error_e error, void * user_data);
 
+/**
+ * @ingroup CAPI_MEDIA_CONTENT_MODULE
+ * @brief Called when notification of media db change is subscribed.
+ *
+ * @param[in] error The error code
+ * @param[in] pid pid which publish notification
+ * @param[in] update_item Update item of notification
+ * @param[in] update_type Update type of notification
+ * @param[in] media_type The type of media content(#media_content_type_e)
+ * @param[in] uuid UUID of media or directory, which is updated
+ * @param[in] path The path of media or directory
+ * @param[in] mime_type The mime type of media info
+ * @param[in] user_data The user data passed from the foreach function
+ * @pre media_content_db_update_subscribe()
+ * @see media_content_db_update_subscribe()
+ *
+ */
+typedef void (*media_content_db_update_cb)(
+									media_content_error_e error,
+									int pid,
+									media_content_db_update_item_type_e update_item,
+									media_content_db_update_type_e update_type,
+									media_content_type_e media_type,
+									char *uuid,
+									char *path,
+									char *mime_type,
+									void *user_data);
+
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
@@ -274,6 +322,18 @@ typedef void (*media_insert_progress_cb)(media_content_error_e error, unsigned i
  */
 typedef void (*media_insert_completed_cb)(media_content_error_e error, void * user_data);
 
+
+/**
+ * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
+ * @brief Called when burst shot is inserted completely.
+ *
+ * @param[in] media The handle to media info
+ * @param[in] user_data The user data passed from the foreach function
+ * @pre media_info_insert_burst_shot_to_db()
+ * @see media_info_insert_burst_shot_to_db()
+ *
+ */
+typedef void (*media_insert_burst_shot_completed_cb)(media_content_error_e error, void * user_data);
 
 
 /**
@@ -461,6 +521,7 @@ typedef bool (*media_group_cb)(const char *group_name, void *user_data);
 #define MEDIA_HEIGHT "MEDIA_HEIGHT"	/**< media height*/
 #define MEDIA_DATETAKEN "MEDIA_DATETAKEN"	/**< media datetaken*/
 #define MEDIA_ORIENTATION "MEDIA_ORIENTATION"	/**< media orientation*/
+#define MEDIA_BURST_ID "BURST_ID" /**< media burst id*/
 #define MEDIA_PLAYED_COUNT "MEDIA_PLAYED_COUNT"	/**< media playedcount*/
 #define MEDIA_LAST_PLAYED_TIME "MEDIA_LAST_PLAYED_TIME"	/**< media last played time*/
 #define MEDIA_LAST_PLAYED_POSITION "MEDIA_LAST_PLAYED_POSITION"	/**< media last played position of file*/
@@ -475,6 +536,7 @@ typedef bool (*media_group_cb)(const char *group_name, void *user_data);
 #define MEDIA_KEYWORD "MEDIA_KEYWORD"	/**< media keyword*/
 #define MEDIA_IS_DRM "MEDIA_IS_DRM"	/**< is drm. 0-not drm, 1-drm*/
 #define MEDIA_STORAGE_TYPE "MEDIA_STORAGE_TYPE"	/**< media storage. 0-internal storage, 1-external storage*/
+
 /**
  * @}
  */

@@ -85,6 +85,7 @@ typedef enum {
 	MEDIA_PLAYLIST_ADD,
 	MEDIA_PLAYLIST_REMOVE,
 	MEDIA_PLAYLIST_UPDATE_PLAYLIST_NAME,
+	MEDIA_PLAYLIST_UPDATE_THUMBNAIL_PATH,
 	MEDIA_PLAYLIST_UPDATE_PLAY_ORDER,
 } playlist_function_e;
 
@@ -98,6 +99,11 @@ typedef enum {
 	MEDIA_GROUP_TAG_BY_MEDIA_ID,
 	MEDIA_GROUP_BOOKMARK_BY_MEDIA_ID,
 } group_list_e;
+
+typedef enum {
+	MEDIA_BATCH_INSERT_NORMAL,
+	MEDIA_BATCH_INSERT_BURSTSHOT,
+} media_batch_insert_e;
 
 typedef struct _filter_s
 {
@@ -145,6 +151,7 @@ typedef struct
 {
 	int playlist_id;	//playlist id
 	char *name;		// playlist name
+	char *thumbnail_path;		//playlist thumbnail path
 }media_playlist_s;
 
 typedef struct
@@ -153,6 +160,7 @@ typedef struct
 	int width;
 	int height;
 	char *date_taken;
+	char *burst_id;
 	media_content_orientation_e orientation;
 }image_meta_s;
 
@@ -261,6 +269,7 @@ typedef struct
 	char *media_id;		// media_uuid
 	int function;			// Add, remove, modify
 	char *playlist_name;	// playlist_name
+	char *thumbnail_path;		//playlist thumbnail path
 	int playlist_member_id;	// playlist unique id of media. Same content which has same media_id can be added to Playlist
 	int play_order;		//play_order
 }media_playlist_item_s;
@@ -283,6 +292,12 @@ typedef struct
 	char *insert_list_path;
 	void *user_data;
 } media_insert_cb_s;
+
+typedef struct
+{
+	media_content_db_update_cb update_noti_cb;
+	void *user_data;
+} media_noti_cb_s;
 
 typedef struct attribute_s *attribute_h;
 
@@ -347,6 +362,7 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_MEDIA_HEIGHT				"height"
 #define DB_FIELD_MEDIA_DATETAKEN			"datetaken"
 #define DB_FIELD_MEDIA_ORIENTATION		"orientation"
+#define DB_FIELD_MEDIA_BURST_ID			"burst_id"
 #define DB_FIELD_MEDIA_PLAYED_COUNT		"played_count"
 #define DB_FIELD_MEDIA_LAST_PLAYED_TIME		"last_played_time"
 #define DB_FIELD_MEDIA_LAST_PLAYED_POSITION	"last_played_position"
@@ -426,7 +442,7 @@ typedef struct _media_content_cb_data {
 //#define SELECT_TAG_LIST				SELECT_EMPTY_TAG" UNION "SELECT_TAG_FROM_TAG_TAGMAP_MEDIA_JOIN
 //#define SELECT_PLAYLIST_LIST			SELECT_EMPTY_PLAYLIST" UNION "SELECT_PLAYLIST_FROM_PLAYLIST_PLAYLISTMAP_MEDIA_JOIN
 #define SELECT_TAG_LIST				"SELECT DISTINCT tag_id, name FROM "DB_VIEW_TAG" WHERE 1 "
-#define SELECT_PLAYLIST_LIST		"SELECT DISTINCT playlist_id, name FROM "DB_VIEW_PLAYLIST" WHERE 1 "
+#define SELECT_PLAYLIST_LIST		"SELECT DISTINCT playlist_id, name, thumbnail_path FROM "DB_VIEW_PLAYLIST" WHERE 1 "
 #define SELECT_BOOKMARK_LIST		"SELECT DISTINCT b.bookmark_id, b.media_uuid, b.marked_time, b.thumbnail_path FROM "BOOKMARK_MEDIA_JOIN
 
 /* Get Group Count */
@@ -446,6 +462,7 @@ typedef struct _media_content_cb_data {
 
 /* Get Media Count of Group */
 #define SELECT_MEDIA_COUNT_FROM_MEDIA			"SELECT COUNT(*) FROM ("SELECT_MEDIA_ITEM		//to apply limit condition. "SELECT COUNT(*) FROM "DB_TABLE_MEDIA" WHERE validity=1"
+#define SELECT_MEDIA_COUNT_FROM_MEDIA_SIMPLE	"SELECT COUNT(*) FROM "DB_TABLE_MEDIA" WHERE validity=1 "
 #define SELECT_MEDIA_COUNT_FROM_ALBUM			"SELECT COUNT(*) FROM "DB_TABLE_MEDIA" WHERE validity=1 AND album_id='%d'"
 #define SELECT_MEDIA_COUNT_FROM_ARTIST			"SELECT COUNT(*) FROM "DB_TABLE_MEDIA" WHERE validity=1 AND artist='%q'"
 #define SELECT_MEDIA_COUNT_FROM_GENRE			"SELECT COUNT(*) FROM "DB_TABLE_MEDIA" WHERE validity=1 AND genre='%q'"
@@ -479,6 +496,7 @@ typedef struct _media_content_cb_data {
 /* Playlist Info */
 #define INSERT_PLAYLIST_TO_PLAYLIST						"INSERT INTO "DB_TABLE_PLAYLIST" (name) VALUES (%Q)"
 #define UPDATE_PLAYLIST_NAME_FROM_PLAYLIST			"UPDATE "DB_TABLE_PLAYLIST" SET name='%q' WHERE playlist_id=%d"
+#define UPDATE_PLAYLIST_THUMBNAIL_FROM_PLAYLIST			"UPDATE "DB_TABLE_PLAYLIST" SET thumbnail_path='%q' WHERE playlist_id=%d"
 #define SELECT_PLAYLIST_ID_FROM_PLAYLIST				"SELECT playlist_id FROM "DB_TABLE_PLAYLIST" WHERE name='%q'"
 //#define SELECT_PLAYLIST_ITEM_ID_FROM_PLAYLIST_MAP		"SELECT pm._id, pm.media_uuid FROM "PLAYLISTMAP_MEDIA_JOIN" AND pm.playlist_id=%d"
 #define SELECT_PLAYLIST_ITEM_ID_FROM_PLAYLIST_VIEW		"SELECT pm_id, media_uuid FROM "DB_VIEW_PLAYLIST" WHERE playlist_id=%d "
@@ -511,7 +529,7 @@ typedef struct _media_content_cb_data {
 //#define MEDIA_INFO_ITEM "media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description,
 //							rating, favourite, author, provider, content_name, category, location_tag, age_rating, is_drm, storage_type"
 #define MEDIA_INFO_ITEM "media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description, \
-							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, width, height, datetaken, orientation, title, album, artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, duration, played_count, last_played_time, last_played_position, samplerate, channel"
+							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, width, height, datetaken, orientation, title, album, artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, duration, played_count, last_played_time, last_played_position, samplerate, channel, burst_id"
 
 #define SELECT_MEDIA_ITEM 					"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1"
 #define SELECT_MEDIA_FROM_MEDIA			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND media_uuid='%s'"
@@ -526,6 +544,7 @@ typedef struct _media_content_cb_data {
 #define SELECT_MEDIA_FROM_FOLDER			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND folder_uuid='%q'"
 #define SELECT_MEDIA_FROM_TAG				"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE media_uuid IN (SELECT media_uuid FROM "DB_TABLE_TAG_MAP" WHERE tag_id=%d) AND validity=1"
 #define SELECT_MEDIA_FROM_PLAYLIST		"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE media_uuid IN (SELECT media_uuid FROM "DB_TABLE_PLAYLIST_MAP" WHERE playlist_id=%d) AND validity=1"
+#define SELECT_MEDIA_PATH_BY_ID			"SELECT path FROM "DB_TABLE_MEDIA" WHERE media_uuid='%q'"
 
 /* Delete */
 #define DELETE_MEDIA_FROM_MEDIA				"DELETE FROM "DB_TABLE_MEDIA" WHERE media_uuid='%q'"

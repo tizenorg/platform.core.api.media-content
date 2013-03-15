@@ -26,6 +26,7 @@ static attribute_h g_alias_attr_handle = NULL;
 static MediaSvcHandle *db_handle = NULL;
 static int ref_count = 0;
 
+static __thread media_noti_cb_s *g_noti_info = NULL;
 
 static int __media_content_create_attr_handle(void);
 static int __media_content_create_alias_attr_handle(void);
@@ -129,6 +130,9 @@ static int __media_content_create_attr_handle(void)
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ORIENTATION, DB_FIELD_MEDIA_ORIENTATION);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_BURST_ID, DB_FIELD_MEDIA_BURST_ID);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_PLAYED_COUNT, DB_FIELD_MEDIA_PLAYED_COUNT);
@@ -295,6 +299,9 @@ static int __media_content_create_alias_attr_handle(void)
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ORIENTATION, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ORIENTATION);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_BURST_ID, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_BURST_ID);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_PLAYED_COUNT, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_PLAYED_COUNT);
@@ -487,7 +494,7 @@ int _content_error_capi(int type, int content_error)
 	} else if(type == MEDIA_THUMBNAIL_TYPE) {
 		if(content_error == MEDIA_THUMB_ERROR_NONE)
 			return MEDIA_CONTENT_ERROR_NONE;
-		else if(content_error == MEDIA_THUMB_ERROR_INVALID_PARAMETER)
+		else if(content_error == MEDIA_THUMB_ERROR_INVALID_PARAMETER || content_error == MEDIA_THUMB_ERROR_DUPLICATED_REQUEST)
 			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 		else if(content_error == MEDIA_THUMB_ERROR_DB)
 			return MEDIA_CONTENT_ERROR_DB_FAILED;
@@ -513,6 +520,10 @@ int _content_error_capi(int type, int content_error)
 			return MEDIA_CONTENT_ERROR_DB_FAILED;
 		else if(content_error == MS_MEDIA_ERR_SCANNING_BUSY)
 			return MEDIA_CONTENT_ERROR_DB_BUSY;
+		else if(content_error == MS_MEDIA_ERR_ALLOCATE_MEMORY_FAIL)
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		else if(content_error == MS_MEDIA_ERR_DBUS_GET || content_error == MS_MEDIA_ERR_DBUS_ADD_FILTER)
+			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 		else if(content_error == MS_MEDIA_ERR_VCONF_GET_FAIL)
 			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 	}
@@ -633,57 +644,58 @@ int media_content_scan_file(const char *path)
 
 	media_content_debug("Path : %s", path);
 
-	if (g_file_test(path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
-		/* This means this path has to be inserted or refreshed */
-		media_content_debug("This path exists in file system.");
+	if (g_file_test(path, G_FILE_TEST_EXISTS)) {
+		if (g_file_test(path, G_FILE_TEST_IS_REGULAR)) {
+			/* This means this path has to be inserted or refreshed */
+			media_content_debug("This path exists in file system.");
 
-		media_svc_media_type_e media_type;
-		media_svc_storage_type_e storage_type;
-		char mime_type[255];
+			media_svc_media_type_e media_type;
+			media_svc_storage_type_e storage_type;
+			char mime_type[255];
 
-		ret = media_svc_get_storage_type(path, &storage_type);
-		if (ret < 0) {
-			media_content_error("media_svc_get_storage_type failed : %d (%s)", ret, path);
-			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-		}
-
-		ret = media_svc_get_mime_type(path, mime_type);
-		if (ret < 0) {
-			media_content_error("media_svc_get_mime_type failed : %d (%s)", ret, path);
-			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-		}
-
-		ret = media_svc_get_media_type(path, mime_type, &media_type);
-		if (ret < 0) {
-			media_content_error("media_svc_get_media_type failed : %d (%s)", ret, path);
-			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-		}
-
-		ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
-		if (ret == MEDIA_INFO_ERROR_NONE) {
-			/* Refresh */
-			ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, path, media_type);
+			ret = media_svc_get_storage_type(path, &storage_type);
 			if (ret < 0) {
-				media_content_error("media_svc_refresh_item failed : %d", ret);
+				media_content_error("media_svc_get_storage_type failed : %d (%s)", ret, path);
 				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 			}
 
-		} else if (ret == MEDIA_INFO_ERROR_DATABASE_NO_RECORD) {
-			/* Insert */
-			ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path, mime_type, media_type);
+			ret = media_svc_get_mime_type(path, mime_type);
 			if (ret < 0) {
-				media_content_error("media_svc_insert_item_immediately failed : %d", ret);
+				media_content_error("media_svc_get_mime_type failed : %d (%s)", ret, path);
 				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 			}
 
-		} else {
-			media_content_error("media_svc_check_item_exist_by_path failed : %d", ret);
-			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+			ret = media_svc_get_media_type(path, mime_type, &media_type);
+			if (ret < 0) {
+				media_content_error("media_svc_get_media_type failed : %d (%s)", ret, path);
+				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+			}
+
+			ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
+			if (ret == MEDIA_INFO_ERROR_NONE) {
+				/* Refresh */
+				ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, path, media_type);
+				if (ret < 0) {
+					media_content_error("media_svc_refresh_item failed : %d", ret);
+					return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+				}
+
+			} else if (ret == MEDIA_INFO_ERROR_DATABASE_NO_RECORD) {
+				/* Insert */
+				ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path, mime_type, media_type);
+				if (ret < 0) {
+					media_content_error("media_svc_insert_item_immediately failed : %d", ret);
+					return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+				}
+			} else {
+				media_content_error("media_svc_check_item_exist_by_path failed : %d", ret);
+				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+			}
+		} else if (g_file_test(path, G_FILE_TEST_IS_DIR)) {
+			/* Dierectory is not accpted in this function */
+			media_content_error("This path is directory");
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 		}
-	} else if(g_file_test(path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
-		/* Dierectory is not accpted in this function */
-		media_content_error("This path is directory");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	} else {
 		/* This means this path has to be deleted */
 		media_content_debug("This path doesn't exists in file system... So now start to delete it from DB");
@@ -714,7 +726,7 @@ void _media_content_scan_cb(media_request_result_s* result, void *user_data)
 	return;
 }
 
-int media_content_scan_folder(const char *path, media_scan_completed_cb callback, void *user_data)
+int media_content_scan_folder(const char *path, bool is_recursive, media_scan_completed_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
@@ -733,10 +745,62 @@ int media_content_scan_folder(const char *path, media_scan_completed_cb callback
 	cb_data->callback = callback;
 	cb_data->user_data = user_data;
 
-	ret = media_directory_scanning_async(path, TRUE, _media_content_scan_cb, cb_data);
+	ret = media_directory_scanning_async(path, is_recursive, _media_content_scan_cb, cb_data);
 	if (ret < 0) {
 		media_content_error("media_directory_scanning_async failed : %d", ret);
 	}
 
 	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }
+
+void _media_content_db_update_noti_cb(
+							int pid,
+							media_item_type_e item,
+							media_item_update_type_e update_type,
+							char* path,
+							char* uuid,
+							media_type_e content_type,
+							char *mime_type,
+							void *user_data)
+{
+	int error_value = MEDIA_CONTENT_ERROR_NONE;
+
+	media_noti_cb_s *_noti_info = (media_noti_cb_s *)user_data;
+
+	if(_noti_info != NULL)
+	{
+		if (_noti_info->update_noti_cb)
+			_noti_info->update_noti_cb(error_value, pid, item, update_type, content_type, uuid, path, mime_type, _noti_info->user_data);
+	}
+
+	return;
+}
+
+int media_content_set_db_updated_cb(media_content_db_update_cb callback, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	g_noti_info = (media_noti_cb_s*)calloc(1, sizeof(media_noti_cb_s));
+	if (g_noti_info == NULL) {
+		media_content_error("Failed to create noti info");
+		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
+
+	g_noti_info->update_noti_cb = callback;
+	g_noti_info->user_data = user_data;
+
+	ret = media_db_update_subscribe(_media_content_db_update_noti_cb, (void *)g_noti_info);
+
+	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
+}
+
+int media_content_unset_db_updated_cb()
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	SAFE_FREE(g_noti_info);
+	ret = media_db_update_unsubscribe();
+
+	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
+}
+

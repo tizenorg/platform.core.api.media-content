@@ -29,6 +29,7 @@ static int __media_playlist_insert_playlist_record(const char *playlist_name, in
 static int __media_playlist_insert_item_to_playlist(int playlist_id, const char *media_id);
 static int __media_playlist_remove_item_from_playlist(int playlist_id, int playlist_member_id);
 static int __media_playlist_update_playlist_name(int playlist_id, const char *playlist_name);
+static int __media_playlist_update_thumbnail_path(int playlist_id, const char *path);
 static int __media_playlist_update_play_order(int playlist_id, int playlist_member_id, int play_order);
 
 static void __media_playlist_item_add(media_playlist_item_s *item_s)
@@ -53,6 +54,7 @@ static void __media_playlist_item_release(void)
 		{
 			SAFE_FREE(item->media_id);
 			SAFE_FREE(item->playlist_name);
+			SAFE_FREE(item->thumbnail_path);
 			SAFE_FREE(item);
 		}
 	}
@@ -143,6 +145,19 @@ static int __media_playlist_update_playlist_name(int playlist_id, const char *pl
 	char *query_str = NULL;
 
 	query_str = sqlite3_mprintf(UPDATE_PLAYLIST_NAME_FROM_PLAYLIST, playlist_name, playlist_id);
+
+	ret = _content_query_sql(query_str);
+	sqlite3_free(query_str);
+
+	return ret;
+}
+
+static int __media_playlist_update_thumbnail_path(int playlist_id, const char *path)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char *query_str = NULL;
+
+	query_str = sqlite3_mprintf(UPDATE_PLAYLIST_THUMBNAIL_FROM_PLAYLIST, path, playlist_id);
 
 	ret = _content_query_sql(query_str);
 	sqlite3_free(query_str);
@@ -365,7 +380,7 @@ int media_playlist_clone(media_playlist_h *dst, media_playlist_h src)
 	return ret;
 }
 
-int media_playlist_get_playlist_from_db(int playlist_id, filter_h filter, media_playlist_h *playlist)
+int media_playlist_get_playlist_from_db(int playlist_id, media_playlist_h *playlist)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	sqlite3_stmt *stmt = NULL;
@@ -387,6 +402,8 @@ int media_playlist_get_playlist_from_db(int playlist_id, filter_h filter, media_
 			_playlist->playlist_id = (int)sqlite3_column_int(stmt, 0);
 			if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
 				_playlist->name = strdup((const char *)sqlite3_column_text(stmt, 1));
+			if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
+				_playlist->thumbnail_path = strdup((const char *)sqlite3_column_text(stmt, 2));
 
 			*playlist = (media_playlist_h)_playlist;
 		}
@@ -439,6 +456,37 @@ int media_playlist_get_name(media_playlist_h playlist, char **name)
 		else
 		{
 			*name = NULL;
+		}
+
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_playlist_get_thumbnail_path(media_playlist_h playlist, char **path)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_playlist_s *_playlist = (media_playlist_s*)playlist;
+	if(_playlist)
+	{
+		if(STRING_VALID(_playlist->thumbnail_path))
+		{
+			*path = strdup(_playlist->thumbnail_path);
+			if(*path == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*path = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -509,6 +557,46 @@ int media_playlist_set_name(media_playlist_h playlist, const char *playlist_name
 		if(_playlist->name == NULL)
 		{
 			SAFE_FREE(item->playlist_name);
+			SAFE_FREE(item);
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
+
+		__media_playlist_item_add(item);
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_playlist_set_thumbnail_path(media_playlist_h playlist, const char *path)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_playlist_s *_playlist = (media_playlist_s*)playlist;
+
+	if(_playlist != NULL && STRING_VALID(path))
+	{
+		SAFE_FREE(_playlist->thumbnail_path);
+
+		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
+
+		item->thumbnail_path = strdup(path);
+		item->function = MEDIA_PLAYLIST_UPDATE_THUMBNAIL_PATH;
+		if(item->thumbnail_path == NULL)
+		{
+			SAFE_FREE(item);
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
+
+		_playlist->thumbnail_path = strdup(path);
+		if(_playlist->thumbnail_path == NULL)
+		{
+			SAFE_FREE(item->thumbnail_path);
 			SAFE_FREE(item);
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -638,6 +726,12 @@ int media_playlist_update_to_db(media_playlist_h playlist)
 				case MEDIA_PLAYLIST_UPDATE_PLAYLIST_NAME:
 				{
 					ret = __media_playlist_update_playlist_name(_playlist->playlist_id, _playlist_item->playlist_name);
+				}
+				break;
+
+				case MEDIA_PLAYLIST_UPDATE_THUMBNAIL_PATH:
+				{
+					ret = __media_playlist_update_thumbnail_path(_playlist->playlist_id, _playlist_item->thumbnail_path);
 				}
 				break;
 

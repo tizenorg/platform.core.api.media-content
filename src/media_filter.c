@@ -85,8 +85,8 @@ static void __filter_attribute_free_value(gpointer key, gpointer value, gpointer
 
 static char *__media_filter_replace_attr(attribute_h attr, char *name)
 {
-	char *key_temp;
-	char *generated_value;
+	char *key_temp = NULL;
+	char *generated_value = NULL;
 	attribute_s *_attr = (attribute_s *)attr;
 
 	if(!g_hash_table_lookup_extended(_attr->attr_map,
@@ -316,7 +316,7 @@ static int __tokenize(GList **token_list, const char *str)
 			{
 				if(tmp[j] == media_token[1][0] && tmp[j+1] == media_token[1][0])
 				{
-					j += 2;
+					j += 1;
 					continue;
 				}
 				if(tmp[j] == media_token[1][0])
@@ -354,7 +354,7 @@ static int __tokenize(GList **token_list, const char *str)
 			{
 				if(tmp[j] == media_token[2][0] && tmp[j+1] == media_token[2][0])
 				{
-					j += 2;
+					j += 1;
 					continue;
 				}
 				if(tmp[j] == media_token[2][0])
