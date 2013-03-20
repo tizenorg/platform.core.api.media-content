@@ -25,6 +25,7 @@ static attribute_h g_attr_handle = NULL;
 static attribute_h g_alias_attr_handle = NULL;
 static MediaSvcHandle *db_handle = NULL;
 static int ref_count = 0;
+static GMutex *db_mutex = NULL;
 
 static __thread media_noti_cb_s *g_noti_info = NULL;
 
@@ -399,9 +400,10 @@ static int __media_content_destroy_attribute_handle(void)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	ret = _media_filter_attribute_destory(g_attr_handle);
-	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-
 	ret = _media_filter_attribute_destory(g_alias_attr_handle);
+
+	g_attr_handle = NULL;
+	g_alias_attr_handle = NULL;
 
 	return ret;
 }
@@ -583,21 +585,33 @@ int media_content_connect(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if(ref_count == 0)
-	{
-		if(db_handle == NULL)
+	if (!db_mutex)
+		db_mutex = g_mutex_new();
+
+	if (db_mutex != NULL) {
+		g_mutex_lock(db_mutex);
+
+		media_content_debug("ref count : %d", ref_count);
+
+		if(ref_count == 0)
 		{
-			ret = media_svc_connect(&db_handle);
+			if(db_handle == NULL)
+			{
+				ret = media_svc_connect(&db_handle);
+			}
+
+			ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+
+			if(ret == MEDIA_CONTENT_ERROR_NONE) {
+				ret = __media_content_create_attribute_handle();
+			}
 		}
 
-		ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-
-		if(ret == MEDIA_CONTENT_ERROR_NONE) {
-			ret = __media_content_create_attribute_handle();
-		}
+		ref_count++;
+		g_mutex_unlock(db_mutex);
+	} else {
+		media_content_error("mutex is NULL");
 	}
-
-	ref_count++;
 
 	return ret;
 }
@@ -606,28 +620,44 @@ int media_content_disconnect(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if(ref_count > 0)
-	{
-		ref_count--;
-	}
-	else
-	{
-		media_content_error("DB_FAILED(0x%08x) database is not connected", MEDIA_CONTENT_ERROR_DB_FAILED);
-		return MEDIA_CONTENT_ERROR_DB_FAILED;
-	}
+	if (db_mutex != NULL) {
+		g_mutex_lock(db_mutex);
 
-	if(ref_count == 0)
-	{
-		if(db_handle != NULL)
+		media_content_debug("ref count : %d", ref_count);
+		if(ref_count > 0)
 		{
-			ret = media_svc_disconnect(db_handle);
-			ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-			if(ret == MEDIA_CONTENT_ERROR_NONE)
-			{
-				ret = __media_content_destroy_attribute_handle();
-				db_handle = NULL;
-			}
+			ref_count--;
 		}
+		else
+		{
+			media_content_error("DB_FAILED(0x%08x) database is not connected", MEDIA_CONTENT_ERROR_DB_FAILED);
+			g_mutex_unlock(db_mutex);
+			return MEDIA_CONTENT_ERROR_DB_FAILED;
+		}
+
+		if(ref_count == 0)
+		{
+			if(db_handle != NULL)
+			{
+				ret = media_svc_disconnect(db_handle);
+				ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+				if(ret == MEDIA_CONTENT_ERROR_NONE)
+				{
+					ret = __media_content_destroy_attribute_handle();
+					db_handle = NULL;
+				}
+			}
+
+			g_mutex_unlock(db_mutex);
+			g_mutex_free(db_mutex);
+			db_mutex = NULL;
+
+			return ret;
+		}
+
+		g_mutex_unlock(db_mutex);
+	} else {
+		media_content_error("mutex is NULL");
 	}
 
 	return ret;
@@ -649,9 +679,7 @@ int media_content_scan_file(const char *path)
 			/* This means this path has to be inserted or refreshed */
 			media_content_debug("This path exists in file system.");
 
-			media_svc_media_type_e media_type;
 			media_svc_storage_type_e storage_type;
-			char mime_type[255];
 
 			ret = media_svc_get_storage_type(path, &storage_type);
 			if (ret < 0) {
@@ -659,22 +687,10 @@ int media_content_scan_file(const char *path)
 				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 			}
 
-			ret = media_svc_get_mime_type(path, mime_type);
-			if (ret < 0) {
-				media_content_error("media_svc_get_mime_type failed : %d (%s)", ret, path);
-				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-			}
-
-			ret = media_svc_get_media_type(path, mime_type, &media_type);
-			if (ret < 0) {
-				media_content_error("media_svc_get_media_type failed : %d (%s)", ret, path);
-				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-			}
-
 			ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
 			if (ret == MEDIA_INFO_ERROR_NONE) {
 				/* Refresh */
-				ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, path, media_type);
+				ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, path);
 				if (ret < 0) {
 					media_content_error("media_svc_refresh_item failed : %d", ret);
 					return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -682,7 +698,7 @@ int media_content_scan_file(const char *path)
 
 			} else if (ret == MEDIA_INFO_ERROR_DATABASE_NO_RECORD) {
 				/* Insert */
-				ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path, mime_type, media_type);
+				ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path);
 				if (ret < 0) {
 					media_content_error("media_svc_insert_item_immediately failed : %d", ret);
 					return _content_error_capi(MEDIA_CONTENT_TYPE, ret);

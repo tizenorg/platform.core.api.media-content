@@ -320,8 +320,6 @@ int media_playlist_destroy(media_playlist_h playlist)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_playlist_s *_playlist = (media_playlist_s*)playlist;
 
-	media_content_debug_func();
-
 	if(_playlist)
 	{
 		SAFE_FREE(_playlist->name);
@@ -342,8 +340,6 @@ int media_playlist_clone(media_playlist_h *dst, media_playlist_h src)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_playlist_s *_src = (media_playlist_s*)src;
-
-	media_content_debug_func();
 
 	if(_src != NULL)
 	{

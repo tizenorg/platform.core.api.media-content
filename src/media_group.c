@@ -143,8 +143,6 @@ int media_album_destroy(media_album_h album)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_album_s *_album = (media_album_s*)album;
 
-	media_content_debug_func();
-
 	if(_album)
 	{
 		SAFE_FREE(_album->name);

@@ -26,8 +26,6 @@ int image_meta_destroy(image_meta_h image)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	image_meta_s *_image = (image_meta_s*)image;
 
-	media_content_debug_func();
-
 	if(_image)
 	{
 		SAFE_FREE(_image->media_id);
@@ -50,8 +48,6 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	image_meta_s *_src = (image_meta_s*)src;
-
-	media_content_debug_func();
 
 	if(_src != NULL)
 	{

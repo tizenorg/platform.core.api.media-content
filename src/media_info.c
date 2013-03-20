@@ -104,12 +104,13 @@ static void __media_info_insert_completed_cb(media_request_result_s *result, voi
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_insert_cb_s *_cb_data = (media_insert_cb_s *)user_data;
 
-	if (_cb_data && _cb_data->insert_completed_cb) {
+	if (_cb_data) {
 		if (result) {
 			ret = _content_error_capi(MEDIA_CONTENT_TYPE, result->result);
 		}
 
-		_cb_data->insert_completed_cb(ret, _cb_data->user_data);
+		if (_cb_data->insert_completed_cb)
+			_cb_data->insert_completed_cb(ret, _cb_data->user_data);
 
 		if (STRING_VALID(_cb_data->insert_list_path)) {
 			if (unlink(_cb_data->insert_list_path) < 0) {
@@ -378,41 +379,36 @@ int media_info_insert_to_db (const char *path, media_info_h *info)
 	}
 
 #else
-	ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
+	char *_path = strdup(path);
+	if (_path == NULL) {
+		media_content_error("strdup failed : %s", path);
+		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
+
+	ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), _path);
 	if (ret == MEDIA_INFO_ERROR_DATABASE_NO_RECORD) {
-		media_content_debug("media_svc_check_item_exist_by_path : no record : %s", path);
+		media_content_debug("media_svc_check_item_exist_by_path : no record : %s", _path);
 
-		media_svc_media_type_e media_type;
 		media_svc_storage_type_e storage_type;
-		char mime_type[255] = {0, };
 
-		ret = media_svc_get_storage_type(path, &storage_type);
+		ret = media_svc_get_storage_type(_path, &storage_type);
 		if (ret < 0) {
-			media_content_error("media_svc_get_storage_type failed : %d (%s)", ret, path);
+			media_content_error("media_svc_get_storage_type failed : %d (%s)", ret, _path);
+			SAFE_FREE(_path);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		}
 
-		ret = media_svc_get_mime_type(path, mime_type);
-		if (ret < 0) {
-			media_content_error("media_svc_get_mime_type failed : %d (%s)", ret, path);
-			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-		}
-
-		ret = media_svc_get_media_type(path, mime_type, &media_type);
-		if (ret < 0) {
-			media_content_error("media_svc_get_media_type failed : %d (%s)", ret, path);
-			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-		}
-
-		media_content_debug("media_svc_insert_item_immediately: %s", path);
-		ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path, mime_type, media_type);
+		media_content_debug("media_svc_insert_item_immediately: %s", _path);
+		ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, _path);
 
 		if (ret < 0) {
-			media_content_error("media_svc_insert_item_immediately failed : %d (%s)", ret, path);
+			media_content_error("media_svc_insert_item_immediately failed : %d (%s)", ret, _path);
+			SAFE_FREE(_path);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		}
 	} else if (ret != MEDIA_INFO_ERROR_NONE) {
-		media_content_error("media_svc_check_item_exist_by_path failed : %d (%s)", ret, path);
+		media_content_error("media_svc_check_item_exist_by_path failed : %d (%s)", ret, _path);
+		SAFE_FREE(_path);
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 	}
 #endif
@@ -421,10 +417,11 @@ int media_info_insert_to_db (const char *path, media_info_h *info)
 	if(_media == NULL)
 	{
 		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+		SAFE_FREE(_path);
 		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 	}
 
-	_media->file_path = strdup(path);
+	_media->file_path = _path;
 	if(_media->file_path == NULL)
 	{
 		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -1291,7 +1288,6 @@ int media_info_get_image(media_info_h media, image_meta_h *image)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	media_info_s *_media = (media_info_s*)media;
-	media_content_debug_func();
 
 	if(_media == NULL)
 	{
@@ -1345,7 +1341,6 @@ int media_info_get_video(media_info_h media, video_meta_h *video)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	media_info_s *_media = (media_info_s*)media;
-	media_content_debug_func();
 
 	if(_media == NULL)
 	{
@@ -1423,7 +1418,6 @@ int media_info_get_audio(media_info_h media, audio_meta_h *audio)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	media_info_s *_media = (media_info_s*)media;
-	media_content_debug_func();
 
 	if(_media == NULL)
 	{
@@ -2589,7 +2583,6 @@ int media_info_refresh_metadata_to_db(const char *media_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_info_h media = NULL;
 	char *file_path = NULL;
-	media_content_type_e media_type = 0;
 	media_content_storage_e storage_type = 0;
 
 	if(!STRING_VALID(media_id))
@@ -2599,13 +2592,6 @@ int media_info_refresh_metadata_to_db(const char *media_id)
 	}
 
 	ret = media_info_get_media_from_db(media_id, &media);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_info_destroy(media);
-		return ret;
-	}
-
-	ret = media_info_get_media_type(media, &media_type);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 	{
 		media_info_destroy(media);
@@ -2626,7 +2612,7 @@ int media_info_refresh_metadata_to_db(const char *media_id)
 		return ret;
 	}
 
-	ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, file_path, media_type);
+	ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, file_path);
 
 	SAFE_FREE(file_path);
 	media_info_destroy(media);

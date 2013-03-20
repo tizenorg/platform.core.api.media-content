@@ -873,8 +873,8 @@ int _media_filter_attribute_generate(attribute_h attr, char *condition, media_co
 	}
 	else
 	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		media_content_error("DB field mapping table doesn't exist. Check db connection", MEDIA_CONTENT_ERROR_DB_FAILED);
+		return MEDIA_CONTENT_ERROR_DB_FAILED;
 	}
 
 	return ret;
@@ -899,8 +899,8 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 
 	if(attr == NULL)
 	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		media_content_error("DB field mapping table doesn't exist. Check db connection", MEDIA_CONTENT_ERROR_DB_FAILED);
+		return MEDIA_CONTENT_ERROR_DB_FAILED;
 	}
 
 	_filter = (filter_s*)filter;
