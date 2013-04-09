@@ -1663,8 +1663,9 @@ int test_playlist_operation(void)
 	}
 
 	/* Get Playlist Count*/
-	media_playlist_get_playlist_count_from_db(filter, &playlist_count);
-	media_content_debug("playlist_count [%d]", playlist_count);
+	ret = media_playlist_get_playlist_count_from_db(filter, &playlist_count);
+	if (ret == 0)
+		media_content_debug("playlist_count [%d]", playlist_count);
 
 	/* Get Playlist*/
 	GList *playlist_id_list = NULL;
@@ -2817,6 +2818,7 @@ gboolean _send_noti_operations(gpointer data)
 	ret = media_info_insert_to_db(path, &media_item);
 	if (ret < MEDIA_CONTENT_ERROR_NONE) {
 		media_content_error("media_info_insert_to_db failed : %d", ret);
+		media_info_destroy(media_item);
 		return FALSE;
 	}
 
@@ -2829,18 +2831,21 @@ gboolean _send_noti_operations(gpointer data)
 	ret = media_filter_create(&filter);
 	if(ret != MEDIA_CONTENT_ERROR_NONE) {
 		media_content_error("Fail to create filter");
+		media_info_destroy(media_item);
 		return ret;
 	}
 
 	ret = media_filter_set_condition(filter, condition, MEDIA_CONTENT_COLLATE_DEFAULT);
 	if(ret != MEDIA_CONTENT_ERROR_NONE) {
 		media_filter_destroy(filter);
+		media_info_destroy(media_item);
 		media_content_error("Fail to set condition");
 		return ret;
 	}
 	ret = media_info_delete_batch_from_db(filter);
 	if(ret != MEDIA_CONTENT_ERROR_NONE) {
 		media_filter_destroy(filter);
+		media_info_destroy(media_item);
 		media_content_error("media_info_delete_batch_from_db failed : %d\n", ret);
 		return ret;
 	}
@@ -2851,6 +2856,7 @@ gboolean _send_noti_operations(gpointer data)
 	ret = media_info_update_to_db(media_item);
 	if(ret != MEDIA_CONTENT_ERROR_NONE) {
 		media_content_error("media_info_update_to_db failed : %d\n", ret);
+		media_info_destroy(media_item);
 		return ret;
 	}
 
