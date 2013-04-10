@@ -117,6 +117,21 @@ int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *
 int image_meta_get_date_taken(image_meta_h image, char **date_taken);
 
 /**
+ * @brief Gets the title.
+ *
+ * @remarks @a title must be released with free() by you.
+ *
+ * @param[in] media The handle to image metadata
+ * @param[out] title title of image
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ */
+int image_meta_get_title(image_meta_h image, char **title);
+
+/**
  * @brief Gets the burst shot id.
  *
  * @remarks @a burst id must be released with free() by you.
