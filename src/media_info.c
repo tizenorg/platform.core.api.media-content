@@ -1327,6 +1327,10 @@ int media_info_get_image(media_info_h media, image_meta_h *image)
 		_image->date_taken = strdup(_media->image_meta->date_taken);
 	}
 
+	if(STRING_VALID(_media->image_meta->title)) {
+		_image->title = strdup(_media->image_meta->title);
+	}
+
 	if(STRING_VALID(_media->image_meta->burst_id)) {
 		_image->burst_id = strdup(_media->image_meta->burst_id);
 	}

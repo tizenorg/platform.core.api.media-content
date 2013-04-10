@@ -160,6 +160,7 @@ typedef struct
 	int width;
 	int height;
 	char *date_taken;
+	char *title;
 	char *burst_id;
 	media_content_orientation_e orientation;
 }image_meta_s;

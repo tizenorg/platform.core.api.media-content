@@ -30,6 +30,7 @@ int image_meta_destroy(image_meta_h image)
 	{
 		SAFE_FREE(_image->media_id);
 		SAFE_FREE(_image->date_taken);
+		SAFE_FREE(_image->title);
 		SAFE_FREE(_image->burst_id);
 		SAFE_FREE(_image);
 
@@ -73,6 +74,17 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src)
 		{
 			_dst->date_taken = strdup(_src->date_taken);
 			if(_dst->date_taken == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				image_meta_destroy((image_meta_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
+		if(STRING_VALID(_src->title))
+		{
+			_dst->title = strdup(_src->title);
+			if(_dst->title == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				image_meta_destroy((image_meta_h)_dst);
@@ -221,6 +233,37 @@ int image_meta_get_date_taken(image_meta_h image, char **date_taken)
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int image_meta_get_title(image_meta_h image, char **title)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	image_meta_s *_image = (image_meta_s*)image;
+	if(_image)
+	{
+		if(STRING_VALID(_image->title))
+		{
+			*title = strdup(_image->title);
+			if(*title == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*title = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+
 	}
 	else
 	{
