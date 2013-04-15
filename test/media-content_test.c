@@ -2860,6 +2860,8 @@ gboolean _send_noti_operations(gpointer data)
 		return ret;
 	}
 
+	media_info_destroy(media_item);
+
 	return FALSE;
 }
 
