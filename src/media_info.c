@@ -261,6 +261,9 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 		
 			_media->image_meta->orientation = sqlite3_column_int(stmt, 27);
 
+			if(STRING_VALID((const char *)sqlite3_column_text(stmt, 28)))
+				_media->image_meta->title = strdup((const char *)sqlite3_column_text(stmt, 28));
+
 			if(STRING_VALID((const char *)sqlite3_column_text(stmt, 44)))
 				_media->image_meta->burst_id = strdup((const char *)sqlite3_column_text(stmt, 44));
 		}
