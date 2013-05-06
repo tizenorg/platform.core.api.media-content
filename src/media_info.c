@@ -247,6 +247,9 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 	_media->latitude = (double)sqlite3_column_double(stmt, 22);
 	_media->altitude = (double)sqlite3_column_double(stmt, 23);
 
+	if(STRING_VALID((const char *)sqlite3_column_text(stmt, 28)))
+		_media->title = strdup((const char *)sqlite3_column_text(stmt, 28));
+
 	if(_media->media_type == MEDIA_CONTENT_TYPE_IMAGE) {
 		_media->image_meta = (image_meta_s *)calloc(1, sizeof(image_meta_s));
 		if(_media->image_meta) {
@@ -672,6 +675,7 @@ int media_info_destroy(media_info_h media)
 		SAFE_FREE(_media->location_tag);
 		SAFE_FREE(_media->age_rating);
 		SAFE_FREE(_media->keyword);
+		SAFE_FREE(_media->title);
 
 		if(_media->image_meta) {
 			SAFE_FREE(_media->image_meta->media_id);
@@ -790,6 +794,16 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		{
 			_dst->description = strdup(_src->description);
 			if(_dst->description == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				media_info_destroy((media_info_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		if(STRING_VALID(_src->title))
+		{
+			_dst->title = strdup(_src->title);
+			if(_dst->title == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -1716,6 +1730,37 @@ int media_info_get_thumbnail_path(media_info_h media, char **path)
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_get_title(media_info_h media, char **title)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if(_media && title)
+	{
+		if(STRING_VALID(_media->title))
+		{
+			*title = strdup(_media->title);
+			if(*title == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*title = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
 	else
 	{

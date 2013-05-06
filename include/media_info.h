@@ -551,6 +551,21 @@ int media_info_get_provider(media_info_h media, char **provider);
 int media_info_get_content_name(media_info_h media, char **content_name);
 
 /**
+ * @brief Gets the title to media info.
+ *
+ * @remarks @a title must be released with free() by you.
+ *
+ * @param[in] media The handle to media info
+ * @param[out] title The title of media info
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ */
+int media_info_get_title(media_info_h media, char **title);
+
+/**
  * @brief Gets the provider to media info.
  *
  * @remarks @a category must be released with free() by you.

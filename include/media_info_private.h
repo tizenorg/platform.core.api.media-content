@@ -224,6 +224,7 @@ typedef struct
 	double altitude;
 	int rating;
 	int favourite;
+	char *title;
 	char *author;
 	char *provider;
 	char *content_name;
