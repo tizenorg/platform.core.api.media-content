@@ -1,0 +1,8 @@
+Change-Id: Idc8db7304528651c039047b551c19f81c7a493d0
+Code-Review+2: Ryan Ware <ware@linux.intel.com>
+Verified+1: Ryan Ware <ware@linux.intel.com>
+Submitted-by: Ryan Ware <ware@linux.intel.com>
+Submitted-at: Mon, 08 Jul 2013 10:06:52 -0700
+Reviewed-on: https://review.tizen.org/gerrit/4529
+Project: platform/core/api/media-content
+Branch: refs/heads/tizen
