@@ -298,6 +298,33 @@ int media_folder_set_name(media_folder_h folder, const char *name);
  *
  */
 int media_folder_insert_to_db(const char *path, const media_content_storage_e storage_type, media_folder_h *folder);
+
+/**
+ * @brief Sets the folder cover_image.
+ *
+ * @param[in] folder The handle to media folder
+ * @param[in] cover_image The cover image of the media folder
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ *
+ */
+int media_folder_set_cover_image(media_folder_h folder, const char *cover_image);
+
+/**
+ * @brief Gets the folder cover_image.
+ *
+ * @param[in] folder The handle to media folder
+ * @param[out] cover_image The cover image of the media folder
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ *
+ */
+int media_folder_get_cover_image(media_folder_h folder, char **cover_image);
+
 /**
  * @}
  */

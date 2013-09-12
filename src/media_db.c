@@ -479,9 +479,12 @@ int _media_db_get_folder(filter_h filter, media_folder_cb callback, bool with_em
 		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
 			_folder->name = strdup((const char *)sqlite3_column_text(stmt, 2));
 
-		_folder->storage_type = (int)sqlite3_column_int(stmt,3);
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
+			_folder->cover_image = strdup((const char *)sqlite3_column_text(stmt, 3));
 
-		_folder->modified_time = (int)sqlite3_column_int(stmt,4);
+		_folder->storage_type = (int)sqlite3_column_int(stmt,4);
+
+		_folder->modified_time = (int)sqlite3_column_int(stmt,5);
 
 		if(callback((media_folder_h)_folder, user_data) == false)
 		{

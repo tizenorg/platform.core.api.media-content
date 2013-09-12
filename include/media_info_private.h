@@ -121,6 +121,7 @@ typedef struct
 	char *folder_id;				//image id, audio id, video id
 	char *path;
 	char *name;
+	char *cover_image;
 	time_t modified_time;
 	media_content_storage_e storage_type;
 }media_folder_s;
@@ -384,6 +385,7 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_FOLDER_ID				"folder_uuid"
 #define DB_FIELD_FOLDER_PATH			"path"
 #define DB_FIELD_FOLDER_NAME			"name"
+#define DB_FIELD_FOLDER_COVER_IMAGE		"cover_image"
 #define DB_FIELD_FOLDER_MODIFIED_TIME	"modified_time"
 #define DB_FIELD_FOLDER_STORAGE_TYPE	"storage_type"
 
@@ -440,8 +442,8 @@ typedef struct _media_content_cb_data {
 #define SELECT_YEAR_LIST				"SELECT DISTINCT year FROM "DB_TABLE_MEDIA" WHERE validity=1 "
 #define SELECT_MEDIA_GROUP_LIST	"SELECT DISTINCT %s FROM "DB_TABLE_MEDIA" WHERE validity=1 "
 
-#define SELECT_FOLDER_LIST 			"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time FROM "FOLDER_MEDIA_JOIN
-#define SELECT_FOLDER_LIST_WITH_EMPTY   	"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time FROM "DB_TABLE_FOLDER" AS f"
+#define SELECT_FOLDER_LIST 			"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.cover_image, f.storage_type, f.modified_time FROM "FOLDER_MEDIA_JOIN
+#define SELECT_FOLDER_LIST_WITH_EMPTY   	"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.cover_image, f.storage_type, f.modified_time FROM "DB_TABLE_FOLDER" AS f"
 //#define SELECT_TAG_LIST				SELECT_EMPTY_TAG" UNION "SELECT_TAG_FROM_TAG_TAGMAP_MEDIA_JOIN
 //#define SELECT_PLAYLIST_LIST			SELECT_EMPTY_PLAYLIST" UNION "SELECT_PLAYLIST_FROM_PLAYLIST_PLAYLISTMAP_MEDIA_JOIN
 #define SELECT_TAG_LIST				"SELECT DISTINCT tag_id, name FROM "DB_VIEW_TAG" WHERE 1 "
@@ -482,7 +484,7 @@ typedef struct _media_content_cb_data {
 /* Get Group Info by Group ID*/
 #define SELECT_ALBUM_FROM_ALBUM		"SELECT * FROM "DB_TABLE_ALBUM" WHERE album_id=%d"
 #define SELECT_FOLDER_FROM_FOLDER		"SELECT * FROM "DB_TABLE_FOLDER" WHERE folder_uuid='%s'"
-#define SELECT_FOLDER_BY_PATH			"SELECT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time FROM "DB_TABLE_FOLDER" AS f WHERE path='%q'"
+#define SELECT_FOLDER_BY_PATH			"SELECT f.folder_uuid, f.path, f.name, f.cover_image, f.storage_type, f.modified_time FROM "DB_TABLE_FOLDER" AS f WHERE path='%q'"
 #define SELECT_PLAYLIST_FROM_PLAYLIST	"SELECT * FROM "DB_TABLE_PLAYLIST" WHERE playlist_id=%d"
 #define SELECT_TAG_FROM_TAG			"SELECT * FROM "DB_TABLE_TAG" WHERE tag_id=%d"
 #define SELECT_TAG_BY_NAME				"SELECT * FROM "DB_TABLE_TAG" WHERE name='%q'"
@@ -495,6 +497,9 @@ typedef struct _media_content_cb_data {
 //#define SELECT_TAG_LIST_BY_MEDIA_ID				"SELECT * FROM "DB_TABLE_TAG" WHERE tag_id IN (SELECT tag_id FROM "DB_TABLE_TAG_MAP" WHERE media_uuid = '%s')"
 #define SELECT_TAG_COUNT_BY_MEDIA_ID			"SELECT COUNT(*) FROM "DB_VIEW_TAG" WHERE media_uuid = '%q'"
 #define SELECT_TAG_LIST_BY_MEDIA_ID				"SELECT tag_id, name FROM "DB_VIEW_TAG" WHERE media_uuid = '%s'"
+
+/* Folder Info */
+#define UPDATE_FOLDER_COVER_IMAGE_FROM_ID			"UPDATE "DB_TABLE_FOLDER" SET cover_image='%s' WHERE folder_uuid='%s'"
 
 /* Playlist Info */
 #define INSERT_PLAYLIST_TO_PLAYLIST						"INSERT INTO "DB_TABLE_PLAYLIST" (name) VALUES (%Q)"

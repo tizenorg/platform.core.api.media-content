@@ -29,9 +29,10 @@ static char *__media_folder_get_update_folder_sql(media_folder_h folder)
 	media_folder_s *_folder = (media_folder_s*)folder;
 	char *return_sql = NULL;
 
-	return_sql = sqlite3_mprintf("%q='%q', %q='%q', %q=%d ",
+	return_sql = sqlite3_mprintf("%q='%q', %q='%q', %q='%q', %q=%d ",
 											DB_FIELD_FOLDER_PATH, _folder->path,
 											DB_FIELD_FOLDER_NAME, _folder->name,
+											DB_FIELD_FOLDER_COVER_IMAGE, _folder->cover_image,
 											DB_FIELD_FOLDER_MODIFIED_TIME, _folder->modified_time);
 
 	return return_sql;
@@ -134,6 +135,7 @@ int media_folder_destroy(media_folder_h folder)
 	{
 		SAFE_FREE(_folder->path);
 		SAFE_FREE(_folder->name);
+		SAFE_FREE(_folder->cover_image);
 		SAFE_FREE(_folder->folder_id);
 		SAFE_FREE(_folder);
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -177,6 +179,17 @@ int media_folder_clone(media_folder_h *dst, media_folder_h src)
 		{
 			_dst->name = strdup(_src->name);
 			if(_dst->name == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				media_folder_destroy((media_folder_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
+		if(STRING_VALID(_src->cover_image))
+		{
+			_dst->cover_image = strdup(_src->cover_image);
+			if(_dst->cover_image == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_folder_destroy((media_folder_h)_dst);
@@ -377,6 +390,9 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
 			_folder->name = strdup((const char *)sqlite3_column_text(stmt, 2));
 
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
+			_folder->cover_image = strdup((const char *)sqlite3_column_text(stmt, 3));
+
 		*folder = (media_folder_h)_folder;
 	}
 
@@ -422,8 +438,10 @@ int media_folder_insert_to_db(const char *path, const media_content_storage_e st
                 _folder->path = strdup((const char *)sqlite3_column_text(stmt, 1));
             if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
                 _folder->name = strdup((const char *)sqlite3_column_text(stmt, 2));
-            _folder->storage_type = (int)sqlite3_column_int(stmt,3);
-            _folder->modified_time = (time_t)sqlite3_column_int(stmt,4);
+            if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
+                _folder->cover_image = strdup((const char *)sqlite3_column_text(stmt, 3));
+            _folder->storage_type = (int)sqlite3_column_int(stmt,4);
+            _folder->modified_time = (time_t)sqlite3_column_int(stmt,5);
             *folder= (media_folder_h)_folder;
         }
 
@@ -530,4 +548,58 @@ int media_folder_set_name(media_folder_h folder, const char *name)
 	}
 
 	return ret;
+}
+
+int media_folder_set_cover_image(media_folder_h folder, const char *cover_image)
+{
+    int ret;
+    char *query_str;
+    media_folder_s *_folder = (media_folder_s*)folder;
+
+    if(!STRING_VALID(cover_image) || !folder)
+    {
+        media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+        return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+    }
+
+    query_str = sqlite3_mprintf(UPDATE_FOLDER_COVER_IMAGE_FROM_ID, cover_image, _folder->folder_id);
+    ret = _content_query_sql(query_str);
+    sqlite3_free(query_str);
+
+    if(ret == MEDIA_CONTENT_ERROR_NONE)
+    {
+        free(_folder->cover_image);
+        _folder->cover_image = strdup(cover_image);
+    }
+    return ret;
+}
+
+int media_folder_get_cover_image(media_folder_h folder, char **cover_image)
+{
+    int ret = MEDIA_CONTENT_ERROR_NONE;
+    media_folder_s *_folder = (media_folder_s*)folder;
+
+    if(_folder && cover_image)
+    {
+        if(STRING_VALID(_folder->cover_image))
+        {
+            *cover_image = strdup(_folder->cover_image);
+            if(*cover_image == NULL)
+            {
+                media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+                return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+            }
+        }
+        else
+            *cover_image = NULL;
+        ret = MEDIA_CONTENT_ERROR_NONE;
+
+    }
+    else
+    {
+        media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+        ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+    }
+
+    return ret;
 }
