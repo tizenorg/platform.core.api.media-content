@@ -65,7 +65,24 @@ int media_folder_foreach_folder_from_db(filter_h filter, media_folder_cb callbac
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	ret = _media_db_get_folder(filter, callback, user_data);
+	ret = _media_db_get_folder(filter, callback, false, user_data);
+
+	return ret;
+}
+
+int media_folder_foreach_folder_with_empty_from_db(filter_h filter, media_folder_cb callback, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	media_content_debug_func();
+
+	if(callback == NULL)
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	ret = _media_db_get_folder(filter, callback, true, user_data);
 
 	return ret;
 }

@@ -441,6 +441,7 @@ typedef struct _media_content_cb_data {
 #define SELECT_MEDIA_GROUP_LIST	"SELECT DISTINCT %s FROM "DB_TABLE_MEDIA" WHERE validity=1 "
 
 #define SELECT_FOLDER_LIST 			"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time FROM "FOLDER_MEDIA_JOIN
+#define SELECT_FOLDER_LIST_WITH_EMPTY   	"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time FROM "DB_TABLE_FOLDER" AS f"
 //#define SELECT_TAG_LIST				SELECT_EMPTY_TAG" UNION "SELECT_TAG_FROM_TAG_TAGMAP_MEDIA_JOIN
 //#define SELECT_PLAYLIST_LIST			SELECT_EMPTY_PLAYLIST" UNION "SELECT_PLAYLIST_FROM_PLAYLIST_PLAYLISTMAP_MEDIA_JOIN
 #define SELECT_TAG_LIST				"SELECT DISTINCT tag_id, name FROM "DB_VIEW_TAG" WHERE 1 "
@@ -615,7 +616,7 @@ int _media_db_get_album(filter_h filter, media_album_cb callback, void *user_dat
 /**
  *@internal
  */
-int _media_db_get_folder(filter_h filter, media_folder_cb callback, void *user_data);
+int _media_db_get_folder(filter_h filter, media_folder_cb callback, bool with_empty, void *user_data);
 
 /**
  *@internal

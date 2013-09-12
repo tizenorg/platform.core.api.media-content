@@ -412,7 +412,7 @@ int _media_db_get_album(filter_h filter, media_album_cb callback, void *user_dat
 	return ret;
 }
 
-int _media_db_get_folder(filter_h filter, media_folder_cb callback, void *user_data)
+int _media_db_get_folder(filter_h filter, media_folder_cb callback, bool with_empty, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	char select_query[DEFAULT_QUERY_SIZE];
@@ -424,7 +424,7 @@ int _media_db_get_folder(filter_h filter, media_folder_cb callback, void *user_d
 	memset(select_query, 0x00, sizeof(select_query));
 
 	//snprintf(select_query, sizeof(select_query), SELECT_FOLDER_LIST);
-	if(!SAFE_STRLCPY(select_query, SELECT_FOLDER_LIST, sizeof(select_query)))
+	if(!SAFE_STRLCPY(select_query, with_empty ? SELECT_FOLDER_LIST_WITH_EMPTY : SELECT_FOLDER_LIST, sizeof(select_query)))
 	{
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;

@@ -69,6 +69,33 @@ int media_folder_get_folder_count_from_db(filter_h filter, int *folder_count);
 int media_folder_foreach_folder_from_db(filter_h filter, media_folder_cb callback, void *user_data);
 
 /**
+ * @brief Iterates through available media folders, <b>including empty
+ * ones</b>, with optional @a filter from the media database.
+ *
+ * @details This function gets media folder handles meeting the given
+ * @a filter. The @a callback function will be invoked for every
+ * retrieved folder. If @c NULL is passed to @a filter, no filtering
+ * is applied.
+ *
+ * @param[in] filter The handle to media folder filter
+ * @param[in] callback The callback function to invoke
+ * @param[in] user_data The user data to be passed to the callback function
+ * @return return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @pre This function requires opened connection to content service by
+ * media_content_connect().
+ * @pre A filter handle has to be created by calling
+ * media_folder_filter_create()
+ * @post This function invokes media_folder_cb()
+ * @see media_content_connect()
+ * @see #media_folder_cb
+ * @see media_filter_create()
+ */
+int media_folder_foreach_folder_with_empty_from_db(filter_h filter, media_folder_cb callback, void *user_data);
+
+/**
  * @brief Gets the number of media files for the passed @a filter in the given @a folder from the media database.
  *
  * @param[in] folder_id The ID of media folder
