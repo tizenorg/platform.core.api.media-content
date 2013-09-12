@@ -482,7 +482,7 @@ typedef struct _media_content_cb_data {
 /* Get Group Info by Group ID*/
 #define SELECT_ALBUM_FROM_ALBUM		"SELECT * FROM "DB_TABLE_ALBUM" WHERE album_id=%d"
 #define SELECT_FOLDER_FROM_FOLDER		"SELECT * FROM "DB_TABLE_FOLDER" WHERE folder_uuid='%s'"
-#define SELECT_FOLDER_BY_PATH			"SELECT * FROM "DB_TABLE_FOLDER" WHERE path='%q'"
+#define SELECT_FOLDER_BY_PATH			"SELECT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time FROM "DB_TABLE_FOLDER" AS f WHERE path='%q'"
 #define SELECT_PLAYLIST_FROM_PLAYLIST	"SELECT * FROM "DB_TABLE_PLAYLIST" WHERE playlist_id=%d"
 #define SELECT_TAG_FROM_TAG			"SELECT * FROM "DB_TABLE_TAG" WHERE tag_id=%d"
 #define SELECT_TAG_BY_NAME				"SELECT * FROM "DB_TABLE_TAG" WHERE name='%q'"

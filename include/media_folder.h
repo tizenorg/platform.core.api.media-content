@@ -286,6 +286,19 @@ int media_folder_update_to_db(media_folder_h folder);
 int media_folder_set_name(media_folder_h folder, const char *name);
 
 /**
+ * @brief Creates a new, empty folder.
+ *
+ * @param[in] path The folder path
+ * @param[in] storage_type The storage type of the media folder
+ * @param[out] folder Where to store the handle to the created media folder
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ *
+ */
+int media_folder_insert_to_db(const char *path, const media_content_storage_e storage_type, media_folder_h *folder);
+/**
  * @}
  */
 

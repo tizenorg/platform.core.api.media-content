@@ -18,6 +18,7 @@
 #include <media_content.h>
 #include <media_info_private.h>
 #include <media_util_private.h>
+#include <media-svc.h>
 
 static char *g_src_path = NULL;
 
@@ -382,6 +383,54 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 	SQLITE3_FINALIZE(stmt);
 
 	return ret;
+}
+
+int media_folder_insert_to_db(const char *path, const media_content_storage_e storage_type, media_folder_h *folder)
+{
+    int ret;
+
+    if(!STRING_VALID(path) || !folder)
+    {
+        media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+        return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+    }
+
+    ret = media_svc_insert_folder(_content_get_db_handle(), storage_type, path);
+
+    if(ret == MEDIA_CONTENT_ERROR_NONE)
+    {
+        media_folder_s *_folder = (media_folder_s*)calloc(1, sizeof(media_folder_s));
+        sqlite3_stmt *stmt = NULL;
+        char *select_query;
+
+        if(_folder == NULL)
+        {
+            media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+            return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+        }
+
+        select_query = sqlite3_mprintf(SELECT_FOLDER_BY_PATH, path);
+        ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
+        sqlite3_free(select_query);
+        media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+        if (sqlite3_step(stmt) == SQLITE_ROW)
+        {
+            if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
+                _folder->folder_id = strdup((const char *)sqlite3_column_text(stmt, 0));
+            if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
+                _folder->path = strdup((const char *)sqlite3_column_text(stmt, 1));
+            if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
+                _folder->name = strdup((const char *)sqlite3_column_text(stmt, 2));
+            _folder->storage_type = (int)sqlite3_column_int(stmt,3);
+            _folder->modified_time = (time_t)sqlite3_column_int(stmt,4);
+            *folder= (media_folder_h)_folder;
+        }
+
+        SQLITE3_FINALIZE(stmt);
+    }
+
+    return ret;
 }
 
 int media_folder_update_to_db(media_folder_h folder)
