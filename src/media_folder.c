@@ -603,3 +603,23 @@ int media_folder_get_cover_image(media_folder_h folder, char **cover_image)
 
     return ret;
 }
+
+int media_folder_delete_from_db(const char *folder_uuid)
+{
+    int ret = MEDIA_CONTENT_ERROR_NONE;
+    char *query_str = NULL;
+
+    if(!STRING_VALID(folder_uuid))
+    {
+        media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+        return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+    }
+
+    query_str = sqlite3_mprintf(DELETE_FOLDER_FROM_FOLDER, folder_uuid);
+
+    ret = _content_query_sql(query_str);
+
+    sqlite3_free(query_str);
+
+    return ret;
+}

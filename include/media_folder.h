@@ -326,6 +326,17 @@ int media_folder_set_cover_image(media_folder_h folder, const char *cover_image)
 int media_folder_get_cover_image(media_folder_h folder, char **cover_image);
 
 /**
+ * @brief Delete a folder from db.
+ *
+ * @param[in] folder_uuid The folder uuid
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ */
+int media_folder_delete_from_db(const char *folder_uuid);
+
+/**
  * @}
  */
 
