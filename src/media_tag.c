@@ -63,9 +63,11 @@ static int __media_tag_insert_item_to_tag(int tag_id, const char *media_id)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	char *query_str = NULL;
+	time_t tag_time;
+	time(&tag_time);
 
-	query_str = sqlite3_mprintf("INSERT INTO %q (tag_id, media_uuid) values (%d, '%q')",
-			DB_TABLE_TAG_MAP, tag_id, media_id);
+	query_str = sqlite3_mprintf("INSERT INTO %q (tag_id, media_uuid, tag_time) values (%d, '%q', %d)",
+			DB_TABLE_TAG_MAP, tag_id, media_id, tag_time);
 	ret = _content_query_sql(query_str);
 	sqlite3_free(query_str);
 

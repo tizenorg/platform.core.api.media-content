@@ -575,6 +575,7 @@ typedef bool (*media_group_cb)(const char *group_name, void *user_data);
  */
 #define TAG_NAME "TAG_NAME"	/**< tag name */
 #define TAG_MEDIA_COUNT "TAG_MEDIA_COUNT"	/**< media count in tag view */
+#define TAG_TIME "TAG_TIME"	/**< tag name */
 
 /**
  * @}

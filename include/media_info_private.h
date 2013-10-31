@@ -399,6 +399,7 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_TAG_ID			"tag_id"
 #define DB_FIELD_TAG_NAME		"name"
 #define DB_FIELD_TAG_MEDIA_COUNT			"media_count"
+#define DB_FIELD_TAG_TIME			"tag_time"
 
 /* DB field for bookmark */
 #define DB_FIELD_BOOKMARK_ID	"bookmark_id"
@@ -538,6 +539,8 @@ typedef struct _media_content_cb_data {
 //							rating, favourite, author, provider, content_name, category, location_tag, age_rating, is_drm, storage_type"
 #define MEDIA_INFO_ITEM "media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description, \
 							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, width, height, datetaken, orientation, title, album, artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, duration, played_count, last_played_time, last_played_position, samplerate, channel, burst_id"
+#define MEDIA_INFO_ITEM_JOIN "m.media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description, \
+							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, width, height, datetaken, orientation, title, album, artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, duration, played_count, last_played_time, last_played_position, samplerate, channel, burst_id"
 
 #define SELECT_MEDIA_ITEM 					"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1"
 #define SELECT_MEDIA_FROM_MEDIA			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND media_uuid='%s'"
@@ -550,7 +553,7 @@ typedef struct _media_content_cb_data {
 #define SELECT_MEDIA_FROM_GROUP			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND %s='%q'"
 #define SELECT_MEDIA_FROM_GROUP_NULL	"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND %s IS NULL"
 #define SELECT_MEDIA_FROM_FOLDER			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND folder_uuid='%q'"
-#define SELECT_MEDIA_FROM_TAG				"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE media_uuid IN (SELECT media_uuid FROM "DB_TABLE_TAG_MAP" WHERE tag_id=%d) AND validity=1"
+#define SELECT_MEDIA_FROM_TAG				"SELECT "MEDIA_INFO_ITEM_JOIN" FROM "DB_TABLE_MEDIA" AS m INNER JOIN "DB_TABLE_TAG_MAP" AS tm ON (m.media_uuid = tm.media_uuid) WHERE tag_id=%d AND validity=1"
 #define SELECT_MEDIA_FROM_PLAYLIST		"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE media_uuid IN (SELECT media_uuid FROM "DB_TABLE_PLAYLIST_MAP" WHERE playlist_id=%d) AND validity=1"
 #define SELECT_MEDIA_PATH_BY_ID			"SELECT path FROM "DB_TABLE_MEDIA" WHERE media_uuid='%q'"
 

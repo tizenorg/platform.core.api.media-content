@@ -197,6 +197,9 @@ static int __media_content_create_attr_handle(void)
 	ret = _media_filter_attribute_add(g_attr_handle, TAG_MEDIA_COUNT, DB_FIELD_TAG_MEDIA_COUNT);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
+	ret = _media_filter_attribute_add(g_attr_handle, TAG_TIME, DB_FIELD_TAG_TIME);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
 	/* Bookmark*/
 	ret = _media_filter_attribute_add(g_attr_handle, BOOKMARK_MARKED_TIME, DB_FIELD_BOOKMARK_MARKED_TIME);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
