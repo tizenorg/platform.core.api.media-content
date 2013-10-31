@@ -44,6 +44,7 @@ typedef struct _token_t
 #define MAX_LEFT_VALUE 512
 #define SPACE_LEN 1
 #define SPACE " "
+#define SEP ", "
 #define UNKNOWN_TYPE 1000
 #define STRING_TYPE 100
 
@@ -967,8 +968,8 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 			{
 				media_content_debug("[%d] %s", idx, token->str);
 				SAFE_STRLCAT(generated_condition, token->str, size);
-				SAFE_STRLCAT(generated_condition, SPACE, size);
-
+				if (idx < g_list_length(token_list) - 1)
+					SAFE_STRLCAT(generated_condition, SEP, size);
 				SAFE_FREE(token->str);
 				SAFE_FREE(token);
 			}
