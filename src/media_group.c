@@ -127,6 +127,9 @@ int media_album_get_album_from_db(int album_id, media_album_h *album)
 		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
 			_album->artist = strdup((const char *)sqlite3_column_text(stmt, 2));
 
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
+			_album->album_art_path = strdup((const char *)sqlite3_column_text(stmt, 3));
+
 		*album = (media_album_h)_album;
 	}
 
