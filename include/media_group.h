@@ -216,6 +216,25 @@ int media_album_get_album_art(media_album_h album, char **album_art);
  */
 int media_album_get_album_from_db(int album_id, media_album_h *album);
 
+/**
+ * @brief Gets the most played albums according to the media group type
+ *
+ *
+ *
+ * @param[in] group The media group (Possibe values: MP_GROUP_BY_(ARTISTS/YEAR/COMPOSER/GENRE))
+ * @param[in] group_value The media group value
+ * @param[in] callback The callback to be called
+ * @param[in] user_data user defined that to be used in the callback
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @pre This function requires opened connection to content service by media_content_connect().
+ * @see media_content_connect()
+ * @see media_album_destroy()
+ */
+int media_album_get_most_played_albums_by_media_group(media_group_e group, const char *group_value,
+						      media_album_cb callback, void *user_data);
+
 
 /**
  * @}

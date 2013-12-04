@@ -18,7 +18,55 @@
 #include <media_info.h>
 #include <media_info_private.h>
 #include <media_group.h>
+#include <stdio.h>
 
+
+int media_album_get_most_played_albums_by_media_group(media_group_e group,
+						      const char *group_value,
+						      media_album_cb callback,
+						      void *user_data)
+{
+	int ret;
+	sqlite3_stmt *stmt;
+	char query[DEFAULT_QUERY_SIZE];
+	const char *group_str;
+	media_album_h album;
+	bool r;
+
+	if (!group_value || !callback)
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+
+	if (group == MEDIA_CONTENT_GROUP_ARTIST)
+		group_str = "artist";
+	else if (group == MEDIA_CONTENT_GROUP_GENRE)
+		group_str = "genre";
+	else if (group == MEDIA_CONTENT_GROUP_COMPOSER)
+		group_str = "composer";
+	else if (group == MEDIA_CONTENT_GROUP_YEAR)
+		group_str = "year";
+	else
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+
+	snprintf(query, sizeof(query), "select album_id, count from (select sum(played_count) as count, album_id from media where media_type = 3 and %s='%s' group by album_id) order by count desc;", group_str, group_value);
+
+	if ((ret = _content_query_prepare(&stmt, query, NULL, NULL)) !=
+	    MEDIA_CONTENT_ERROR_NONE)
+		return ret;
+
+	while(sqlite3_step(stmt) == SQLITE_ROW)
+	{
+		album = NULL;
+		media_album_get_album_from_db(sqlite3_column_int(stmt, 0), &album);
+		if (!album)
+			continue;
+		r = (callback)(album, user_data);
+		media_album_destroy(album);
+		if (!r)
+			break;
+	}
+	sqlite3_finalize(stmt);
+	return MEDIA_CONTENT_ERROR_NONE;
+}
 
 int media_album_get_album_count_from_db(filter_h filter, int *album_count)
 {
