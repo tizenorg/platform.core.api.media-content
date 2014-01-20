@@ -623,3 +623,19 @@ int media_folder_delete_from_db(const char *folder_uuid)
 
     return ret;
 }
+
+int media_folder_auto_delete_empty_set(bool auto_delete)
+{
+    int ret = MEDIA_CONTENT_ERROR_NONE;
+    char *query_str = auto_delete ?
+            "CREATE TRIGGER if NOT EXISTS folder_cleanup DELETE ON media "
+            "BEGIN DELETE FROM folder WHERE (SELECT count(*) FROM media WHERE "
+            "folder_uuid=old.folder_uuid)=1  AND folder_uuid=old.folder_uuid; "
+            "END;" : "DROP TRIGGER IF EXISTS folder_cleanup;";
+
+    ret = _content_query_sql(query_str);
+
+    sqlite3_free(query_str);
+
+    return ret;
+}

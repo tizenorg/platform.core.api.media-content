@@ -337,6 +337,20 @@ int media_folder_get_cover_image(media_folder_h folder, char **cover_image);
 int media_folder_delete_from_db(const char *folder_uuid);
 
 /**
+ * @brief Set whether empty folders should be deleted automatically
+ * from the database or not.
+ *
+ * @param[in] auto_delete @c true (default value) to make empty
+ * folders be deleted automatically, @c false otherwise
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ *
+ * The default behavior is to delete empty folders.
+ *
+ */
+int media_folder_auto_delete_empty_set(bool auto_delete);
+
+/**
  * @}
  */
 
