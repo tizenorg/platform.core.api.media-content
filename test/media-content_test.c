@@ -23,6 +23,7 @@
 #include <dlog.h>
 #include <pthread.h>
 #include <glib.h>
+#include <tzplatform_config.h>
 
 filter_h g_filter = NULL;
 filter_h g_filter_g = NULL;	//filter for group like folder, tag, playlist, album, year ...
@@ -1515,7 +1516,8 @@ int test_media_info_operation_2(void)
 
 #if 0
 	/* Bookmark */
-	char *thumbnail_path1 = "/opt/media/Images and videos/My video clips/teat11.jpg";
+	char *thumbnail_path1;
+ 	strcpy(playlist_thumb_path, tzplatform_mkpath(TZ_USER_CONTENT, "Images and videos/My video clips/teat11.jpg"));
 	media_bookmark_insert_to_db(test_video_id, 100, thumbnail_path1);
 	media_bookmark_insert_to_db(test_video_id, 200, thumbnail_path1);
 
@@ -1648,7 +1650,8 @@ int test_playlist_operation(void)
 		media_playlist_add_media(playlist_1, test_video_id);
 
 		#if 0
-		char *playlist_thumb_path = "/opt/usr/media/Images/Default.jpg";
+		char *playlist_thumb_path;
+		strcpy(playlist_thumb_path, tzplatform_mkpath(TZ_USER_CONTENT, "Images/Default.jpg"));
 		media_playlist_set_thumbnail_path(playlist_1, playlist_thumb_path);
 		#endif
 
@@ -1931,7 +1934,8 @@ int test_bookmark_operation(void)
 		media_content_error("error media_filter_set_order : [%d]", ret);
 
 	//insert bookmark to video
-	char *thumbnail_path1 = "/opt/usr/media/Images and videos/My video clips/teat11.jpg";
+	char *thumbnail_path1;
+	strcpy(thumbnail_path1, tzplatform_mkpath(TZ_USER_CONTENT, "Images and videos/My video clips/teat11.jpg"));
 	ret = media_bookmark_insert_to_db(test_video_id, 400, thumbnail_path1);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error media_bookmark_insert_to_db : [%d]", ret);
@@ -2144,7 +2148,8 @@ int test_insert(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	//char *path = "/opt/media/Images/Default.jpg";
-	char *path = "/opt/usr/media/Others/other.txt";
+	char *path;
+	strcpy(path, tzplatform_mkpath(TZ_USER_CONTENT, "Others/other.txt"));
 	//char *path = NULL;
 	media_info_h media_item = NULL;
 	media_content_debug("\n============DB Insert Test============\n\n");
@@ -2189,7 +2194,8 @@ int test_move(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	const char *move_media_id = "60aea677-4742-408e-b5f7-f2628062d06d";
-	char *dst_path = "/opt/usr/media/Images/XX/Default1.jpg";
+	char *dst_path;
+	strcpy(dst_path, tzplatform_mkpath(TZ_USER_CONTENT, "Images/XX/Default1.jpg"));
 	media_info_h move_media = NULL;
 
 	ret = media_info_get_media_from_db(move_media_id, &move_media);
@@ -2610,7 +2616,7 @@ int test_batch_operations()
 
 	for (i = 0; i < 10; i++) {
 		char filepath[255] = {0,};
-		snprintf(filepath, sizeof(filepath), "%s%d.jpg", "/opt/usr/media/test/image", i+1);
+		snprintf(filepath, sizeof(filepath), "%s%d.jpg", tzplatform_mkpath(TZ_USER_CONTENT, "test/image"), i+1);
 		media_content_debug("File : %s\n", filepath);
 		file_list[i] = strdup(filepath);
 	}
@@ -2621,8 +2627,8 @@ int test_batch_operations()
 	}
 
 	filter_h filter;
-	char *condition = "MEDIA_PATH LIKE \'/opt/usr/media/test/image%%jpg\'";
-
+	char *condition = "MEDIA_PATH LIKE \'";
+	strncat (condition,  tzplatform_mkpath(TZ_USER_CONTENT, "test/image%%jpg\'"), 17);
 	ret = media_filter_create(&filter);
 	if(ret != MEDIA_CONTENT_ERROR_NONE) {
 		media_content_error("Fail to create filter");
@@ -2662,7 +2668,7 @@ gboolean test_insert_burst_shot_to_db_start(gpointer data)
 
 	for (i = 0; i < 10; i++) {
 		char filepath[255] = {0,};
-		snprintf(filepath, sizeof(filepath), "%s%d.jpg", "/opt/usr/media/test/image", i+1);
+		snprintf(filepath, sizeof(filepath), "%s%d.jpg", tzplatform_mkpath(TZ_USER_CONTENT, "test/image"), i+1);
 		media_content_debug("File : %s\n", filepath);
 		file_list[i] = strdup(filepath);
 	}
@@ -2704,8 +2710,8 @@ int test_scan_file()
 {
 	int ret = -1;
 
-	const char *file_path = "/opt/usr/media/test/image1.jpg";
-
+	const char *file_path;
+	strcpy(file_path, tzplatform_mkpath(TZ_USER_CONTENT, "test/image1.jpg"));
 	ret = media_content_scan_file(file_path);
 	if(ret != MEDIA_CONTENT_ERROR_NONE) {
 		media_content_error("Fail to media_content_scan_file : %d", ret);
@@ -2719,7 +2725,8 @@ gboolean test_scan_dir_start(gpointer data)
 {
 	int ret = -1;
 
-	const char *dir_path = "/opt/usr/media";
+	const char *dir_path;
+	strcpy(dir_path, tzplatform_getenv(TZ_USER_CONTENT));
 
 	ret = media_content_scan_folder(dir_path, TRUE, _scan_cb, NULL);
 
@@ -2813,7 +2820,8 @@ gboolean _send_noti_operations(gpointer data)
 
 	/* media_info_insert_to_db */
 	media_info_h media_item = NULL;
-	char *path = "/opt/usr/media/test/image1.jpg";
+	char *path;
+	strcpy(path, tzplatform_mkpath(TZ_USER_CONTENT, "test/image1.jpg"));
 
 	ret = media_info_insert_to_db(path, &media_item);
 	if (ret < MEDIA_CONTENT_ERROR_NONE) {
@@ -2826,7 +2834,8 @@ gboolean _send_noti_operations(gpointer data)
 
 	/* media_info_delete_batch_from_db */
 	filter_h filter;
-	char *condition = "MEDIA_PATH LIKE \'/opt/usr/media/test/image%%jpg\'";
+	char *condition = "MEDIA_PATH LIKE \'";
+	strncat (condition,  tzplatform_mkpath(TZ_USER_CONTENT, "test/image%%jpg\'"), 17);
 
 	ret = media_filter_create(&filter);
 	if(ret != MEDIA_CONTENT_ERROR_NONE) {
