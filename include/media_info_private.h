@@ -30,7 +30,7 @@
 #include <media_content_type.h>
 #include <dlog.h>
 #include <media-util.h>
-
+#include <tzplatform_config.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,8 +50,8 @@ extern "C" {
 
 #define MEDIA_CONTENT_PATH_PHONE 	MEDIA_ROOT_PATH_INTERNAL	/**< File path prefix of files stored in phone */
 #define MEDIA_CONTENT_PATH_MMC 		MEDIA_ROOT_PATH_SDCARD		/**< File path prefix of files stored in mmc card */
-#define MEDIA_CONTENT_THUMB_DEFAULT_PATH 	MEDIA_DATA_PATH"/.thumb/thumb_default.png"
-#define MEDIA_CONTENT_INSERT_FILES_PATH		MEDIA_DATA_PATH"/"
+#define MEDIA_CONTENT_THUMB_DEFAULT_PATH 	tzplatform_mkpath(TZ_USER_DATA, "file-manager-service/.thumb/thumb_default.png")
+#define MEDIA_CONTENT_INSERT_FILES_PATH		tzplatform_mkpath(TZ_USER_DATA, "file-manager-service/")
 
 #define MAX_QUERY_SIZE 4096
 #define MIN_QUERY_SIZE 256
@@ -60,6 +60,7 @@ extern "C" {
 #define COLLATE_STR_SIZE 32
 #define MEDIA_CONTENT_UUID_SIZE	36
 #define BATCH_REQUEST_MAX 300
+
 
 typedef enum {
 	MEDIA_CONTENT_TYPE = 0,

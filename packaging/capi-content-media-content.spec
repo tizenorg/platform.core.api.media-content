@@ -12,7 +12,7 @@ BuildRequires:  pkgconfig(capi-base-common)
 BuildRequires:  pkgconfig(libmedia-service)
 BuildRequires:  pkgconfig(media-thumbnail)
 BuildRequires:  pkgconfig(libmedia-utils)
-
+BuildRequires:  pkgconfig(libtzplatform-config)
 
 %description
 A Media content library in SLP C API.
