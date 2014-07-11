@@ -1,11 +1,11 @@
 Name:       capi-content-media-content
 Summary:    A Media content library in SLP C API
-Version: 0.2.58
+Version:    0.2.58
 Release:    0
 Group:      Multimedia/API
 License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
-Source1001: 	capi-content-media-content.manifest
+Source1001:     capi-content-media-content.manifest
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(capi-base-common)
@@ -15,8 +15,7 @@ BuildRequires:  pkgconfig(libmedia-utils)
 BuildRequires:  pkgconfig(libtzplatform-config)
 
 %description
-A Media content library in SLP C API.
-
+A Media content library in SLP C API package.
 
 %package devel
 Summary:  A Media content library in SLP C API (Development)
@@ -24,34 +23,28 @@ Group:    Development/Multimedia
 Requires: %{name} = %{version}-%{release}
 
 %description devel
+A Media content library in SLP C API (Development) package.
 %devel_desc
 
 %prep
 %setup -q
 cp %{SOURCE1001} .
 
-
 %build
 MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
 %cmake . -DFULLVER=%{version} -DMAJORVER=${MAJORVER}
-
-
-make %{?jobs:-j%jobs}
+%__make %{?jobs:-j%jobs}
 
 %install
 %make_install
-
-#License
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
-
 %files
 %manifest %{name}.manifest
 %license LICENSE.APLv2.0
-%manifest capi-content-media-content.manifest
 %{_libdir}/libcapi-content-media-content.so.*
 
 %files devel
@@ -59,5 +52,3 @@ make %{?jobs:-j%jobs}
 %{_includedir}/media-content/*.h
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/libcapi-content-media-content.so
-
-
