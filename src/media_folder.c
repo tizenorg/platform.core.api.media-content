@@ -323,6 +323,7 @@ int media_folder_get_storage_type(media_folder_h folder, media_content_storage_e
 int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folder)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	sqlite3_stmt *stmt = NULL;
 	char select_query[DEFAULT_QUERY_SIZE];
 
@@ -336,6 +337,8 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 
 	snprintf(select_query, sizeof(select_query), SELECT_FOLDER_FROM_FOLDER, folder_id);
 
+	ret_view = media_attach_view(_content_get_db_handle(), tzplatform_getuid(TZ_USER_NAME));
+
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
@@ -347,6 +350,9 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 		{
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			SQLITE3_FINALIZE(stmt);
+			if (ret_view == MEDIA_CONTENT_ERROR_NONE){
+				media_detach_view(_content_get_db_handle(), tzplatform_getuid(TZ_USER_NAME));
+			}
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
@@ -363,7 +369,9 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
+	if (ret_view == MEDIA_CONTENT_ERROR_NONE){
+		media_detach_view(_content_get_db_handle(), tzplatform_getuid(TZ_USER_NAME));
+	}
 	return ret;
 }
 
@@ -408,7 +416,7 @@ int media_folder_update_to_db(media_folder_h folder)
 		sqlite3_free(where_sql);
 
 		/* Do folder rename operation using libmedia-service */
-		ret = media_svc_rename_folder(_content_get_db_handle(), g_src_path, _folder->path);
+		ret = media_svc_rename_folder(_content_get_db_handle(), g_src_path, _folder->path, tzplatform_getuid(TZ_USER_NAME));
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 	}
 	else
