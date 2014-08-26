@@ -538,7 +538,7 @@ int _content_query_sql(char *query_str)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	//DB will be updated by Media Server.
-	ret = media_svc_request_update_db(query_str);
+	ret = media_svc_request_update_db(query_str,tzplatform_getuid(TZ_USER_NAME));
 
 	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 
@@ -597,7 +597,7 @@ int media_content_connect(void)
 		{
 			if(db_handle == NULL)
 			{
-				ret = media_svc_connect(&db_handle);
+				ret = media_svc_connect(&db_handle,tzplatform_getuid(TZ_USER_NAME));
 			}
 
 			ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -690,7 +690,7 @@ int media_content_scan_file(const char *path)
 			ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
 			if (ret == MEDIA_INFO_ERROR_NONE) {
 				/* Refresh */
-				ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, path);
+				ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, path, tzplatform_getuid(TZ_USER_NAME));
 				if (ret < 0) {
 					media_content_error("media_svc_refresh_item failed : %d", ret);
 					return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -698,7 +698,7 @@ int media_content_scan_file(const char *path)
 
 			} else if (ret == MEDIA_INFO_ERROR_DATABASE_NO_RECORD) {
 				/* Insert */
-				ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path);
+				ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path, tzplatform_getuid(TZ_USER_NAME));
 				if (ret < 0) {
 					media_content_error("media_svc_insert_item_immediately failed : %d", ret);
 					return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -715,7 +715,7 @@ int media_content_scan_file(const char *path)
 	} else {
 		/* This means this path has to be deleted */
 		media_content_debug("This path doesn't exists in file system... So now start to delete it from DB");
-		ret = media_svc_delete_item_by_path(_content_get_db_handle(), path);
+		ret = media_svc_delete_item_by_path(_content_get_db_handle(), path, tzplatform_getuid(TZ_USER_NAME));
 		if (ret < 0) {
 			media_content_error("media_svc_delete_item_by_path failed : %d", ret);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -761,7 +761,7 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 	cb_data->callback = callback;
 	cb_data->user_data = user_data;
 
-	ret = media_directory_scanning_async(path, is_recursive, _media_content_scan_cb, cb_data);
+	ret = media_directory_scanning_async(path, is_recursive, _media_content_scan_cb, cb_data, tzplatform_getuid(TZ_USER_NAME));
 	if (ret < 0) {
 		media_content_error("media_directory_scanning_async failed : %d", ret);
 	}

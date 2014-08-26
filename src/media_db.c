@@ -88,6 +88,7 @@ static char * __media_db_get_group_name(media_group_e group)
 int _media_db_get_group_count(filter_h filter, group_list_e group_type, int *group_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	sqlite3_stmt *stmt = NULL;
 	filter_s *_filter = NULL;
 	char select_query[DEFAULT_QUERY_SIZE];
@@ -194,13 +195,13 @@ int _media_db_get_group_count(filter_h filter, group_list_e group_type, int *gro
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_media_group_count(media_group_e group, filter_h filter, int *group_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	sqlite3_stmt *stmt = NULL;
 	filter_s *_filter = NULL;
 	char select_query[DEFAULT_QUERY_SIZE];
@@ -260,13 +261,13 @@ int _media_db_get_media_group_count(media_group_e group, filter_h filter, int *g
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_media_group(media_group_e group, filter_h filter, media_group_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char select_query[DEFAULT_QUERY_SIZE];
 	char *condition_query = NULL;
 	char *option_query = NULL;
@@ -325,13 +326,13 @@ int _media_db_get_media_group(media_group_e group, filter_h filter, media_group_
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_album(filter_h filter, media_album_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char select_query[DEFAULT_QUERY_SIZE];
 	char *condition_query = NULL;
 	char *option_query = NULL;
@@ -408,18 +409,19 @@ int _media_db_get_album(filter_h filter, media_album_cb callback, void *user_dat
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_folder(filter_h filter, media_folder_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char select_query[DEFAULT_QUERY_SIZE];
 	char *condition_query = NULL;
 	char *option_query = NULL;
 	sqlite3_stmt *stmt = NULL;
 	filter_s *_filter = NULL;
+	
 
 	memset(select_query, 0x00, sizeof(select_query));
 
@@ -493,13 +495,13 @@ int _media_db_get_folder(filter_h filter, media_folder_cb callback, void *user_d
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_playlist(filter_h filter, media_playlist_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char select_query[DEFAULT_QUERY_SIZE];
 	char *condition_query = NULL;
 	char *option_query = NULL;
@@ -575,13 +577,13 @@ int _media_db_get_playlist(filter_h filter, media_playlist_cb callback, void *us
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_playlist_item(int playlist_id, filter_h filter, playlist_member_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char select_query[DEFAULT_QUERY_SIZE];
 	char *condition_query = NULL;
 	char *option_query = NULL;
@@ -646,7 +648,6 @@ int _media_db_get_playlist_item(int playlist_id, filter_h filter, playlist_membe
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
@@ -654,6 +655,7 @@ int _media_db_get_playlist_item(int playlist_id, filter_h filter, playlist_membe
 int _media_db_get_tag(const char *media_id, filter_h filter, media_tag_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char select_query[DEFAULT_QUERY_SIZE];
 	char *condition_query = NULL;
 	char *option_query = NULL;
@@ -736,13 +738,13 @@ int _media_db_get_tag(const char *media_id, filter_h filter, media_tag_cb callba
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char select_query[DEFAULT_QUERY_SIZE];
 	char *condition_query = NULL;
 	char *option_query = NULL;
@@ -828,7 +830,6 @@ int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 
 }
@@ -836,6 +837,7 @@ int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark
 int _media_db_get_group_item_count_by_id(int group_id, filter_h filter, group_list_e group_type, int *item_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	sqlite3_stmt *stmt = NULL;
 	filter_s *_filter = NULL;
 	char select_query[DEFAULT_QUERY_SIZE];
@@ -908,6 +910,7 @@ int _media_db_get_group_item_count_by_id(int group_id, filter_h filter, group_li
 		SAFE_FREE(option_query);
 	}
 */
+
 	ret = _content_query_prepare(&stmt, select_query, condition_query, option_query);
 	SAFE_FREE(condition_query);
 	SAFE_FREE(option_query);
@@ -920,13 +923,13 @@ int _media_db_get_group_item_count_by_id(int group_id, filter_h filter, group_li
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_group_item_count(const char *group_name, filter_h filter, group_list_e group_type, int *item_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	sqlite3_stmt *stmt = NULL;
 	filter_s *_filter = NULL;
 	char complete_select_query[DEFAULT_QUERY_SIZE];
@@ -1034,13 +1037,13 @@ int _media_db_get_group_item_count(const char *group_name, filter_h filter, grou
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_group_item_by_id(int group_id, filter_h filter, media_info_cb callback, void *user_data, group_list_e group_type)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char select_query[DEFAULT_QUERY_SIZE];
 	char *condition_query = NULL;
 	char *option_query = NULL;
@@ -1118,13 +1121,13 @@ int _media_db_get_group_item_by_id(int group_id, filter_h filter, media_info_cb 
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_group_item(const char *group_name, filter_h filter, media_info_cb callback, void *user_data, group_list_e group_type)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char complete_select_query[DEFAULT_QUERY_SIZE];
 	char *select_query = NULL;
 	char *condition_query = NULL;
@@ -1212,13 +1215,13 @@ int _media_db_get_group_item(const char *group_name, filter_h filter, media_info
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_media_group_item_count(const char *group_name, media_group_e group, filter_h filter, int *item_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	sqlite3_stmt *stmt = NULL;
 	filter_s *_filter = NULL;
 	char complete_select_query[DEFAULT_QUERY_SIZE];
@@ -1291,13 +1294,13 @@ int _media_db_get_media_group_item_count(const char *group_name, media_group_e g
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
 
 int _media_db_get_media_group_item(const char *group_name, media_group_e group, filter_h filter, media_info_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char complete_select_query[DEFAULT_QUERY_SIZE];
 	char *select_query = NULL;
 	char *condition_query = NULL;
@@ -1374,6 +1377,5 @@ int _media_db_get_media_group_item(const char *group_name, media_group_e group, 
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
 	return ret;
 }
