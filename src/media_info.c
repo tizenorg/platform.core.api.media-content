@@ -31,6 +31,7 @@ static int __media_info_insert_batch(media_batch_insert_e insert_type, const cha
 static int __media_info_get_media_info_from_db(char *path, media_info_h media)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	sqlite3_stmt *stmt = NULL;
 	char *select_query = NULL;
 	media_info_s *_media = (media_info_s*)media;
@@ -42,6 +43,8 @@ static int __media_info_get_media_info_from_db(char *path, media_info_h media)
 	}
 
 	select_query = sqlite3_mprintf(SELECT_MEDIA_BY_PATH, path);
+
+	ret_view = media_attach_view(_content_get_db_handle(), tzplatform_getuid(TZ_USER_NAME));
 
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
 	sqlite3_free(select_query);
@@ -63,12 +66,16 @@ static int __media_info_get_media_info_from_db(char *path, media_info_h media)
 */
 	SQLITE3_FINALIZE(stmt);
 
+	if (ret_view == MEDIA_CONTENT_ERROR_NONE){
+		media_detach_view(_content_get_db_handle(), tzplatform_getuid(TZ_USER_NAME));
+	}
 	return ret;
 }
 
 static int __media_info_get_media_path_by_id_from_db(const char *media_id, char **path)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	sqlite3_stmt *stmt = NULL;
 	char *select_query = NULL;
 
@@ -79,6 +86,8 @@ static int __media_info_get_media_path_by_id_from_db(const char *media_id, char 
 	}
 
 	select_query = sqlite3_mprintf(SELECT_MEDIA_PATH_BY_ID, media_id);
+
+	ret_view = media_attach_view(_content_get_db_handle(), tzplatform_getuid(TZ_USER_NAME));
 
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
 	sqlite3_free(select_query);
@@ -95,7 +104,9 @@ static int __media_info_get_media_path_by_id_from_db(const char *media_id, char 
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
+	if (ret_view == MEDIA_CONTENT_ERROR_NONE){
+		media_detach_view(_content_get_db_handle(), tzplatform_getuid(TZ_USER_NAME));
+	}
 	return ret;
 }
 
@@ -405,7 +416,7 @@ int media_info_insert_to_db (const char *path, media_info_h *info)
 		}
 
 		media_content_debug("media_svc_insert_item_immediately: %s", _path);
-		ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, _path);
+		ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, _path, tzplatform_getuid(TZ_USER_NAME));
 
 		if (ret < 0) {
 			media_content_error("media_svc_insert_item_immediately failed : %d (%s)", ret, _path);
@@ -511,9 +522,9 @@ static int __media_info_insert_batch(media_batch_insert_e insert_type, const cha
 	_cb_data->insert_list_path = strdup(list_path);
 
 	if(insert_type == MEDIA_BATCH_INSERT_NORMAL)
-		ret = media_files_register(list_path, __media_info_insert_completed_cb, _cb_data);
+		ret = media_files_register(list_path, __media_info_insert_completed_cb, _cb_data, tzplatform_getuid(TZ_USER_NAME));
 	else if(insert_type == MEDIA_BATCH_INSERT_BURSTSHOT)
-		ret = media_burstshot_register(list_path, __media_info_insert_completed_cb, _cb_data);
+		ret = media_burstshot_register(list_path, __media_info_insert_completed_cb, _cb_data, tzplatform_getuid(TZ_USER_NAME));
 	else
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 
@@ -595,7 +606,7 @@ int media_info_delete_from_db(const char *media_id)
 		return ret;
 	}
 
-	ret = media_svc_delete_item_by_path(_content_get_db_handle(), path);
+	ret = media_svc_delete_item_by_path(_content_get_db_handle(), path, tzplatform_getuid(TZ_USER_NAME));
 	SAFE_FREE(path);
 
 	return _content_error_capi(ret,MEDIA_CONTENT_TYPE);
@@ -2155,6 +2166,7 @@ int media_info_get_storage_type(media_info_h media, media_content_storage_e *sto
 int media_info_get_media_from_db(const char *media_id, media_info_h *media)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	char select_query[DEFAULT_QUERY_SIZE];
 	sqlite3_stmt *stmt = NULL;
 
@@ -2165,6 +2177,8 @@ int media_info_get_media_from_db(const char *media_id, media_info_h *media)
 	}
 
 	memset(select_query, 0x00, sizeof(select_query));
+
+	ret_view = media_attach_view(_content_get_db_handle(), tzplatform_getuid(TZ_USER_NAME));
 
 	snprintf(select_query, sizeof(select_query), SELECT_MEDIA_FROM_MEDIA, media_id);
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
@@ -2178,6 +2192,9 @@ int media_info_get_media_from_db(const char *media_id, media_info_h *media)
 		{
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			SQLITE3_FINALIZE(stmt);
+			if (ret_view == MEDIA_CONTENT_ERROR_NONE){
+				media_detach_view(_content_get_db_handle(), tzplatform_getuid(TZ_USER_NAME));
+			}
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
@@ -2187,7 +2204,9 @@ int media_info_get_media_from_db(const char *media_id, media_info_h *media)
 	}
 
 	SQLITE3_FINALIZE(stmt);
-
+	if (ret_view == MEDIA_CONTENT_ERROR_NONE){
+		media_detach_view(_content_get_db_handle(), tzplatform_getuid(TZ_USER_NAME));
+	}
 	return ret;
 }
 
@@ -2664,7 +2683,7 @@ int media_info_refresh_metadata_to_db(const char *media_id)
 		return ret;
 	}
 
-	ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, file_path);
+	ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, file_path, tzplatform_getuid(TZ_USER_NAME));
 
 	SAFE_FREE(file_path);
 	media_info_destroy(media);
@@ -2692,7 +2711,7 @@ int media_info_move_to_db(media_info_h media, const char* dst_path)
 	ret = _media_util_get_store_type_by_path(dst_path, &dst_storage_type);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = media_svc_move_item(_content_get_db_handle(), src_storage_type, _media->file_path, dst_storage_type, dst_path);
+	ret = media_svc_move_item(_content_get_db_handle(), src_storage_type, _media->file_path, dst_storage_type, dst_path, tzplatform_getuid(TZ_USER_NAME));
 	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
@@ -2708,7 +2727,7 @@ int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb
 		_thumb_cb->user_data = user_data;
 		_thumb_cb->thumbnail_completed_cb = callback;
 
-		ret = thumbnail_request_from_db_async(_media->file_path, (ThumbFunc)__media_info_thumbnail_completed_cb, (void *)_thumb_cb);
+		ret = thumbnail_request_from_db_async(_media->file_path, (ThumbFunc)__media_info_thumbnail_completed_cb, (void *)_thumb_cb, tzplatform_getuid(TZ_USER_NAME));
 		ret = _content_error_capi(MEDIA_THUMBNAIL_TYPE, ret);
 	}
 	else
@@ -2727,7 +2746,7 @@ int media_info_cancel_thumbnail(media_info_h media)
 
 	if(_media != NULL && STRING_VALID(_media->media_id) && STRING_VALID(_media->file_path))
 	{
-		ret = thumbnail_request_cancel_media(_media->file_path);
+		ret = thumbnail_request_cancel_media(_media->file_path, tzplatform_getuid(TZ_USER_NAME));
 		ret = _content_error_capi(MEDIA_THUMBNAIL_TYPE, ret);
 	}
 	else
