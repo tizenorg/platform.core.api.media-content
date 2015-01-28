@@ -40,6 +40,19 @@ extern "C" {
 #undef LOG_TAG
 #endif
 
+
+/**
+ * @addtogroup CAPI_CONTENT_MEDIA_INFO_MODULE
+* @{
+*
+* @file media_info_private.h
+* @brief This file contains the media info API and related structure and enumeration. \n
+*        Description of the audio, video,image content involves: album, artist, album_artist, author, genre and description tags. \n
+*        Parameters of the recording are also supported, as: format, bitrate, duration, size etc. \n
+*        Defenitions of media DB fields and tables, operations with media data relating to DB and handling with media filter attributes.
+*/
+
+
 #define LOG_TAG "CAPI_CONTENT_MEDIA_CONTENT"
 
 #define SAFE_STRLCPY(dst, src, n)	((g_strlcpy(dst, src, n) < n) ? TRUE : FALSE)
@@ -54,27 +67,16 @@ extern "C" {
 #define MEDIA_CONTENT_INSERT_FILES_PATH		tzplatform_mkpath(TZ_USER_DATA, "file-manager-service/")
 
 #define MAX_QUERY_SIZE 4096
-#define MIN_QUERY_SIZE 256
 #define DEFAULT_QUERY_SIZE 1024
-#define MAX_KEYWORD_SIZE 2048
 #define COLLATE_STR_SIZE 32
 #define MEDIA_CONTENT_UUID_SIZE	36
 #define BATCH_REQUEST_MAX 300
-
 
 typedef enum {
 	MEDIA_CONTENT_TYPE = 0,
 	MEDIA_THUMBNAIL_TYPE,
 	MEDIA_REGISTER_TYPE
 } media_info_error_type_e;
-
-typedef enum {
-	Table_Media,
-	Table_Folder,
-	Table_Bookmark,
-	Table_Tag,
-	Table_TagMap,
-} media_info_table_e;
 
 typedef enum {
 	MEDIA_TAG_ADD,
@@ -239,26 +241,6 @@ typedef struct
 	video_meta_s *video_meta;
 	audio_meta_s *audio_meta;
 }media_info_s;
-
-typedef struct
-{
-	char *name;
-}media_artist_s;
-
-typedef struct
-{
-	char *name;
-}media_genre_s;
-
-typedef struct
-{
-	char *name;
-}media_composer_s;
-
-typedef struct
-{
-	char *name;
-}media_year_s;
 
 typedef struct
 {
@@ -538,10 +520,6 @@ typedef struct _media_content_cb_data {
 #define SELECT_MEDIA_FROM_MEDIA			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND media_uuid='%s'"
 #define SELECT_MEDIA_BY_PATH				"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND path='%q'"
 #define SELECT_MEDIA_FROM_ALBUM			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND album_id=%d"
-#define SELECT_MEDIA_FROM_ARTIST			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND artist='%q'"
-#define SELECT_MEDIA_FROM_GENRE			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND genre='%q'"
-#define SELECT_MEDIA_FROM_COMPOSER		"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND author='%q'"
-#define SELECT_MEDIA_FROM_YEAR			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND year='%q'"
 #define SELECT_MEDIA_FROM_GROUP			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND %s='%q'"
 #define SELECT_MEDIA_FROM_GROUP_NULL	"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND %s IS NULL"
 #define SELECT_MEDIA_FROM_FOLDER			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND folder_uuid='%q'"
@@ -669,6 +647,7 @@ int _media_db_get_media_group_item_count(const char *group_name, media_group_e g
 int _media_db_get_media_group_item(const char *group_name, media_group_e group, filter_h filter, media_info_cb callback, void *user_data);
 
 /**
+ * @internal
  * @brief Creates a media filter attribute handle.
  * @details This function creates a media filter attribute handle. The handle can be
  * used to convert to attributes of database from attributes of user.
@@ -678,12 +657,14 @@ int _media_db_get_media_group_item(const char *group_name, media_group_e group, 
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  * @see media_filter_attribute_destory()
  *
  */
 int _media_filter_attribute_create(attribute_h *attr);
 
 /**
+ * @internal
  * @brief Add the attributes to the handle.
  * @details This function add the attribute to handle.
  * @param[in] filter The handle to media filter attribute
@@ -693,12 +674,14 @@ int _media_filter_attribute_create(attribute_h *attr);
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  * @see media_filter_attribute_remove()
  *
  */
 int _media_filter_attribute_add(attribute_h atrr, char *user_attr, char *platform_attr);
 
 /**
+ * @internal
  * @brief Destroys a media filter attribute handle.
  * @details The function frees all resources related to the media filter attribute handle. The filter attribute
  * handle no longer can be used to perform any operation. A new handle
@@ -708,12 +691,14 @@ int _media_filter_attribute_add(attribute_h atrr, char *user_attr, char *platfor
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  * @see media_filter_create()
  *
  */
 int _media_filter_attribute_destory(attribute_h attr);
 
 /**
+ * @internal
  * @brief Replace to platform attributes from user attributes.
  * @details This function replace to platform attributes from user attributes to generate the WHERE clause
  * @param[in] filter The handle to media filter attribute
@@ -723,11 +708,31 @@ int _media_filter_attribute_destory(attribute_h attr);
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  * @see media_filter_attribute_create()
  * @see media_filter_attribute_destory()
  *
  */
 int _media_filter_attribute_generate(attribute_h attr, char *condition, media_content_collation_e collate_type, char **generated_condition);
+
+
+/**
+ * @internal
+ * @brief Replace to platform attributes from user attributes.
+ * @details This function replace to platform attributes from user attributes to generate the WHERE clause
+ * @param[in] filter The handle to media filter attribute
+ * @param[in] attr The attribute
+ * @param[in] generated_option The handle to generated option
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED Filed DB
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @see media_filter_attribute_create()
+ * @see media_filter_attribute_destory()
+ *
+ */
+
 int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, char **generated_option);
 
 #define FONT_COLOR_RESET    "\033[0m"
