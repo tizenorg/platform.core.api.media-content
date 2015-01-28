@@ -51,12 +51,6 @@ bool get_audio_meta(audio_meta_h audio)
 	media_content_debug("audio_id : [%s]", c_value);
 	SAFE_FREE(c_value);
 
-	ret = audio_meta_get_title(audio, &c_value);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-		media_content_error("error when get meta : [%d]", ret);
-	media_content_debug("title : [%s]", c_value);
-	SAFE_FREE(c_value);
-
 	ret = audio_meta_get_album(audio, &c_value);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get meta : [%d]", ret);
@@ -156,12 +150,6 @@ bool get_video_meta(video_meta_h video)
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get meta : [%d]", ret);
 	media_content_debug("video_id : [%s]", c_value);
-	SAFE_FREE(c_value);
-
-	ret = video_meta_get_title(video, &c_value);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-		media_content_error("error when get meta : [%d]", ret);
-	media_content_debug("title : [%s]", c_value);
 	SAFE_FREE(c_value);
 
 	ret = video_meta_get_album(video, &c_value);
@@ -1091,9 +1079,6 @@ int test_gallery_scenario(void)
 				if(ret != MEDIA_CONTENT_ERROR_NONE) {
 					media_content_error("media_info_get_video failed: %d", ret);
 				} else {
-					ret = video_meta_get_title(video_handle, &title);
-					if(ret != MEDIA_CONTENT_ERROR_NONE)
-						media_content_error("error video_meta_get_title : [%d]", ret);
 					ret = video_meta_get_artist(video_handle, &artist);
 					if(ret != MEDIA_CONTENT_ERROR_NONE)
 						media_content_error("error video_meta_get_artist : [%d]", ret);
@@ -1226,9 +1211,6 @@ int test_gallery_scenario(void)
 					if(ret != MEDIA_CONTENT_ERROR_NONE) {
 						media_content_error("media_info_get_video failed: %d", ret);
 					} else {
-						ret = video_meta_get_title(video_handle, &title);
-						if(ret != MEDIA_CONTENT_ERROR_NONE)
-							media_content_error("error video_meta_get_title : [%d]", ret);
 						ret = video_meta_get_artist(video_handle, &artist);
 						if(ret != MEDIA_CONTENT_ERROR_NONE)
 							media_content_error("error video_meta_get_artist : [%d]", ret);

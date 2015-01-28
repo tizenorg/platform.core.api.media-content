@@ -15,9 +15,7 @@
 */
 
 
-#include <media_content.h>
 #include <media_info_private.h>
-#include <media-svc.h>
 
 
 int media_bookmark_insert_to_db(const char *media_id, time_t time, const char *thumbnail_path)

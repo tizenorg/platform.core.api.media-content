@@ -15,7 +15,6 @@
 */
 
 
-#include <media_content.h>
 #include <media_info_private.h>
 
 
@@ -214,37 +213,6 @@ int audio_meta_get_media_id(audio_meta_h audio, char **media_id)
 		else
 		{
 			*media_id = NULL;
-		}
-		ret = MEDIA_CONTENT_ERROR_NONE;
-
-	}
-	else
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	return ret;
-}
-
-int audio_meta_get_title(audio_meta_h audio, char **title)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-	audio_meta_s *_audio = (audio_meta_s*)audio;
-	if(_audio)
-	{
-		if(STRING_VALID(_audio->title))
-		{
-			*title = strdup(_audio->title);
-			if(*title == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
-		}
-		else
-		{
-			*title = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 
