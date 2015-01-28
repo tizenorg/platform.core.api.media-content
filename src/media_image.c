@@ -243,37 +243,6 @@ int image_meta_get_date_taken(image_meta_h image, char **date_taken)
 	return ret;
 }
 
-int image_meta_get_title(image_meta_h image, char **title)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-	image_meta_s *_image = (image_meta_s*)image;
-	if(_image)
-	{
-		if(STRING_VALID(_image->title))
-		{
-			*title = strdup(_image->title);
-			if(*title == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
-		}
-		else
-		{
-			*title = NULL;
-		}
-		ret = MEDIA_CONTENT_ERROR_NONE;
-
-	}
-	else
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	return ret;
-}
-
 int image_meta_get_burst_id(image_meta_h image, char **burst_id)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;

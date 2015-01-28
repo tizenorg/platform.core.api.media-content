@@ -16,7 +16,6 @@
 
 
 #include <media-thumb-error.h>
-#include <media_content.h>
 #include <media_info_private.h>
 #include <media-util.h>
 
@@ -378,8 +377,6 @@ static int __media_content_create_alias_attr_handle(void)
 	ret = _media_filter_attribute_add(g_alias_attr_handle, BOOKMARK_MARKED_TIME, DB_TABLE_ALIAS_BOOKMARK"."DB_FIELD_BOOKMARK_MARKED_TIME);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	/* Album */
-
 	return ret;
 }
 
@@ -436,14 +433,16 @@ int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condit
 		return MEDIA_CONTENT_ERROR_DB_FAILED;
 	}
 
-	if(STRING_VALID(select_query)) {
-		if(!STRING_VALID(condition_query)) {
+	if(STRING_VALID(select_query))
+	{
+		if(!STRING_VALID(condition_query))
+		{
 			condition_query = " ";
 		}
 
-		if(!STRING_VALID(option_query)) {
+		if(!STRING_VALID(option_query))
+		{
 			option_query = " ";
-
 		}
 
 		//query = sqlite3_mprintf("%s %s %s", select_query, condition_query, option_query);
@@ -541,44 +540,6 @@ int _content_query_sql(char *query_str)
 	ret = media_svc_request_update_db(query_str,tzplatform_getuid(TZ_USER_NAME));
 
 	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-
-#if 0
-	int err = MEDIA_CONTENT_ERROR_NONE;
-	char *err_msg;
-
-	if(db_handle == NULL)
-	{
-		media_content_error("DB_FAILED(0x%08x) database is not connected", MEDIA_CONTENT_ERROR_DB_FAILED);
-		return MEDIA_CONTENT_ERROR_DB_FAILED;
-	}
-
-	err = sqlite3_exec(db_handle, query_str, NULL, NULL, &err_msg);
-	if(SQLITE_OK != err)
-	{
-		if(err_msg)
-		{
-			media_content_error("DB_FAILED : %s", err_msg);
-			media_content_error("DB_FAILED SQL: %s", query_str);
-			sqlite3_free(err_msg);
-		}
-
-		media_content_error("DB_FAILED(0x%08x) database operation is failed", MEDIA_CONTENT_ERROR_DB_FAILED);
-
-		if (err == SQLITE_BUSY)
-			return MEDIA_CONTENT_ERROR_DB_BUSY;
-		else
-			return MEDIA_CONTENT_ERROR_DB_FAILED;
-	}
-	else
-	{
-		media_content_info("DB_SUCCESS: %s", query_str);
-	}
-
-	if(err_msg)
-		sqlite3_free(err_msg);
-
-	return MEDIA_CONTENT_ERROR_NONE;
-#endif
 }
 
 int media_content_connect(void)
@@ -641,8 +602,7 @@ int media_content_disconnect(void)
 			{
 				ret = media_svc_disconnect(db_handle);
 				ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-				if(ret == MEDIA_CONTENT_ERROR_NONE)
-				{
+				if(ret == MEDIA_CONTENT_ERROR_NONE) {
 					ret = __media_content_destroy_attribute_handle();
 					db_handle = NULL;
 				}
