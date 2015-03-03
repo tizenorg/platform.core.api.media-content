@@ -621,6 +621,17 @@ int media_info_get_added_time(media_info_h media, time_t *added_time);
  */
 int media_info_get_modified_time(media_info_h media, time_t *time);
 
+/**
+ * @brief Gets media info's timeline.
+ *
+ * @param[in] media The handle to media info
+ * @param[out] time The date of timeline.
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ */
+int media_info_get_timeline(media_info_h media, time_t* time);
 
 /**
  * @brief Gets the thumbnail of media info.
@@ -709,6 +720,17 @@ int media_info_get_latitude(media_info_h media, double* latitude);
  */
 int media_info_get_altitude(media_info_h media, double* altitude);
 
+/**
+ * @brief Gets media info's weather.
+ *
+ * @param[in] media The handle to media info
+ * @param[out] weater The weather of media info
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ */
+int media_info_get_weather(media_info_h media, char **weather);
 
 /**
  * @brief Gets the rating of media info.
@@ -1052,6 +1074,19 @@ int media_info_set_latitude(media_info_h media, double latitude);
  */
 int media_info_set_altitude(media_info_h media, double altitude);
 
+/**
+ * @brief Sets weather to media info.
+ *
+ * @param[in] media The handle to media info
+ * @param[in] weather The weather of media info
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @post media_info_update_to_db()
+ *
+ */
+int media_info_set_weather(media_info_h media, const char *weather);
 
 /**
  * @brief Sets the rating of media info.

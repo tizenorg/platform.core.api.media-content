@@ -29,6 +29,7 @@ int audio_meta_destroy(audio_meta_h audio)
 		SAFE_FREE(_audio->title);
 		SAFE_FREE(_audio->album);
 		SAFE_FREE(_audio->artist);
+		SAFE_FREE(_audio->album_artist);
 		SAFE_FREE(_audio->genre);
 		SAFE_FREE(_audio->composer);
 		SAFE_FREE(_audio->year);
@@ -101,6 +102,17 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 		{
 			_dst->artist = strdup(_src->artist);
 			if(_dst->artist == NULL)
+			{
+				audio_meta_destroy((audio_meta_h)_dst);
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
+		if(STRING_VALID(_src->album_artist))
+		{
+			_dst->album_artist = strdup(_src->album_artist);
+			if(_dst->album_artist == NULL)
 			{
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -226,6 +238,37 @@ int audio_meta_get_media_id(audio_meta_h audio, char **media_id)
 	return ret;
 }
 
+int audio_meta_get_title(audio_meta_h audio, char **title)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	audio_meta_s *_audio = (audio_meta_s*)audio;
+	if(_audio)
+	{
+		if(STRING_VALID(_audio->title))
+		{
+			*title = strdup(_audio->title);
+			if(*title == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*title = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
 int audio_meta_get_album(audio_meta_h audio, char **album_name)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -276,6 +319,38 @@ int audio_meta_get_artist(audio_meta_h audio, char **artist_name)
 		else
 		{
 			*artist_name = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist_name)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	audio_meta_s *_audio = (audio_meta_s*)audio;
+
+	if(_audio)
+	{
+		if(STRING_VALID(_audio->album_artist))
+		{
+			*album_artist_name = strdup(_audio->album_artist);
+			if(*album_artist_name == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*album_artist_name = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 

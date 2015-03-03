@@ -165,6 +165,7 @@ typedef struct
 	char *date_taken;
 	char *title;
 	char *burst_id;
+	char *weather;
 	media_content_orientation_e orientation;
 }image_meta_s;
 
@@ -174,6 +175,7 @@ typedef struct
 	char *title;
 	char *album;
 	char *artist;
+	char *album_artist;
 	char *genre;
 	char *composer;
 	char *year;
@@ -195,6 +197,7 @@ typedef struct
 	char *title;
 	char *album;
 	char *artist;
+	char *album_artist;
 	char *genre;
 	char *composer;
 	char *year;
@@ -220,11 +223,13 @@ typedef struct
 	unsigned long long size;
 	time_t added_time;
 	time_t modified_time;
+	time_t timeline;
 	char *thumbnail_path;
 	char *description;
 	double longitude;
 	double latitude;
 	double altitude;
+	char *weather;
 	int rating;
 	int favourite;
 	char *title;
@@ -237,6 +242,7 @@ typedef struct
 	char *keyword;
 	int is_drm;
 	int storage_type;
+	int sync_status;
 	image_meta_s *image_meta;
 	video_meta_s *video_meta;
 	audio_meta_s *audio_meta;
@@ -325,10 +331,12 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_MEDIA_SIZE					"size"
 #define DB_FIELD_MEDIA_ADDED_TIME			"added_time"
 #define DB_FIELD_MEDIA_MODIFIED_TIME		"modified_time"
+#define DB_FIELD_MEDIA_TIMELINE				"timeline"
 #define DB_FIELD_MEDIA_THUMBNAIL_PATH	"thumbnail_path"
 #define DB_FIELD_MEDIA_TITLE				"title"
 #define DB_FIELD_MEDIA_ALBUM				"album"
 #define DB_FIELD_MEDIA_ARTIST				"artist"
+#define DB_FIELD_MEDIA_ALBUM_ARTIST			"album_artist"
 #define DB_FIELD_MEDIA_GENRE				"genre"
 #define DB_FIELD_MEDIA_COMPOSER			"composer"
 #define DB_FIELD_MEDIA_YEAR				"year"
@@ -360,8 +368,26 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_MEDIA_LOCATION_TAG		"location_tag"
 #define DB_FIELD_MEDIA_AGE_RATING			"age_rating"
 #define DB_FIELD_MEDIA_KEYWORD			"keyword"
+#define DB_FIELD_MEDIA_WEATHER			"weather"
 #define DB_FIELD_MEDIA_IS_DRM				"is_drm"
 #define DB_FIELD_MEDIA_STORAGE_TYPE		"storage_type"
+
+#define DB_FIELD_MEDIA_FILE_NAME_PINYIN			"file_name_pinyin"
+#define DB_FIELD_MEDIA_TITLE_PINYIN					"title_pinyin"
+#define DB_FIELD_MEDIA_ALBUM_PINYIN				"album_pinyin"
+#define DB_FIELD_MEDIA_ARTIST_PINYIN				"artist_pinyin"
+#define DB_FIELD_MEDIA_ALBUM_ARTIST_PINYIN		"album_artist_pinyin"
+#define DB_FIELD_MEDIA_GENRE_PINYIN				"genre_pinyin"
+#define DB_FIELD_MEDIA_COMPOSER_PINYIN			"composer_pinyin"
+#define DB_FIELD_MEDIA_COPYRIGHT_PINYIN			"copyright_pinyin"
+#define DB_FIELD_MEDIA_DESCRIPTION_PINYIN			"description_pinyin"
+#define DB_FIELD_MEDIA_AUTHOR_PINYIN				"author_pinyin"
+#define DB_FIELD_MEDIA_PROVIDER_PINYIN			"provider_pinyin"
+#define DB_FIELD_MEDIA_CONTENT_NAME_PINYIN		"content_name_pinyin"
+#define DB_FIELD_MEDIA_CATEGORY_PINYIN			"category_pinyin"
+#define DB_FIELD_MEDIA_LOCATION_TAG_PINYIN		"location_tag_pinyin"
+#define DB_FIELD_MEDIA_AGE_RATING_PINYIN			"age_rating_pinyin"
+#define DB_FIELD_MEDIA_KEYWORD_PINYIN				"keyword_pinyin"
 
 /* DB field for folder */
 #define DB_FIELD_FOLDER_ID				"folder_uuid"
@@ -369,6 +395,7 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_FOLDER_NAME			"name"
 #define DB_FIELD_FOLDER_MODIFIED_TIME	"modified_time"
 #define DB_FIELD_FOLDER_STORAGE_TYPE	"storage_type"
+#define DB_FIELD_FOLDER_NAME_PINYIN	"name_pinyin"
 
 /* DB field for playlist */
 #define DB_FIELD_PLAYLIST_ID					"playlist_id"
@@ -508,13 +535,13 @@ typedef struct _media_content_cb_data {
 
 /* Update Meta*/
 #define UPDATE_AV_META_FROM_MEDIA	"UPDATE "DB_TABLE_MEDIA" SET played_count=%d, last_played_time=%d, last_played_position=%d WHERE media_uuid='%q'"
-#define UPDATE_IMAGE_META_FROM_MEDIA	"UPDATE "DB_TABLE_MEDIA" SET orientation=%d WHERE media_uuid='%q'"
+#define UPDATE_IMAGE_META_FROM_MEDIA	"UPDATE "DB_TABLE_MEDIA" SET orientation=%d, weather=%Q WHERE media_uuid='%q'"
 
 /* Get Media list of Group */
 //#define MEDIA_INFO_ITEM "media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description,
 //							rating, favourite, author, provider, content_name, category, location_tag, age_rating, is_drm, storage_type"
 #define MEDIA_INFO_ITEM "media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description, \
-							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, width, height, datetaken, orientation, title, album, artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, duration, played_count, last_played_time, last_played_position, samplerate, channel, burst_id"
+							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, width, height, datetaken, orientation, title, album, artist, album_artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, duration, played_count, last_played_time, last_played_position, samplerate, channel, burst_id, timeline, weather, sync_status"
 
 #define SELECT_MEDIA_ITEM 					"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1"
 #define SELECT_MEDIA_FROM_MEDIA			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND media_uuid='%s'"

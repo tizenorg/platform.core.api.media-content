@@ -31,6 +31,7 @@ int image_meta_destroy(image_meta_h image)
 		SAFE_FREE(_image->media_id);
 		SAFE_FREE(_image->date_taken);
 		SAFE_FREE(_image->title);
+		SAFE_FREE(_image->weather);
 		SAFE_FREE(_image->burst_id);
 		SAFE_FREE(_image);
 
@@ -85,6 +86,17 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src)
 		{
 			_dst->title = strdup(_src->title);
 			if(_dst->title == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				image_meta_destroy((image_meta_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
+		if(STRING_VALID(_src->weather))
+		{
+			_dst->weather = strdup(_src->weather);
+			if(_dst->weather == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				image_meta_destroy((image_meta_h)_dst);
@@ -243,6 +255,68 @@ int image_meta_get_date_taken(image_meta_h image, char **date_taken)
 	return ret;
 }
 
+int image_meta_get_title(image_meta_h image, char **title)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	image_meta_s *_image = (image_meta_s*)image;
+	if(_image)
+	{
+		if(STRING_VALID(_image->title))
+		{
+			*title = strdup(_image->title);
+			if(*title == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*title = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int image_meta_get_weather(image_meta_h image, char **weather)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	image_meta_s *_image = (image_meta_s*)image;
+	if(_image)
+	{
+		if(STRING_VALID(_image->weather))
+		{
+			*weather = strdup(_image->weather);
+			if(*weather == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*weather = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
 int image_meta_get_burst_id(image_meta_h image, char **burst_id)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -296,6 +370,39 @@ int image_meta_is_burst_shot(image_meta_h image, bool *is_burst_shot)
 
 	return ret;
 }
+
+int image_meta_set_weather(image_meta_h image, const char *weather)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	image_meta_s *_image = (image_meta_s*)image;
+
+	if(_image != NULL)
+	{
+		SAFE_FREE(_image->weather);
+
+		if(STRING_VALID(weather))
+		{
+			_image->weather = strdup(weather);
+			if(_image->weather == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			_image->weather = NULL;
+		}
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
 int image_meta_set_orientation(image_meta_h image, media_content_orientation_e orientation)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -326,7 +433,7 @@ int image_meta_update_to_db(image_meta_h image)
 
 	if(_image != NULL && STRING_VALID(_image->media_id))
 	{
-		sql = sqlite3_mprintf(UPDATE_IMAGE_META_FROM_MEDIA, _image->orientation, _image->media_id);
+		sql = sqlite3_mprintf(UPDATE_IMAGE_META_FROM_MEDIA, _image->orientation, _image->weather, _image->media_id);
 		ret = _content_query_sql(sql);
 		sqlite3_free(sql);
 	}

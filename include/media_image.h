@@ -163,6 +163,37 @@ int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *
 int image_meta_get_date_taken(image_meta_h image, char **date_taken);
 
 /**
+ * @brief Gets the title.
+ *
+ * @remarks @a title must be released with free() by you.
+ *
+ * @param[in] media The handle to image metadata
+ * @param[out] title title of image
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ */
+int image_meta_get_title(image_meta_h image, char **title);
+
+/**
+ * @brief Gets the weather in maker note in exif.
+ *        Example) WeatherInfo: Weather Condition=Sunny, Low Temp=22, High Temp=31
+ *
+ * @remarks @a weather must be released with free() by you.
+ *
+ * @param[in] image The handle to image metadata
+ * @param[out] weather weather of image
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ */
+int image_meta_get_weather(image_meta_h image, char **weather);
+
+/**
  * @brief Gets the burst shot ID.
  * @since_tizen 2.3
  *
@@ -197,6 +228,18 @@ int image_meta_get_burst_id(image_meta_h image, char **burst_id);
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  */
 int image_meta_is_burst_shot(image_meta_h image, bool *is_burst_shot);
+
+/**
+ * @brief Sets the weather information.
+ *
+ * @param [in] image The handle to image metadata
+ * @param [in] weather The image weather information
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @post image_meta_update_to_db()
+ */
+int image_meta_set_weather(image_meta_h image, const char *weather);
 
 /**
  * @brief Sets an orientation of the image.

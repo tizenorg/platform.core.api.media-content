@@ -677,11 +677,14 @@ int media_info_destroy(media_info_h media)
 		SAFE_FREE(_media->age_rating);
 		SAFE_FREE(_media->keyword);
 		SAFE_FREE(_media->title);
+		SAFE_FREE(_media->weather);
 
 		if(_media->image_meta) {
 			SAFE_FREE(_media->image_meta->media_id);
 			SAFE_FREE(_media->image_meta->date_taken);
 			SAFE_FREE(_media->image_meta->burst_id);
+			SAFE_FREE(_media->image_meta->title);
+			SAFE_FREE(_media->image_meta->weather);
 
 			SAFE_FREE(_media->image_meta);
 		} else if(_media->video_meta) {
@@ -689,6 +692,7 @@ int media_info_destroy(media_info_h media)
 			SAFE_FREE(_media->video_meta->title);
 			SAFE_FREE(_media->video_meta->album);
 			SAFE_FREE(_media->video_meta->artist);
+			SAFE_FREE(_media->video_meta->album_artist);
 			SAFE_FREE(_media->video_meta->genre);
 			SAFE_FREE(_media->video_meta->composer);
 			SAFE_FREE(_media->video_meta->year);
@@ -702,6 +706,7 @@ int media_info_destroy(media_info_h media)
 			SAFE_FREE(_media->audio_meta->title);
 			SAFE_FREE(_media->audio_meta->album);
 			SAFE_FREE(_media->audio_meta->artist);
+			SAFE_FREE(_media->audio_meta->album_artist);
 			SAFE_FREE(_media->audio_meta->genre);
 			SAFE_FREE(_media->audio_meta->composer);
 			SAFE_FREE(_media->audio_meta->year);
@@ -801,6 +806,18 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
+
+		if(STRING_VALID(_src->weather))
+		{
+			_dst->weather = strdup(_src->weather);
+			if(_dst->weather == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				media_info_destroy((media_info_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
 		if(STRING_VALID(_src->title))
 		{
 			_dst->title = strdup(_src->title);
@@ -886,6 +903,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		_dst->size = _src->size;
 		_dst->added_time = _src->added_time;
 		_dst->modified_time = _src->modified_time;
+		_dst->timeline = _src->timeline;
 		_dst->longitude = _src->longitude;
 		_dst->latitude = _src->latitude;
 		_dst->altitude = _src->altitude;
@@ -893,6 +911,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		_dst->favourite = _src->favourite;
 		_dst->is_drm = _src->is_drm;
 		_dst->storage_type = _src->storage_type;
+		_dst->sync_status = _src->sync_status;
 
 		if(_src->media_type == MEDIA_CONTENT_TYPE_IMAGE && _src->image_meta) {
 			_dst->image_meta = (image_meta_s *)calloc(1, sizeof(image_meta_s));
@@ -935,6 +954,18 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
+
+			if(STRING_VALID(_src->image_meta->weather))
+			{
+				_dst->image_meta->weather = strdup(_src->image_meta->weather);
+				if(_dst->image_meta->weather == NULL)
+				{
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+					media_info_destroy((media_info_h)_dst);
+					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+				}
+			}
+
 			_dst->image_meta->width = _src->image_meta->width;
 			_dst->image_meta->height = _src->image_meta->height;
 			_dst->image_meta->orientation = _src->image_meta->orientation;
@@ -1353,6 +1384,10 @@ int media_info_get_image(media_info_h media, image_meta_h *image)
 		_image->burst_id = strdup(_media->image_meta->burst_id);
 	}
 
+	if(STRING_VALID(_media->image_meta->weather)) {
+		_image->weather = strdup(_media->image_meta->weather);
+	}
+
 	*image = (image_meta_h)_image;
 
 	return ret;
@@ -1710,6 +1745,24 @@ int media_info_get_modified_time(media_info_h media, time_t* time)
 	return ret;
 }
 
+int media_info_get_timeline(media_info_h media, time_t* time)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+	if(_media && time)
+	{
+		*time = _media->timeline;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
 int media_info_get_thumbnail_path(media_info_h media, char **path)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -1848,6 +1901,37 @@ int media_info_get_altitude(media_info_h media, double *altitude)
 	if(_media && altitude)
 	{
 		*altitude = _media->altitude;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_get_weather(media_info_h media, char **weather)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if(_media && weather)
+	{
+		if(STRING_VALID(_media->weather))
+		{
+			*weather = strdup(_media->weather);
+			if(*weather == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*weather = NULL;
+		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
 	else
@@ -2304,6 +2388,39 @@ int media_info_set_altitude(media_info_h media, double altitude)
 	return ret;
 }
 
+int media_info_set_weather(media_info_h media, const char *weather)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if(_media != NULL)
+	{
+		SAFE_FREE(_media->weather);
+
+		if(STRING_VALID(weather))
+		{
+			_media->weather = strdup(weather);
+
+			if(_media->weather == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			_media->weather = NULL;
+		}
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
 int media_info_set_rating(media_info_h media, int rating)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -2597,10 +2714,48 @@ int media_info_update_to_db(media_info_h media)
 		char *test_sql = sqlite3_mprintf("%f, %f, %f", _media->longitude, _media->latitude, _media->altitude);
 		sqlite3_free(test_sql);
 
+		/*Update Pinyin If Support Pinyin*/
+		char *file_name_pinyin = NULL;
+		char *description_pinyin = NULL;
+		char *author_pinyin = NULL;
+		char *provider_pinyin = NULL;
+		char *content_name_pinyin = NULL;
+		char *category_pinyin = NULL;
+		char *location_tag_pinyin = NULL;
+		char *age_rating_pinyin = NULL;
+		char *keyword_pinyin = NULL;
+		bool pinyin_support = FALSE;
+
+		/*Update Pinyin If Support Pinyin*/
+		media_svc_check_pinyin_support(&pinyin_support);
+		if(pinyin_support)
+		{
+			if(STRING_VALID(_media->display_name))
+				media_svc_get_pinyin(_content_get_db_handle(), _media->display_name, &file_name_pinyin);
+			if(STRING_VALID(_media->description))
+				media_svc_get_pinyin(_content_get_db_handle(), _media->description, &description_pinyin);
+			if(STRING_VALID(_media->author))
+				media_svc_get_pinyin(_content_get_db_handle(), _media->author, &author_pinyin);
+			if(STRING_VALID(_media->provider))
+				media_svc_get_pinyin(_content_get_db_handle(), _media->provider, &provider_pinyin);
+			if(STRING_VALID(_media->content_name))
+				media_svc_get_pinyin(_content_get_db_handle(), _media->content_name, &content_name_pinyin);
+			if(STRING_VALID(_media->category))
+				media_svc_get_pinyin(_content_get_db_handle(), _media->category, &category_pinyin);
+			if(STRING_VALID(_media->location_tag))
+				media_svc_get_pinyin(_content_get_db_handle(), _media->location_tag, &location_tag_pinyin);
+			if(STRING_VALID(_media->age_rating))
+				media_svc_get_pinyin(_content_get_db_handle(), _media->age_rating, &age_rating_pinyin);
+			if(STRING_VALID(_media->keyword))
+				media_svc_get_pinyin(_content_get_db_handle(), _media->keyword, &keyword_pinyin);
+		}
+
 		set_sql = sqlite3_mprintf("file_name=%Q, added_time=%d, description=%Q, longitude=%f, latitude=%f, altitude=%f, \
-			rating=%d, favourite=%d, author=%Q, provider=%Q, content_name=%Q, category=%Q, location_tag=%Q, age_rating=%Q, keyword=%Q",
+			rating=%d, favourite=%d, author=%Q, provider=%Q, content_name=%Q, category=%Q, location_tag=%Q, age_rating=%Q, keyword=%Q, weather=%Q, sync_status=%d, \
+			file_name_pinyin=%Q, description_pinyin=%Q, author_pinyin=%Q, provider_pinyin=%Q, content_name_pinyin=%Q, category_pinyin=%Q, location_tag_pinyin=%Q, age_rating_pinyin=%Q, keyword_pinyin=%Q",
 			_media->display_name, _media->added_time, _media->description, _media->longitude, _media->latitude, _media->altitude, _media->rating, _media->favourite,
-			_media->author, _media->provider, _media->content_name, _media->category, _media->location_tag, _media->age_rating, _media->keyword);
+			_media->author, _media->provider, _media->content_name, _media->category, _media->location_tag, _media->age_rating, _media->keyword, _media->weather, _media->sync_status,
+			file_name_pinyin, description_pinyin, author_pinyin, provider_pinyin, content_name_pinyin, category_pinyin, location_tag_pinyin, age_rating_pinyin, keyword_pinyin);
 
 		len = snprintf(sql, sizeof(sql), "UPDATE %s SET %s WHERE media_uuid='%s'", DB_TABLE_MEDIA, set_sql, _media->media_id);
 		sqlite3_free(set_sql);

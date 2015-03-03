@@ -104,6 +104,20 @@ int video_meta_destroy(video_meta_h video);
 int video_meta_get_media_id(video_meta_h video, char **media_id);
 
 /**
+ * @brief Gets the video's title.
+ *
+ * @remarks @a title must be released with free() by you.
+ *
+ * @param [in] video The handle to video metadata
+ * @param [out] title The title of video metadata
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ */
+int video_meta_get_title(video_meta_h video, char **title);
+
+/**
  * @brief Gets the video's album.
  * @details If the value is an empty string, the method returns "Unknown".
  *
@@ -145,6 +159,20 @@ int video_meta_get_album(video_meta_h video, char **album);
  */
 int video_meta_get_artist(video_meta_h video, char **artist);
 
+/**
+ * @brief Gets the video's album_artist.
+ * If the value is an empty string, the method returns "Unknown".
+ *
+ * @remarks @a album_artist must be released with free() by you.
+ *
+ * @param [in] video The handle to video metadata
+ * @param [out] album_artist The album_artist of video metadata
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ */
+int video_meta_get_album_artist(video_meta_h video, char **album_artist);
 
 /**
  * @brief Gets the video genre.

@@ -121,6 +121,7 @@ typedef enum
     MEDIA_CONTENT_COLLATE_DEFAULT   = 0,        /**< Default collation BINARY */
     MEDIA_CONTENT_COLLATE_NOCASE    = 1,        /**< Collation NOCASE, not case sensitive */
     MEDIA_CONTENT_COLLATE_RTRIM     = 2,        /**< Collation RTRIM, trailing space characters are ignored */
+    MEDIA_CONTENT_COLLATE_LOCALIZED = 3,        /**< Collation LOCALIZATION, NOCASE also applied */
 } media_content_collation_e;
 
 #define MEDIA_CONTENT_ERROR_CLASS				TIZEN_ERROR_MEDIA_CONTENT
@@ -555,9 +556,26 @@ typedef bool (*media_group_cb)(const char *group_name, void *user_data);
 #define MEDIA_LOCATION_TAG "MEDIA_LOCATION_TAG"  /**< Media location tag*/
 #define MEDIA_AGE_RATING "MEDIA_AGE_RATING"  /**< Media age rating*/
 #define MEDIA_KEYWORD "MEDIA_KEYWORD"  /**< Media keyword*/
+#define MEDIA_WEATHER "MEDIA_WEATHER"	/**< Media weather*/
 #define MEDIA_IS_DRM "MEDIA_IS_DRM"  /**< Is DRM. 0-not drm, 1-drm*/
 #define MEDIA_STORAGE_TYPE "MEDIA_STORAGE_TYPE"  /**< Media storage. 0-internal storage, 1-external storage*/
 
+#define MEDIA_FILE_NAME_PINYIN "MEDIA_FILE_NAME_PINYIN"		/**< media file name pinyin */
+#define MEDIA_TITLE_PINYIN "MEDIA_TITLE_PINYIN"		/**< media title pinyin */
+#define MEDIA_ALBUM_PINYIN "MEDIA_ALBUM_PINYIN"	/**< media album pinyin*/
+#define MEDIA_ARTIST_PINYIN "MEDIA_ARTIST_PINYIN"		/**< media artist pinyin*/
+#define MEDIA_ALBUM_ARTIST_PINYIN "MEDIA_ALBUM_ARTIST_PINYIN"		/**< media album_artist pinyin*/
+#define MEDIA_GENRE_PINYIN "MEDIA_GENRE_PINYIN"		/**< media genre pinyin*/
+#define MEDIA_COMPOSER_PINYIN "MEDIA_COMPOSER_PINYIN"	/**< media composer pinyin*/
+#define MEDIA_COPYRIGHT_PINYIN "MEDIA_COPYRIGHT_PINYIN"		/**< media copyright pinyin*/
+#define MEDIA_DESCRIPTION_PINYIN "MEDIA_DESCRIPTION_PINYIN"	/**< media description pinyin*/
+#define MEDIA_AUTHOR_PINYIN "MEDIA_AUTHOR_PINYIN"	/**< media authore pinyin*/
+#define MEDIA_PROVIDER_PINYIN "MEDIA_PROVIDER_PINYIN"	/**< media provider pinyin*/
+#define MEDIA_CONTENT_NAME_PINYIN "MEDIA_CONTENT_NAME_PINYIN"	/**< media content name pinyin*/
+#define MEDIA_CATEGORY_PINYIN "MEDIA_CATEGORY_PINYIN"	/**< media category pinyin*/
+#define MEDIA_LOCATION_TAG_PINYIN "MEDIA_LOCATION_TAG_PINYIN"	/**< media location tag pinyin*/
+#define MEDIA_AGE_RATING_PINYIN "MEDIA_AGE_RATING_PINYIN"	/**< media age rating pinyin*/
+#define MEDIA_KEYWORD_PINYIN "MEDIA_KEYWORD_PINYIN"	/**< media keyword pinyin*/
 /**
  * @}
  */
@@ -573,6 +591,7 @@ typedef bool (*media_group_cb)(const char *group_name, void *user_data);
 #define FOLDER_NAME "FOLDER_NAME"  /**< Folder base name */
 #define FOLDER_MODIFIED_TIME "FOLDER_MODIFIED_TIME"  /**< Folder modified time */
 #define FOLDER_STORAGE_TYPE "FOLDER_STORAGE_TYPE"  /**< Folder storage. 0-internal storage, 1-external storage*/
+#define FOLDER_NAME_PINYIN "FOLDER_NAME_PINYIN"		/**< folder base name pinyin*/
 
 /**
  * @}

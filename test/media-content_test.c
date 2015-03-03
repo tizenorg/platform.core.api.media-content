@@ -51,6 +51,12 @@ bool get_audio_meta(audio_meta_h audio)
 	media_content_debug("audio_id : [%s]", c_value);
 	SAFE_FREE(c_value);
 
+	ret = audio_meta_get_title(audio, &c_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get meta : [%d]", ret);
+	media_content_debug("title : [%s]", c_value);
+	SAFE_FREE(c_value);
+
 	ret = audio_meta_get_album(audio, &c_value);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get meta : [%d]", ret);
@@ -61,6 +67,12 @@ bool get_audio_meta(audio_meta_h audio)
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get meta : [%d]", ret);
 	media_content_debug("artist : [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = audio_meta_get_album_artist(audio, &c_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get meta : [%d]", ret);
+	media_content_debug("album_artist : [%s]", c_value);
 	SAFE_FREE(c_value);
 
 	ret = audio_meta_get_genre(audio, &c_value);
@@ -152,6 +164,12 @@ bool get_video_meta(video_meta_h video)
 	media_content_debug("video_id : [%s]", c_value);
 	SAFE_FREE(c_value);
 
+	ret = video_meta_get_title(video, &c_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get meta : [%d]", ret);
+	media_content_debug("title : [%s]", c_value);
+	SAFE_FREE(c_value);
+
 	ret = video_meta_get_album(video, &c_value);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get meta : [%d]", ret);
@@ -162,6 +180,12 @@ bool get_video_meta(video_meta_h video)
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get meta : [%d]", ret);
 	media_content_debug("artist : [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = video_meta_get_album_artist(video, &c_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get meta : [%d]", ret);
+	media_content_debug("album_artist : [%s]", c_value);
 	SAFE_FREE(c_value);
 
 	ret = video_meta_get_genre(video, &c_value);
@@ -335,6 +359,7 @@ bool media_item_cb(media_info_h media, void *user_data)
 		media_content_orientation_e orientation = 0;
 		bool is_burst_shot = false;
 		char *burst_id = NULL;
+		char *weather = NULL;
 
 		if(media_info_get_image(media, &image) == MEDIA_CONTENT_ERROR_NONE)
 		{
@@ -357,6 +382,12 @@ bool media_item_cb(media_info_h media, void *user_data)
 
 				SAFE_FREE(burst_id);
 			}
+
+			ret = image_meta_get_weather(image, &weather);
+			if(ret != MEDIA_CONTENT_ERROR_NONE)
+				media_content_error("error image_meta_get_weather : [%d]", ret);
+			else
+				media_content_debug("[image] weather : %s", weather);
 
 			ret = image_meta_destroy(image);
 			if(ret != MEDIA_CONTENT_ERROR_NONE)
@@ -474,6 +505,11 @@ bool media_item_cb(media_info_h media, void *user_data)
 		media_content_error("error when get info : [%d]", ret);
 	media_content_debug("modified_time : [%d]", t_value);
 
+	ret = media_info_get_timeline(media, &t_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get info : [%d]", ret);
+	media_content_debug("timeline : [%d]", t_value);
+
 	ret = media_info_get_rating(media, &i_value);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get info : [%d]", ret);
@@ -488,6 +524,20 @@ bool media_item_cb(media_info_h media, void *user_data)
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get info : [%d]", ret);
 	media_content_debug("is_drm : [%d]", b_value);
+	
+	// build error
+	/*
+	ret = media_info_set_weather(media, "Sunny");
+	if(ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_content_error("Fail to set weather");
+		return ret;
+
+	ret = media_info_get_weather(media, &c_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get info : [%d]", ret);
+	media_content_debug("weather : [%s]", c_value);
+	SAFE_FREE(c_value);
+	*/
 
 	/* Media server can't update when another db handle holds DB connection by sqlite3_prepare */
 	//ret = media_info_set_location_tag(media, "Test location tag");
@@ -509,7 +559,8 @@ bool folder_list_cb(media_folder_h folder, void *user_data)
 
 	if(folder != NULL)
 	{
-		media_folder_clone(_folder, folder);
+		if(_folder != NULL)
+			media_folder_clone(_folder, folder);
 
 		if(media_folder_get_folder_id(folder, &folder_id) != MEDIA_CONTENT_ERROR_NONE)
 		{
@@ -1071,7 +1122,7 @@ int test_gallery_scenario(void)
 
 			} else if(media_type == MEDIA_CONTENT_TYPE_VIDEO) {
 				video_meta_h video_handle;
-				char *title = NULL, *artist = NULL, *album = NULL;
+				char *title = NULL, *artist = NULL, *album = NULL, *album_artist = NULL;
 				int duration = 0;
 				time_t time_played = 0;
 
@@ -1079,12 +1130,18 @@ int test_gallery_scenario(void)
 				if(ret != MEDIA_CONTENT_ERROR_NONE) {
 					media_content_error("media_info_get_video failed: %d", ret);
 				} else {
+					ret = video_meta_get_title(video_handle, &title);
+					if(ret != MEDIA_CONTENT_ERROR_NONE)
+						media_content_error("error video_meta_get_title : [%d]", ret);
 					ret = video_meta_get_artist(video_handle, &artist);
 					if(ret != MEDIA_CONTENT_ERROR_NONE)
 						media_content_error("error video_meta_get_artist : [%d]", ret);
 					ret = video_meta_get_album(video_handle, &album);
 					if(ret != MEDIA_CONTENT_ERROR_NONE)
 						media_content_error("error video_meta_get_album : [%d]", ret);
+					ret = video_meta_get_album_artist(video_handle, &album_artist);
+					if(ret != MEDIA_CONTENT_ERROR_NONE)
+						media_content_error("error video_meta_get_album_artist : [%d]", ret);
 					ret = video_meta_get_duration(video_handle, &duration);
 					if(ret != MEDIA_CONTENT_ERROR_NONE)
 						media_content_error("error video_meta_get_duration : [%d]", ret);
@@ -1093,12 +1150,13 @@ int test_gallery_scenario(void)
 						media_content_error("error video_meta_get_played_time : [%d]", ret);
 
 					media_content_debug("This is Video");
-					media_content_debug("Title: %s, Album: %s, Artist: %s\nDuration: %d, Played time: %d", title, artist, album, duration, time_played);
+					media_content_debug("Title: %s, Album: %s, Artist: %s, Album_artist: %s \n Duration: %d, Played time: %d", title, album, artist, album_artist, duration, time_played);
 				}
 
 				SAFE_FREE(title);
 				SAFE_FREE(artist);
 				SAFE_FREE(album);
+				SAFE_FREE(album_artist);
 
 				ret = video_meta_destroy(video_handle);
 				if(ret != MEDIA_CONTENT_ERROR_NONE)
@@ -1203,7 +1261,7 @@ int test_gallery_scenario(void)
 
 				} else if(media_type == MEDIA_CONTENT_TYPE_VIDEO) {
 					video_meta_h video_handle;
-					char *title = NULL, *artist = NULL, *album = NULL;
+					char *title = NULL, *artist = NULL, *album = NULL, *album_artist = NULL;;
 					int duration = 0;
 					time_t time_played;
 
@@ -1211,12 +1269,18 @@ int test_gallery_scenario(void)
 					if(ret != MEDIA_CONTENT_ERROR_NONE) {
 						media_content_error("media_info_get_video failed: %d", ret);
 					} else {
+						ret = video_meta_get_title(video_handle, &title);
+						if(ret != MEDIA_CONTENT_ERROR_NONE)
+							media_content_error("error video_meta_get_title : [%d]", ret);
 						ret = video_meta_get_artist(video_handle, &artist);
 						if(ret != MEDIA_CONTENT_ERROR_NONE)
 							media_content_error("error video_meta_get_artist : [%d]", ret);
 						ret = video_meta_get_album(video_handle, &album);
 						if(ret != MEDIA_CONTENT_ERROR_NONE)
 							media_content_error("error video_meta_get_album : [%d]", ret);
+						ret = video_meta_get_album_artist(video_handle, &album_artist);
+						if(ret != MEDIA_CONTENT_ERROR_NONE)
+							media_content_error("error video_meta_get_album_artist : [%d]", ret);
 						ret = video_meta_get_duration(video_handle, &duration);
 						if(ret != MEDIA_CONTENT_ERROR_NONE)
 							media_content_error("error video_meta_get_duration : [%d]", ret);
@@ -1225,12 +1289,13 @@ int test_gallery_scenario(void)
 							media_content_error("error video_meta_get_played_time : [%d]", ret);
 
 						media_content_debug("This is Video");
-						media_content_debug("Title: %s, Album: %s, Artist: %s\nDuration: %d, Played time: %d\n", title, artist, album, duration, time_played);
+						media_content_debug("Title: %s, Album: %s, Artist: %s, Album_artist: %s \n Duration: %d, Played time: %d\n", title, album, artist, album_artist, duration, time_played);
 					}
 
 					SAFE_FREE(title);
 					SAFE_FREE(artist);
 					SAFE_FREE(album);
+					SAFE_FREE(album_artist);
 
 					ret = video_meta_destroy(video_handle);
 					if(ret != MEDIA_CONTENT_ERROR_NONE)

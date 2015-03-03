@@ -100,6 +100,20 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src);
 int audio_meta_get_media_id(audio_meta_h audio, char **media_id);
 
 /**
+ * @brief Gets title of audio of given audio metadata.
+ *
+ * @remarks @a audio title must be released with free() by you.
+ *
+ * @param [in] audio The handle to audio metadata
+ * @param [out] title The title of the audio
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ */
+int audio_meta_get_title(audio_meta_h audio, char **title);
+
+/**
  * @brief Gets the album name of the given audio metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
@@ -141,6 +155,20 @@ int audio_meta_get_album(audio_meta_h audio, char **album_name);
  */
 int audio_meta_get_artist(audio_meta_h audio, char **artist_name);
 
+/**
+ * @brief Gets name of album_artist of given audio metadata.\n
+ * If the value is an empty string, the method returns "Unknown".
+ *
+ * @remarks @a album_artist_name must be released with free() by you.
+ *
+ * @param [in] audio The handle to audio metadata
+ * @param [out] album_artist_name The name of the album_artist
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ */
+int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist_name);
 
 /**
  * @brief Gets the genre name of the given audio metadata.
