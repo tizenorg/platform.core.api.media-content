@@ -35,6 +35,7 @@ static int g_media_cnt = 0;
 #define test_audio_id	"0f999626-6218-450c-a4ad-181a3bab6ebf"
 #define test_video_id	"c1a92494-cc5b-4d74-aa7d-253199234548"
 #define test_image_id "db1c184c-6f31-43b4-b924-8c00ac5b6197"
+media_folder_h g_folder = NULL;
 
 bool get_audio_meta(audio_meta_h audio)
 {
@@ -61,6 +62,12 @@ bool get_audio_meta(audio_meta_h audio)
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get meta : [%d]", ret);
 	media_content_debug("artist : [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = audio_meta_get_album_artist(audio, &c_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get meta : [%d]", ret);
+	media_content_debug("album_artist : [%s]", c_value);
 	SAFE_FREE(c_value);
 
 	ret = audio_meta_get_genre(audio, &c_value);
@@ -162,6 +169,12 @@ bool get_video_meta(video_meta_h video)
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get meta : [%d]", ret);
 	media_content_debug("artist : [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = video_meta_get_album_artist(video, &c_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get meta : [%d]", ret);
+	media_content_debug("album_artist : [%s]", c_value);
 	SAFE_FREE(c_value);
 
 	ret = video_meta_get_genre(video, &c_value);
@@ -313,6 +326,12 @@ bool media_item_cb(media_info_h media, void *user_data)
 		media_content_error("error when get info : [%d]", ret);
 	media_content_debug("media_id : [%s]", media_id);
 
+	ret = media_info_get_file_path(media, &c_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get info : [%d]", ret);
+	media_content_debug("file_path : [%s]", c_value);
+	SAFE_FREE(c_value);
+
 #if 1
 	if(media_type == MEDIA_CONTENT_TYPE_MUSIC)
 	{
@@ -335,6 +354,7 @@ bool media_item_cb(media_info_h media, void *user_data)
 		media_content_orientation_e orientation = 0;
 		bool is_burst_shot = false;
 		char *burst_id = NULL;
+		char *weather = NULL;
 
 		if(media_info_get_image(media, &image) == MEDIA_CONTENT_ERROR_NONE)
 		{
@@ -474,6 +494,11 @@ bool media_item_cb(media_info_h media, void *user_data)
 		media_content_error("error when get info : [%d]", ret);
 	media_content_debug("modified_time : [%d]", t_value);
 
+	ret = media_info_get_timeline(media, &t_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get info : [%d]", ret);
+	media_content_debug("timeline : [%d]", t_value);
+
 	ret = media_info_get_rating(media, &i_value);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get info : [%d]", ret);
@@ -488,6 +513,20 @@ bool media_item_cb(media_info_h media, void *user_data)
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error when get info : [%d]", ret);
 	media_content_debug("is_drm : [%d]", b_value);
+	
+	// build error
+	/*
+	ret = media_info_set_weather(media, "Sunny");
+	if(ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_content_error("Fail to set weather");
+		return ret;
+
+	ret = media_info_get_weather(media, &c_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get info : [%d]", ret);
+	media_content_debug("weather : [%s]", c_value);
+	SAFE_FREE(c_value);
+	*/
 
 	/* Media server can't update when another db handle holds DB connection by sqlite3_prepare */
 	//ret = media_info_set_location_tag(media, "Test location tag");
@@ -509,7 +548,8 @@ bool folder_list_cb(media_folder_h folder, void *user_data)
 
 	if(folder != NULL)
 	{
-		media_folder_clone(_folder, folder);
+		if(_folder != NULL)
+			media_folder_clone(_folder, folder);
 
 		if(media_folder_get_folder_id(folder, &folder_id) != MEDIA_CONTENT_ERROR_NONE)
 		{
@@ -774,6 +814,7 @@ bool album_list_cb(media_album_h album, void *user_data)
 		}
 
 		media_content_debug("album_name : [%s]", album_name);
+		SAFE_FREE(album_name);
 
 		if(media_album_get_artist(album, &artist) != MEDIA_CONTENT_ERROR_NONE)
 		{
@@ -782,6 +823,7 @@ bool album_list_cb(media_album_h album, void *user_data)
 		}
 
 		media_content_debug("artist : [%s]", artist);
+		SAFE_FREE(artist);
 
 		if(media_album_get_album_art(album, &album_art) != MEDIA_CONTENT_ERROR_NONE)
 		{
@@ -790,9 +832,6 @@ bool album_list_cb(media_album_h album, void *user_data)
 		}
 
 		media_content_debug("album_art : [%s]", album_art);
-
-		SAFE_FREE(album_name);
-		SAFE_FREE(artist);
 		SAFE_FREE(album_art);
 
 		if(media_album_get_media_count_from_db(album_id, filter, &media_count) != MEDIA_CONTENT_ERROR_NONE)
@@ -1071,7 +1110,7 @@ int test_gallery_scenario(void)
 
 			} else if(media_type == MEDIA_CONTENT_TYPE_VIDEO) {
 				video_meta_h video_handle;
-				char *title = NULL, *artist = NULL, *album = NULL;
+				char *title = NULL, *artist = NULL, *album = NULL, *album_artist = NULL;
 				int duration = 0;
 				time_t time_played = 0;
 
@@ -1085,6 +1124,9 @@ int test_gallery_scenario(void)
 					ret = video_meta_get_album(video_handle, &album);
 					if(ret != MEDIA_CONTENT_ERROR_NONE)
 						media_content_error("error video_meta_get_album : [%d]", ret);
+					ret = video_meta_get_album_artist(video_handle, &album_artist);
+					if(ret != MEDIA_CONTENT_ERROR_NONE)
+						media_content_error("error video_meta_get_album_artist : [%d]", ret);
 					ret = video_meta_get_duration(video_handle, &duration);
 					if(ret != MEDIA_CONTENT_ERROR_NONE)
 						media_content_error("error video_meta_get_duration : [%d]", ret);
@@ -1093,12 +1135,13 @@ int test_gallery_scenario(void)
 						media_content_error("error video_meta_get_played_time : [%d]", ret);
 
 					media_content_debug("This is Video");
-					media_content_debug("Title: %s, Album: %s, Artist: %s\nDuration: %d, Played time: %d", title, artist, album, duration, time_played);
+					media_content_debug("Title: %s, Album: %s, Artist: %s, Album_artist: %s \n Duration: %d, Played time: %d", title, album, artist, album_artist, duration, time_played);
 				}
 
 				SAFE_FREE(title);
 				SAFE_FREE(artist);
 				SAFE_FREE(album);
+				SAFE_FREE(album_artist);
 
 				ret = video_meta_destroy(video_handle);
 				if(ret != MEDIA_CONTENT_ERROR_NONE)
@@ -1203,7 +1246,7 @@ int test_gallery_scenario(void)
 
 				} else if(media_type == MEDIA_CONTENT_TYPE_VIDEO) {
 					video_meta_h video_handle;
-					char *title = NULL, *artist = NULL, *album = NULL;
+					char *title = NULL, *artist = NULL, *album = NULL, *album_artist = NULL;;
 					int duration = 0;
 					time_t time_played;
 
@@ -1217,6 +1260,9 @@ int test_gallery_scenario(void)
 						ret = video_meta_get_album(video_handle, &album);
 						if(ret != MEDIA_CONTENT_ERROR_NONE)
 							media_content_error("error video_meta_get_album : [%d]", ret);
+						ret = video_meta_get_album_artist(video_handle, &album_artist);
+						if(ret != MEDIA_CONTENT_ERROR_NONE)
+							media_content_error("error video_meta_get_album_artist : [%d]", ret);
 						ret = video_meta_get_duration(video_handle, &duration);
 						if(ret != MEDIA_CONTENT_ERROR_NONE)
 							media_content_error("error video_meta_get_duration : [%d]", ret);
@@ -1225,12 +1271,13 @@ int test_gallery_scenario(void)
 							media_content_error("error video_meta_get_played_time : [%d]", ret);
 
 						media_content_debug("This is Video");
-						media_content_debug("Title: %s, Album: %s, Artist: %s\nDuration: %d, Played time: %d\n", title, artist, album, duration, time_played);
+						media_content_debug("Title: %s, Album: %s, Artist: %s, Album_artist: %s \n Duration: %d, Played time: %d\n", title, album, artist, album_artist, duration, time_played);
 					}
 
 					SAFE_FREE(title);
 					SAFE_FREE(artist);
 					SAFE_FREE(album);
+					SAFE_FREE(album_artist);
 
 					ret = video_meta_destroy(video_handle);
 					if(ret != MEDIA_CONTENT_ERROR_NONE)
@@ -1582,6 +1629,77 @@ int test_folder_operation(void)
 	media_filter_destroy(m_filter);
 
 	test_filter_destroy();
+
+	/* fix prevent: Resource Leak */
+	SAFE_FREE(folder_id);
+
+	return ret;
+}
+
+bool folder_update_cb(media_folder_h folder, void *user_data)
+{
+	char *folder_id = NULL;
+	char *folder_path = NULL;
+	char *folder_name = NULL;
+	bool ret = true;
+
+	if(folder != NULL)
+	{
+		ret = media_folder_get_folder_id(folder, &folder_id);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+		media_content_debug("folder_id = [%s]", folder_id);
+		SAFE_FREE(folder_id);
+
+		ret = media_folder_get_path(folder, &folder_path);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+		media_content_debug("folder_path = [%s]", folder_path);
+		SAFE_FREE(folder_path);
+
+		ret = media_folder_get_name(folder, &folder_name);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+		media_content_debug("folder_name = [%s]", folder_name);
+		SAFE_FREE(folder_name);
+
+		ret = media_folder_clone(&g_folder, folder);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+		ret = true;
+	}
+	else
+	{
+		ret = false;
+	}
+
+	return ret;
+}
+
+
+int test_folder_update(void)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_h filter;
+	int folder_count = 0;
+
+	media_content_debug("\n============Folder Update Test============\n\n");
+
+	ret = media_filter_create(&filter);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	media_filter_set_condition(filter, "MEDIA_TYPE=0 and MEDIA_STORAGE_TYPE=0", MEDIA_CONTENT_COLLATE_DEFAULT);	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
+
+	ret = media_folder_get_folder_count_from_db(filter, &folder_count);
+
+	media_content_debug("Folder count : %d", folder_count);
+
+	ret = media_folder_foreach_folder_from_db(filter, folder_update_cb, NULL);
+
+	media_filter_destroy(filter);
+
+	ret = media_folder_set_name(g_folder, "test_folder");
+
+	ret = media_folder_update_to_db(g_folder);
+
+	ret = media_folder_destroy(g_folder);
 
 	return ret;
 }
@@ -2119,6 +2237,10 @@ int test_update_operation()
 			}
 #endif
 		}
+
+		/* fix prevent: Resource Leak */
+		SAFE_FREE(media_id);
+		SAFE_FREE(media_path);
 	}
 
 	return MEDIA_CONTENT_ERROR_NONE;
@@ -2127,8 +2249,8 @@ int test_update_operation()
 int test_insert(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-	//char *path = "/opt/media/Images/Default.jpg";
-	char *path = tzplatform_mkpath(TZ_USER_CONTENT, "Others/other.txt");
+	char *path = "/opt/usr/media/Images/Default.jpg";
+	//char *path = "/opt/usr/media/Others/other.txt";
 	//char *path = NULL;
 	media_info_h media_item = NULL;
 	media_content_debug("\n============DB Insert Test============\n\n");
@@ -2257,6 +2379,9 @@ bool thumbnail_create_cb(media_info_h media, void *user_data)
 			media_content_error("media_info_create_thumbnail failed: %d", ret);
 	}
 
+	/* fix prevent: Resource leak */
+	SAFE_FREE(media_id);
+
 	return true;
 }
 
@@ -2295,6 +2420,9 @@ bool thumbnail_cancel_cb(media_info_h media, void *user_data)
 
 	if(g_cnt == g_media_cnt)
 		g_main_loop_quit(g_loop);
+
+	/* fix prevent: Resource leak */
+	SAFE_FREE(media_id);
 
 	return true;
 }
@@ -2898,6 +3026,10 @@ int main(int argc, char *argv[])
 		return ret;
 
 	ret = test_folder_operation();
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		return ret;
+
+	ret = test_folder_update();
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		return ret;
 

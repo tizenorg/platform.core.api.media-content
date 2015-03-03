@@ -323,6 +323,7 @@ int media_playlist_destroy(media_playlist_h playlist)
 	if(_playlist)
 	{
 		SAFE_FREE(_playlist->name);
+		SAFE_FREE(_playlist->thumbnail_path);
 		SAFE_FREE(_playlist);
 
 		ret = MEDIA_CONTENT_ERROR_NONE;

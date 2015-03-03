@@ -27,12 +27,21 @@ static char *__media_folder_get_update_folder_sql(media_folder_h folder)
 {
 	media_folder_s *_folder = (media_folder_s*)folder;
 	char *return_sql = NULL;
+	char *name_pinyin = NULL;
+	bool pinyin_support = FALSE;
 
-	return_sql = sqlite3_mprintf("%q='%q', %q='%q', %q=%d ",
+	/*Update Pinyin If Support Pinyin*/
+	media_svc_check_pinyin_support(&pinyin_support);
+	if(pinyin_support)
+		media_svc_get_pinyin(_content_get_db_handle(), _folder->name, &name_pinyin);
+
+	return_sql = sqlite3_mprintf("%q='%q', %q='%q', %q=%d, %q='%q'",
 											DB_FIELD_FOLDER_PATH, _folder->path,
 											DB_FIELD_FOLDER_NAME, _folder->name,
-											DB_FIELD_FOLDER_MODIFIED_TIME, _folder->modified_time);
+											DB_FIELD_FOLDER_MODIFIED_TIME, _folder->modified_time,
+											DB_FIELD_FOLDER_NAME_PINYIN, name_pinyin);
 
+	SAFE_FREE(name_pinyin);
 	return return_sql;
 }
 
@@ -441,6 +450,7 @@ int media_folder_set_name(media_folder_h folder, const char *name)
 
 			SAFE_FREE(_folder->path);
 			SAFE_FREE(_folder->name);
+			SAFE_FREE(folder_path);
 			_folder->path = strdup(new_folder_path);
 
 			if(_folder->path == NULL)

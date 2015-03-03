@@ -40,6 +40,8 @@ static char * __media_db_get_group_name(media_group_e group)
 			return DB_FIELD_MEDIA_TITLE;
 		case MEDIA_CONTENT_GROUP_ARTIST:
 			return DB_FIELD_MEDIA_ARTIST;
+		case MEDIA_CONTENT_GROUP_ALBUM_ARTIST:
+			return DB_FIELD_MEDIA_ALBUM_ARTIST;
 		case MEDIA_CONTENT_GROUP_GENRE:
 			return DB_FIELD_MEDIA_GENRE;
 		case MEDIA_CONTENT_GROUP_COMPOSER:
@@ -78,6 +80,8 @@ static char * __media_db_get_group_name(media_group_e group)
 			return DB_FIELD_MEDIA_AGE_RATING;
 		case MEDIA_CONTENT_GROUP_KEYWORD:
 			return DB_FIELD_MEDIA_KEYWORD;
+		case MEDIA_CONTENT_GROUP_WEATHER:
+			return DB_FIELD_MEDIA_WEATHER;
 		default:
 			return NULL;
 	}

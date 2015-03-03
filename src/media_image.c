@@ -31,6 +31,7 @@ int image_meta_destroy(image_meta_h image)
 		SAFE_FREE(_image->media_id);
 		SAFE_FREE(_image->date_taken);
 		SAFE_FREE(_image->title);
+		SAFE_FREE(_image->weather);
 		SAFE_FREE(_image->burst_id);
 		SAFE_FREE(_image);
 
@@ -85,6 +86,17 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src)
 		{
 			_dst->title = strdup(_src->title);
 			if(_dst->title == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				image_meta_destroy((image_meta_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
+		if(STRING_VALID(_src->weather))
+		{
+			_dst->weather = strdup(_src->weather);
+			if(_dst->weather == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				image_meta_destroy((image_meta_h)_dst);
@@ -296,6 +308,7 @@ int image_meta_is_burst_shot(image_meta_h image, bool *is_burst_shot)
 
 	return ret;
 }
+
 int image_meta_set_orientation(image_meta_h image, media_content_orientation_e orientation)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -326,7 +339,7 @@ int image_meta_update_to_db(image_meta_h image)
 
 	if(_image != NULL && STRING_VALID(_image->media_id))
 	{
-		sql = sqlite3_mprintf(UPDATE_IMAGE_META_FROM_MEDIA, _image->orientation, _image->media_id);
+		sql = sqlite3_mprintf(UPDATE_IMAGE_META_FROM_MEDIA, _image->orientation, _image->weather, _image->media_id);
 		ret = _content_query_sql(sql);
 		sqlite3_free(sql);
 	}

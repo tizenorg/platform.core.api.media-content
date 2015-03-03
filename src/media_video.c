@@ -31,6 +31,7 @@ int video_meta_destroy(video_meta_h video)
 		SAFE_FREE(_video->title);
 		SAFE_FREE(_video->album);
 		SAFE_FREE(_video->artist);
+		SAFE_FREE(_video->album_artist);
 		SAFE_FREE(_video->genre);
 		SAFE_FREE(_video->composer);
 		SAFE_FREE(_video->year);
@@ -104,6 +105,17 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		{
 			_dst->artist = strdup(_src->artist);
 			if(_dst->artist == NULL)
+			{
+				video_meta_destroy((video_meta_h)_dst);
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
+		if(STRING_VALID(_src->album_artist))
+		{
+			_dst->album_artist = strdup(_src->album_artist);
+			if(_dst->album_artist == NULL)
 			{
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -281,6 +293,39 @@ int video_meta_get_artist(video_meta_h video, char **artist)
 		else
 		{
 			*artist = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+
+}
+
+int video_meta_get_album_artist(video_meta_h video, char **album_artist)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	video_meta_s *_video = (video_meta_s*)video;
+	if(_video)
+	{
+		if(STRING_VALID(_video->album_artist))
+		{
+			char *new_string = strdup(_video->album_artist);
+			if(NULL == new_string)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+			*album_artist = new_string;
+		}
+		else
+		{
+			*album_artist = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 

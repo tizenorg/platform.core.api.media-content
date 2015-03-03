@@ -141,6 +141,20 @@ int audio_meta_get_album(audio_meta_h audio, char **album_name);
  */
 int audio_meta_get_artist(audio_meta_h audio, char **artist_name);
 
+/**
+ * @brief Gets name of album_artist of given audio metadata.\n
+ * If the value is an empty string, the method returns "Unknown".
+ *
+ * @remarks @a album_artist_name must be released with free() by you.
+ *
+ * @param [in] audio The handle to audio metadata
+ * @param [out] album_artist_name The name of the album_artist
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ */
+int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist_name);
 
 /**
  * @brief Gets the genre name of the given audio metadata.
@@ -277,6 +291,22 @@ int audio_meta_get_track_num(audio_meta_h audio, char **track_num);
  */
 int audio_meta_get_bit_rate(audio_meta_h audio, int *bit_rate);
 
+/**
+ * @brief Gets bit per sample of the given audio metadata.
+ * @since_tizen 2.3
+ *
+ * @param [in]  audio        The handle to the audio metadata
+ * @param [out] bitpersample The audio bit per sample
+ *
+ * @return @c 0 on success, 
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ */
+
+int audio_meta_get_bitpersample(audio_meta_h audio, int *bitpersample);
 
 /**
  * @brief Gets the sample rate of the given audio metadata.
