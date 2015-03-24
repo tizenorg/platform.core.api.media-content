@@ -897,7 +897,7 @@ int test_filter_create(void)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	/* Filter for media */
-	char *condition = "MEDIA_TYPE=0";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
+	char *condition = "MEDIA_TYPE=1";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 	//char *condition = "MEDIA_TYPE IS NOT 0 AND MEDIA_DESCRIPTION IS NOT NULL";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&g_filter);
@@ -922,13 +922,13 @@ int test_filter_create(void)
 	ret = media_filter_set_order(g_filter, MEDIA_CONTENT_ORDER_ASC, MEDIA_ARTIST, MEDIA_CONTENT_COLLATE_DEFAULT);
 
 	/* Filter for group */
-	char *g_condition = "TAG_NAME like \"\%my\%\"";
+	//char *g_condition = "TAG_NAME like \"\%my\%\"";
 	//char *g_condition = "BOOKMARK_MARKED_TIME > 300";
 
 	ret = media_filter_create(&g_filter_g);
 
-	ret = media_filter_set_condition(g_filter_g, g_condition, MEDIA_CONTENT_COLLATE_DEFAULT);
-	ret = media_filter_set_order(g_filter_g, MEDIA_CONTENT_ORDER_DESC, TAG_NAME, MEDIA_CONTENT_COLLATE_DEFAULT);
+	//ret = media_filter_set_condition(g_filter_g, g_condition, MEDIA_CONTENT_COLLATE_DEFAULT);
+	//ret = media_filter_set_order(g_filter_g, MEDIA_CONTENT_ORDER_DESC, TAG_NAME, MEDIA_CONTENT_COLLATE_DEFAULT);
 
 	return ret;
 }
@@ -3007,6 +3007,10 @@ int main(int argc, char *argv[])
 	ret = test_connect_database();
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		return MEDIA_CONTENT_ERROR_NONE;
+
+	ret = test_media_info_operation();
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		return ret;
 
 #if 0
 	ret = test_move();

@@ -1275,6 +1275,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			_dst->audio_meta->samplerate = _src->audio_meta->samplerate;
 			_dst->audio_meta->duration = _src->audio_meta->duration;
 			_dst->audio_meta->bitrate = _src->audio_meta->bitrate;
+			_dst->audio_meta->bitpersample = _src->audio_meta->bitpersample;
 			_dst->audio_meta->played_count = _src->audio_meta->played_count;
 			_dst->audio_meta->played_time = _src->audio_meta->played_time;
 			_dst->audio_meta->played_position = _src->audio_meta->played_position;
@@ -1609,6 +1610,7 @@ int media_info_get_audio(media_info_h media, audio_meta_h *audio)
 
 	_audio->duration = _media->audio_meta->duration;
 	_audio->bitrate = _media->audio_meta->bitrate;
+	_audio->bitpersample = _media->audio_meta->bitpersample;
 	_audio->samplerate = _media->audio_meta->samplerate;
 	_audio->channel = _media->audio_meta->channel;
 	_audio->played_time = _media->audio_meta->played_time;
