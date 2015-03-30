@@ -897,7 +897,7 @@ int test_filter_create(void)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	/* Filter for media */
-	char *condition = "MEDIA_TYPE=1";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
+	char *condition = "MEDIA_TYPE=1 or MEDIA_TYPE=3";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 	//char *condition = "MEDIA_TYPE IS NOT 0 AND MEDIA_DESCRIPTION IS NOT NULL";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&g_filter);

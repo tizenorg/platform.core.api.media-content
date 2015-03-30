@@ -543,12 +543,6 @@ typedef struct _media_content_cb_data {
 #define UPDATE_AV_META_FROM_MEDIA	"UPDATE "DB_TABLE_MEDIA" SET played_count=%d, last_played_time=%d, last_played_position=%d WHERE media_uuid='%q'"
 #define UPDATE_IMAGE_META_FROM_MEDIA	"UPDATE "DB_TABLE_MEDIA" SET orientation=%d, weather=%Q WHERE media_uuid='%q'"
 
-/* Get Media list of Group */
-//#define MEDIA_INFO_ITEM "media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description,
-//							rating, favourite, author, provider, content_name, category, location_tag, age_rating, is_drm, storage_type"
-#define MEDIA_INFO_ITEM "media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description, \
-							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, width, height, datetaken, orientation, title, album, artist, album_artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, duration, played_count, last_played_time, last_played_position, samplerate, channel, burst_id, timeline, weather, sync_status"
-
 #define SELECT_MEDIA_ITEM 					"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1"
 #define SELECT_MEDIA_FROM_MEDIA			"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND media_uuid='%s'"
 #define SELECT_MEDIA_BY_PATH				"SELECT "MEDIA_INFO_ITEM" FROM "DB_TABLE_MEDIA" WHERE validity=1 AND path='%q'"

@@ -108,6 +108,9 @@ static int __media_content_create_attr_handle(void)
 	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_BITRATE, DB_FIELD_MEDIA_BITRATE);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_BITPERSAMPLE, DB_FIELD_MEDIA_BITPERSAMPLE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
 	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_SAMPLERATE, DB_FIELD_MEDIA_SAMPLERATE);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
