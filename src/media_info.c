@@ -2540,7 +2540,10 @@ int media_info_set_favorite(media_info_h media, bool favorite)
 
 	if(_media != NULL)
 	{
-		_media->favourite = favorite;
+		if(favorite)
+			time(&_media->favourite);
+		else
+			_media->favourite = 0;
 	}
 	else
 	{
