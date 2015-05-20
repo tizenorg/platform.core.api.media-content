@@ -302,6 +302,10 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 	_media->latitude = (double)sqlite3_column_double(stmt, MEDIA_INFO_LATITUDE);
 	_media->altitude = (double)sqlite3_column_double(stmt, MEDIA_INFO_ALTITUDE);
 
+	_media->played_count = sqlite3_column_int(stmt, MEDIA_INFO_PLAYED_COUNT);
+	_media->played_time = sqlite3_column_int(stmt, MEDIA_INFO_LAST_PLAYED_TIME);
+	_media->played_position = sqlite3_column_int(stmt, MEDIA_INFO_LAST_PLAYED_POSITION);
+
 	if(STRING_VALID((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TITLE)))
 		_media->title = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TITLE));
 
@@ -984,6 +988,9 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		_dst->favourite = _src->favourite;
 		_dst->is_drm = _src->is_drm;
 		_dst->storage_type = _src->storage_type;
+		_dst->played_count = _src->played_count;
+		_dst->played_time = _src->played_time;
+		_dst->played_position = _src->played_position;
 		_dst->sync_status = _src->sync_status;
 
 		if(_src->media_type == MEDIA_CONTENT_TYPE_IMAGE && _src->image_meta) {
@@ -2312,6 +2319,119 @@ int media_info_get_storage_type(media_info_h media, media_content_storage_e *sto
 	return ret;
 }
 
+int media_info_get_played_count(media_info_h media, int *played_count)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if(_media)
+	{
+		*played_count = _media->played_count;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_get_played_time(media_info_h media, time_t* played_time)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if(_media)
+	{
+		*played_time = _media->played_time;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_get_played_position(media_info_h media, int *played_position)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if(_media)
+	{
+		*played_position = _media->played_position;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_set_played_count(media_info_h media, int played_count)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	media_info_s *_media = (media_info_s*)media;
+
+	if(_media)
+	{
+		_media->played_count = played_count;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_set_played_time(media_info_h media, time_t played_time)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	media_info_s *_media = (media_info_s*)media;
+
+	if((_media != NULL) && (played_time >= 0))
+	{
+		_media->played_time = played_time;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_set_played_position(media_info_h media, int played_position)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if((_media != NULL) && (played_position >= 0))
+	{
+		_media->played_position = played_position;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
 int media_info_get_media_from_db(const char *media_id, media_info_h *media)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -2833,15 +2953,16 @@ int media_info_update_to_db(media_info_h media)
 		}
 
 		set_sql = sqlite3_mprintf("file_name=%Q, added_time=%d, description=%Q, longitude=%f, latitude=%f, altitude=%f, \
+			played_count=%d, last_played_time=%d, last_played_position=%d, \
 			rating=%d, favourite=%d, author=%Q, provider=%Q, content_name=%Q, category=%Q, location_tag=%Q, age_rating=%Q, keyword=%Q, weather=%Q, sync_status=%d, \
 			file_name_pinyin=%Q, description_pinyin=%Q, author_pinyin=%Q, provider_pinyin=%Q, content_name_pinyin=%Q, category_pinyin=%Q, location_tag_pinyin=%Q, age_rating_pinyin=%Q, keyword_pinyin=%Q",
-			_media->display_name, _media->added_time, _media->description, _media->longitude, _media->latitude, _media->altitude, _media->rating, _media->favourite,
+			_media->display_name, _media->added_time, _media->description, _media->longitude, _media->latitude, _media->altitude, _media->played_count, _media->played_time, _media->played_position, _media->rating, _media->favourite,
 			_media->author, _media->provider, _media->content_name, _media->category, _media->location_tag, _media->age_rating, _media->keyword, _media->weather, _media->sync_status,
 			file_name_pinyin, description_pinyin, author_pinyin, provider_pinyin, content_name_pinyin, category_pinyin, location_tag_pinyin, age_rating_pinyin, keyword_pinyin);
 
 		len = snprintf(sql, sizeof(sql), "UPDATE %s SET %s WHERE media_uuid='%s'", DB_TABLE_MEDIA, set_sql, _media->media_id);
 		sqlite3_free(set_sql);
-		
+
 		SAFE_FREE(description_pinyin);
 		SAFE_FREE(author_pinyin);
 		SAFE_FREE(provider_pinyin);
