@@ -232,7 +232,7 @@ typedef struct
 	double altitude;
 	char *weather;
 	int rating;
-	int favourite;
+	time_t favourite;
 	char *title;
 	char *author;
 	char *provider;
