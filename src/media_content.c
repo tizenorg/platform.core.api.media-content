@@ -642,14 +642,10 @@ int _content_error_capi(int type, int content_error)
 			return MEDIA_CONTENT_ERROR_NONE;
 		else if(content_error == MS_MEDIA_ERR_INVALID_PARAMETER || content_error == MS_MEDIA_ERR_INVALID_PATH)
 			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		else if(content_error == MS_MEDIA_ERR_DB_INSERT_FAIL || content_error == MS_MEDIA_ERR_DRM_REGISTER_FAIL)
+		else if(content_error == MS_MEDIA_ERR_DB_INSERT_FAIL)
 			return MEDIA_CONTENT_ERROR_DB_FAILED;
-		else if(content_error == MS_MEDIA_ERR_SCANNING_BUSY)
-			return MEDIA_CONTENT_ERROR_DB_BUSY;
-		else if(content_error == MS_MEDIA_ERR_ALLOCATE_MEMORY_FAIL)
+		else if(content_error == MS_MEDIA_ERR_INTERNAL)
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		else if(content_error == MS_MEDIA_ERR_DBUS_GET || content_error == MS_MEDIA_ERR_DBUS_ADD_FILTER)
-			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 		else if(content_error == MS_MEDIA_ERR_VCONF_GET_FAIL)
 			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 	}
