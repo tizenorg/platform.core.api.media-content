@@ -951,6 +951,56 @@ int media_info_is_drm(media_info_h media, bool *is_drm);
 int media_info_get_storage_type(media_info_h media, media_content_storage_e *storage_type);
 
 /**
+ * @brief Gets number which represents how many times given content has been played.
+ * @since_tizen 2.4
+ *
+ * @param [in] media The handle to media info
+ * @param [out] count_played The counter of content played
+ *
+ * @return 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ */
+int media_info_get_played_count(media_info_h media, int *played_count);
+
+/**
+ * @brief Gets the content's played time parameter.
+ * @details Function returns content's elapsed playback time parameter as period
+ *          starting from the beginning of the track.
+ * @since_tizen 2.4
+ *
+ * @param [in] media The handle to media info
+ * @param [out] played_time The elapsed time of the content
+ *
+ * @return 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ */
+int media_info_get_played_time(media_info_h media, time_t *played_time);
+
+/**
+ * @brief Gets the content's played position parameter.
+ * @details Function returns content's elapsed playback position parameter as period
+ *          starting from the beginning of the track.
+ * @since_tizen 2.4
+ *
+ * @param [in] media The handle to media info
+ * @param [out] played_position The elapsed time of the content
+ *
+ * @return 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ */
+int media_info_get_played_position(media_info_h media, int *played_position);
+
+
+/**
  * @brief Gets the media info from the media database.
  *
  * @details This function creates a new media handle from the media database by the given @a media_id.
@@ -976,6 +1026,40 @@ int media_info_get_storage_type(media_info_h media, media_content_storage_e *sto
  * @see media_info_destroy()
  */
 int media_info_get_media_from_db(const char *media_id, media_info_h *media);
+
+/**
+ * @brief Increments the played count to content meta handle.
+ * @detalis You can increase the played(opened) count of the media file.
+ * @since_tizen 2.4
+ *
+ * @param [in] media The handle to media info
+ *
+ * @return 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ * @post media_info_update_to_db()
+ */
+int media_info_increase_played_count(media_info_h media);
+
+/**
+ * @brief Sets the played time to content meta handle.
+ * @detalis You can set the latest played(opened) time of the media file. the latest played time to be set the current time on the system.
+ * @since_tizen 2.4
+ *
+ * @param [in] media The handle to media info
+ *
+ * @return 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ * @post media_info_update_to_db()
+ */
+int media_info_set_played_time(media_info_h media);
 
 /**
  * @brief Sets the display name of media info.
