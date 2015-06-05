@@ -243,6 +243,9 @@ typedef struct
 	char *keyword;
 	int is_drm;
 	int storage_type;
+	int played_count;
+	time_t played_time;
+	int played_position;
 	int sync_status;
 	image_meta_s *image_meta;
 	video_meta_s *video_meta;
