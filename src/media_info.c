@@ -466,7 +466,7 @@ int media_info_insert_to_db (const char *path, media_info_h *info)
 	}
 
 	ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), _path);
-	if (ret == MEDIA_INFO_ERROR_DATABASE_NO_RECORD) {
+	if (ret == MS_MEDIA_ERR_DB_NO_RECORD) {
 		media_content_debug("media_svc_check_item_exist_by_path : no record : %s", _path);
 
 		media_svc_storage_type_e storage_type;
@@ -486,7 +486,7 @@ int media_info_insert_to_db (const char *path, media_info_h *info)
 			SAFE_FREE(_path);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		}
-	} else if (ret != MEDIA_INFO_ERROR_NONE) {
+	} else if (ret != MS_MEDIA_ERR_NONE) {
 		media_content_error("media_svc_check_item_exist_by_path failed : %d (%s)", ret, _path);
 		SAFE_FREE(_path);
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);

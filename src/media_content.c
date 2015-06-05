@@ -15,7 +15,6 @@
 */
 
 
-#include <media-thumb-error.h>
 #include <media_info_private.h>
 #include <media-util.h>
 
@@ -603,53 +602,44 @@ int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condit
 
 int _content_error_capi(int type, int content_error)
 {
-	media_content_debug("[type : %d] content_error : %d ", type, content_error);
-
-	if(type == MEDIA_CONTENT_TYPE)
+	if(content_error != MEDIA_CONTENT_ERROR_NONE)
 	{
-		if(content_error == MEDIA_INFO_ERROR_NONE)
-			return MEDIA_CONTENT_ERROR_NONE;
-		else if(content_error == MEDIA_INFO_ERROR_INVALID_PARAMETER)
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		else if((content_error == MEDIA_INFO_ERROR_DATABASE_CONNECT) || (content_error == MEDIA_INFO_ERROR_DATABASE_DISCONNECT) ||
-				(content_error == MEDIA_INFO_ERROR_DATABASE_NO_RECORD) ||(content_error == MEDIA_INFO_ERROR_DATABASE_INTERNAL))
-			return MEDIA_CONTENT_ERROR_DB_FAILED;
-		else if((content_error == MS_MEDIA_ERR_SOCKET_CONN) ||(content_error == MS_MEDIA_ERR_SOCKET_INTERNAL) ||
-				(content_error == MS_MEDIA_ERR_SOCKET_SEND) ||(content_error == MS_MEDIA_ERR_SOCKET_RECEIVE) || (content_error == MS_MEDIA_ERR_SOCKET_RECEIVE_TIMEOUT))
-			return MEDIA_CONTENT_ERROR_NETWORK;
-	} else if(type == MEDIA_THUMBNAIL_TYPE) {
-		if(content_error == MEDIA_THUMB_ERROR_NONE)
-			return MEDIA_CONTENT_ERROR_NONE;
-		else if(content_error == MEDIA_THUMB_ERROR_INVALID_PARAMETER || content_error == MEDIA_THUMB_ERROR_DUPLICATED_REQUEST)
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		else if(content_error == MEDIA_THUMB_ERROR_DB)
-			return MEDIA_CONTENT_ERROR_DB_FAILED;
-		else if(content_error == MEDIA_THUMB_ERROR_NETWORK)
-			return MEDIA_CONTENT_ERROR_NETWORK;
-		else if(content_error == MEDIA_THUMB_ERROR_TIMEOUT)
-			return MEDIA_CONTENT_ERROR_NETWORK;
-		else if(content_error == MEDIA_THUMB_ERROR_MM_UTIL)			/* Error in mm-util lib */
-			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
-		else if(content_error == MEDIA_THUMB_ERROR_HASHCODE)		/* Failed to generate hash code */
-			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
-		else if(content_error == MEDIA_THUMB_ERROR_TOO_BIG)			/* Original is too big to make thumb */
-			return MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT;
-		else if(content_error == MEDIA_THUMB_ERROR_UNSUPPORTED)	/* Unsupported type */
-			return MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT;
-
-	} else if(type == MEDIA_REGISTER_TYPE) {
-		if(content_error == MS_MEDIA_ERR_NONE)
-			return MEDIA_CONTENT_ERROR_NONE;
-		else if(content_error == MS_MEDIA_ERR_INVALID_PARAMETER || content_error == MS_MEDIA_ERR_INVALID_PATH)
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		else if(content_error == MS_MEDIA_ERR_DB_INSERT_FAIL)
-			return MEDIA_CONTENT_ERROR_DB_FAILED;
-		else if(content_error == MS_MEDIA_ERR_INTERNAL)
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		else if(content_error == MS_MEDIA_ERR_VCONF_GET_FAIL)
-			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+		media_content_error("[type : %d] content_error : %d ", type, content_error);
 	}
 
+	/*Error None*/
+	if(content_error == MS_MEDIA_ERR_NONE)
+		return MEDIA_CONTENT_ERROR_NONE;
+
+	/* Internal operation error*/
+	else if((content_error == MS_MEDIA_ERR_INVALID_PARAMETER) ||
+		(content_error == MS_MEDIA_ERR_INVALID_PATH) ||
+		(content_error == MS_MEDIA_ERR_THUMB_DUPLICATED_REQUEST))
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+
+	else if(content_error == MS_MEDIA_ERR_OUT_OF_MEMORY)
+		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+
+	/* DB operation error*/
+	else if(content_error == MS_MEDIA_ERR_DB_BUSY_FAIL)
+		return MEDIA_CONTENT_ERROR_DB_BUSY;
+
+	else if((content_error <= MS_MEDIA_ERR_DB_CONNECT_FAIL) && (content_error >= MS_MEDIA_ERR_DB_INTERNAL))
+		return MEDIA_CONTENT_ERROR_DB_FAILED;
+
+	/* IPC operation error*/
+	else if((content_error <= MS_MEDIA_ERR_SOCKET_CONN) && (content_error >= MS_MEDIA_ERR_SOCKET_INTERNAL))
+		return MEDIA_CONTENT_ERROR_NETWORK;
+
+	/* MEDIA SERVER error*/
+	else if(content_error == MS_MEDIA_ERR_PERMISSION_DENIED)
+		return MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
+
+	/* Thumbnail error*/
+	else if(content_error == MS_MEDIA_ERR_THUMB_TOO_BIG)
+			return MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT;
+
+	/*ETC*/
 	return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 }
 
@@ -769,7 +759,7 @@ int media_content_scan_file(const char *path)
 			}
 
 			ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
-			if (ret == MEDIA_INFO_ERROR_NONE) {
+			if (ret == MS_MEDIA_ERR_NONE) {
 				/* Refresh */
 				ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, path, tzplatform_getuid(TZ_USER_NAME));
 				if (ret < 0) {
@@ -777,7 +767,7 @@ int media_content_scan_file(const char *path)
 					return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 				}
 
-			} else if (ret == MEDIA_INFO_ERROR_DATABASE_NO_RECORD) {
+			} else if (ret == MS_MEDIA_ERR_DB_NO_RECORD) {
 				/* Insert */
 				ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path, tzplatform_getuid(TZ_USER_NAME));
 				if (ret < 0) {
