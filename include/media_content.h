@@ -165,6 +165,9 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @see media_content_db_update_cb()

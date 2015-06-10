@@ -147,7 +147,7 @@ int image_meta_get_height(image_meta_h image, int *height);
 int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *orientation);
 
 /**
- * @brief Gets the image creation time as time_t structure.
+ * @brief Gets the image creation time.
  * @since_tizen 2.3
  *
  * @param[in]  image      The image metadata handle
@@ -170,7 +170,7 @@ int image_meta_get_date_taken(image_meta_h image, char **date_taken);
  *
  * @param[in]  image    The image metadata handle
  * @param[out] burst_id The ID of burst shot\ n
- *                      If @a burst_id is @c NULL, this is not burst shot.
+ *                      If @a burst_id is @c NULL, this is not burst shot
  *
  * @return @c 0 on success,
  *         otherwise a negative error value
@@ -237,6 +237,11 @@ int image_meta_set_orientation(image_meta_h image, media_content_orientation_e o
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
+ * @retval #MEDIA_CONTENT_ERROR_NETWORK           Network fail
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().

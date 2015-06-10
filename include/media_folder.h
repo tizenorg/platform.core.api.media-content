@@ -54,7 +54,8 @@ extern "C" {
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().
@@ -85,6 +86,8 @@ int media_folder_get_folder_count_from_db(filter_h filter, int *folder_count);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre  This function requires opened connection to content service by media_content_connect().
@@ -110,7 +113,8 @@ int media_folder_foreach_folder_from_db(filter_h filter, media_folder_cb callbac
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().
@@ -143,6 +147,8 @@ int media_folder_get_media_count_from_db(const char *folder_id, filter_h filter,
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre  This function requires opened connection to content service by media_content_connect().

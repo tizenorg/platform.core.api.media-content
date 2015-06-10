@@ -49,7 +49,8 @@ extern "C" {
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().
@@ -76,6 +77,8 @@ int media_playlist_get_playlist_count_from_db(filter_h filter, int *playlist_cou
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre  This function requires opened connection to content service by media_content_connect().
@@ -100,6 +103,8 @@ int media_playlist_foreach_playlist_from_db(filter_h filter, media_playlist_cb c
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().
@@ -127,6 +132,8 @@ int media_playlist_get_media_count_from_db(int playlist_id, filter_h filter, int
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre  This function requires opened connection to content service by media_content_connect().
@@ -183,6 +190,10 @@ int media_playlist_insert_to_db(const char *name, media_playlist_h *playlist);
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
+ * @retval #MEDIA_CONTENT_ERROR_NETWORK           Network fail
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().
@@ -210,6 +221,9 @@ int media_playlist_delete_from_db(int playlist_id);
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().
@@ -467,6 +481,11 @@ int media_playlist_get_play_order(media_playlist_h playlist, int playlist_member
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
+ * @retval #MEDIA_CONTENT_ERROR_NETWORK           Network fail
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().

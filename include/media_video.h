@@ -146,17 +146,23 @@ int video_meta_get_album(video_meta_h video, char **album);
 int video_meta_get_artist(video_meta_h video, char **artist);
 
 /**
- * @brief Gets the video's album_artist.
- * If the value is an empty string, the method returns "Unknown".
+ * @brief Gets the video album artist.
+ * @details If the value is an empty string, the method returns "Unknown".
  *
- * @remarks @a album_artist must be released with free() by you.
+ * @since_tizen 2.3
  *
- * @param [in] video The handle to video metadata
- * @param [out] album_artist The album_artist of video metadata
- * @return 0 on success, otherwise a negative error value.
+ * @remarks You must release @a album_artist using free().
+ *
+ * @param[in]  video        The video metadata handle
+ * @param[out] album_artist The album artist of the video metadata
+ *
+ * @return @c 0 on success, 
+ *         otherwise a negative error value
+ *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  */
 int video_meta_get_album_artist(video_meta_h video, char **album_artist);
 
@@ -478,6 +484,11 @@ int video_meta_set_played_position(video_meta_h video, int played_position);
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
+ * @retval #MEDIA_CONTENT_ERROR_NETWORK           Network fail
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().

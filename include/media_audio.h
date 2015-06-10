@@ -142,17 +142,23 @@ int audio_meta_get_album(audio_meta_h audio, char **album_name);
 int audio_meta_get_artist(audio_meta_h audio, char **artist_name);
 
 /**
- * @brief Gets name of album_artist of given audio metadata.\n
- * If the value is an empty string, the method returns "Unknown".
+ * @brief Gets the album artist name of the given audio metadata.
+ * @details If the value is an empty string, the method returns "Unknown".
  *
- * @remarks @a album_artist_name must be released with free() by you.
+ * @since_tizen 2.3
  *
- * @param [in] audio The handle to audio metadata
- * @param [out] album_artist_name The name of the album_artist
- * @return 0 on success, otherwise a negative error value.
+ * @remarks You must release @a album_artist_name using free().
+ *
+ * @param[in]  audio             The audio metadata handle
+ * @param[out] album_artist_name The name of the album artist
+ *
+ * @return @c 0 on success, 
+ *         otherwise a negative error value
+ *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  */
 int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist_name);
 
@@ -484,6 +490,11 @@ int audio_meta_set_played_position(audio_meta_h audio, int played_position);
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
+ * @retval #MEDIA_CONTENT_ERROR_NETWORK           Network fail
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().
