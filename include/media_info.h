@@ -195,7 +195,7 @@ int media_info_insert_burst_shot_to_db(const char **path_array,unsigned int arra
 int media_info_delete_from_db(const char *media_id);
 
 /**
- * @brief Deletes media files from the media database. 
+ * @brief Deletes media files from the media database.
  *        The media files for deletion can be specified as a condition in a filter.
  * @details This function deletes the media items from the content storage.
  *          Normally, deleting  media files in the database are done automatically by the media server, without calling this function.
