@@ -15,6 +15,7 @@
 */
 
 #include <unistd.h>
+#include <media_info.h>
 #include <media_content.h>
 #include <media-thumbnail.h>
 #include <media_info_private.h>
@@ -183,59 +184,6 @@ static bool __media_info_delete_batch_cb(media_info_h media, void *user_data)
 }
 
 
-typedef enum {
-	MEDIA_INFO_UUID = 0,
-	MEDIA_INFO_PATH,
-	MEDIA_INFO_FILE_NAME,
-	MEDIA_INFO_TYPE,
-	MEDIA_INFO_MIME_TYPE,
-	MEDIA_INFO_SIZE,
-	MEDIA_INFO_ADDED_TIME,
-	MEDIA_INFO_MODIFIED_TIME,
-	MEDIA_INFO_THUMBNAIL_PATH,
-	MEDIA_INFO_DESCRIPTION,
-	MEDIA_INFO_RATING,			//10
-	MEDIA_INFO_FAVOURITE,
-	MEDIA_INFO_AUTHOR,
-	MEDIA_INFO_PROVIDER,
-	MEDIA_INFO_CONTENT_NAME,
-	MEDIA_INFO_CATEGORY,
-	MEDIA_INFO_LOCATION_TAG,
-	MEDIA_INFO_AGE_RATING,
-	MEDIA_INFO_KEYWORD,
-	MEDIA_INFO_IS_DRM,
-	MEDIA_INFO_STORAGE_TYPE,	//20
-	MEDIA_INFO_LONGITUDE,
-	MEDIA_INFO_LATITUDE,
-	MEDIA_INFO_ALTITUDE,
-	MEDIA_INFO_WIDTH,
-	MEDIA_INFO_HEIGHT,
-	MEDIA_INFO_DATETAKEN,
-	MEDIA_INFO_ORIENTATION,
-	MEDIA_INFO_TITLE,
-	MEDIA_INFO_ALBUM,
-	MEDIA_INFO_ARTIST,			//30
-	MEDIA_INFO_ALBUM_ARTIST,
-	MEDIA_INFO_GENRE,
-	MEDIA_INFO_COMPOSER,
-	MEDIA_INFO_YEAR,
-	MEDIA_INFO_RECORDED_DATE,
-	MEDIA_INFO_COPYRIGHT,
-	MEDIA_INFO_TRACK_NUM,
-	MEDIA_INFO_BITRATE,
-	MEDIA_INFO_BITPERSAMPLE,
-	MEDIA_INFO_DURATION,
-	MEDIA_INFO_PLAYED_COUNT,	//40
-	MEDIA_INFO_LAST_PLAYED_TIME,
-	MEDIA_INFO_LAST_PLAYED_POSITION,
-	MEDIA_INFO_SAMPLERATE,
-	MEDIA_INFO_CHANNEL,
-	MEDIA_INFO_BURST_ID,
-	MEDIA_INFO_TIMELINE,
-	MEDIA_INFO_WEATHER,
-	MEDIA_INFO_SYNC_STATUS,
-	MEDIA_INFO_ITEM_MAX,
-} media_info_item_e;
 void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 {
 //#define MEDIA_INFO_ITEM "media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description,
@@ -325,6 +273,8 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 
 			_media->image_meta->width = sqlite3_column_int(stmt, MEDIA_INFO_WIDTH);
 			_media->image_meta->height = sqlite3_column_int(stmt, MEDIA_INFO_HEIGHT);
+			_media->image_meta->fnumber = (double)sqlite3_column_double(stmt, MEDIA_INFO_FNUMBER);
+			_media->image_meta->iso = sqlite3_column_int(stmt, MEDIA_INFO_ISO);
 
 			if(STRING_VALID((const char *)sqlite3_column_text(stmt, MEDIA_INFO_DATETAKEN)))
 				_media->image_meta->date_taken = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_DATETAKEN));
@@ -339,6 +289,12 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 
 			if(STRING_VALID((const char *)sqlite3_column_text(stmt, MEDIA_INFO_WEATHER)))
 				_media->image_meta->weather = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_WEATHER));
+
+			if(STRING_VALID((const char *)sqlite3_column_text(stmt, MEDIA_INFO_EXPOSURE_TIME)))
+				_media->image_meta->exposure_time = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_EXPOSURE_TIME));
+
+			if(STRING_VALID((const char *)sqlite3_column_text(stmt, MEDIA_INFO_MODEL)))
+				_media->image_meta->model = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_MODEL));
 		}
 
 	} else if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) {
@@ -760,6 +716,8 @@ int media_info_destroy(media_info_h media)
 			SAFE_FREE(_media->image_meta->media_id);
 			SAFE_FREE(_media->image_meta->date_taken);
 			SAFE_FREE(_media->image_meta->burst_id);
+			SAFE_FREE(_media->image_meta->exposure_time);
+			SAFE_FREE(_media->image_meta->model);
 			SAFE_FREE(_media->image_meta->title);
 			SAFE_FREE(_media->image_meta->weather);
 
@@ -1046,6 +1004,30 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 
+			if(STRING_VALID(_src->image_meta->exposure_time))
+			{
+				_dst->image_meta->exposure_time = strdup(_src->image_meta->exposure_time);
+				if(_dst->image_meta->exposure_time == NULL)
+				{
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+					media_info_destroy((media_info_h)_dst);
+					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+				}
+			}
+
+			if(STRING_VALID(_src->image_meta->model))
+			{
+				_dst->image_meta->model = strdup(_src->image_meta->model);
+				if(_dst->image_meta->model == NULL)
+				{
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+					media_info_destroy((media_info_h)_dst);
+					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+				}
+			}
+
+			_dst->image_meta->fnumber = _src->image_meta->fnumber;
+			_dst->image_meta->iso = _src->image_meta->iso;
 			_dst->image_meta->width = _src->image_meta->width;
 			_dst->image_meta->height = _src->image_meta->height;
 			_dst->image_meta->orientation = _src->image_meta->orientation;
@@ -1452,6 +1434,8 @@ int media_info_get_image(media_info_h media, image_meta_h *image)
 	_image->width = _media->image_meta->width;
 	_image->height = _media->image_meta->height;
 	_image->orientation = _media->image_meta->orientation;
+	_image->fnumber = _media->image_meta->fnumber;
+	_image->iso = _media->image_meta->iso;
 
 	if(STRING_VALID(_media->image_meta->date_taken)) {
 		_image->date_taken = strdup(_media->image_meta->date_taken);
@@ -1467,6 +1451,14 @@ int media_info_get_image(media_info_h media, image_meta_h *image)
 
 	if(STRING_VALID(_media->image_meta->weather)) {
 		_image->weather = strdup(_media->image_meta->weather);
+	}
+
+	if(STRING_VALID(_media->image_meta->exposure_time)) {
+		_image->exposure_time = strdup(_media->image_meta->exposure_time);
+	}
+
+	if(STRING_VALID(_media->image_meta->model)) {
+		_image->model = strdup(_media->image_meta->model);
 	}
 
 	*image = (image_meta_h)_image;

@@ -30,6 +30,7 @@
 #include <media_content_type.h>
 #include <dlog.h>
 #include <media-util.h>
+#include <errno.h>
 #include <tzplatform_config.h>
 
 #ifdef __cplusplus
@@ -71,6 +72,65 @@ extern "C" {
 #define COLLATE_STR_SIZE 32
 #define MEDIA_CONTENT_UUID_SIZE	36
 #define BATCH_REQUEST_MAX 300
+
+typedef enum {
+	MEDIA_INFO_UUID = 0,
+	MEDIA_INFO_PATH,
+	MEDIA_INFO_FILE_NAME,
+	MEDIA_INFO_TYPE,
+	MEDIA_INFO_MIME_TYPE,
+	MEDIA_INFO_SIZE,
+	MEDIA_INFO_ADDED_TIME,
+	MEDIA_INFO_MODIFIED_TIME,
+	MEDIA_INFO_THUMBNAIL_PATH,
+	MEDIA_INFO_DESCRIPTION,
+	MEDIA_INFO_RATING,			//10
+	MEDIA_INFO_FAVOURITE,
+	MEDIA_INFO_AUTHOR,
+	MEDIA_INFO_PROVIDER,
+	MEDIA_INFO_CONTENT_NAME,
+	MEDIA_INFO_CATEGORY,
+	MEDIA_INFO_LOCATION_TAG,
+	MEDIA_INFO_AGE_RATING,
+	MEDIA_INFO_KEYWORD,
+	MEDIA_INFO_IS_DRM,
+	MEDIA_INFO_STORAGE_TYPE,	//20
+	MEDIA_INFO_LONGITUDE,
+	MEDIA_INFO_LATITUDE,
+	MEDIA_INFO_ALTITUDE,
+	MEDIA_INFO_EXPOSURE_TIME,
+	MEDIA_INFO_FNUMBER,
+	MEDIA_INFO_ISO,
+	MEDIA_INFO_MODEL,
+	MEDIA_INFO_WIDTH,
+	MEDIA_INFO_HEIGHT,
+	MEDIA_INFO_DATETAKEN,		//30
+	MEDIA_INFO_ORIENTATION,
+	MEDIA_INFO_TITLE,
+	MEDIA_INFO_ALBUM,
+	MEDIA_INFO_ARTIST,
+	MEDIA_INFO_ALBUM_ARTIST,
+	MEDIA_INFO_GENRE,
+	MEDIA_INFO_COMPOSER,
+	MEDIA_INFO_YEAR,
+	MEDIA_INFO_RECORDED_DATE,
+	MEDIA_INFO_COPYRIGHT,		//40
+	MEDIA_INFO_TRACK_NUM,
+	MEDIA_INFO_BITRATE,
+	MEDIA_INFO_BITPERSAMPLE,
+	MEDIA_INFO_DURATION,
+	MEDIA_INFO_PLAYED_COUNT,
+	MEDIA_INFO_LAST_PLAYED_TIME,
+	MEDIA_INFO_LAST_PLAYED_POSITION,
+	MEDIA_INFO_SAMPLERATE,
+	MEDIA_INFO_CHANNEL,
+	MEDIA_INFO_BURST_ID,		//50
+	MEDIA_INFO_TIMELINE,
+	MEDIA_INFO_WEATHER,
+	MEDIA_INFO_SYNC_STATUS,
+	MEDIA_INFO_STORAGE_UUID,
+	MEDIA_INFO_ITEM_MAX,
+} media_info_item_e;
 
 typedef enum {
 	MEDIA_CONTENT_TYPE = 0,
@@ -166,6 +226,10 @@ typedef struct
 	char *title;
 	char *burst_id;
 	char *weather;
+	char *exposure_time;
+	double fnumber;
+	int iso;
+	char *model;
 	media_content_orientation_e orientation;
 }image_meta_s;
 
@@ -216,7 +280,7 @@ typedef struct
 
 typedef struct
 {
-	char *media_id;				//image id, audio id, video id
+	char *media_id;
 	char *file_path;
 	char *display_name;
 	media_content_type_e media_type;
@@ -269,6 +333,15 @@ typedef struct
 	int play_order;		//play_order
 }media_playlist_item_s;
 
+typedef struct
+{
+	char *storage_id;
+	char *storage_name;
+	char *storage_path;
+	char *storage_account;
+	int storage_type;
+}media_storage_s;
+
 typedef struct _attribute_map_s
 {
 	GHashTable *attr_map;
@@ -312,6 +385,8 @@ typedef struct _media_content_cb_data {
 #define DB_TABLE_PLAYLIST		"playlist"
 #define DB_TABLE_PLAYLIST_MAP	"playlist_map"
 #define DB_TABLE_BOOKMARK		"bookmark"
+#define DB_TABLE_STORAGE		"storage"
+#define DB_TABLE_MEDIA_VIEW	"media_view"
 
 /* DB View */
 #define DB_VIEW_PLAYLIST	"playlist_view"
@@ -376,7 +451,10 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_MEDIA_WEATHER			"weather"
 #define DB_FIELD_MEDIA_IS_DRM				"is_drm"
 #define DB_FIELD_MEDIA_STORAGE_TYPE		"storage_type"
-
+#define DB_FIELD_MEDIA_EXPOSURE_TIME	"exposure_time"
+#define DB_FIELD_MEDIA_FNUMBER			"fnumber"
+#define DB_FIELD_MEDIA_ISO				"iso"
+#define DB_FIELD_MEDIA_MODEL			"model"
 #define DB_FIELD_MEDIA_FILE_NAME_PINYIN			"file_name_pinyin"
 #define DB_FIELD_MEDIA_TITLE_PINYIN					"title_pinyin"
 #define DB_FIELD_MEDIA_ALBUM_PINYIN				"album_pinyin"
@@ -512,7 +590,7 @@ typedef struct _media_content_cb_data {
 
 /* Get Media list of Group */
 #define MEDIA_INFO_ITEM "media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description, \
-							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, width, height, datetaken, orientation, title, album, artist, album_artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, bitpersample, duration, played_count, last_played_time, last_played_position, samplerate, channel, burst_id, timeline, weather, sync_status"
+							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, exposure_time, fnumber, iso, model, width, height, datetaken, orientation, title, album, artist, album_artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, bitpersample, duration, played_count, last_played_time, last_played_position, samplerate, channel, burst_id, timeline, weather, sync_status"
 
 /* Playlist Info */
 #define INSERT_PLAYLIST_TO_PLAYLIST						"INSERT INTO "DB_TABLE_PLAYLIST" (name) VALUES (%Q)"
@@ -566,114 +644,27 @@ typedef struct _media_content_cb_data {
 #define DELETE_BOOKMARK_FROM_BOOKMARK		"DELETE FROM "DB_TABLE_BOOKMARK" WHERE bookmark_id=%d"
 
 
-/**
- *@internal
- */
 int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condition_query, char *option_query);
-
-/**
- *@internal
- */
 int _content_error_capi(int type, int cotent_error);
-
-/**
- *@internal
- */
 int _content_query_sql(char *query_str);
-
-/**
- *@internal
- */
 MediaSvcHandle* _content_get_db_handle(void);
-
-/**
- *@internal
- */
 attribute_h _content_get_attirbute_handle(void);
-
-/**
- *@internal
- */
 attribute_h _content_get_alias_attirbute_handle(void);
-
-/**
- *@internal
- */
 void _media_info_item_get_detail(sqlite3_stmt *stmt, media_info_h media);
-
-/**
- *@internal
- */
 int _media_db_get_group_count(filter_h filter, group_list_e group_type, int *group_count);
-
-/**
- *@internal
- */
 int _media_db_get_media_group_count(media_group_e group, filter_h filter, int *group_count);
-
-/**
- *@internal
- */
 int _media_db_get_media_group(media_group_e group, filter_h filter, media_group_cb callback, void *user_data);
-
-/**
- *@internal
- */
 int _media_db_get_album(filter_h filter, media_album_cb callback, void *user_data);
-
-/**
- *@internal
- */
 int _media_db_get_folder(filter_h filter, media_folder_cb callback, void *user_data);
-
-/**
- *@internal
- */
 int _media_db_get_playlist(filter_h filter, media_playlist_cb callback, void *user_data);
-
-/**
- *@internal
- */
 int _media_db_get_playlist_item(int playlist_id, filter_h filter, playlist_member_cb callback, void *user_data);
-
-/**
- *@internal
- */
 int _media_db_get_tag(const char *media_id, filter_h filter, media_tag_cb callback, void *user_data);
-
-/**
- *@internal
- */
 int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark_cb callback, void *user_data);
-
-/**
- *@internal
- */
 int _media_db_get_group_item_count_by_id(int group_id, filter_h filter, group_list_e group_type, int *item_count);
-
-/**
- *@internal
- */
 int _media_db_get_group_item_count(const char *group_name, filter_h filter, group_list_e group_type, int *item_count);
-
-/**
- *@internal
- */
 int _media_db_get_group_item_by_id(int group_id, filter_h filter, media_info_cb callback, void *user_data, group_list_e group_type);
-
-/**
- *@internal
- */
 int _media_db_get_group_item(const char *group_name, filter_h filter, media_info_cb callback, void *user_data, group_list_e group_type);
-
-/**
- *@internal
- */
 int _media_db_get_media_group_item_count(const char *group_name, media_group_e group, filter_h filter, int *item_count);
-
-/**
- *@internal
- */
 int _media_db_get_media_group_item(const char *group_name, media_group_e group, filter_h filter, media_info_cb callback, void *user_data);
 
 /**
@@ -788,7 +779,7 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 		} while (0)
 
 #define media_content_info(fmt, arg...) do { \
-			LOGD(FONT_COLOR_GREEN"[%d]"fmt"", media_content_gettid() ,##arg);     \
+			LOGI(FONT_COLOR_GREEN"[%d]"fmt"", media_content_gettid() ,##arg);     \
 		} while (0)
 
 #define media_content_error(fmt, arg...) do { \
@@ -799,7 +790,24 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 			LOGD(FONT_COLOR_RESET"[%d]", media_content_gettid());     \
 		} while (0)
 
+#define media_content_sec_debug(fmt, arg...) do { \
+			SECURE_LOGD(FONT_COLOR_RESET"[%d]"fmt"", media_content_gettid(), ##arg);     \
+		} while (0)
 
+#define media_content_sec_warn(fmt, arg...) do { \
+			SECURE_LOGW(FONT_COLOR_GREEN"[%d]"fmt"",media_content_gettid(), ##arg);     \
+		} while (0)
+
+#define media_content_sec_error(fmt, arg...) do { \
+			SECURE_LOGE(FONT_COLOR_RED"[%d]"fmt"",media_content_gettid(), ##arg);     \
+		} while (0)
+
+#define ERR_BUF_LENGTH 256
+#define media_content_stderror(fmt) do { \
+			char buf[ERR_BUF_LENGTH] = {0, }; \
+			strerror_r(errno, buf, ERR_BUF_LENGTH);	\
+			LOGE(FONT_COLOR_RED fmt" : STANDARD ERROR [%s]", buf); \
+		} while (0)
 
 #ifdef __cplusplus
 }

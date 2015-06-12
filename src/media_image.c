@@ -33,6 +33,8 @@ int image_meta_destroy(image_meta_h image)
 		SAFE_FREE(_image->title);
 		SAFE_FREE(_image->weather);
 		SAFE_FREE(_image->burst_id);
+		SAFE_FREE(_image->exposure_time);
+		SAFE_FREE(_image->model);
 		SAFE_FREE(_image);
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -115,6 +117,30 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src)
 			}
 		}
 
+		if(STRING_VALID(_src->exposure_time))
+		{
+			_dst->exposure_time = strdup(_src->exposure_time);
+			if(_dst->exposure_time == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				image_meta_destroy((image_meta_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
+		if(STRING_VALID(_src->model))
+		{
+			_dst->model = strdup(_src->model);
+			if(_dst->model == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				image_meta_destroy((image_meta_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
+		_dst->fnumber = _src->fnumber;
+		_dst->iso = _src->iso;
 		_dst->width = _src->width;
 		_dst->height = _src->height;
 		_dst->orientation = _src->orientation;
@@ -274,6 +300,106 @@ int image_meta_get_burst_id(image_meta_h image, char **burst_id)
 		else
 		{
 			*burst_id = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int image_meta_get_exposure_time(image_meta_h image, char **exposure_time)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	image_meta_s *_image = (image_meta_s*)image;
+
+	if(_image && exposure_time)
+	{
+		if(STRING_VALID(_image->exposure_time))
+		{
+			*exposure_time = strdup(_image->exposure_time);
+			if(*exposure_time == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*exposure_time = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int image_meta_get_fnumber(image_meta_h image, double *fnumber)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	image_meta_s *_image = (image_meta_s*)image;
+
+	if(_image && fnumber)
+	{
+		*fnumber = _image->fnumber;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int image_meta_get_iso(image_meta_h image, int *iso)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	image_meta_s *_image = (image_meta_s*)image;
+
+	if(_image && iso)
+	{
+		*iso = _image->iso;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int image_meta_get_model(image_meta_h image, char **model)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	image_meta_s *_image = (image_meta_s*)image;
+
+	if(_image && model)
+	{
+		if(STRING_VALID(_image->model))
+		{
+			*model = strdup(_image->model);
+			if(*model == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*model = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
