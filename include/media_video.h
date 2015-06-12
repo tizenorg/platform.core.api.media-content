@@ -39,7 +39,7 @@ extern "C" {
 
 /**
  * @brief Clones the video metadata.
- * @details This function copies the video metadata handle from a source to
+ * @details This function copies the video metadata handle from a source to 
  *          destination.
  *
  * @since_tizen 2.3
@@ -49,7 +49,7 @@ extern "C" {
  * @param[out] dst The destination handle to the video metadata
  * @param[in]  src The source handle to the video metadata
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -71,7 +71,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src);
  *
  * @param[in] video The video metadata handle
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -93,7 +93,7 @@ int video_meta_destroy(video_meta_h video);
  * @param[in]  video    The video metadata handle
  * @param[out] media_id The ID of the video
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -114,7 +114,7 @@ int video_meta_get_media_id(video_meta_h video, char **media_id);
  * @param[in]  video The video metadata handle
  * @param[out] album The video album or @c NULL
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -135,7 +135,7 @@ int video_meta_get_album(video_meta_h video, char **album);
  * @param[in]  video  The video metadata handle
  * @param[out] artist The artist of the video metadata
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -159,9 +159,9 @@ int video_meta_get_artist(video_meta_h video, char **artist);
  * @return @c 0 on success, 
  *         otherwise a negative error value
  *
- * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  */
 int video_meta_get_album_artist(video_meta_h video, char **album_artist);
@@ -177,7 +177,7 @@ int video_meta_get_album_artist(video_meta_h video, char **album_artist);
  * @param[in]  video The video metadata handle
  * @param[out] genre The genre of the video metadata
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -198,7 +198,7 @@ int video_meta_get_genre(video_meta_h video, char **genre);
  * @param[in]  video    The video metadata handle
  * @param[out] composer The composer of the video metadata
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -219,7 +219,7 @@ int video_meta_get_composer(video_meta_h video, char **composer);
  * @param[in]  video The video metadata handle
  * @param[out] year  The year of the video metadata
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -238,7 +238,7 @@ int video_meta_get_year(video_meta_h video, char **year);
  * @param[in]  video         The video metadata handle
  * @param[out] recorded_date The recorded date of the video metadata
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -257,7 +257,7 @@ int video_meta_get_recorded_date(video_meta_h video, char **recorded_date);
  * @param[in]  video     The video metadata handle
  * @param[out] copyright The copyright of the video metadata
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -278,7 +278,7 @@ int video_meta_get_copyright(video_meta_h video, char **copyright);
  * @param[in]  video     The video metadata handle
  * @param[out] track_num The track number of the video metadata
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -297,7 +297,7 @@ int video_meta_get_track_num(video_meta_h video, char **track_num);
  * @param[in]  video     The video metadata handle
  * @param[out] bit_rate  The bit rate of the video metadata
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -314,7 +314,7 @@ int video_meta_get_bit_rate(video_meta_h video, int *bit_rate);
  * @param[in]  video    The video metadata handle
  * @param[out] duration The video duration in milliseconds
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -330,7 +330,7 @@ int video_meta_get_duration(video_meta_h video, int *duration);
  * @param[in]  video The video metadata handle
  * @param[out] width The video width in pixels
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -346,7 +346,7 @@ int video_meta_get_width(video_meta_h video, int *width);
  * @param[in]  video  The video metadata handle
  * @param[out] height The video height in pixels
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -356,13 +356,14 @@ int video_meta_get_width(video_meta_h video, int *width);
 int video_meta_get_height(video_meta_h video, int *height);
 
 /**
+ * @deprecated Deprecated since 2.4. [Use media_info_get_played_count() instead]
  * @brief Gets the played count of the video.
  * @since_tizen 2.3
  *
  * @param[in]  video        The video metadata handle
  * @param[out] played_count The number of played
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -372,13 +373,14 @@ int video_meta_get_height(video_meta_h video, int *height);
 int video_meta_get_played_count(video_meta_h video, int *played_count);
 
 /**
+ * @deprecated Deprecated since 2.4. [Use media_info_get_played_time() instead]
  * @brief Gets the last played time parameter of the video.
  * @since_tizen 2.3
  *
  * @param[in]  video       The video metadata handle
  * @param[out] played_time The time last played in the video
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -388,6 +390,7 @@ int video_meta_get_played_count(video_meta_h video, int *played_count);
 int video_meta_get_played_time(video_meta_h video, time_t *played_time);
 
 /**
+ * @deprecated Deprecated since 2.4.
  * @brief Gets the position played parameter of the video.
  * @details This function returns the elapsed playback time parameter of the video as period
  *          starting from the beginning of the movie.
@@ -397,7 +400,7 @@ int video_meta_get_played_time(video_meta_h video, time_t *played_time);
  * @param[in]  video           The video metadata handle
  * @param[out] played_position The position from the beginning of the video (in milliseconds)
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -407,13 +410,14 @@ int video_meta_get_played_time(video_meta_h video, time_t *played_time);
 int video_meta_get_played_position(video_meta_h video, int *played_position);
 
 /**
+ * @deprecated Deprecated since 2.4. [Use media_info_increase_played_count() instead]
  * @brief Sets the played count of the video.
  * @since_tizen 2.3
  *
  * @param[in] video        The video metadata handle
  * @param[in] played_count The number of played
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -425,13 +429,14 @@ int video_meta_get_played_position(video_meta_h video, int *played_position);
 int video_meta_set_played_count(video_meta_h video, int played_count);
 
 /**
+ * @deprecated Deprecated since 2.4. [Use media_info_set_played_time() instead]
  * @brief Sets the time last played parameter of the video.
  * @since_tizen 2.3
  *
  * @param[in] video       The video metadata handle
  * @param[in] played_time The time last played in the video
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -443,16 +448,19 @@ int video_meta_set_played_count(video_meta_h video, int played_count);
 int video_meta_set_played_time(video_meta_h video, time_t played_time);
 
 /**
+ * @deprecated Deprecated since 2.4.
  * @brief Sets the position played parameter of the video.
  * @details This function returns video's elapsed playback time parameter as period
  *          starting from the beginning of the movie.
  *
  * @since_tizen 2.3
  *
+ * @remarks  It is NOT recommended to use this attribute for your application-specific purpose because this attribute can be overwritten by other applications (even 0).
+ *
  * @param[in] video           The video metadata handle
  * @param[in] played_position The position from the beginning of the video (in milliseconds)
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -479,7 +487,7 @@ int video_meta_set_played_position(video_meta_h video, int played_position);
  *
  * @param[in] video The video metadata handle
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful

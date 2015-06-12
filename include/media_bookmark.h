@@ -49,7 +49,7 @@ extern "C" {
  * @param[in] thumbnail_path The thumbnail path of video bookmark\ n
  *                           If the media type is audio, then thumbnail is null.
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -76,7 +76,7 @@ int media_bookmark_insert_to_db(const char *media_id, time_t time, const char *t
  *
  * @param[in] bookmark_id The ID of media bookmark
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -101,7 +101,7 @@ int media_bookmark_delete_from_db(int bookmark_id);
  * @param[in]  filter         The handle to the media filter
  * @param[out] bookmark_count The count of the media bookmark
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -129,7 +129,7 @@ int media_bookmark_get_bookmark_count_from_db(filter_h filter, int *bookmark_cou
  * @param[out] dst The destination handle to media bookmark
  * @param[in]  src The source handle to media bookmark
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -152,7 +152,7 @@ int media_bookmark_clone(media_bookmark_h *dst, media_bookmark_h src);
  *
  * @param[in] bookmark The handle to media bookmark
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -172,7 +172,7 @@ int media_bookmark_destroy(media_bookmark_h bookmark);
  * @param[in]  bookmark    The handle to media bookmark
  * @param[out] bookmark_id The media bookmark ID
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -191,7 +191,7 @@ int media_bookmark_get_bookmark_id(media_bookmark_h bookmark, int *bookmark_id);
  * @param[in]  bookmark    The handle to media bookmark
  * @param[out] marked_time The bookmark time offset (in milliseconds)
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -209,7 +209,7 @@ int media_bookmark_get_marked_time(media_bookmark_h bookmark, time_t *marked_tim
  * @param[in]  bookmark The handle to media bookmark
  * @param[out] path     The thumbnail path of media bookmark
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful

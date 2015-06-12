@@ -63,8 +63,9 @@ typedef enum
  */
 typedef enum
 {
-    MEDIA_CONTENT_STORAGE_INTERNAL  = 0,  /**< The device's internal storage */
-    MEDIA_CONTENT_STORAGE_EXTERNAL  = 1,  /**< The device's external storage */
+	MEDIA_CONTENT_STORAGE_INTERNAL	= 0,  /**< The device's internal storage */
+	MEDIA_CONTENT_STORAGE_EXTERNAL	= 1,  /**< The device's external storage */
+	MEDIA_CONTENT_STORAGE_CLOUD	= 100,  /**< The Cloud storage */
 } media_content_storage_e;
 
 /**
@@ -240,6 +241,13 @@ typedef struct audio_meta_s *audio_meta_h;
  * @brief The structure type for the Media filter handle.
  */
 typedef struct filter_s *filter_h;
+
+/**
+ * @ingroup CAPI_CONTENT_MEDIA_STORAGE_MODULE
+ * @brief The structure type for the Media storage handle.
+ * @since_tizen 2.4
+ */
+typedef void *media_storage_h;
 
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
@@ -504,6 +512,27 @@ typedef bool (*media_album_cb)(media_album_h album, void *user_data);
 typedef bool (*media_group_cb)(const char *group_name, void *user_data);
 
 /**
+ * @ingroup CAPI_CONTENT_MEDIA_STORAGE_MODULE
+ * @brief Called for every storage in the obtained list of storages.
+ * @since_tizen 2.4
+ *
+ * @details Iterates over a media storage list.
+ *
+ * @remarks You should not destroy @a storage returned by this function.
+ *
+ * @param[in] storage     The handle of the media storage
+ * @param[in] user_data  The user data passed from the foreach function
+ *
+ * @return @c true to continue with the next iteration of the loop,
+ *         otherwise @c false to break out of the loop
+ *
+ * @pre media_storage_foreach_storage_from_db() will invoke this function.
+ *
+ * @see media_storage_foreach_storage_from_db()
+ */
+typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
+
+/**
  * @}
  */
 
@@ -559,26 +588,31 @@ typedef bool (*media_group_cb)(const char *group_name, void *user_data);
 #define MEDIA_LOCATION_TAG "MEDIA_LOCATION_TAG"  /**< Media location tag*/
 #define MEDIA_AGE_RATING "MEDIA_AGE_RATING"  /**< Media age rating*/
 #define MEDIA_KEYWORD "MEDIA_KEYWORD"  /**< Media keyword*/
-#define MEDIA_WEATHER "MEDIA_WEATHER"	/**< Media weather*/
+#define MEDIA_WEATHER "MEDIA_WEATHER"  /**< Media weather*/
 #define MEDIA_IS_DRM "MEDIA_IS_DRM"  /**< Is DRM. 0-not drm, 1-drm*/
 #define MEDIA_STORAGE_TYPE "MEDIA_STORAGE_TYPE"  /**< Media storage. 0-internal storage, 1-external storage*/
+#define MEDIA_EXPOSURE_TIME "MEDIA_EXPOSURE_TIME"	/**< media exposure_time*/
+#define MEDIA_FNUMBER "MEDIA_FNUMBER"	/**< media fnumber*/
+#define MEDIA_ISO "MEDIA_ISO"	/**< media iso*/
+#define MEDIA_MODEL "MEDIA_MODEL"	/**< media model*/
 
-#define MEDIA_FILE_NAME_PINYIN "MEDIA_FILE_NAME_PINYIN"		/**< media file name pinyin */
-#define MEDIA_TITLE_PINYIN "MEDIA_TITLE_PINYIN"		/**< media title pinyin */
-#define MEDIA_ALBUM_PINYIN "MEDIA_ALBUM_PINYIN"	/**< media album pinyin*/
-#define MEDIA_ARTIST_PINYIN "MEDIA_ARTIST_PINYIN"		/**< media artist pinyin*/
-#define MEDIA_ALBUM_ARTIST_PINYIN "MEDIA_ALBUM_ARTIST_PINYIN"		/**< media album_artist pinyin*/
-#define MEDIA_GENRE_PINYIN "MEDIA_GENRE_PINYIN"		/**< media genre pinyin*/
-#define MEDIA_COMPOSER_PINYIN "MEDIA_COMPOSER_PINYIN"	/**< media composer pinyin*/
-#define MEDIA_COPYRIGHT_PINYIN "MEDIA_COPYRIGHT_PINYIN"		/**< media copyright pinyin*/
-#define MEDIA_DESCRIPTION_PINYIN "MEDIA_DESCRIPTION_PINYIN"	/**< media description pinyin*/
-#define MEDIA_AUTHOR_PINYIN "MEDIA_AUTHOR_PINYIN"	/**< media authore pinyin*/
-#define MEDIA_PROVIDER_PINYIN "MEDIA_PROVIDER_PINYIN"	/**< media provider pinyin*/
-#define MEDIA_CONTENT_NAME_PINYIN "MEDIA_CONTENT_NAME_PINYIN"	/**< media content name pinyin*/
-#define MEDIA_CATEGORY_PINYIN "MEDIA_CATEGORY_PINYIN"	/**< media category pinyin*/
-#define MEDIA_LOCATION_TAG_PINYIN "MEDIA_LOCATION_TAG_PINYIN"	/**< media location tag pinyin*/
-#define MEDIA_AGE_RATING_PINYIN "MEDIA_AGE_RATING_PINYIN"	/**< media age rating pinyin*/
-#define MEDIA_KEYWORD_PINYIN "MEDIA_KEYWORD_PINYIN"	/**< media keyword pinyin*/
+#define MEDIA_FILE_NAME_PINYIN "MEDIA_FILE_NAME_PINYIN"  /**< Media file name pinyin */
+#define MEDIA_TITLE_PINYIN "MEDIA_TITLE_PINYIN"  /**< Media title pinyin */
+#define MEDIA_ALBUM_PINYIN "MEDIA_ALBUM_PINYIN"  /**< Media album pinyin*/
+#define MEDIA_ARTIST_PINYIN "MEDIA_ARTIST_PINYIN"  /**< Media artist pinyin*/
+#define MEDIA_ALBUM_ARTIST_PINYIN "MEDIA_ALBUM_ARTIST_PINYIN"  /**< Media album_artist pinyin*/
+#define MEDIA_GENRE_PINYIN "MEDIA_GENRE_PINYIN"  /**< Media genre pinyin*/
+#define MEDIA_COMPOSER_PINYIN "MEDIA_COMPOSER_PINYIN"  /**< Media composer pinyin*/
+#define MEDIA_COPYRIGHT_PINYIN "MEDIA_COPYRIGHT_PINYIN"  /**< Media copyright pinyin*/
+#define MEDIA_DESCRIPTION_PINYIN "MEDIA_DESCRIPTION_PINYIN"  /**< Media description pinyin*/
+#define MEDIA_AUTHOR_PINYIN "MEDIA_AUTHOR_PINYIN"  /**< Media authore pinyin*/
+#define MEDIA_PROVIDER_PINYIN "MEDIA_PROVIDER_PINYIN"  /**< Media provider pinyin*/
+#define MEDIA_CONTENT_NAME_PINYIN "MEDIA_CONTENT_NAME_PINYIN"  /**< Media content name pinyin*/
+#define MEDIA_CATEGORY_PINYIN "MEDIA_CATEGORY_PINYIN"  /**< Media category pinyin*/
+#define MEDIA_LOCATION_TAG_PINYIN "MEDIA_LOCATION_TAG_PINYIN"  /**< Media location tag pinyin*/
+#define MEDIA_AGE_RATING_PINYIN "MEDIA_AGE_RATING_PINYIN"  /**< Media age rating pinyin*/
+#define MEDIA_KEYWORD_PINYIN "MEDIA_KEYWORD_PINYIN"  /**< Media keyword pinyin*/
+
 /**
  * @}
  */
@@ -594,7 +628,8 @@ typedef bool (*media_group_cb)(const char *group_name, void *user_data);
 #define FOLDER_NAME "FOLDER_NAME"  /**< Folder base name */
 #define FOLDER_MODIFIED_TIME "FOLDER_MODIFIED_TIME"  /**< Folder modified time */
 #define FOLDER_STORAGE_TYPE "FOLDER_STORAGE_TYPE"  /**< Folder storage. 0-internal storage, 1-external storage*/
-#define FOLDER_NAME_PINYIN "FOLDER_NAME_PINYIN"		/**< folder base name pinyin*/
+#define FOLDER_NAME_PINYIN "FOLDER_NAME_PINYIN"  /**< Folder base name pinyin*/
+#define FOLDER_ORDER "FOLDER_ORDER"  /**< Folder order info */
 
 /**
  * @}

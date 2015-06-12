@@ -298,6 +298,44 @@ int media_folder_get_modified_time(media_folder_h folder, time_t *date);
 int media_folder_get_storage_type(media_folder_h folder, media_content_storage_e *storage_type);
 
 /**
+ * @brief Gets the storage id of the folder.
+ * @since_tizen 2.4
+ *
+ * @remarks You must release @a storage_id using free().
+ *
+ * @param[in]  folder      The handle to the media folder
+ * @param[out] storage_id The storage id of the media folder
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ */
+int media_folder_get_storage_id(media_folder_h folder, char **storage_id);
+
+/**
+ * @brief Gets the folder viewing order.
+ * @since_tizen 2.4
+ *
+ * @param[in] folder The handle to the media folder
+ * @param[out] order   The viewing order of the media folder
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ *
+ * @post media_folder_update_to_db()
+ */
+int media_folder_get_order(media_folder_h folder, int *order);
+
+/**
  * @brief Gets the media folder from the media database.
  *
  * @details This function creates a new media folder handle from the media database by the given @a folder_id.
@@ -325,6 +363,49 @@ int media_folder_get_storage_type(media_folder_h folder, media_content_storage_e
 int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folder);
 
 /**
+ * @brief Sets the folder name.
+ * @since_tizen 2.3
+ *
+ * @param[in] folder The handle to the media folder
+ * @param[in] name   The name of the media folder
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ *
+ * @post media_folder_update_to_db()
+ */
+int media_folder_set_name(media_folder_h folder, const char *name);
+
+/**
+ * @brief Sets the folder viewing order.
+ * @details If you set the order value for each folder, you can sort in ascending or descending order as the set order values using the filter. \n
+ *                 Moreover, more detailed settings are possible when used with the filter. \n
+ *
+ * @since_tizen 2.4
+ * @remarks  If you don't set the order value, the order value will be set default value. Default is 0. \n
+ *                    If you don't use the filter, the set order value does not effect the folder viewing order.
+ *
+ * @param[in] folder The handle to the media folder
+ * @param[in] order   The viewing order of the media folder
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ *
+ * @post media_folder_update_to_db()
+ */
+int media_folder_set_order(media_folder_h folder, int order);
+
+/**
  * @brief Updates the media folder to the media database.
  *
  * @details The function updates the given media folder in the media database. The function should be called after any change in folder attributes, to be updated to the media
@@ -343,6 +424,11 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
+ * @retval #MEDIA_CONTENT_ERROR_NETWORK           Network fail
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  *
  * @pre This function requires opened connection to content service by media_content_connect().
@@ -353,25 +439,6 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
  * @see media_folder_set_name()
  */
 int media_folder_update_to_db(media_folder_h folder);
-
-/**
- * @brief Sets the folder name.
- * @since_tizen 2.3
- *
- * @param[in] folder The handle to the media folder
- * @param[in] name   The name of the media folder
- *
- * @return @c 0 on success,
- *         otherwise a negative error value
- *
- * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
- * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
- * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
- *
- * @post media_folder_update_to_db()
- */
-int media_folder_set_name(media_folder_h folder, const char *name);
 
 /**
  * @}

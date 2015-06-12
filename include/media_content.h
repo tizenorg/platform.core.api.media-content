@@ -28,6 +28,7 @@
 #include <media_group.h>
 #include <media_playlist.h>
 #include <media_bookmark.h>
+#include <media_storage.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,7 +52,7 @@ extern "C" {
  *
  * @since_tizen 2.3
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE      Successful
@@ -71,7 +72,7 @@ int media_content_connect(void);
  *
  * @since_tizen 2.3
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE      Successful
@@ -105,7 +106,7 @@ int media_content_disconnect(void);
  *
  * @param[in] path The file path
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -141,7 +142,7 @@ int media_content_scan_file(const char *path);
  * @param[in] callback     The callback to be invoked when the scanning is finished
  * @param[in] user_data    The user data to be passed to the callback function
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -150,6 +151,22 @@ int media_content_scan_file(const char *path);
  * @see media_scan_completed_cb()
  */
 int media_content_scan_folder(const char *path, bool is_recursive, media_scan_completed_cb callback, void *user_data);
+
+/**
+ * @brief Requests to cancel the media folder scanning.
+ * @since_tizen 2.4
+ *
+ * @param[in] path         The folder path
+ *
+ * @return @c 0 on success, 
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ * @pre media_content_scan_folder()
+ */
+int media_content_cancel_scan_folder(const char *path);
 
 /**
  * @brief Subscribes notifications of the media DB change.
@@ -161,7 +178,7 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
  * @param[in] callback  The callback to be invoked when the scanning is finished
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -181,7 +198,7 @@ int media_content_set_db_updated_cb(media_content_db_update_cb callback, void *u
  *
  * @since_tizen 2.3
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful

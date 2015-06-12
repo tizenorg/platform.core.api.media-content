@@ -50,7 +50,7 @@ extern "C" {
  *
  * @param[out] filter A handle to the media filter
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -72,7 +72,7 @@ int media_filter_create(filter_h *filter);
  *
  * @param[in] filter The handle to the media filter
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -94,7 +94,7 @@ int media_filter_destroy(filter_h filter);
  * @param[in] offset The start position of the given filter (Starting from zero)
  * @param[in] count  The number of items to be searched with respect to the offset
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -114,7 +114,7 @@ int media_filter_set_offset(filter_h filter, int offset, int count);
  * @param[in] condition    The condition which is used WHERE clause on a query
  * @param[in] collate_type The collate type for comparing two strings
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -136,7 +136,7 @@ int media_filter_set_condition(filter_h filter, const char *condition, media_con
  * @param[in] order_keyword The search order keyword
  * @param[in] collate_type  The collate type for comparing two strings
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -147,6 +147,26 @@ int media_filter_set_condition(filter_h filter, const char *condition, media_con
  * @see media_filter_destroy()
  */
 int media_filter_set_order(filter_h filter, media_content_order_e order_type, const char *order_keyword, media_content_collation_e collate_type);
+
+/**
+ * @brief Sets the @a storage id for the given @a filter.
+ * @since_tizen 2.4
+ *
+ * @param[in] filter       The handle to the media filter
+ * @param[in] storage_id    The storage_id for browsing or searching
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ *
+ * @see media_filter_create()
+ * @see media_filter_destroy()
+ */
+int media_filter_set_storage(filter_h filter, const char *storage_id);
 
 /**
  * @brief Gets the @a offset and @a count for the given @a filter used to limit the number of items returned.
@@ -178,7 +198,7 @@ int media_filter_get_offset(filter_h filter, int *offset, int *count);
  * @param[out] condition    The condition which is used WHERE clause on a query
  * @param[out] collate_type The collate type for comparing two strings
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -202,7 +222,7 @@ int media_filter_get_condition(filter_h filter, char **condition, media_content_
  * @param[out] order_keyword The search order keyword
  * @param[out] collate_type  The collate type for comparing two strings
  *
- * @return @c 0 on success,
+ * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -213,6 +233,27 @@ int media_filter_get_condition(filter_h filter, char **condition, media_content_
  * @see media_filter_destroy()
  */
 int media_filter_get_order(filter_h filter, media_content_order_e* order_type, char **order_keyword, media_content_collation_e *collate_type);
+
+/**
+ * @brief Get the @a storage id for given @a filter.
+ * @since_tizen 2.4
+ *
+ * @remarks You must release @a storage_id using free().
+ *
+ * @param[in] filter The handle to media info filter
+ * @param[out] storage_id The storage_id which is used in filter
+ *
+ * @return @c 0 on success,
+ * 		otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ *
+ * @see media_filter_create()
+ * @see media_filter_destroy()
+ */
+int media_filter_get_storage(filter_h filter, char **storage_id);
 
 /**
  * @}
