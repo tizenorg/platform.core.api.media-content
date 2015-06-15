@@ -15,15 +15,24 @@
 */
 
 
+#include <media_content.h>
 #include <media_info_private.h>
-#include <media-util.h>
+#include <media_util_private.h>
+
+#include <unicode/uscript.h>
+#include <unicode/uloc.h>
+#include <unicode/ucol.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <fcntl.h>
 
 
 static attribute_h g_attr_handle = NULL;
 static attribute_h g_alias_attr_handle = NULL;
 static MediaSvcHandle *db_handle = NULL;
 static int ref_count = 0;
-static GMutex *db_mutex = NULL;
+static GMutex db_mutex;
 
 static __thread media_noti_cb_s *g_noti_info = NULL;
 
@@ -486,6 +495,9 @@ static int __media_content_create_alias_attr_handle(void)
 	ret = _media_filter_attribute_add(g_alias_attr_handle, FOLDER_NAME_PINYIN, DB_TABLE_ALIAS_FOLDER"."DB_FIELD_FOLDER_NAME_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
+	ret = _media_filter_attribute_add(g_alias_attr_handle, FOLDER_ORDER, DB_TABLE_ALIAS_FOLDER"."DB_FIELD_FOLDER_ORDER);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
 	/* Playlist*/
 	ret = _media_filter_attribute_add(g_alias_attr_handle, PLAYLIST_NAME, DB_TABLE_ALIAS_PLAYLIST"."DB_FIELD_PLAYLIST_NAME);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
@@ -512,6 +524,8 @@ static int __media_content_create_attribute_handle(void)
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	ret = __media_content_create_alias_attr_handle();
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		_media_filter_attribute_destory(g_attr_handle);
 
 	return ret;
 }
@@ -571,24 +585,32 @@ int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condit
 
 		//query = sqlite3_mprintf("%s %s %s", select_query, condition_query, option_query);
 		len = snprintf(query, sizeof(query), "%s %s %s", select_query, condition_query, option_query);
-		if (len > 0) {
+		if (len > 0 && len < MAX_QUERY_SIZE) {
 			query[len] = '\0';
+		} else if (len >= MAX_QUERY_SIZE) {
+			query[MAX_QUERY_SIZE -1] = '\0';
 		} else {
 			media_content_error("snprintf failed");
 			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 		}
 
-		media_content_info("Query : [%s]", query);
+		media_content_sec_debug("Query : [%s]", query);
 
 		err = sqlite3_prepare_v2((sqlite3*)db_handle, query, strlen(query), stmt, NULL);
 		if(err != SQLITE_OK)
 		{
 			media_content_error("DB_FAILED(0x%08x) fail to sqlite3_prepare(), %s", MEDIA_CONTENT_ERROR_DB_FAILED, sqlite3_errmsg((sqlite3*)db_handle));
 
-			if (err == SQLITE_BUSY)
+			if (err == SQLITE_BUSY) {
+				media_content_error(" BUSY ERROR");
 				return MEDIA_CONTENT_ERROR_DB_BUSY;
-			else
+			} else if (err == SQLITE_PERM) {
+				media_content_error("PERMISSION EROR");
+				return MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
+			} else {
+				media_content_error("OTHER ERROR");
 				return MEDIA_CONTENT_ERROR_DB_FAILED;
+			}
 		}
 	}
 	else
@@ -657,32 +679,44 @@ int media_content_connect(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if (!db_mutex)
-		db_mutex = g_mutex_new();
-
-	if (db_mutex != NULL) {
-		g_mutex_lock(db_mutex);
-
-		media_content_debug("ref count : %d", ref_count);
+	if (g_mutex_trylock(&db_mutex)) {
+		media_content_info("ref count : %d", ref_count);
 
 		if(ref_count == 0)
 		{
 			if(db_handle == NULL)
 			{
-				ret = media_svc_connect(&db_handle,tzplatform_getuid(TZ_USER_NAME));
-			}
-
-			ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-
-			if(ret == MEDIA_CONTENT_ERROR_NONE) {
 				ret = __media_content_create_attribute_handle();
+				if(ret == MEDIA_CONTENT_ERROR_NONE) {
+					ret = media_svc_connect(&db_handle,tzplatform_getuid(TZ_USER_NAME));
+					ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+					if(ret == MEDIA_CONTENT_ERROR_NONE) {
+						ref_count++;
+						//__media_content_create_collate();
+					} else {
+						__media_content_destroy_attribute_handle();
+					}
+				} else {
+					media_content_error("Internal DB Connection Error");
+				}
+			} else {
+				media_content_error("Wrong DB Connection status");
+				ret = MEDIA_CONTENT_ERROR_DB_FAILED;
+			}
+		} else {
+			if(db_handle != NULL) {
+				ref_count++;
+			} else {
+				media_content_error("Wrong DB Handle status");
+				ret = MEDIA_CONTENT_ERROR_DB_FAILED;
 			}
 		}
 
-		ref_count++;
-		g_mutex_unlock(db_mutex);
+		media_content_info("ref count changed to: %d", ref_count);
+		g_mutex_unlock(&db_mutex);
 	} else {
 		media_content_error("mutex is NULL");
+		ret = MEDIA_CONTENT_ERROR_DB_FAILED;
 	}
 
 	return ret;
@@ -692,18 +726,21 @@ int media_content_disconnect(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if (db_mutex != NULL) {
-		g_mutex_lock(db_mutex);
-
+	if (g_mutex_trylock(&db_mutex)) {
 		media_content_debug("ref count : %d", ref_count);
 		if(ref_count > 0)
 		{
-			ref_count--;
+			if(db_handle != NULL) {
+				ref_count--;
+			} else {
+				media_content_error("Wrong DB Handle status");
+				ret = MEDIA_CONTENT_ERROR_DB_FAILED;
+			}
 		}
 		else
 		{
 			media_content_error("DB_FAILED(0x%08x) database is not connected", MEDIA_CONTENT_ERROR_DB_FAILED);
-			g_mutex_unlock(db_mutex);
+			g_mutex_unlock(&db_mutex);
 			return MEDIA_CONTENT_ERROR_DB_FAILED;
 		}
 
@@ -716,20 +753,29 @@ int media_content_disconnect(void)
 				if(ret == MEDIA_CONTENT_ERROR_NONE) {
 					ret = __media_content_destroy_attribute_handle();
 					db_handle = NULL;
+				} else {
+					media_content_error("database disconnect fail");
+					ref_count++;
 				}
+			} else {
+				media_content_error("Wrong DB Handle status");
+				ret = MEDIA_CONTENT_ERROR_DB_FAILED;
 			}
 
-			g_mutex_unlock(db_mutex);
-			g_mutex_free(db_mutex);
-			db_mutex = NULL;
+			g_mutex_unlock(&db_mutex);
+
+			media_content_info("ref count changed to: %d", ref_count);
 
 			return ret;
 		}
 
-		g_mutex_unlock(db_mutex);
+		g_mutex_unlock(&db_mutex);
 	} else {
 		media_content_error("mutex is NULL");
+		ret = MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 	}
+
+	media_content_info("ref count changed to: %d", ref_count);
 
 	return ret;
 }
@@ -737,57 +783,71 @@ int media_content_disconnect(void)
 int media_content_scan_file(const char *path)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	bool ignore_dir = FALSE;
+	char *folder_path = NULL;
+	int check_file = MEDIA_CONTENT_ERROR_NONE;
 
 	if (!STRING_VALID(path)) {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	media_content_debug("Path : %s", path);
+	media_content_sec_debug("Path : %s", path);
 
-	if (g_file_test(path, G_FILE_TEST_EXISTS)) {
-		if (g_file_test(path, G_FILE_TEST_IS_REGULAR)) {
-			/* This means this path has to be inserted or refreshed */
-			media_content_debug("This path exists in file system.");
+	check_file = _media_util_check_file(path);
+	if (check_file == MEDIA_CONTENT_ERROR_NONE) {
+		/* This means this path has to be inserted or refreshed */
+		folder_path = g_path_get_dirname(path);
+		ret = _media_util_check_ignore_dir(folder_path, &ignore_dir);
+		SAFE_FREE(folder_path);
 
-			media_svc_storage_type_e storage_type;
-
-			ret = media_svc_get_storage_type(path, &storage_type);
-			if (ret < 0) {
-				media_content_error("media_svc_get_storage_type failed : %d (%s)", ret, path);
-				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-			}
-
-			ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
-			if (ret == MS_MEDIA_ERR_NONE) {
-				/* Refresh */
-				ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, path, tzplatform_getuid(TZ_USER_NAME));
-				if (ret < 0) {
-					media_content_error("media_svc_refresh_item failed : %d", ret);
-					return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-				}
-
-			} else if (ret == MS_MEDIA_ERR_DB_NO_RECORD) {
-				/* Insert */
-				ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path, tzplatform_getuid(TZ_USER_NAME));
-				if (ret < 0) {
-					media_content_error("media_svc_insert_item_immediately failed : %d", ret);
-					return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-				}
-			} else {
-				media_content_error("media_svc_check_item_exist_by_path failed : %d", ret);
-				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-			}
-		} else if (g_file_test(path, G_FILE_TEST_IS_DIR)) {
-			/* Dierectory is not accpted in this function */
-			media_content_error("This path is directory");
+		if(ignore_dir) {
+			media_content_error("Invalid folder path");
 			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 		}
+
+		media_svc_storage_type_e storage_type;
+
+		ret = media_svc_get_storage_type(path, &storage_type);
+		if(ret != MS_MEDIA_ERR_NONE) {
+			media_content_sec_error("media_svc_get_storage_type failed : %d (%s)", ret, path);
+			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		}
+
+		ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
+		if (ret == MS_MEDIA_ERR_NONE) {
+			/* Refresh */
+			ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, "media", path,tzplatform_getuid(TZ_USER_NAME));
+			if(ret != MS_MEDIA_ERR_NONE) {
+				media_content_error("media_svc_refresh_item failed : %d", ret);
+				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+			}
+
+		} else if (ret == MS_MEDIA_ERR_DB_NO_RECORD) {
+			/* Insert */
+			ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path,tzplatform_getuid(TZ_USER_NAME));
+			if(ret != MS_MEDIA_ERR_NONE) {
+				if (ret == MS_MEDIA_ERR_DB_CONSTRAINT_FAIL) {
+					media_content_sec_error("This item is already inserted. This may be normal operation because other process already did this (%s)", path);
+					ret = MEDIA_CONTENT_ERROR_NONE;
+				} else {
+					media_content_sec_error("media_svc_insert_item_immediately failed : %d (%s)", ret, path);
+				}
+
+				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+			}
+		} else {
+			media_content_error("media_svc_check_item_exist_by_path failed : %d", ret);
+			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		}
+	} else if (check_file == MEDIA_CONTENT_ERROR_PERMISSION_DENIED) {
+		media_content_error("You have no permission for this file %d", ret);
+		return MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
 	} else {
 		/* This means this path has to be deleted */
 		media_content_debug("This path doesn't exists in file system... So now start to delete it from DB");
-		ret = media_svc_delete_item_by_path(_content_get_db_handle(), path, tzplatform_getuid(TZ_USER_NAME));
-		if (ret < 0) {
+		ret = media_svc_delete_item_by_path(_content_get_db_handle(), "media", path, tzplatform_getuid(TZ_USER_NAME));
+		if(ret != MS_MEDIA_ERR_NONE) {
 			media_content_error("media_svc_delete_item_by_path failed : %d", ret);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		}
@@ -819,7 +879,8 @@ static int __media_content_check_dir(const char *path)
 
 	dp = opendir(path);
 	if (dp == NULL) {
-		media_content_error("error [%s, %s]", path, strerror(errno));
+		media_content_sec_error("path [%s]", path);
+		media_content_stderror("open dir fail");
 		if (errno == EACCES || errno == EPERM) {
 			return MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
 		} else {
@@ -831,6 +892,7 @@ static int __media_content_check_dir(const char *path)
 
 	return MEDIA_CONTENT_ERROR_NONE;
 }
+
 
 int media_content_scan_folder(const char *path, bool is_recursive, media_scan_completed_cb callback, void *user_data)
 {
@@ -852,10 +914,11 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 	if (ret == MEDIA_CONTENT_ERROR_PERMISSION_DENIED) {
 		return ret;
 	}
+
 	media_content_scan_cb_data *cb_data = NULL;
 	cb_data = (media_content_scan_cb_data *)malloc(sizeof(media_content_scan_cb_data));
 	if (cb_data == NULL) {
-		media_content_error("malloc failed");
+		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 	}
 
@@ -863,7 +926,19 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 	cb_data->user_data = user_data;
 
 	ret = media_directory_scanning_async(path, is_recursive, _media_content_scan_cb, cb_data, tzplatform_getuid(TZ_USER_NAME));
-	if (ret < 0) {
+	if(ret != MS_MEDIA_ERR_NONE) {
+		media_content_error("media_directory_scanning_async failed : %d", ret);
+	}
+
+	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
+}
+
+int media_content_cancel_scan_folder(const char *path)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	//ret = media_directory_scanning_cancel(path);
+	if(ret != MS_MEDIA_ERR_NONE) {
 		media_content_error("media_directory_scanning_async failed : %d", ret);
 	}
 
@@ -897,6 +972,16 @@ int media_content_set_db_updated_cb(media_content_db_update_cb callback, void *u
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
+	if (callback == NULL) {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	if (g_noti_info != NULL) {
+		media_content_error("Noti callback is alreay set");
+		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+	}
+
 	g_noti_info = (media_noti_cb_s*)calloc(1, sizeof(media_noti_cb_s));
 	if (g_noti_info == NULL) {
 		media_content_error("Failed to create noti info");
@@ -911,7 +996,7 @@ int media_content_set_db_updated_cb(media_content_db_update_cb callback, void *u
 	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }
 
-int media_content_unset_db_updated_cb()
+int media_content_unset_db_updated_cb(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
@@ -920,4 +1005,3 @@ int media_content_unset_db_updated_cb()
 
 	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }
-

@@ -1,6 +1,6 @@
 Name:       capi-content-media-content
 Summary:    A Media content library in SLP C API
-Version:    0.2.62
+Version:    0.2.63
 Release:    0
 Group:      Multimedia/API
 License:    Apache-2.0
@@ -41,6 +41,7 @@ MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
+
 
 %files
 %manifest %{name}.manifest

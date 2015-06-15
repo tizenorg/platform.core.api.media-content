@@ -15,7 +15,6 @@
  */
 
 
-#include <media_content.h>
 #include <media_info_private.h>
 #include <media_util_private.h>
 
@@ -49,8 +48,6 @@ int media_folder_get_folder_count_from_db(filter_h filter, int *folder_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	media_content_debug_func();
-
 	if(!folder_count)
 	{
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
@@ -66,8 +63,6 @@ int media_folder_foreach_folder_from_db(filter_h filter, media_folder_cb callbac
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	media_content_debug_func();
-
 	if(callback == NULL)
 	{
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
@@ -82,8 +77,6 @@ int media_folder_foreach_folder_from_db(filter_h filter, media_folder_cb callbac
 int media_folder_get_media_count_from_db(const char *folder_id, filter_h filter, int *media_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
-	media_content_debug_func();
 
 	if(STRING_VALID(folder_id) && media_count)
 	{
@@ -101,8 +94,6 @@ int media_folder_get_media_count_from_db(const char *folder_id, filter_h filter,
 int media_folder_foreach_media_from_db(const char *folder_id, filter_h filter, media_info_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
-	media_content_debug_func();
 
 	if((callback != NULL) && STRING_VALID(folder_id))
 	{
@@ -126,6 +117,7 @@ int media_folder_destroy(media_folder_h folder)
 		SAFE_FREE(_folder->path);
 		SAFE_FREE(_folder->name);
 		SAFE_FREE(_folder->folder_id);
+		SAFE_FREE(_folder->storage_uuid);
 		SAFE_FREE(_folder);
 		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
@@ -179,6 +171,17 @@ int media_folder_clone(media_folder_h *dst, media_folder_h src)
 		{
 			_dst->path = strdup(_src->path);
 			if(_dst->path == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				media_folder_destroy((media_folder_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
+		if(STRING_VALID(_src->storage_uuid))
+		{
+			_dst->storage_uuid = strdup(_src->storage_uuid);
+			if(_dst->storage_uuid == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_folder_destroy((media_folder_h)_dst);
@@ -329,10 +332,59 @@ int media_folder_get_storage_type(media_folder_h folder, media_content_storage_e
 	return ret;
 }
 
+int media_folder_get_storage_id(media_folder_h folder, char **storage_id)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_folder_s *_folder = (media_folder_s*)folder;
+	if(_folder)
+	{
+		if(STRING_VALID(_folder->storage_uuid))
+		{
+			*storage_id = strdup(_folder->storage_uuid);
+			if(*storage_id == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*storage_id = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_folder_get_order(media_folder_h folder, int *order)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_folder_s *_folder = (media_folder_s*)folder;
+	if(_folder)
+	{
+		*order = _folder->folder_order;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+
 int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folder)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-	int ret_view = MEDIA_CONTENT_ERROR_NONE;
 	sqlite3_stmt *stmt = NULL;
 	char select_query[DEFAULT_QUERY_SIZE];
 
@@ -360,6 +412,8 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
+		media_content_error("folder handle %x", _folder);
+
 		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
 			_folder->folder_id = strdup((const char *)sqlite3_column_text(stmt, 0));
 
@@ -373,21 +427,30 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 	}
 
 	SQLITE3_FINALIZE(stmt);
+
 	return ret;
 }
 
 int media_folder_update_to_db(media_folder_h folder)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-	int len = 0;
 	media_folder_s *_folder = (media_folder_s*)folder;
-
-	char sql[MAX_QUERY_SIZE];
-	memset(sql, '\0', sizeof(sql));
 	char *set_sql = NULL;
-	char *where_sql = NULL;
+	char *sql = NULL;
 
-	if((_folder != NULL) && STRING_VALID(_folder->folder_id) && g_src_path)
+	if((_folder == NULL) || (_folder->folder_id == NULL))
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	/* Update folder order */
+	sql = sqlite3_mprintf(UPDATE_FOLDER_ORDER, _folder->folder_order, _folder->folder_id);
+
+	ret = _content_query_sql(sql);
+	sqlite3_free(sql);
+
+	if(STRING_VALID(_folder->folder_id) && g_src_path)
 	{
 		/* Set modified time */
 		time_t date;
@@ -397,33 +460,27 @@ int media_folder_update_to_db(media_folder_h folder)
 		set_sql = __media_folder_get_update_folder_sql((media_folder_h)_folder);
 		if(set_sql == NULL)
 		{
+			SAFE_FREE(g_src_path);
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
-		where_sql = sqlite3_mprintf("folder_uuid='%q'", _folder->folder_id);
-
-		len = snprintf(sql, sizeof(sql), UPDATE_SQL, DB_TABLE_FOLDER, set_sql, where_sql);
-		if (len > 0) {
-			sql[len] = '\0';
-		} else {
-			media_content_error("snprintf failed");
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		}
+		sql = sqlite3_mprintf("UPDATE %Q SET %s WHERE folder_uuid=%Q", DB_TABLE_FOLDER, set_sql, _folder->folder_id);
 
 		ret = _content_query_sql(sql);
 
 		sqlite3_free(set_sql);
-		sqlite3_free(where_sql);
+		sqlite3_free(sql);
+		if (ret != MEDIA_CONTENT_ERROR_NONE)
+		{
+			SAFE_FREE(g_src_path);
+			return ret;
+		}
 
-		/* Do folder rename operation using libmedia-service */
-		ret = media_svc_rename_folder(_content_get_db_handle(), g_src_path, _folder->path, tzplatform_getuid(TZ_USER_NAME));
+		ret = media_svc_rename_folder(_content_get_db_handle(), _folder->storage_uuid, g_src_path, _folder->path, tzplatform_getuid(TZ_USER_NAME));
+		SAFE_FREE(g_src_path);
+
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-	}
-	else
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
 	return ret;
@@ -441,9 +498,9 @@ int media_folder_set_name(media_folder_h folder, const char *name)
 			char new_folder_path[MAX_QUERY_SIZE] = {0,};
 
 			folder_path = g_path_get_dirname(_folder->path);
-			media_content_debug("Existed Folder Path : %s", _folder->path);
+			media_content_sec_debug("Existed Folder Path : %s", _folder->path);
 			snprintf(new_folder_path, sizeof(new_folder_path), "%s/%s", folder_path, name); 
-			media_content_debug("New Path : %s", new_folder_path);
+			media_content_sec_debug("New Path : %s", new_folder_path);
 
 			SAFE_FREE(g_src_path);
 			g_src_path = strdup(_folder->path);
@@ -466,6 +523,24 @@ int media_folder_set_name(media_folder_h folder, const char *name)
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_folder_set_order(media_folder_h folder, int order)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_folder_s *_folder = (media_folder_s*)folder;
+
+	if(_folder != NULL && order >= 0)
+	{
+		_folder->folder_order = order;
 	}
 	else
 	{

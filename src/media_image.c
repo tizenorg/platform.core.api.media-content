@@ -15,10 +15,7 @@
 */
 
 
-#include <media_image.h>
-#include <media_content.h>
 #include <media_info_private.h>
-#include <media-svc.h>
 
 
 int image_meta_destroy(image_meta_h image)
@@ -465,7 +462,13 @@ int image_meta_update_to_db(image_meta_h image)
 
 	if(_image != NULL && STRING_VALID(_image->media_id))
 	{
-		sql = sqlite3_mprintf(UPDATE_IMAGE_META_FROM_MEDIA, _image->orientation, _image->weather, _image->media_id);
+		char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
+		memset(storage_id, 0x00, sizeof(storage_id));
+
+		ret = _media_db_get_storage_id_by_media_id(_image->media_id, storage_id);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+		sql = sqlite3_mprintf(UPDATE_IMAGE_META_FROM_MEDIA, storage_id, _image->orientation, _image->weather, _image->media_id);
 		ret = _content_query_sql(sql);
 		sqlite3_free(sql);
 	}

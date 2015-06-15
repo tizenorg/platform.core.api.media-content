@@ -14,32 +14,32 @@
 * limitations under the License.
 */
 
-
+#include <dirent.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
 #include <media_util_private.h>
 #include <media_info_private.h>
 #include <media_content_type.h>
 
-
-int _media_util_get_store_type_by_path(const char *path, int *storage_type)
+int _media_util_check_file(const char *path)
 {
-	if(STRING_VALID(path))
-	{
-		if(strncmp(path, MEDIA_CONTENT_PATH_PHONE, strlen(MEDIA_CONTENT_PATH_PHONE)) == 0)
-		{
-			*storage_type = MEDIA_CONTENT_STORAGE_INTERNAL;
-		}
-		else if(strncmp (path, MEDIA_CONTENT_PATH_MMC, strlen(MEDIA_CONTENT_PATH_MMC)) == 0)
-		{
-			*storage_type = MEDIA_CONTENT_STORAGE_EXTERNAL;
+	int exist;
+
+	/* check the file exits actually */
+	exist = open(path, O_RDONLY);
+	if(exist < 0) {
+		media_content_sec_debug("path [%s]", path);
+		media_content_stderror("open file fail");
+		if (errno == EACCES || errno == EPERM) {
+			return MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
+		} else {
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 		}
 	}
-	else
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
+
+	close(exist);
 
 	return MEDIA_CONTENT_ERROR_NONE;
 }
@@ -51,7 +51,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 	char *scan_ignore = ".scan_ignore";
 	bool find = false;
 
-	media_content_info("dir_path : %s", dir_path);
+	media_content_sec_debug("dir_path : %s", dir_path);
 
 	if(!STRING_VALID(dir_path))
 	{
@@ -101,13 +101,13 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 			if(STRING_VALID(entry.d_name) && (strcmp(entry.d_name, scan_ignore) == 0))
 			{
 				media_content_info("Find Ignore path");
-				media_content_info("Ignore path[%s]", search_path);
+				media_content_sec_debug("Ignore path[%s]", search_path);
 				find = TRUE;
 				break;
 			}
 			else
 			{
-				//media_content_info("entry.d_name[%s]", entry.d_name);
+				//media_content_sec_debug("entry.d_name[%s]", entry.d_name);
 				continue;
 			}
 		}
@@ -139,7 +139,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 			{
 				int seek_len = leaf_path -search_path;
 				search_path[seek_len] = '\0';
-				//media_content_info("go to other dir [%s]", search_path);
+				//media_content_sec_debug("go to other dir [%s]", search_path);
 			}
 			else
 			{

@@ -736,7 +736,13 @@ int audio_meta_update_to_db(audio_meta_h audio)
 
 	if(_audio != NULL && STRING_VALID(_audio->media_id))
 	{
-		sql = sqlite3_mprintf(UPDATE_AV_META_FROM_MEDIA, _audio->played_count, _audio->played_time, _audio->played_position, _audio->media_id);
+		char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
+		memset(storage_id, 0x00, sizeof(storage_id));
+
+		ret = _media_db_get_storage_id_by_media_id(_audio->media_id, storage_id);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+		sql = sqlite3_mprintf(UPDATE_AV_META_FROM_MEDIA, storage_id, _audio->played_count, _audio->played_time, _audio->played_position, _audio->media_id);
 		ret = _content_query_sql(sql);
 		sqlite3_free(sql);
 	}

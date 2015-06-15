@@ -31,8 +31,8 @@ extern "C" {
  */
 
 int _media_util_check_file(const char *path);
+
 int _media_util_check_ignore_dir(const char *dir_path, bool *ignore);
-int _media_util_get_store_type_by_path(const char *path, int *storage_type);
 
 
 #ifdef __cplusplus

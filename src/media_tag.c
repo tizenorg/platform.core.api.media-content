@@ -15,7 +15,6 @@
 */
 
 
-#include <media_content.h>
 #include <media_info_private.h>
 
 
@@ -187,8 +186,6 @@ int media_tag_get_tag_count_from_db(filter_h filter, int *tag_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	media_content_debug_func();
-
 	if(tag_count != NULL)
 	{
 		ret = _media_db_get_group_count(filter, MEDIA_GROUP_TAG, tag_count);
@@ -206,8 +203,6 @@ int media_tag_foreach_tag_from_db (filter_h filter, media_tag_cb callback, void 
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	media_content_debug_func();
-
 	if(callback == NULL)
 	{
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
@@ -222,8 +217,6 @@ int media_tag_foreach_tag_from_db (filter_h filter, media_tag_cb callback, void 
 int media_tag_get_media_count_from_db(int tag_id, filter_h filter, int *media_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
-	media_content_debug_func();
 
 	if((tag_id > 0) && (media_count != NULL))
 	{
@@ -241,8 +234,6 @@ int media_tag_get_media_count_from_db(int tag_id, filter_h filter, int *media_co
 int media_tag_foreach_media_from_db(int tag_id, filter_h filter, media_info_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
-	media_content_debug_func();
 
 	if(callback == NULL)
 	{
@@ -416,6 +407,11 @@ int media_tag_add_media(media_tag_h tag, const char *media_id)
 	if((_tag != NULL) && STRING_VALID(media_id))
 	{
 		media_tag_item_s *_item = (media_tag_item_s*)calloc(1, sizeof(media_tag_item_s));
+		if(_item == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
 
 		_item->media_id = strdup(media_id);
 		_item->function = MEDIA_TAG_ADD;
@@ -446,6 +442,11 @@ int media_tag_remove_media(media_tag_h tag, const char *media_id)
 	if(_tag != NULL && STRING_VALID(media_id))
 	{
 		media_tag_item_s *_item = (media_tag_item_s*)calloc(1, sizeof(media_tag_item_s));
+		if(_item == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
 
 		_item->media_id = strdup(media_id);
 		_item->function = MEDIA_TAG_REMOVE;
@@ -478,6 +479,11 @@ int media_tag_set_name(media_tag_h tag, char *tag_name)
 		SAFE_FREE(_tag->name);
 
 		media_tag_item_s *_item = (media_tag_item_s*)calloc(1, sizeof(media_tag_item_s));
+		if(_item == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
 
 		_item->tag_name = strdup(tag_name);
 		_item->function = MEDIA_TAG_UPDATE_TAG_NAME;

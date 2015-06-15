@@ -62,8 +62,6 @@ int media_bookmark_get_bookmark_count_from_db(filter_h filter, int *bookmark_cou
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	media_content_debug_func();
-
 	if (bookmark_count == NULL)
 	{
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);

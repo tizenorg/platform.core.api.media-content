@@ -15,9 +15,7 @@
 */
 
 
-#include <media_content.h>
 #include <media_info_private.h>
-#include <media-svc.h>
 
 
 int video_meta_destroy(video_meta_h video)
@@ -726,7 +724,13 @@ int video_meta_update_to_db(video_meta_h video)
 
 	if(_video != NULL && STRING_VALID(_video->media_id))
 	{
-		sql = sqlite3_mprintf(UPDATE_AV_META_FROM_MEDIA, _video->played_count, _video->played_time, _video->played_position, _video->media_id);
+		char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
+		memset(storage_id, 0x00, sizeof(storage_id));
+
+		ret = _media_db_get_storage_id_by_media_id(_video->media_id, storage_id);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+		sql = sqlite3_mprintf(UPDATE_AV_META_FROM_MEDIA, storage_id, _video->played_count, _video->played_time, _video->played_position, _video->media_id);
 		ret = _content_query_sql(sql);
 		sqlite3_free(sql);
 	}

@@ -20,6 +20,9 @@
 #include <media_info_private.h>
 #include <media_playlist.h>
 
+#define PLAYLIST_ARRAY_SIZE				20
+#define PLAYLIST_ARRAY_EXPAND			10
+#define MAX_TMP_STR						2048
 
 static __thread GList *g_playlist_item_list = NULL;
 
@@ -31,6 +34,11 @@ static int __media_playlist_remove_item_from_playlist(int playlist_id, int playl
 static int __media_playlist_update_playlist_name(int playlist_id, const char *playlist_name);
 static int __media_playlist_update_thumbnail_path(int playlist_id, const char *path);
 static int __media_playlist_update_play_order(int playlist_id, int playlist_member_id, int play_order);
+static int __media_playlist_reset_file(const char* playlist_path);
+static int __media_playlist_append_to_file(const char* playlist_path, const char* path);
+static int __media_playlist_import_item_from_file(const char* playlist_path, char*** const item_list, int* item_count);
+static int __media_playlist_destroy_import_item(char** item_list, int item_count);
+static void __media_playlist_destroy_export_item(gpointer data);
 
 static void __media_playlist_item_add(media_playlist_item_s *item_s)
 {
@@ -178,6 +186,220 @@ static int __media_playlist_update_play_order(int playlist_id, int playlist_memb
 	return ret;
 }
 
+static bool __media_playlist_media_info_cb(media_info_h media, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char **media_id = (char**)user_data;
+	ret = media_info_get_media_id(media, media_id);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+	{
+		media_content_error("Fail to get file path");
+		return FALSE;
+	}
+	return TRUE;
+}
+
+static bool __media_playlist_member_cb(int playlist_member_id, media_info_h media, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	GList **list = (GList**)user_data;
+	char *path = NULL;
+
+	ret = media_info_get_file_path(media, &path);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+	{
+		media_content_error("Fail to get file path");
+		return FALSE;
+	}
+
+	*list = g_list_append(*list, path);
+
+	return TRUE;
+}
+
+static int __media_playlist_reset_file(const char* playlist_path)
+{
+	FILE *fp = NULL;
+
+	fp = fopen(playlist_path, "wb");
+	if(fp == NULL)
+	{
+		media_content_stderror("fopen fail");
+		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+	}
+
+	fputs("", fp);	// remove previous playlist
+
+	fclose(fp);
+
+	return MEDIA_CONTENT_ERROR_NONE;
+}
+
+static int __media_playlist_append_to_file(const char* playlist_path, const char* path)
+{
+	FILE *fp = NULL;
+
+	fp = fopen(playlist_path, "a");	// append only
+	if(fp == NULL)
+	{
+		media_content_stderror("fopen fail");
+		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+	}
+
+	fputs(path, fp);
+
+	fputs("\n", fp);
+
+	fclose(fp);
+
+	return MEDIA_CONTENT_ERROR_NONE;
+}
+
+static int __media_playlist_import_item_from_file(const char* playlist_path, char*** const item_list, int* item_count)
+{
+	int current_index = 0;						// Current record number
+	int current_max_size = PLAYLIST_ARRAY_SIZE;	// Current max number of records in array
+	int tmp_str_len = 0;						// Length of the string
+	char *buf = NULL;
+	char *tmp_buf = NULL;
+	char *tmp_str = NULL;						// Next line from buffer, this string is used for parsing
+
+	FILE *fp = NULL;
+	long int file_size = 0;
+
+	*item_list = NULL; *item_count = 0;
+
+	fp = fopen(playlist_path, "rb");		// Open as binary for precise estimation of file length
+	if(fp == NULL)
+	{
+		media_content_stderror("fopen fail");
+		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+	}
+
+	fseek(fp, 0, SEEK_END);					// Move to the end of file
+	file_size = ftell(fp);				// Here we can find the size of file
+	fseek(fp, 0 , SEEK_SET);					// Return to the beginning of file
+
+	if(file_size == 0) {
+		media_content_debug("file is empty.");
+		fclose(fp);
+		return MEDIA_CONTENT_ERROR_NONE;
+	}
+	// Allocate the memory and copy file content there
+	if(file_size > 0)
+		buf = malloc(file_size + 1);
+
+	if(buf == NULL)
+	{
+		media_content_error("Out of Memory");
+		fclose(fp);
+		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
+
+	tmp_buf = buf;
+
+	if(fread(buf, file_size, 1, fp) != 1) {
+		fclose(fp);
+		SAFE_FREE(buf);
+		media_content_stderror("fread fail");
+		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+	}
+	buf[file_size] = 0;
+	fclose(fp);
+
+	// Preliminary memory allocation
+	*item_list = calloc(current_max_size, sizeof(char*));
+	tmp_str = malloc(MAX_TMP_STR);
+	if (tmp_str == NULL || *item_list == NULL) {
+		SAFE_FREE(*item_list);
+		SAFE_FREE(buf);
+		SAFE_FREE(tmp_str);
+		media_content_error("Out of Memory");
+		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
+	// Here we create format string for sscanf(...) that allows to get a line from buffer
+	char format[25];
+	snprintf(format, 25, "%%%d[^\n]", MAX_TMP_STR);
+
+	// This cycle gets lines one by one from buffer till the end of buffer. Empty line ("\n") must be treated specifically
+	while((sscanf(tmp_buf, format, tmp_str) == 1) || (*tmp_buf == '\n')) {
+		if(*tmp_buf == '\n') {// Check if there is an empty line, skip '\n' symbol
+			tmp_buf += 1;
+
+			if(tmp_buf < (buf + file_size))
+				continue;			// We are still in buffer
+			else
+				break;				// Empty line was in the end of buffer
+		}
+
+		tmp_str_len = strlen(tmp_str);		// Save the length of line
+
+		if(tmp_str[0] != '#') {			// Check that the line is not a comment
+			if(!(current_index < (current_max_size - 1))) {				// Check if we have completely filled record array
+				// Expand array size and relocate the array (records will be copied into new one)
+				current_max_size += PLAYLIST_ARRAY_EXPAND;
+				char **tmp_ptr = calloc(current_max_size, sizeof(char*));
+				if (tmp_ptr == NULL) {
+					__media_playlist_destroy_import_item(*item_list, current_index);
+					SAFE_FREE(buf);
+					SAFE_FREE(tmp_str);
+					media_content_error("Out of Memory");
+					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+				}
+				memmove(tmp_ptr, *item_list, sizeof(char*) * current_index);
+				SAFE_FREE(*item_list);
+				*item_list = tmp_ptr;
+			}
+
+			// Save new file path (current string in tmp_str)
+			(*item_list)[current_index] = malloc(tmp_str_len + 1);
+			if ((*item_list)[current_index] == NULL) {
+				__media_playlist_destroy_import_item(*item_list, current_index);
+				SAFE_FREE(buf);
+				SAFE_FREE(tmp_str);
+				media_content_error("Out of Memory");
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+			memmove((*item_list)[current_index], tmp_str, tmp_str_len + 1);
+
+			// Increase the index of buffer
+			current_index += 1;
+		}
+
+		tmp_buf += (tmp_str_len + 1);				// Move position in buffer after the string that was parsed
+	}
+
+	*item_count = current_index;						// Now we need to save the number of records in array
+
+	SAFE_FREE(buf);
+	SAFE_FREE(tmp_str);						// Free temporary variables
+
+	return MEDIA_CONTENT_ERROR_NONE;
+}
+
+static int __media_playlist_destroy_import_item(char** item_list, int item_count)
+{
+	int i;
+
+	for(i = 0; i < item_count; ++i) {
+		SAFE_FREE(item_list[i]);
+		item_list[i] = NULL;
+	}
+
+	if (item_list != NULL) {
+		SAFE_FREE(item_list);
+		item_list = NULL;
+	}
+
+	return MEDIA_CONTENT_ERROR_NONE;
+}
+
+static void __media_playlist_destroy_export_item(gpointer data)
+{
+	SAFE_FREE(data);
+	data = NULL;
+}
+
 int media_playlist_insert_to_db(const char *name, media_playlist_h *playlist)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -190,7 +412,6 @@ int media_playlist_insert_to_db(const char *name, media_playlist_h *playlist)
 	}
 
 	media_playlist_s *_playlist = (media_playlist_s*)calloc(1, sizeof(media_playlist_s));
-
 	if(_playlist == NULL)
 	{
 		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -244,8 +465,6 @@ int media_playlist_get_playlist_count_from_db(filter_h filter, int *playlist_cou
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	media_content_debug_func();
-
 	if(playlist_count != NULL)
 	{
 		ret = _media_db_get_group_count(filter, MEDIA_GROUP_PLAYLIST, playlist_count);
@@ -263,8 +482,6 @@ int media_playlist_foreach_playlist_from_db(filter_h filter, media_playlist_cb c
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	media_content_debug_func();
-
 	if(callback == NULL)
 	{
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
@@ -279,8 +496,6 @@ int media_playlist_foreach_playlist_from_db(filter_h filter, media_playlist_cb c
 int media_playlist_get_media_count_from_db(int playlist_id, filter_h filter, int *media_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
-	media_content_debug_func();
 
 	if((playlist_id > 0) && (media_count != NULL))
 	{
@@ -299,11 +514,8 @@ int media_playlist_foreach_media_from_db(int playlist_id, filter_h filter, playl
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	media_content_debug_func();
-
 	if((playlist_id > 0) && (callback != NULL))
 	{
-		//ret = _media_db_get_group_item_by_id(playlist_id, filter, callback, user_data, MEDIA_GROUP_PLAYLIST);
 		ret = _media_db_get_playlist_item(playlist_id, filter, callback, user_data);
 	}
 	else
@@ -395,12 +607,18 @@ int media_playlist_get_playlist_from_db(int playlist_id, media_playlist_h *playl
 		while(sqlite3_step(stmt) == SQLITE_ROW)
 		{
 			media_playlist_s *_playlist = (media_playlist_s*)calloc(1, sizeof(media_playlist_s));
+			if(_playlist == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				SQLITE3_FINALIZE(stmt);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
 
 			_playlist->playlist_id = (int)sqlite3_column_int(stmt, 0);
 			if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
 				_playlist->name = strdup((const char *)sqlite3_column_text(stmt, 1));
-			if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
-				_playlist->thumbnail_path = strdup((const char *)sqlite3_column_text(stmt, 2));
+			if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
+				_playlist->thumbnail_path = strdup((const char *)sqlite3_column_text(stmt, 3));
 
 			*playlist = (media_playlist_h)_playlist;
 		}
@@ -540,6 +758,11 @@ int media_playlist_set_name(media_playlist_h playlist, const char *playlist_name
 		SAFE_FREE(_playlist->name);
 
 		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
+		if(item == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
 
 		item->playlist_name = strdup(playlist_name);
 		item->function = MEDIA_PLAYLIST_UPDATE_PLAYLIST_NAME;
@@ -580,6 +803,11 @@ int media_playlist_set_thumbnail_path(media_playlist_h playlist, const char *pat
 		SAFE_FREE(_playlist->thumbnail_path);
 
 		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
+		if(item == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
 
 		item->thumbnail_path = strdup(path);
 		item->function = MEDIA_PLAYLIST_UPDATE_THUMBNAIL_PATH;
@@ -618,6 +846,11 @@ int media_playlist_set_play_order(media_playlist_h playlist, int playlist_member
 	if((_playlist != NULL) && (playlist_member_id > 0) && (play_order >= 0))
 	{
 		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
+		if(item == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
 
 		item->playlist_member_id = playlist_member_id;
 		item->function = MEDIA_PLAYLIST_UPDATE_PLAY_ORDER;
@@ -642,6 +875,11 @@ int media_playlist_add_media(media_playlist_h playlist, const char *media_id)
 	if(_playlist != NULL && STRING_VALID(media_id))
 	{
 		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
+		if(item == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
 
 		item->media_id = strdup(media_id);
 		item->function = MEDIA_PLAYLIST_ADD;
@@ -673,6 +911,11 @@ int media_playlist_remove_media(media_playlist_h playlist, int playlist_member_i
 	if((_playlist != NULL) && (playlist_member_id > 0))
 	{
 		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
+		if(item == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
 
 		item->playlist_member_id = playlist_member_id;
 		item->function = MEDIA_PLAYLIST_REMOVE;
@@ -742,6 +985,163 @@ int media_playlist_update_to_db(media_playlist_h playlist)
 	}
 
 	__media_playlist_item_release();
+
+	return ret;
+}
+
+int media_playlist_import_from_file(const char *path, const char *playlist_name, media_playlist_h *playlist)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char** import_item_list = NULL;
+	int import_item_count = 0;
+	int idx;
+
+	if(!STRING_VALID(path))
+	{
+		media_content_error("Invalid path");
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	if(!STRING_VALID(playlist_name))
+	{
+		media_content_error("Invalid playlist_name");
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	ret = media_playlist_insert_to_db(playlist_name, playlist);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+	{
+		media_content_error("Fail to insert playlist to db");
+		return ret;
+	}
+
+	ret = __media_playlist_import_item_from_file(path, &import_item_list, &import_item_count);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+	{
+		__media_playlist_destroy_import_item(import_item_list, import_item_count);
+		media_content_error("Fail to get playlist from file");
+		return ret;
+	}
+
+	if (import_item_count == 0)
+	{
+		media_content_debug("The playlist from file is empty");
+	}
+
+	for (idx=0; idx < import_item_count; idx++)
+	{
+		filter_h filter = NULL;
+		char *media_id = NULL;
+		char *condition = NULL;
+
+		ret = media_filter_create(&filter);
+		if(ret != MEDIA_CONTENT_ERROR_NONE)
+		{
+			__media_playlist_destroy_import_item(import_item_list, import_item_count);
+			media_filter_destroy(filter);
+			media_content_error("error media_filter_create");
+			return ret;
+		}
+		condition = sqlite3_mprintf("path = '%q'", import_item_list[idx]);
+		ret = media_filter_set_condition(filter, condition, MEDIA_CONTENT_COLLATE_DEFAULT);
+		if(ret != MEDIA_CONTENT_ERROR_NONE)
+		{
+			__media_playlist_destroy_import_item(import_item_list, import_item_count);
+			media_filter_destroy(filter);
+			sqlite3_free(condition);
+			media_content_error("error media_filter_set_condition");
+			return ret;
+		}
+		ret = _media_db_get_group_item(NULL, filter, __media_playlist_media_info_cb, &media_id, MEDIA_GROUP_NONE);
+		if(ret != MEDIA_CONTENT_ERROR_NONE)
+		{
+			__media_playlist_destroy_import_item(import_item_list, import_item_count);
+			media_filter_destroy(filter);
+			SAFE_FREE(media_id);
+			sqlite3_free(condition);
+			media_content_error("error media_info_foreach_media_from_db");
+			return ret;
+		}
+		ret = media_playlist_add_media((media_playlist_h)*playlist, media_id);
+		if(ret != MEDIA_CONTENT_ERROR_NONE)
+		{
+			__media_playlist_destroy_import_item(import_item_list, import_item_count);
+			media_filter_destroy(filter);
+			SAFE_FREE(media_id);
+			sqlite3_free(condition);
+			media_content_error("error media_playlist_add_media");
+			return ret;
+		}
+		media_filter_destroy(filter);
+		SAFE_FREE(media_id);
+		sqlite3_free(condition);
+	}
+
+	ret = media_playlist_update_to_db(*playlist);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+	{
+		__media_playlist_destroy_import_item(import_item_list, import_item_count);
+		media_content_error("Fail to update playlist to db");
+		return ret;
+	}
+	__media_playlist_destroy_import_item(import_item_list, import_item_count);
+
+	return ret;
+}
+
+int media_playlist_export_to_file(media_playlist_h playlist, const char* path)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_playlist_s *_playlist = (media_playlist_s*)playlist;
+	GList *item_list = NULL;
+	int idx;
+
+	if(!STRING_VALID(path))
+	{
+		media_content_error("Invalid path");
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	if(_playlist == NULL)
+	{
+		media_content_error("Invalid playlist");
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	if(_playlist->playlist_id <= 0)
+	{
+		media_content_error("Invalid playlist id");
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	ret = _media_db_get_playlist_item(_playlist->playlist_id, NULL, __media_playlist_member_cb, &item_list);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+	{
+		media_content_error("Fail to get playlist from db");
+		return ret;
+	}
+
+	ret = __media_playlist_reset_file(path);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+	{
+		g_list_free_full(item_list, __media_playlist_destroy_export_item);
+		media_content_error("Fail to init playlist file");
+		return ret;
+	}
+
+	for (idx=0; idx < g_list_length(item_list); idx++)
+	{
+		char *item = g_list_nth_data(item_list, idx);
+		ret = __media_playlist_append_to_file(path, item);
+		if(ret != MEDIA_CONTENT_ERROR_NONE)
+		{
+			g_list_free_full(item_list, __media_playlist_destroy_export_item);
+			media_content_error("Fail to export paths into file");
+			return ret;
+		}
+	}
+
+	g_list_free_full(item_list, __media_playlist_destroy_export_item);
 
 	return ret;
 }

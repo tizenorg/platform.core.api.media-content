@@ -15,9 +15,7 @@
 */
 
 
-#include <media_content.h>
 #include <media_info_private.h>
-#include <media-svc.h>
 
 static char *media_token[] =
 {
@@ -54,6 +52,37 @@ static char *__media_filter_replace_attr(attribute_h attr, char *name);
 static int __tokenize_operator(token_t *token, const char *str, int op_type);
 static int __tokenize(GList **token_list, const char *str);
 
+static bool __is_pinyin_needed(void)
+{
+	char *lang = NULL;
+	char *china = "zh_CN";
+	char *hongkong = "zh_HK";
+	int ret = FALSE;
+#if 0
+	/*Check CSC first*/
+	bool pinyin_support = FALSE;
+	media_svc_check_pinyin_support(&pinyin_support);
+	if(pinyin_support)
+	{
+		/*Check Language Setting*/
+		lang = vconf_get_str(VCONFKEY_LANGSET);
+		if (lang == NULL)
+		{
+			media_content_error("Fail to get string of language set");
+			return ret;
+		}
+		if((strncmp(china, lang, strlen(china)) == 0) ||
+			(strncmp(hongkong, lang, strlen(hongkong)) == 0))
+		{
+			ret = TRUE;
+		}
+
+		SAFE_FREE(lang);
+	}
+#endif
+	return ret;
+}
+
 static char *__get_order_str(media_content_order_e order_enum)
 {
 	switch(order_enum) {
@@ -73,6 +102,11 @@ static char *__get_collate_str(media_content_collation_e collate_type)
 			return "NOCASE";
 		case MEDIA_CONTENT_COLLATE_RTRIM:
 			return "RTRIM";
+		case MEDIA_CONTENT_COLLATE_LOCALIZED:
+			if(__is_pinyin_needed())
+				return "NOCASE";
+			else
+				return "localized";
 		default: return " ";
 	}
 }
@@ -126,7 +160,7 @@ static int __tokenize_operator(token_t *token, const char *str, int op_type)
 		token->str = (char*)calloc(token_size+1, sizeof(char));
 		if(token->str == NULL)
 		{
-			media_content_error("OUT_OF_MEMORY");
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return -1;
 		}
 
@@ -152,7 +186,7 @@ static int __tokenize_string(token_t *token, const char *str, int size)
 		token->str = (char*)calloc(size+1, sizeof(char));
 		if(token->str == NULL)
 		{
-			media_content_error("OUT_OF_MEMORY");
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return -1;
 		}
 		token->type = UNKNOWN_TYPE;
@@ -192,10 +226,21 @@ static int __tokenize_attribute(GList **token_list, const char *str)
 				continue;
 			}
 			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			if(token == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return -1;
+			}
 			token->type = UNKNOWN_TYPE;
 			token->str = (char*)calloc(idx+1, sizeof(char));
+			if(token->str == NULL)
+			{
+				SAFE_FREE(token);
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return -1;
+			}
 			strncpy(token->str, tmp, idx);
-			media_content_debug("type : [%d] str : [%s]", token->type, token->str);
+			//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
 			*token_list = g_list_append(*token_list, token);
 			tmp = tmp +idx + strlen(media_token[0]);
 			idx = -1;
@@ -207,14 +252,14 @@ static int __tokenize_attribute(GList **token_list, const char *str)
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				if(token == NULL)
 				{
-					media_content_error("OUT_OF_MEMORY");
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					return -1;
 				}
 				ret = __tokenize_string(token, tmp, idx);
 				if (ret < 0)
 				{
 					SAFE_FREE(token);
-					media_content_error("tokenize error occued");
+					media_content_error("tokenize error occured");
 					return -1;
 				}
 				else
@@ -236,7 +281,7 @@ static int __tokenize_attribute(GList **token_list, const char *str)
 			else
 			{
 				SAFE_FREE(token);
-				media_content_error("tokenize error occued");
+				media_content_error("tokenize error occured");
 				return -1;
 			}
 		}
@@ -247,7 +292,7 @@ static int __tokenize_attribute(GList **token_list, const char *str)
 		token_t *token = (token_t*)calloc(1, sizeof(token_t));
 		if(token == NULL)
 		{
-			media_content_error("OUT_OF_MEMORY");
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return -1;
 		}
 
@@ -255,7 +300,7 @@ static int __tokenize_attribute(GList **token_list, const char *str)
 		if (ret < 0)
 		{
 			SAFE_FREE(token);
-			media_content_error("tokenize error occued");
+			media_content_error("tokenize error occured");
 			return -1;
 		}
 
@@ -266,7 +311,7 @@ static int __tokenize_attribute(GList **token_list, const char *str)
 		else
 		{
 			SAFE_FREE(token);
-			media_content_error("tokenize error occued");
+			media_content_error("tokenize error occured");
 			return -1;
 		}
 	}
@@ -300,8 +345,19 @@ static int __tokenize(GList **token_list, const char *str)
 			}
 
 			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			if(token == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return -1;
+			}
 			token->type = UNKNOWN_TYPE;
 			token->str = (char*)calloc(idx+1, sizeof(char));
+			if(token->str == NULL)
+			{
+				SAFE_FREE(token);
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return -1;
+			}
 			strncpy(token->str, tmp, idx);
 			//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
 			*token_list = g_list_append(*token_list, token);
@@ -322,10 +378,21 @@ static int __tokenize(GList **token_list, const char *str)
 				if(tmp[j] == media_token[1][0])
 				{
 					token_t *token = (token_t*)calloc(1, sizeof(token_t));
+					if(token == NULL)
+					{
+						media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+						return -1;
+					}
 					token->str = (char*) calloc(j+1+1, sizeof(char));
+					if(token->str == NULL)
+					{
+						SAFE_FREE(token);
+						media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+						return -1;
+					}
 					token->type = STRING_TYPE;
 					strncpy(token->str, tmp, j+1);
-					media_content_debug("type : [%d] str : [%s], j : %d", token->type, token->str, j);
+					//media_content_debug("type : [%d] str : [%s], j : %d", token->type, token->str, j);
 					*token_list = g_list_append(*token_list, token);
 					tmp = tmp + strlen(token->str);
 					idx = -1;
@@ -337,10 +404,21 @@ static int __tokenize(GList **token_list, const char *str)
 			if(!flag && *tmp != '\0' && tmp[j]=='\0')
 			{
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				if(token == NULL)
+				{
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+					return -1;
+				}
 				token->str = (char*) calloc(j+1,sizeof(char));
+				if(token->str == NULL)
+				{
+					SAFE_FREE(token);
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+					return -1;
+				}
 				token->type = UNKNOWN_TYPE;
 				strncpy(token->str, tmp,j);
-				media_content_debug("type : [%d] str : [%s]", token->type, token->str);
+				//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
 				*token_list = g_list_append(*token_list, token);
 				tmp = tmp +strlen(token->str);
 				idx = -1;
@@ -360,7 +438,18 @@ static int __tokenize(GList **token_list, const char *str)
 				if(tmp[j] == media_token[2][0])
 				{
 					token_t *token = (token_t*)calloc(1, sizeof(token_t));
+					if(token == NULL)
+					{
+						media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+						return -1;
+					}
 					token->str = (char*) calloc(j+1+1, sizeof(char));
+					if(token->str == NULL)
+					{
+						SAFE_FREE(token);
+						media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+						return -1;
+					}
 					token->type = STRING_TYPE;
 					strncpy(token->str, tmp, j+1);
 					//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
@@ -375,10 +464,21 @@ static int __tokenize(GList **token_list, const char *str)
 			if(!flag && *tmp != '\0' && tmp[j]=='\0')
 			{
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				if(token == NULL)
+				{
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+					return -1;
+				}
 				token->str = (char*) calloc(j+1,sizeof(char));
+				if(token->str == NULL)
+				{
+					SAFE_FREE(token);
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+					return -1;
+				}
 				token->type = UNKNOWN_TYPE;
 				strncpy(token->str, tmp,j);
-				media_content_debug("type : [%d] str : [%s]", token->type, token->str);
+				//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
 				*token_list = g_list_append(*token_list, token);
 				tmp = tmp + strlen(token->str);
 				idx = -1;
@@ -391,14 +491,14 @@ static int __tokenize(GList **token_list, const char *str)
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				if(token == NULL)
 				{
-					media_content_error("OUT_OF_MEMORY");
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					return -1;
 				}
 				ret = __tokenize_string(token, tmp, idx);
 				if (ret < 0)
 				{
 					SAFE_FREE(token);
-					media_content_error("tokenize error occued");
+					media_content_error("tokenize error occured");
 					return -1;
 				}
 				else
@@ -419,7 +519,7 @@ static int __tokenize(GList **token_list, const char *str)
 			else
 			{
 				SAFE_FREE(token);
-				media_content_error("tokenize error occued");
+				media_content_error("tokenize error occured");
 				return -1;
 			}
 
@@ -431,7 +531,7 @@ static int __tokenize(GList **token_list, const char *str)
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				if(token == NULL)
 				{
-					media_content_error("OUT_OF_MEMORY");
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					return -1;
 				}
 
@@ -439,7 +539,7 @@ static int __tokenize(GList **token_list, const char *str)
 				if (ret < 0)
 				{
 					SAFE_FREE(token);
-					media_content_error("tokenize error occued");
+					media_content_error("tokenize error occured");
 					return -1;
 				}
 				else
@@ -460,7 +560,7 @@ static int __tokenize(GList **token_list, const char *str)
 			else
 			{
 				SAFE_FREE(token);
-				media_content_error("tokenize error occued");
+				media_content_error("tokenize error occured");
 				return -1;
 			}
 
@@ -472,7 +572,7 @@ static int __tokenize(GList **token_list, const char *str)
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				if(token == NULL)
 				{
-					media_content_error("OUT_OF_MEMORY");
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					return -1;
 				}
 
@@ -480,7 +580,7 @@ static int __tokenize(GList **token_list, const char *str)
 				if (ret < 0)
 				{
 					SAFE_FREE(token);
-					media_content_error("tokenize error occued");
+					media_content_error("tokenize error occured");
 					return -1;
 				}
 				else
@@ -501,7 +601,7 @@ static int __tokenize(GList **token_list, const char *str)
 			else
 			{
 				SAFE_FREE(token);
-				media_content_error("tokenize error occued");
+				media_content_error("tokenize error occured");
 				return -1;
 			}
 
@@ -513,7 +613,7 @@ static int __tokenize(GList **token_list, const char *str)
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				if(token == NULL)
 				{
-					media_content_error("OUT_OF_MEMORY");
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					return -1;
 				}
 
@@ -521,7 +621,7 @@ static int __tokenize(GList **token_list, const char *str)
 				if (ret < 0)
 				{
 					SAFE_FREE(token);
-					media_content_error("tokenize error occued");
+					media_content_error("tokenize error occured");
 					return -1;
 				}
 				else
@@ -542,7 +642,7 @@ static int __tokenize(GList **token_list, const char *str)
 			else
 			{
 				SAFE_FREE(token);
-				media_content_error("tokenize error occued");
+				media_content_error("tokenize error occured");
 				return -1;
 			}
 
@@ -554,7 +654,7 @@ static int __tokenize(GList **token_list, const char *str)
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				if(token == NULL)
 				{
-					media_content_error("OUT_OF_MEMORY");
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					return -1;
 				}
 
@@ -562,7 +662,7 @@ static int __tokenize(GList **token_list, const char *str)
 				if (ret < 0)
 				{
 					SAFE_FREE(token);
-					media_content_error("tokenize error occued");
+					media_content_error("tokenize error occured");
 					return -1;
 				}
 				else
@@ -583,7 +683,7 @@ static int __tokenize(GList **token_list, const char *str)
 			else
 			{
 				SAFE_FREE(token);
-				media_content_error("tokenize error occued");
+				media_content_error("tokenize error occured");
 				return -1;
 			}
 
@@ -595,7 +695,7 @@ static int __tokenize(GList **token_list, const char *str)
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				if(token == NULL)
 				{
-					media_content_error("OUT_OF_MEMORY");
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					return -1;
 				}
 
@@ -603,7 +703,7 @@ static int __tokenize(GList **token_list, const char *str)
 				if (ret < 0)
 				{
 					SAFE_FREE(token);
-					media_content_error("tokenize error occued");
+					media_content_error("tokenize error occured");
 					return -1;
 				}
 				else
@@ -624,7 +724,7 @@ static int __tokenize(GList **token_list, const char *str)
 			else
 			{
 				SAFE_FREE(token);
-				media_content_error("tokenize error occued");
+				media_content_error("tokenize error occured");
 				return -1;
 			}
 
@@ -636,7 +736,7 @@ static int __tokenize(GList **token_list, const char *str)
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				if(token == NULL)
 				{
-					media_content_error("OUT_OF_MEMORY");
+					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					return -1;
 				}
 
@@ -644,7 +744,7 @@ static int __tokenize(GList **token_list, const char *str)
 				if (ret < 0)
 				{
 					SAFE_FREE(token);
-					media_content_error("tokenize error occued");
+					media_content_error("tokenize error occured");
 					return -1;
 				}
 				else
@@ -665,7 +765,7 @@ static int __tokenize(GList **token_list, const char *str)
 			else
 			{
 				SAFE_FREE(token);
-				media_content_error("tokenize error occued");
+				media_content_error("tokenize error occured");
 				return -1;
 			}
 
@@ -677,7 +777,7 @@ static int __tokenize(GList **token_list, const char *str)
 		token_t *token = (token_t*)calloc(1, sizeof(token_t));
 		if(token == NULL)
 		{
-			media_content_error("OUT_OF_MEMORY");
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return -1;
 		}
 
@@ -685,7 +785,7 @@ static int __tokenize(GList **token_list, const char *str)
 		if (ret < 0)
 		{
 			SAFE_FREE(token);
-			media_content_error("tokenize error occued");
+			media_content_error("tokenize error occured");
 			return -1;
 		}
 
@@ -696,7 +796,7 @@ static int __tokenize(GList **token_list, const char *str)
 		else
 		{
 			SAFE_FREE(token);
-			media_content_error("tokenize error occued");
+			media_content_error("tokenize error occured");
 			return -1;
 		}
 	}
@@ -856,14 +956,14 @@ int _media_filter_attribute_generate(attribute_h attr, char *condition, media_co
 			}
 		}
 
-		if(collate_type == MEDIA_CONTENT_COLLATE_NOCASE || collate_type == MEDIA_CONTENT_COLLATE_RTRIM) {
+		if(collate_type == MEDIA_CONTENT_COLLATE_NOCASE || collate_type == MEDIA_CONTENT_COLLATE_RTRIM ||collate_type == MEDIA_CONTENT_COLLATE_LOCALIZED) {
 			SAFE_STRLCAT(*generated_condition, "COLLATE ", size);
 			SAFE_STRLCAT(*generated_condition, __get_collate_str(collate_type), size);
 			SAFE_STRLCAT(*generated_condition, SPACE, size);
 		}
 
-		media_content_debug("statement : %s(%d) (total:%d)", *generated_condition, strlen(*generated_condition), total_str_size);
-		media_content_debug("Condition : %s", *generated_condition);
+		//media_content_debug("statement : %s(%d) (total:%d)", *generated_condition, strlen(*generated_condition), total_str_size);
+		media_content_sec_debug("Condition : %s", *generated_condition);
 
 		//if(*generated_condition != NULL)
 		//	res = 1;
@@ -888,8 +988,6 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 	char condition[DEFAULT_QUERY_SIZE] = {0, };
 	int size = 0;
 	//bool order_by = true;
-
-	media_content_debug_func();
 
 	if(filter == NULL)
 	{
@@ -916,7 +1014,6 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 		token_t *token;
 		char *attr_str;
 
-		media_content_debug("Tokenize for [%s]", _filter->order_keyword);
 		if(__tokenize_attribute(&token_list, _filter->order_keyword) < 0)
 		{
 			media_content_error("INVALID_PARAMETER(0x%08x):Invalid the condition", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
@@ -933,8 +1030,14 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 				if(STRING_VALID(replace_str))
 				{
 					attr_str = (char*)calloc(strlen(replace_str) + COLLATE_STR_SIZE + 1, sizeof(char));
+					if(attr_str == NULL)
+					{
+						media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+						SAFE_FREE(replace_str);
+						continue;
+					}
 
-					if(_filter->order_collate_type == MEDIA_CONTENT_COLLATE_NOCASE || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_RTRIM) {
+					if(_filter->order_collate_type == MEDIA_CONTENT_COLLATE_NOCASE || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_RTRIM ||_filter->order_collate_type == MEDIA_CONTENT_COLLATE_LOCALIZED) {
 						snprintf(attr_str, strlen(replace_str) + COLLATE_STR_SIZE + 1, "%s COLLATE %s %s", replace_str, __get_collate_str(_filter->order_collate_type), __get_order_str(_filter->order_type));
 					} else {
 						snprintf(attr_str, strlen(replace_str) + COLLATE_STR_SIZE + 1, "%s %s", replace_str, __get_order_str(_filter->order_type));
@@ -951,7 +1054,7 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 			}
 
 			total_str_size += strlen(token->str) + 1;
-			media_content_debug("[%d][type:%d]:%s", idx, token->type, token->str);
+			//media_content_debug("[%d][type:%d]:%s", idx, token->type, token->str);
 		}
 
 		//make the statment
@@ -965,7 +1068,7 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 
 			if((token != NULL) && STRING_VALID(token->str))
 			{
-				media_content_debug("[%d] %s", idx, token->str);
+				//media_content_debug("[%d] %s", idx, token->str);
 				SAFE_STRLCAT(generated_condition, token->str, size);
 				SAFE_STRLCAT(generated_condition, SPACE, size);
 
@@ -1019,6 +1122,7 @@ int media_filter_create(filter_h *filter)
 	}
 	else
 	{
+		_filter->storage_id = NULL;
 		_filter->condition = NULL;
 		_filter->order_keyword = NULL;
 		_filter->order_type = -1;
@@ -1040,6 +1144,7 @@ int media_filter_destroy(filter_h filter)
 
 	if(_filter)
 	{
+		SAFE_FREE(_filter->storage_id);
 		SAFE_FREE(_filter->condition);
 		SAFE_FREE(_filter->order_keyword);
 		SAFE_FREE(_filter);
@@ -1080,7 +1185,7 @@ int media_filter_set_condition(filter_h filter, const char *condition, media_con
 	filter_s *_filter = (filter_s*)filter;
 
 	if((_filter != NULL) && STRING_VALID(condition)
-		&& ((collate_type >= MEDIA_CONTENT_COLLATE_DEFAULT) && (collate_type <= MEDIA_CONTENT_COLLATE_RTRIM)))
+		&& ((collate_type >= MEDIA_CONTENT_COLLATE_DEFAULT) && (collate_type <= MEDIA_CONTENT_COLLATE_LOCALIZED)))
 	{
 		if(STRING_VALID(_filter->condition))
 		{
@@ -1094,7 +1199,7 @@ int media_filter_set_condition(filter_h filter, const char *condition, media_con
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
-		media_content_debug("Condition string : %s", _filter->condition);
+		media_content_sec_debug("Condition string : %s", _filter->condition);
 
 		_filter->condition_collate_type = collate_type;
 	}
@@ -1114,7 +1219,7 @@ int media_filter_set_order(filter_h filter, media_content_order_e order_type, co
 
 	if((_filter != NULL) && STRING_VALID(order_keyword)
 		&& ((order_type == MEDIA_CONTENT_ORDER_ASC) ||(order_type == MEDIA_CONTENT_ORDER_DESC))
-		&& ((collate_type >= MEDIA_CONTENT_COLLATE_DEFAULT) && (collate_type <= MEDIA_CONTENT_COLLATE_RTRIM)))
+		&& ((collate_type >= MEDIA_CONTENT_COLLATE_DEFAULT) && (collate_type <= MEDIA_CONTENT_COLLATE_LOCALIZED)))
 	{
 		SAFE_FREE(_filter->order_keyword);
 
@@ -1135,6 +1240,36 @@ int media_filter_set_order(filter_h filter, media_content_order_e order_type, co
 			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 			ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 		}
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_filter_set_storage(filter_h filter, const char *storage_id)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_s *_filter = (filter_s*)filter;
+
+	if((_filter != NULL) && STRING_VALID(storage_id))
+	{
+		if(STRING_VALID(_filter->storage_id))
+		{
+			SAFE_FREE(_filter->storage_id);
+		}
+
+		_filter->storage_id = strdup(storage_id);
+		if(_filter->storage_id == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
+
+		media_content_sec_debug("storage_id : %s", _filter->storage_id);
 	}
 	else
 	{
@@ -1219,6 +1354,36 @@ int media_filter_get_order(filter_h filter, media_content_order_e* order_type, c
 
 		*order_type = _filter->order_type;
 		*collate_type = _filter->order_collate_type;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_filter_get_storage(filter_h filter, char **storage_id)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_s *_filter = (filter_s*)filter;
+
+	if(_filter)
+	{
+		if(STRING_VALID(_filter->storage_id))
+		{
+			*storage_id = strdup(_filter->storage_id);
+			if(*storage_id == NULL)
+			{
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+		else
+		{
+			*storage_id = NULL;
+		}
 	}
 	else
 	{
