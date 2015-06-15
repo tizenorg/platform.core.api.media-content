@@ -391,7 +391,7 @@ typedef struct _media_content_cb_data {
 #define DB_TABLE_PLAYLIST_MAP	"playlist_map"
 #define DB_TABLE_BOOKMARK		"bookmark"
 #define DB_TABLE_STORAGE		"storage"
-#define DB_TABLE_MEDIA_VIEW	"media_view"
+#define DB_TABLE_MEDIA_VIEW	"media"
 
 /* DB View */
 #define DB_VIEW_PLAYLIST	"playlist_view"
