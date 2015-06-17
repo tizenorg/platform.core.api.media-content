@@ -46,6 +46,7 @@ extern "C" {
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Enumeration for the media file format.
+ * @since_tizen 2.3
  */
 typedef enum
 {
@@ -60,17 +61,21 @@ typedef enum
  * @ingroup CAPI_CONTENT_MEDIA_FOLDER_MODULE
  * @brief Enumeration for the storage type.
  * @details This information is used to establish where the folder is.
+ * @since_tizen 2.3
  */
 typedef enum
 {
 	MEDIA_CONTENT_STORAGE_INTERNAL	= 0,  /**< The device's internal storage */
 	MEDIA_CONTENT_STORAGE_EXTERNAL	= 1,  /**< The device's external storage */
-	MEDIA_CONTENT_STORAGE_CLOUD	= 100,  /**< The Cloud storage */
+	MEDIA_CONTENT_STORAGE_EXTERNAL_USB   = 2,    /**< The external USB storage (Since 2.4) */
+	MEDIA_CONTENT_STORAGE_EXTERNAL_NETWORK   = 3,  /**< The external network storage (Since 3.0) */
+	MEDIA_CONTENT_STORAGE_CLOUD	= 100,  /**< The Cloud storage (Since 2.4) */
 } media_content_storage_e;
 
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Enumeration for media content DB update items.
+ * @since_tizen 2.3
  */
 typedef enum {
     MEDIA_ITEM_FILE       = 0,              /**< File type, an item updated to DB */
@@ -80,6 +85,7 @@ typedef enum {
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Enumeration for media content DB update types.
+ * @since_tizen 2.3
  */
 typedef enum {
     MEDIA_CONTENT_INSERT  = 0,              /**< Insert, the type of DB update */
@@ -90,6 +96,7 @@ typedef enum {
 /**
  * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
  * @brief Enumeration for orientation types.
+ * @since_tizen 2.3
  */
 typedef enum {
     MEDIA_CONTENT_ORIENTATION_NOT_AVAILABLE  = 0,       /**< Not available*/
@@ -106,6 +113,7 @@ typedef enum {
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Enumeration for ordering.
+ * @since_tizen 2.3
  */
 typedef enum
 {
@@ -116,6 +124,7 @@ typedef enum
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Enumeration for collations.
+ * @since_tizen 2.3
  */
 typedef enum
 {
@@ -130,6 +139,7 @@ typedef enum
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Enumeration for a media content error.
+ * @since_tizen 2.3
  */
  typedef enum
 {
@@ -148,6 +158,7 @@ typedef enum
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Enumeration for a media group.
+ * @since_tizen 2.3
  */
 typedef enum {
     MEDIA_CONTENT_GROUP_DISPLAY_NAME = 0,    /**< Media group ID for display name */
@@ -185,60 +196,70 @@ typedef enum {
 /**
  * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
  * @brief The structure type for the Media info handle.
+ * @since_tizen 2.3
  */
 typedef struct media_info_s *media_info_h;
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_FOLDER_MODULE
  * @brief The structure type for the Media folder handle.
+ * @since_tizen 2.3
  */
 typedef struct media_folder_s *media_folder_h;
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_PLAYLIST_MODULE
  * @brief The structure type for the Media playlist handle.
+ * @since_tizen 2.3
  */
 typedef struct media_playlist_s *media_playlist_h;
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_TAG_MODULE
  * @brief The structure type for the Media tag handle.
+ * @since_tizen 2.3
  */
 typedef struct media_tag_s *media_tag_h;
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_BOOKMARK_MODULE
  * @brief The structure type for the Media bookmark handle.
+ * @since_tizen 2.3
  */
 typedef struct media_bookmark_s *media_bookmark_h;
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_ALBUM_MODULE
  * @brief The structure type for the Media album handle.
+ * @since_tizen 2.3
  */
 typedef struct media_album_s *media_album_h;
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_IMAGE_MODULE
  * @brief The structure type for the Image metadata handle.
+ * @since_tizen 2.3
  */
 typedef struct image_meta_s *image_meta_h;
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_VIDEO_META_MODULE
  * @brief The structure type for the Video metadata handle.
+ * @since_tizen 2.3
  */
 typedef struct video_meta_s *video_meta_h;
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_AUDIO_META_MODULE
  * @brief The structure type for the Audio metadata handle.
+ * @since_tizen 2.3
  */
 typedef struct audio_meta_s *audio_meta_h;
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_FILTER_MODULE
  * @brief The structure type for the Media filter handle.
+ * @since_tizen 2.3
  */
 typedef struct filter_s *filter_h;
 
@@ -252,6 +273,7 @@ typedef void *media_storage_h;
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Called when the media scanning is finished.
+ * @since_tizen 2.3
  *
  * @param[in] error     The error code
  * @param[in] user_data The user data passed from the foreach function
@@ -266,6 +288,7 @@ typedef void (*media_scan_completed_cb)(media_content_error_e error, void * user
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Called when the notification of the media DB change is subscribed.
+ * @since_tizen 2.3
  *
  * @param[in] error       The error code
  * @param[in] pid         The PID which publishes notification
@@ -295,6 +318,7 @@ typedef void (*media_content_db_update_cb)(
 /**
  * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
  * @brief Called for every available media info.
+ * @since_tizen 2.3
  *
  * @details Iterates over a list of media info.
  *
@@ -322,6 +346,7 @@ typedef bool (*media_info_cb)(media_info_h media, void *user_data);
 /**
  * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
  * @brief Called when media items are inserted completely.
+ * @since_tizen 2.3
  *
  * @param[in] media     The handle to the media info
  * @param[in] user_data The user data passed from the foreach function
@@ -336,6 +361,7 @@ typedef void (*media_insert_completed_cb)(media_content_error_e error, void * us
 /**
  * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
  * @brief Called when the burst shot is inserted completely.
+ * @since_tizen 2.3
  *
  * @param[in] media     The handle to the media info
  * @param[in] user_data The user data passed from the foreach function
@@ -351,6 +377,7 @@ typedef void (*media_insert_burst_shot_completed_cb)(media_content_error_e error
 /**
  * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
  * @brief Called when creating a thumbnail image.
+ * @since_tizen 2.3
  *
  * @details This callback is called for completion of generating the thumbnail image.
  *
@@ -368,6 +395,7 @@ typedef void (*media_thumbnail_completed_cb)(media_content_error_e error, const 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_FOLDER_MODULE
  * @brief Called for every available media folder.
+ * @since_tizen 2.3
  *
  * @details Iterates over a list of folders.
  *
@@ -388,6 +416,7 @@ typedef bool (*media_folder_cb)(media_folder_h folder, void *user_data);
 /**
  * @ingroup CAPI_CONTENT_MEDIA_PLAYLIST_MODULE
  * @brief Called for every playlist in the obtained list of playlists.
+ * @since_tizen 2.3
  *
  * @details Iterates over a playlist list.
  *
@@ -409,6 +438,7 @@ typedef bool (*media_playlist_cb)(media_playlist_h playlist, void *user_data);
 /**
  * @ingroup CAPI_CONTENT_MEDIA_PLAYLIST_MODULE
  * @brief Called for every media info with playlist member ID in the obtained list of media info.
+ * @since_tizen 2.3
  *
  * @details Iterates over playlist members.
  *
@@ -431,6 +461,7 @@ typedef bool(* playlist_member_cb)(int playlist_member_id, media_info_h media, v
 /**
  * @ingroup CAPI_CONTENT_MEDIA_TAG_MODULE
  * @brief Called for every tag in the obtained list of tags.
+ * @since_tizen 2.3
  *
  * @details Iterates over a list of tags.
  *
@@ -453,6 +484,7 @@ typedef bool (*media_tag_cb)(media_tag_h tag, void *user_data);
 /**
  * @ingroup CAPI_CONTENT_MEDIA_BOOKMARK_MODULE
  * @brief Called for every bookmark in the obtained list of bookmarks.
+ * @since_tizen 2.3
  *
  * @details Iterates over a bookmark list.
  *
@@ -473,6 +505,7 @@ typedef bool (*media_bookmark_cb)(media_bookmark_h bookmark, void *user_data);
 /**
  * @ingroup CAPI_CONTENT_MEDIA_ALBUM_MODULE
  * @brief Called for every album in the obtained list of groups.
+ * @since_tizen 2.3
  *
  * @details Iterates over an album list.
  *
@@ -494,6 +527,7 @@ typedef bool (*media_album_cb)(media_album_h album, void *user_data);
 /**
  * @ingroup CAPI_CONTENT_MEDIA_GROUP_MODULE
  * @brief Called for every group in the obtained list of groups.
+ * @since_tizen 2.3
  *
  * @details Iterates over a media group list.
  *
@@ -539,7 +573,8 @@ typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
 /**
  * @addtogroup CAPI_CONTENT_MEDIA_FILTER_MODULE
  * @{
- * @brief You can use above defines to set the condition of media filter and order keyword.
+ * @brief You can use below defines to set the condition of media filter and order keyword.
+ * @since_tizen 2.3
  *
  */
 #define MEDIA_ID "MEDIA_ID" /**< Media ID */
@@ -590,7 +625,7 @@ typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
 #define MEDIA_KEYWORD "MEDIA_KEYWORD"  /**< Media keyword*/
 #define MEDIA_WEATHER "MEDIA_WEATHER"  /**< Media weather*/
 #define MEDIA_IS_DRM "MEDIA_IS_DRM"  /**< Is DRM. 0-not drm, 1-drm*/
-#define MEDIA_STORAGE_TYPE "MEDIA_STORAGE_TYPE"  /**< Media storage. 0-internal storage, 1-external storage*/
+#define MEDIA_STORAGE_TYPE "MEDIA_STORAGE_TYPE"  /**< Media storage. 0-internal storage, 1-external storage, 2-USB storage, 3-network storage, 100-cloud storage */
 #define MEDIA_EXPOSURE_TIME "MEDIA_EXPOSURE_TIME"	/**< media exposure_time*/
 #define MEDIA_FNUMBER "MEDIA_FNUMBER"	/**< media fnumber*/
 #define MEDIA_ISO "MEDIA_ISO"	/**< media iso*/
@@ -622,6 +657,7 @@ typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
 
  * @addtogroup CAPI_CONTENT_MEDIA_FOLDER_MODULE
  * @{
+ * @since_tizen 2.3
  */
 #define FOLDER_ID "FOLDER_ID"  /**< Folder ID */
 #define FOLDER_PATH "FOLDER_PATH"  /**< Folder full path */
@@ -638,6 +674,7 @@ typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
 /**
  * @addtogroup CAPI_CONTENT_MEDIA_PLAYLIST_MODULE
  * @{
+ * @since_tizen 2.3
  */
 #define PLAYLIST_NAME "PLAYLIST_NAME"  /**< Playlist name */
 #define PLAYLIST_MEMBER_ORDER "PLAYLIST_MEMBER_ORDER"  /**< Playlist name */
@@ -650,6 +687,7 @@ typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
 /**
  * @addtogroup CAPI_CONTENT_MEDIA_TAG_MODULE
  * @{
+ * @since_tizen 2.3
  */
 #define TAG_NAME "TAG_NAME"  /**< Tag name */
 #define TAG_MEDIA_COUNT "TAG_MEDIA_COUNT"  /**< Media count in tag view */
@@ -661,6 +699,7 @@ typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
 /**
  * @addtogroup CAPI_CONTENT_MEDIA_BOOKMARK_MODULE
  * @{
+ * @since_tizen 2.3
  */
 #define BOOKMARK_MARKED_TIME "BOOKMARK_MARKED_TIME"  /**< Bookmark marked time */
 
