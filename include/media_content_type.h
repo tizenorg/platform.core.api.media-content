@@ -65,6 +65,8 @@ typedef enum
 {
 	MEDIA_CONTENT_STORAGE_INTERNAL	= 0,  /**< The device's internal storage */
 	MEDIA_CONTENT_STORAGE_EXTERNAL	= 1,  /**< The device's external storage */
+    MEDIA_CONTENT_STORAGE_EXTERNAL_USB_DEVICE   = 2,    /**< The external storage of USB Storage */
+    MEDIA_CONTENT_STORAGE_EXTERNAL_NETWORK_DEVICE   = 3,  /**< The external storage of Network Storage */
 	MEDIA_CONTENT_STORAGE_CLOUD	= 100,  /**< The Cloud storage */
 } media_content_storage_e;
 
