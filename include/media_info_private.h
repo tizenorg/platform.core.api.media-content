@@ -527,7 +527,7 @@ typedef struct _media_content_cb_data {
 #define SELECT_ALBUM_LIST			"SELECT DISTINCT a.album_id, a.name, a.artist, a.album_art FROM "ALBUM_MEDIA_JOIN
 #define SELECT_MEDIA_GROUP_LIST	"SELECT DISTINCT %s FROM '%s' WHERE validity=1 "
 
-#define SELECT_FOLDER_LIST 			"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time, f.storage_uuid, f.folder_order FROM "FOLDER_MEDIA_JOIN
+#define SELECT_FOLDER_LIST 			"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time, f.folder_order FROM "FOLDER_MEDIA_JOIN
 #define SELECT_FOLDER_LIST_BY_STORAGE_ID	SELECT_FOLDER_LIST"AND f.storage_uuid='%s' "
 #define SELECT_TAG_LIST				"SELECT DISTINCT tag_id, name FROM "DB_VIEW_TAG" WHERE 1 "
 #define SELECT_PLAYLIST_LIST			"SELECT DISTINCT playlist_id, name, p_thumbnail_path FROM "DB_VIEW_PLAYLIST" WHERE 1 "
