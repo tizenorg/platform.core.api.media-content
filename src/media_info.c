@@ -520,7 +520,7 @@ int media_info_insert_to_db(const char *path, media_info_h *info)
 
 		media_svc_storage_type_e storage_type = 0;
 
-		ret = media_svc_get_storage_type(path, &storage_type);
+		ret = media_svc_get_storage_type(path, &storage_type, tzplatform_getuid(TZ_USER_NAME));
 		if(ret != MS_MEDIA_ERR_NONE) {
 			media_content_sec_error("media_svc_get_storage_type failed : %d", ret);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -3184,14 +3184,14 @@ int media_info_move_to_db(media_info_h media, const char* dst_path)
 		return ret;
 	}
 
-	ret = media_svc_get_storage_type(_media->file_path, &src_storage_type);
+	ret = media_svc_get_storage_type(_media->file_path, &src_storage_type, tzplatform_getuid(TZ_USER_NAME));
 	if(ret != MS_MEDIA_ERR_NONE)
 	{
 		media_content_sec_error("media_svc_get_storage_type failed : %d", ret);
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 	}
 
-	ret = media_svc_get_storage_type(dst_path, &dst_storage_type);
+	ret = media_svc_get_storage_type(dst_path, &dst_storage_type, tzplatform_getuid(TZ_USER_NAME));
 	if(ret != MS_MEDIA_ERR_NONE)
 	{
 		media_content_sec_error("media_svc_get_storage_type failed : %d", ret);
