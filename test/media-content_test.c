@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <media_content.h>
-#include <media_content_internal.h>
 #include <media_info_private.h>
 #include <dlog.h>
 #include <pthread.h>
@@ -3093,7 +3092,7 @@ int test_create_handle()
 	ret = media_info_set_duration(media, 3333);
 	ret = media_info_set_width(media, 1111);
 	ret = media_info_set_height(media, 2222);
-	ret = media_info_set_storage_type(media, MEDIA_CONTENT_STORAGE_CLOUD);
+	ret = media_info_set_storage_type(media, MEDIA_CONTENT_STORAGE_INTERNAL);
 	ret = media_info_set_storage_id(media, "5e0ad455-9b84-4489-ad51-4dd93b795413");
 
 	ret = media_info_insert_to_db_with_data(media, &info);
@@ -3132,129 +3131,6 @@ int test_create_handle()
 
 	return ret;
 
-}
-
-int test_storage_item_insert()
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-
-	media_info_h media = NULL;
-
-	ret = media_info_create_handle(&media);
-	ret = media_info_set_path(media, "/opt/storage/cloud/c_storage/test_file.png");
-	ret = media_info_set_mime_type(media, "test_mime_type");
-	ret = media_info_set_title(media, "test_title");
-	ret = media_info_set_storage_type(media, MEDIA_CONTENT_STORAGE_CLOUD);
-	ret = media_info_set_storage_id(media, "2a4e8103-33e3-4846-afe9-5be4681b0dba");
-	ret = media_info_set_modified_time(media, 100);
-	ret = media_info_set_media_type(media, MEDIA_CONTENT_TYPE_IMAGE);
-	ret = media_info_insert_to_db_with_data(media, NULL);
-
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-		media_content_error("media_info_insert_to_db_with_data failed : %d\n", ret);
-
-	return ret;
-}
-
-int test_storage()
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-
-	media_storage_h storage = NULL;
-#if 1
-	char *storage_name = "test_storage_name";
-	char *storage_path = "/opt/storage/cloud/c_storage/test_storage_path";
-	char *storage_account = "test_storage_account";
-#endif
-	char *storage_id = NULL;
-	char *st_val = NULL;
-	media_content_storage_e storage_type_out = -1;
-	int storage_cnt = -1;
-
-#if 1
-	ret = media_storage_insert_to_db(storage_name, storage_path, storage_account, MEDIA_CONTENT_STORAGE_CLOUD, &storage);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("media_storage_insert_to_db failed : %d\n", ret);
-		goto ERROR;
-	}
-	ret = media_storage_get_id(storage, &storage_id);
-
-	ret = media_storage_destroy(storage);
-	storage = NULL;
-#endif
-	ret = media_storage_get_storage_count_from_db(NULL, &storage_cnt);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("media_storage_get_storage_count_from_db failed : %d\n", ret);
-		goto ERROR;
-	}
-	media_content_debug("storage_cnt = [%d]", storage_cnt);
-
-	//media_storage_foreach_storage_from_db(filter_h filter, media_storage_cb callback, void *user_data);
-
-	ret = media_storage_get_storage_info_from_db(storage_id, &storage);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("media_storage_get_storage_info_from_db failed : %d\n", ret);
-		goto ERROR;
-	}
-
-	ret = media_storage_get_id(storage, &st_val);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("media_storage_get_id failed : %d\n", ret);
-		goto ERROR;
-	}
-	media_content_debug("storage_id = [%s]", st_val);
-	SAFE_FREE(st_val);
-
-	ret = media_storage_get_name(storage, &st_val);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("media_storage_get_name failed : %d\n", ret);
-		goto ERROR;
-	}
-	media_content_debug("storage_name = [%s]", st_val);
-	SAFE_FREE(st_val);
-
-	ret = media_storage_get_path(storage, &st_val);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("media_storage_get_path failed : %d\n", ret);
-		goto ERROR;
-	}
-	media_content_debug("storage_path = [%s]", st_val);
-	SAFE_FREE(st_val);
-
-	ret = media_storage_get_storage_account(storage, &st_val);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("media_storage_get_path failed : %d\n", ret);
-		goto ERROR;
-	}
-	media_content_debug("storage_ccount = [%s]", st_val);
-	SAFE_FREE(st_val);
-
-	ret = media_storage_get_type(storage, &storage_type_out);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("media_storage_get_type failed : %d\n", ret);
-		goto ERROR;
-	}
-	media_content_debug("storage_type = [%d]", storage_type_out);
-
-	//ret = media_storage_clone(media_storage_h *dst, media_storage_h src);
-
-	//ret = media_storage_delete_from_db(storage_id);
-
-ERROR:
-	SAFE_FREE(storage_id);
-	SAFE_FREE(st_val);
-
-	ret = media_storage_destroy(storage);
-
-	return ret;
 }
 
 int main(int argc, char *argv[])
@@ -3353,14 +3229,6 @@ int main(int argc, char *argv[])
 		return MEDIA_CONTENT_ERROR_NONE;
 
 	ret = test_noti();
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-		return MEDIA_CONTENT_ERROR_NONE;
-
-	ret = test_storage();
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-		return MEDIA_CONTENT_ERROR_NONE;
-
-	ret = test_storage_item_insert();
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		return MEDIA_CONTENT_ERROR_NONE;
 

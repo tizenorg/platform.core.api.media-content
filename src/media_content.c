@@ -808,7 +808,7 @@ int media_content_scan_file(const char *path)
 
 		media_svc_storage_type_e storage_type;
 
-		ret = media_svc_get_storage_type(path, &storage_type);
+		ret = media_svc_get_storage_type(path, &storage_type, tzplatform_getuid(TZ_USER_NAME));
 		if(ret != MS_MEDIA_ERR_NONE) {
 			media_content_sec_error("media_svc_get_storage_type failed : %d (%s)", ret, path);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);

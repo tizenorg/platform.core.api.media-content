@@ -520,7 +520,7 @@ int media_info_insert_to_db(const char *path, media_info_h *info)
 
 		media_svc_storage_type_e storage_type = 0;
 
-		ret = media_svc_get_storage_type(path, &storage_type);
+		ret = media_svc_get_storage_type(path, &storage_type, tzplatform_getuid(TZ_USER_NAME));
 		if(ret != MS_MEDIA_ERR_NONE) {
 			media_content_sec_error("media_svc_get_storage_type failed : %d", ret);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -3053,38 +3053,6 @@ int media_info_update_to_db(media_info_h media)
 		SAFE_FREE(age_rating_pinyin);
 		SAFE_FREE(keyword_pinyin);
 
-		if(_media->storage_type == MEDIA_CONTENT_STORAGE_CLOUD)
-		{
-			set_sql = NULL;
-			sql = NULL;
-
-			if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO)
-			{
-				set_sql = sqlite3_mprintf("title=%Q, album=%Q, artist=%Q, genre=%Q, duration=%d, width=%d, height=%d", \
-				_media->title, _media->video_meta->album, _media->video_meta->artist, _media->video_meta->genre, _media->video_meta->duration, _media->video_meta->width, _media->video_meta->height);
-			}
-			else if((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND))
-			{
-				set_sql = sqlite3_mprintf("title=%Q, album=%Q, artist=%Q, genre=%Q, duration=%d", \
-				_media->title, _media->audio_meta->album, _media->audio_meta->artist, _media->audio_meta->genre, _media->audio_meta->duration);
-			}
-			else if(_media->media_type == MEDIA_CONTENT_TYPE_IMAGE)
-			{
-				set_sql = sqlite3_mprintf("title=%Q, width=%d, height=%d", _media->title, _media->image_meta->width, _media->image_meta->height);
-			}
-			else
-			{
-				set_sql = sqlite3_mprintf("title=%Q", _media->title);
-			}
-
-			sql = sqlite3_mprintf("UPDATE %Q SET %s WHERE media_uuid=%Q", _media->storage_uuid, set_sql, _media->media_id);
-
-			ret = _content_query_sql(sql);
-
-			sqlite3_free(set_sql);
-			sqlite3_free(sql);
-		}
-
 		if (ret == MEDIA_CONTENT_ERROR_NONE) {
 			/*  Send notification for this update */
 			media_content_debug("Update is successfull. Send notification for this");
@@ -3129,13 +3097,6 @@ int media_info_refresh_metadata_to_db(const char *media_id)
 	{
 		media_info_destroy(media);
 		return ret;
-	}
-
-	if(storage_type == MEDIA_CONTENT_STORAGE_CLOUD)
-	{
-		media_info_destroy(media);
-		media_content_error("Can't refresh cloud content!!");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
 	ret = media_info_get_file_path(media, &file_path);
@@ -3184,14 +3145,14 @@ int media_info_move_to_db(media_info_h media, const char* dst_path)
 		return ret;
 	}
 
-	ret = media_svc_get_storage_type(_media->file_path, &src_storage_type);
+	ret = media_svc_get_storage_type(_media->file_path, &src_storage_type, tzplatform_getuid(TZ_USER_NAME));
 	if(ret != MS_MEDIA_ERR_NONE)
 	{
 		media_content_sec_error("media_svc_get_storage_type failed : %d", ret);
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 	}
 
-	ret = media_svc_get_storage_type(dst_path, &dst_storage_type);
+	ret = media_svc_get_storage_type(dst_path, &dst_storage_type, tzplatform_getuid(TZ_USER_NAME));
 	if(ret != MS_MEDIA_ERR_NONE)
 	{
 		media_content_sec_error("media_svc_get_storage_type failed : %d", ret);
@@ -3674,13 +3635,6 @@ int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info)
 	media_content_sec_debug("storage[%d], path[%s], media_type[%d]", _media->storage_type, _media->file_path, _media->media_type);
 
 	media_svc_content_info_s *svc_content_info = NULL;
-
-	ret = __media_info_map_data_usr_to_svc(_media, &svc_content_info, MEDIA_CONTENT_STORAGE_CLOUD);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-	}
 
 	if(svc_content_info == NULL)
 	{
