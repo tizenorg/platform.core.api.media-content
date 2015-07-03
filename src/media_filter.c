@@ -54,9 +54,11 @@ static int __tokenize(GList **token_list, const char *str);
 
 static bool __is_pinyin_needed(void)
 {
+#if 0
 	char *lang = NULL;
 	char *china = "zh_CN";
 	char *hongkong = "zh_HK";
+#endif
 	int ret = FALSE;
 #if 0
 	/*Check CSC first*/

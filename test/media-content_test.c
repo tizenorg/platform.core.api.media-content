@@ -2052,7 +2052,7 @@ int test_bookmark_operation(void)
 		media_content_error("error media_filter_set_order : [%d]", ret);
 
 	//insert bookmark to video
-	char *thumbnail_path1 = tzplatform_mkpath(TZ_USER_CONTENT, "Images and videos/My video clips/teat11.jpg");
+	const char *thumbnail_path1 = tzplatform_mkpath(TZ_USER_CONTENT, "Images and videos/My video clips/teat11.jpg");
 	ret = media_bookmark_insert_to_db(test_video_id, 400, thumbnail_path1);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error media_bookmark_insert_to_db : [%d]", ret);
@@ -2314,7 +2314,7 @@ int test_move(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	const char *move_media_id = "60aea677-4742-408e-b5f7-f2628062d06d";
-	char *dst_path = tzplatform_mkpath(TZ_USER_CONTENT, "Images/XX/Default1.jpg");
+	const char *dst_path = tzplatform_mkpath(TZ_USER_CONTENT, "Images/XX/Default1.jpg");
 	media_info_h move_media = NULL;
 
 	ret = media_info_get_media_from_db(move_media_id, &move_media);
@@ -2991,7 +2991,7 @@ gboolean _send_noti_operations(gpointer data)
 
 	/* media_info_insert_to_db */
 	media_info_h media_item = NULL;
-	char *path = tzplatform_mkpath(TZ_USER_CONTENT, "test/image1.jpg");
+	const char *path = tzplatform_mkpath(TZ_USER_CONTENT, "test/image1.jpg");
 
 	ret = media_info_insert_to_db(path, &media_item);
 	if (ret != MEDIA_CONTENT_ERROR_NONE) {
