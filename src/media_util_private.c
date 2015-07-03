@@ -69,7 +69,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 	}
 
 	/*2. Check Scan Ignore Directory*/
-	ret = media_svc_get_storage_type(dir_path, &storage_type);
+	ret = media_svc_get_storage_type(dir_path, &storage_type, tzplatform_getuid(TZ_USER_NAME));
 	if(ret != MS_MEDIA_ERR_NONE)
 	{
 		media_content_error("media_svc_get_storage_type failed : %d", ret);
@@ -123,7 +123,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 		else
 		{
 			/*If root path, Stop Scanning*/
-			if((storage_type == MEDIA_SVC_STORAGE_INTERNAL) && (strcmp(search_path, MEDIA_ROOT_PATH_INTERNAL) == 0))
+			if((storage_type == MEDIA_SVC_STORAGE_INTERNAL) && (strcmp(search_path, tzplatform_getenv(TZ_USER_CONTENT)) == 0))
 			{
 				//media_content_debug("Internal root path. Stop Scanning. Not found Ignore information");
 				break;
