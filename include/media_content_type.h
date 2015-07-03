@@ -67,9 +67,6 @@ typedef enum
 {
 	MEDIA_CONTENT_STORAGE_INTERNAL	= 0,  /**< The device's internal storage */
 	MEDIA_CONTENT_STORAGE_EXTERNAL	= 1,  /**< The device's external storage */
-	MEDIA_CONTENT_STORAGE_EXTERNAL_USB   = 2,    /**< The external USB storage (Since 2.4) */
-	MEDIA_CONTENT_STORAGE_EXTERNAL_NETWORK   = 3,  /**< The external network storage (Since 3.0) */
-	MEDIA_CONTENT_STORAGE_CLOUD	= 100,  /**< The Cloud storage (Since 2.4) */
 } media_content_storage_e;
 
 /**
@@ -262,13 +259,6 @@ typedef struct audio_meta_s *audio_meta_h;
  * @since_tizen 2.3
  */
 typedef struct filter_s *filter_h;
-
-/**
- * @ingroup CAPI_CONTENT_MEDIA_STORAGE_MODULE
- * @brief The structure type for the Media storage handle.
- * @since_tizen 2.4
- */
-typedef void *media_storage_h;
 
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
@@ -545,26 +535,6 @@ typedef bool (*media_album_cb)(media_album_h album, void *user_data);
  */
 typedef bool (*media_group_cb)(const char *group_name, void *user_data);
 
-/**
- * @ingroup CAPI_CONTENT_MEDIA_STORAGE_MODULE
- * @brief Called for every storage in the obtained list of storages.
- * @since_tizen 2.4
- *
- * @details Iterates over a media storage list.
- *
- * @remarks You should not destroy @a storage returned by this function.
- *
- * @param[in] storage     The handle of the media storage
- * @param[in] user_data  The user data passed from the foreach function
- *
- * @return @c true to continue with the next iteration of the loop,
- *         otherwise @c false to break out of the loop
- *
- * @pre media_storage_foreach_storage_from_db() will invoke this function.
- *
- * @see media_storage_foreach_storage_from_db()
- */
-typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
 
 /**
  * @}
@@ -625,7 +595,7 @@ typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
 #define MEDIA_KEYWORD "MEDIA_KEYWORD"  /**< Media keyword*/
 #define MEDIA_WEATHER "MEDIA_WEATHER"  /**< Media weather*/
 #define MEDIA_IS_DRM "MEDIA_IS_DRM"  /**< Is DRM. 0-not drm, 1-drm*/
-#define MEDIA_STORAGE_TYPE "MEDIA_STORAGE_TYPE"  /**< Media storage. 0-internal storage, 1-external storage, 2-USB storage, 3-network storage, 100-cloud storage */
+#define MEDIA_STORAGE_TYPE "MEDIA_STORAGE_TYPE"  /**< Media storage. 0-internal storage, 1-external storage */
 #define MEDIA_EXPOSURE_TIME "MEDIA_EXPOSURE_TIME"	/**< media exposure_time*/
 #define MEDIA_FNUMBER "MEDIA_FNUMBER"	/**< media fnumber*/
 #define MEDIA_ISO "MEDIA_ISO"	/**< media iso*/

@@ -28,7 +28,6 @@
 #include <media_group.h>
 #include <media_playlist.h>
 #include <media_bookmark.h>
-#include <media_storage.h>
 
 #ifdef __cplusplus
 extern "C" {

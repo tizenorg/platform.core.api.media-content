@@ -69,7 +69,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 	}
 
 	/*2. Check Scan Ignore Directory*/
-	ret = media_svc_get_storage_type(dir_path, &storage_type);
+	ret = media_svc_get_storage_type(dir_path, &storage_type, tzplatform_getuid(TZ_USER_NAME));
 	if(ret != MS_MEDIA_ERR_NONE)
 	{
 		media_content_error("media_svc_get_storage_type failed : %d", ret);

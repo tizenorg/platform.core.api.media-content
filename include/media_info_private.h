@@ -645,7 +645,6 @@ int _media_db_get_group_item_by_id(int group_id, filter_h filter, media_info_cb 
 int _media_db_get_group_item(const char *group_name, filter_h filter, media_info_cb callback, void *user_data, group_list_e group_type);
 int _media_db_get_media_group_item_count(const char *group_name, filter_h filter, media_group_e group, int *item_count);
 int _media_db_get_media_group_item(const char *group_name, filter_h filter, media_group_e group, media_info_cb callback, void *user_data);
-int _media_db_get_storage(filter_h filter, media_storage_cb callback, void *user_data);
 int _media_db_get_storage_id_by_media_id(const char *media_id, char *storage_id);
 
 /**
