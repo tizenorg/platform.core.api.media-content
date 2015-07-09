@@ -101,12 +101,7 @@ int media_bookmark_clone(media_bookmark_h *dst, media_bookmark_h src)
 	{
 		media_bookmark_s *_src = (media_bookmark_s*)src;
 		media_bookmark_s *_dst = (media_bookmark_s*)calloc(1, sizeof(media_bookmark_s));
-
-		if(NULL == _dst)
-		{
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		_dst->bookmark_id = _src->bookmark_id;
 
@@ -195,11 +190,7 @@ int media_bookmark_get_thumbnail_path(media_bookmark_h bookmark, char **path)
 		if(STRING_VALID(_bookmark->thumbnail_path))
 		{
 			*path = strdup(_bookmark->thumbnail_path);
-			if(*path == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(*path == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
