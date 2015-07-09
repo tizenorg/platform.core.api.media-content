@@ -48,23 +48,19 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_svc_storage_type_e storage_type = 0;
-	char *scan_ignore = ".scan_ignore";
+	const char *scan_ignore = ".scan_ignore";
 	bool find = false;
 
 	media_content_sec_debug("dir_path : %s", dir_path);
 
-	if(!STRING_VALID(dir_path))
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
+	media_content_retvm_if(!STRING_VALID(dir_path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid dir_path");
 
 	*ignore = FALSE;
 	/*1. Check Hidden Directory*/
 	if(strstr(dir_path, "/."))
 	{
 		*ignore = TRUE;
-		media_content_info("hidden path");
+		media_content_debug("hidden path");
 		return MEDIA_CONTENT_ERROR_NONE;
 	}
 
@@ -87,11 +83,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 	while(STRING_VALID(search_path))
 	{
 		dp = opendir(search_path);
-		if(dp == NULL)
-		{
-			media_content_error("Fail Open Directory");
-			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
-		}
+		media_content_retvm_if(dp == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "Open Directory fail");
 
 		while (!readdir_r(dp, &entry, &result))
 		{

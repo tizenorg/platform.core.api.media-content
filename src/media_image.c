@@ -53,11 +53,7 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src)
 	if(_src != NULL)
 	{
 		image_meta_s *_dst = (image_meta_s*)calloc(1, sizeof(image_meta_s));
-		if(NULL == _dst)
-		{
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		if(STRING_VALID(_src->media_id))
 		{
@@ -165,11 +161,8 @@ int image_meta_get_media_id(image_meta_h image, char **media_id)
 		if(STRING_VALID(_image->media_id))
 		{
 			char *new_string = strdup(_image->media_id);
-			if(NULL == new_string)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+
 			*media_id = new_string;
 		}
 		else
@@ -255,11 +248,8 @@ int image_meta_get_date_taken(image_meta_h image, char **date_taken)
 		if(STRING_VALID(_image->date_taken))
 		{
 			char *new_string = strdup(_image->date_taken);
-			if(NULL == new_string)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+
 			*date_taken = new_string;
 		}
 		else
@@ -288,11 +278,7 @@ int image_meta_get_burst_id(image_meta_h image, char **burst_id)
 		if(STRING_VALID(_image->burst_id))
 		{
 			*burst_id = strdup(_image->burst_id);
-			if(*burst_id == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(*burst_id == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
@@ -319,11 +305,7 @@ int image_meta_get_exposure_time(image_meta_h image, char **exposure_time)
 		if(STRING_VALID(_image->exposure_time))
 		{
 			*exposure_time = strdup(_image->exposure_time);
-			if(*exposure_time == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(*exposure_time == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
@@ -388,11 +370,7 @@ int image_meta_get_model(image_meta_h image, char **model)
 		if(STRING_VALID(_image->model))
 		{
 			*model = strdup(_image->model);
-			if(*model == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(*model == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{

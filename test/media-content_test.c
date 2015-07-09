@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <media_content.h>
+#include <media_content_internal.h>
 #include <media_info_private.h>
 #include <dlog.h>
 #include <pthread.h>
@@ -537,7 +538,7 @@ bool media_item_cb(media_info_h media, void *user_data)
 
 bool folder_list_cb(media_folder_h folder, void *user_data)
 {
-	int item_count;
+	int item_count = 0;
 	char *folder_id = NULL;
 	char *str_val = NULL;
 	int int_val = -1;
@@ -545,6 +546,7 @@ bool folder_list_cb(media_folder_h folder, void *user_data)
 	bool ret;
 	media_folder_h *_folder = (media_folder_h*)user_data;
 
+	media_content_debug("===========================");
 	if(folder != NULL)
 	{
 		if(_folder != NULL)
@@ -597,7 +599,7 @@ bool folder_list_cb(media_folder_h folder, void *user_data)
 			return false;
 		}
 		media_content_debug("folder_order = [%d]", int_val);
-
+#if 1
 		if(media_folder_get_media_count_from_db(folder_id, g_filter, &item_count) != MEDIA_CONTENT_ERROR_NONE)
 		{
 			SAFE_FREE(folder_id);
@@ -611,7 +613,7 @@ bool folder_list_cb(media_folder_h folder, void *user_data)
 			media_content_error("[ERROR] media_folder_foreach_media_from_db is failed");
 			return false;
 		}
-
+#endif
 		SAFE_FREE(folder_id);
 		ret = true;
 	}
@@ -785,7 +787,7 @@ bool album_list_cb(media_album_h album, void *user_data)
 	filter_h filter = NULL;
 
 	/*Set Filter*/
-	char *condition = "MEDIA_TYPE=3";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
+	const char *condition = "MEDIA_TYPE=3";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&filter);
 	if(ret != MEDIA_CONTENT_ERROR_NONE) {
@@ -907,8 +909,8 @@ int test_filter_create(void)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	/* Filter for media */
-	char *condition = "MEDIA_TYPE=3";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
-	//char *condition = "MEDIA_TYPE IS NOT 0 AND MEDIA_DESCRIPTION IS NOT NULL";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
+	const char *condition = "MEDIA_TYPE=3";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
+	//const char *condition = "MEDIA_TYPE IS NOT 0 AND MEDIA_DESCRIPTION IS NOT NULL";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&g_filter);
 
@@ -936,8 +938,8 @@ int test_filter_create(void)
 	//ret = media_filter_set_storage(g_filter, "cfbf3d2c-71c5-4611-bccc-7cbac890146e");
 
 	/* Filter for group */
-	//char *g_condition = "TAG_NAME like \"\%my\%\"";
-	//char *g_condition = "BOOKMARK_MARKED_TIME > 300";
+	//const  char *g_condition = "TAG_NAME like \"\%my\%\"";
+	//const  char *g_condition = "BOOKMARK_MARKED_TIME > 300";
 
 	ret = media_filter_create(&g_filter_g);
 
@@ -979,7 +981,7 @@ int test_connect_database(void)
 int test_gallery_scenario(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-	int i;
+	unsigned int i = 0;
 	filter_h filter = NULL;
 
 	int count;
@@ -1182,7 +1184,7 @@ int test_gallery_scenario(void)
 	GList *item_list = NULL;
 
 	for(i = 0; i < g_list_length(folder_list); i++) {
-		int j = 0;
+		unsigned int j = 0;
 		char *folder_id = NULL;
 		char *folder_name = NULL;
 		folder_handle = (media_folder_h)g_list_nth_data(folder_list, i);
@@ -1306,7 +1308,7 @@ int test_gallery_scenario(void)
 					} else {
 						media_content_debug("media_info_foreach_bookmark_from_db success");
 
-						int k = 0;
+						unsigned int k = 0;
 
 						for(k = 0; k < g_list_length(bm_list); k++) {
 							bm_handle = (media_bookmark_h)g_list_nth_data(bm_list, k);
@@ -1325,7 +1327,7 @@ int test_gallery_scenario(void)
 						}
 
 						/* Remove bookmark list */
-						int l = 0;
+						unsigned int l = 0;
 						if(bm_list) {
 							for(l = 0; l < g_list_length(bm_list); l++) {
 								bm_handle = (media_bookmark_h)g_list_nth_data(bm_list, l);
@@ -1375,7 +1377,7 @@ int test_gallery_scenario(void)
 				return -1;
 			} else {
 				media_content_error("media_tag_foreach_media_from_db success");
-				int j = 0;
+				unsigned int j = 0;
 				media_info_h tag_media_handle;
 				char *media_id = NULL;
 				char *media_name = NULL;
@@ -1479,7 +1481,7 @@ int test_get_all_music_files(void)
 	filter_h filter;
 
 	/*Set Filter*/
-	char *condition = "MEDIA_TYPE=3";	/*0-image, 1-video, 2-sound, 3-music, 4-other*/
+	const char *condition = "MEDIA_TYPE=3";	/*0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&filter);
 	if(ret != MEDIA_CONTENT_ERROR_NONE) {
@@ -1731,9 +1733,9 @@ int test_playlist_operation(void)
 	int playlist_id_1 = 0;
 	int playlist_id_2 = 0;
 	int playlist_id_3 = 0;
-	char *playlist_name_1 = "myPlaylist_1";
-	char *playlist_name_2 = "myPlaylist_2";
-	char *playlist_name_3 = "myPlaylist_3";
+	const char *playlist_name_1 = "myPlaylist_1";
+	const char *playlist_name_2 = "myPlaylist_2";
+	const char *playlist_name_3 = "myPlaylist_3";
 	int playlist_count = 0;
 	int media_count = 0;
 	int order_1 = 0;
@@ -1748,7 +1750,7 @@ int test_playlist_operation(void)
 
 	/* Filter for playlist */
 
-	char *condition = "(MEDIA_TYPE=1 or MEDIA_TYPE=3)";	/*0-image, 1-video, 2-sound, 3-music, 4-other*/
+	const char *condition = "(MEDIA_TYPE=1 or MEDIA_TYPE=3)";	/*0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&filter);
 	ret = media_filter_set_condition(filter, condition, MEDIA_CONTENT_COLLATE_NOCASE);
@@ -1898,16 +1900,16 @@ int test_tag_operation(void)
 	int tag_id_1 = 0;
 	int tag_id_2 = 0;
 	int tag_id_3 = 0;
-	char *tag_name_1 = "myTag_1";
-	char *tag_name_2 = "myTag_2";
-	char *tag_name_3 = "myTag_3";
+	const char *tag_name_1 = "myTag_1";
+	const char *tag_name_2 = "myTag_2";
+	const char *tag_name_3 = "myTag_3";
 	int tag_count = 0;
 	int media_count = 0;
 	filter_h filter;
 
 	media_content_debug("\n============Tag Test============\n\n");
 
-	char *g_condition = "TAG_NAME like \"%%my%%\"";
+	const char *g_condition = "TAG_NAME like \"%%my%%\"";
 
 	ret = media_filter_create(&filter);
 
@@ -2001,7 +2003,7 @@ int test_tag_operation(void)
 	ret = media_tag_add_media(tag_2, test_video_id);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error media_tag_add_media : [%d]", ret);
-	ret = media_tag_set_name(tag_2, "test_tag");
+	ret = media_tag_set_name(tag_2, (char *)"test_tag");
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error media_tag_set_name : [%d]", ret);
 	ret = media_tag_update_to_db(tag_2);
@@ -2044,7 +2046,7 @@ int test_bookmark_operation(void)
 
 	media_content_debug("\n============Bookmark Test============\n\n");
 
-	char *g_condition = "BOOKMARK_MARKED_TIME > 300";
+	const char *g_condition = "BOOKMARK_MARKED_TIME > 300";
 
 	ret = media_filter_create(&filter);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
@@ -2090,7 +2092,7 @@ int test_album_list(void)
 	filter_h filter;
 
 	/*Set Filter*/
-	char *condition = "MEDIA_TYPE=3";	/*0-image, 1-video, 2-sound, 3-music, 4-other*/
+	const char *condition = "MEDIA_TYPE=3";	/*0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&filter);
 	if(ret != MEDIA_CONTENT_ERROR_NONE) {
@@ -2164,7 +2166,7 @@ int test_group_operation(void)
 int test_update_operation()
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-	int i;
+	unsigned int i = 0;
 	media_info_h media_handle = NULL;
 	GList *all_item_list = NULL;
 
@@ -2275,8 +2277,8 @@ int test_update_operation()
 int test_insert(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-	char *path = "/opt/usr/media/Images/Default.jpg";
-	//char *path = "/opt/usr/media/Others/other.txt";
+	const char *path = "/opt/usr/media/Images/Default.jpg";
+	//const char *path = "/opt/usr/media/Others/other.txt";
 	//char *path = NULL;
 	media_info_h media_item = NULL;
 	media_content_debug("\n============DB Insert Test============\n\n");
