@@ -26,63 +26,63 @@ static char * __media_db_get_group_name(media_group_e group)
 	switch(group)
 	{
 		case MEDIA_CONTENT_GROUP_DISPLAY_NAME:
-			return DB_FIELD_MEDIA_DISPLAY_NAME;
+			return (char *)DB_FIELD_MEDIA_DISPLAY_NAME;
 		case MEDIA_CONTENT_GROUP_TYPE:
-			return DB_FIELD_MEDIA_TYPE;
+			return (char *)DB_FIELD_MEDIA_TYPE;
 		case MEDIA_CONTENT_GROUP_MIME_TYPE:
-			return DB_FIELD_MEDIA_MIME_TYPE;
+			return (char *) DB_FIELD_MEDIA_MIME_TYPE;
 		case MEDIA_CONTENT_GROUP_SIZE:
-			return DB_FIELD_MEDIA_SIZE;
+			return (char *) DB_FIELD_MEDIA_SIZE;
 		case MEDIA_CONTENT_GROUP_ADDED_TIME:
-			return DB_FIELD_MEDIA_ADDED_TIME;
+			return (char *) DB_FIELD_MEDIA_ADDED_TIME;
 		case MEDIA_CONTENT_GROUP_MODIFIED_TIME:
-			return DB_FIELD_MEDIA_MODIFIED_TIME;
+			return (char *) DB_FIELD_MEDIA_MODIFIED_TIME;
 		case MEDIA_CONTENT_GROUP_TITLE:
-			return DB_FIELD_MEDIA_TITLE;
+			return (char *) DB_FIELD_MEDIA_TITLE;
 		case MEDIA_CONTENT_GROUP_ARTIST:
-			return DB_FIELD_MEDIA_ARTIST;
+			return (char *) DB_FIELD_MEDIA_ARTIST;
 		case MEDIA_CONTENT_GROUP_ALBUM_ARTIST:
-			return DB_FIELD_MEDIA_ALBUM_ARTIST;
+			return (char *) DB_FIELD_MEDIA_ALBUM_ARTIST;
 		case MEDIA_CONTENT_GROUP_GENRE:
-			return DB_FIELD_MEDIA_GENRE;
+			return (char *) DB_FIELD_MEDIA_GENRE;
 		case MEDIA_CONTENT_GROUP_COMPOSER:
-			return DB_FIELD_MEDIA_COMPOSER;
+			return (char *) DB_FIELD_MEDIA_COMPOSER;
 		case MEDIA_CONTENT_GROUP_YEAR:
-			return DB_FIELD_MEDIA_YEAR;
+			return (char *) DB_FIELD_MEDIA_YEAR;
 		case MEDIA_CONTENT_GROUP_RECORDED_DATE:
-			return DB_FIELD_MEDIA_RECORDED_DATE;
+			return (char *) DB_FIELD_MEDIA_RECORDED_DATE;
 		case MEDIA_CONTENT_GROUP_COPYRIGHT:
-			return DB_FIELD_MEDIA_COPYRIGHT;
+			return (char *) DB_FIELD_MEDIA_COPYRIGHT;
 		case MEDIA_CONTENT_GROUP_TRACK_NUM:
-			return DB_FIELD_MEDIA_TRACK_NUM;
+			return (char *) DB_FIELD_MEDIA_TRACK_NUM;
 		case MEDIA_CONTENT_GROUP_DESCRIPTION:
-			return DB_FIELD_MEDIA_DESCRIPTION;
+			return (char *) DB_FIELD_MEDIA_DESCRIPTION;
 		case MEDIA_CONTENT_GROUP_LONGITUDE:
-			return DB_FIELD_MEDIA_LONGITUDE;
+			return (char *) DB_FIELD_MEDIA_LONGITUDE;
 		case MEDIA_CONTENT_GROUP_LATITUDE:
-			return DB_FIELD_MEDIA_LATITUDE;
+			return (char *) DB_FIELD_MEDIA_LATITUDE;
 		case MEDIA_CONTENT_GROUP_ALTITUDE:
-			return DB_FIELD_MEDIA_ALTITUDE;
+			return (char *) DB_FIELD_MEDIA_ALTITUDE;
 		case MEDIA_CONTENT_GROUP_BURST_IMAGE:
-			return DB_FIELD_MEDIA_BURST_ID;
+			return (char *) DB_FIELD_MEDIA_BURST_ID;
 		case MEDIA_CONTENT_GROUP_RATING:
-			return DB_FIELD_MEDIA_RATING;
+			return (char *) DB_FIELD_MEDIA_RATING;
 		case MEDIA_CONTENT_GROUP_AUTHOR:
-			return DB_FIELD_MEDIA_AUTHOR;
+			return (char *) DB_FIELD_MEDIA_AUTHOR;
 		case MEDIA_CONTENT_GROUP_PROVIDER:
-			return DB_FIELD_MEDIA_PROVIDER;
+			return (char *) DB_FIELD_MEDIA_PROVIDER;
 		case MEDIA_CONTENT_GROUP_CONTENT_NAME:
-			return DB_FIELD_MEDIA_CONTENT_NAME;
+			return (char *) DB_FIELD_MEDIA_CONTENT_NAME;
 		case MEDIA_CONTENT_GROUP_CATEGORY:
-			return DB_FIELD_MEDIA_CATEGORY;
+			return (char *) DB_FIELD_MEDIA_CATEGORY;
 		case MEDIA_CONTENT_GROUP_LOCATION_TAG:
-			return DB_FIELD_MEDIA_LOCATION_TAG;
+			return (char *) DB_FIELD_MEDIA_LOCATION_TAG;
 		case MEDIA_CONTENT_GROUP_AGE_RATING:
-			return DB_FIELD_MEDIA_AGE_RATING;
+			return (char *) DB_FIELD_MEDIA_AGE_RATING;
 		case MEDIA_CONTENT_GROUP_KEYWORD:
-			return DB_FIELD_MEDIA_KEYWORD;
+			return (char *) DB_FIELD_MEDIA_KEYWORD;
 		case MEDIA_CONTENT_GROUP_WEATHER:
-			return DB_FIELD_MEDIA_WEATHER;
+			return (char *) DB_FIELD_MEDIA_WEATHER;
 		default:
 			return NULL;
 	}
@@ -109,10 +109,9 @@ static int __media_db_make_query(filter_h filter, attribute_h attr, char *select
 			SAFE_STRLCAT(bracket_added_condition, QUERY_KEYWORD_OPEN_BRACKET, MAX_QUERY_SIZE);
 			SAFE_STRLCAT(bracket_added_condition, _filter->condition, MAX_QUERY_SIZE);
 			SAFE_STRLCAT(bracket_added_condition, QUERY_KEYWORD_BRACKET, MAX_QUERY_SIZE);
-			{
+
 			ret = _media_filter_attribute_generate(attr, bracket_added_condition, _filter->condition_collate_type, condition_query);
 			media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-			}
 		}
 
 		ret = _media_filter_attribute_option_generate(attr, filter, option_query);
@@ -204,6 +203,12 @@ int _media_db_get_group_count(filter_h filter, group_list_e group_type, int *gro
 			if(!SAFE_STRLCPY(select_query, SELECT_STORAGE_COUNT, sizeof(select_query)))
 			{
 				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+			}
+			break;
+		default :
+			{
+				media_content_error("Invalid group type [%d]", group_type);
 				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 			}
 			break;
@@ -1127,6 +1132,71 @@ int _media_db_get_media_group_item(const char *group_name, filter_h filter, medi
 		}
 
 		media_info_destroy((media_info_h)item);
+	}
+
+	SQLITE3_FINALIZE(stmt);
+
+	return ret;
+}
+
+int _media_db_get_storage(filter_h filter, media_storage_cb callback, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char select_query[DEFAULT_QUERY_SIZE];
+	char *condition_query = NULL;
+	char *option_query = NULL;
+	sqlite3_stmt *stmt = NULL;
+	attribute_h attr = NULL;
+
+	attr = _content_get_attirbute_handle();
+	memset(select_query, 0x00, sizeof(select_query));
+
+	if(!SAFE_STRLCPY(select_query, SELECT_STORAGE_LIST, sizeof(select_query)))
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	ret = __media_db_make_query(filter, attr, select_query, sizeof(select_query), &condition_query, &option_query);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _content_query_prepare(&stmt, select_query, condition_query, option_query);
+	SAFE_FREE(condition_query);
+	SAFE_FREE(option_query);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	while(sqlite3_step(stmt) == SQLITE_ROW)
+	{
+		media_storage_s *_storage = (media_storage_s*)calloc(1, sizeof(media_storage_s));
+
+		if(_storage == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			SQLITE3_FINALIZE(stmt);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
+
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
+			_storage->storage_id = strdup((const char *)sqlite3_column_text(stmt, 0));
+
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
+			_storage->storage_name = strdup((const char *)sqlite3_column_text(stmt, 1));
+
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
+			_storage->storage_path = strdup((const char *)sqlite3_column_text(stmt, 2));
+
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
+			_storage->storage_account = strdup((const char *)sqlite3_column_text(stmt, 3));
+
+		_storage->storage_type = (int)sqlite3_column_int(stmt, 4);
+
+		if(callback((media_storage_h)_storage, user_data) == false)
+		{
+			media_storage_destroy((media_storage_h) _storage);
+			break;
+		}
+
+		media_storage_destroy((media_storage_h) _storage);
 	}
 
 	SQLITE3_FINALIZE(stmt);

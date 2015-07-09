@@ -190,12 +190,10 @@ static bool __media_playlist_media_info_cb(media_info_h media, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	char **media_id = (char**)user_data;
+
 	ret = media_info_get_media_id(media, media_id);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("Fail to get file path");
-		return FALSE;
-	}
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, FALSE, "media_info_get_media_id fail");
+
 	return TRUE;
 }
 
@@ -206,11 +204,7 @@ static bool __media_playlist_member_cb(int playlist_member_id, media_info_h medi
 	char *path = NULL;
 
 	ret = media_info_get_file_path(media, &path);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("Fail to get file path");
-		return FALSE;
-	}
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, FALSE, "media_info_get_file_path fail");
 
 	*list = g_list_append(*list, path);
 
@@ -222,11 +216,7 @@ static int __media_playlist_reset_file(const char* playlist_path)
 	FILE *fp = NULL;
 
 	fp = fopen(playlist_path, "wb");
-	if(fp == NULL)
-	{
-		media_content_stderror("fopen fail");
-		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
-	}
+	media_content_retvm_if(fp == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "fopen fail");
 
 	fputs("", fp);	// remove previous playlist
 
@@ -240,11 +230,7 @@ static int __media_playlist_append_to_file(const char* playlist_path, const char
 	FILE *fp = NULL;
 
 	fp = fopen(playlist_path, "a");	// append only
-	if(fp == NULL)
-	{
-		media_content_stderror("fopen fail");
-		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
-	}
+	media_content_retvm_if(fp == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "fopen fail");
 
 	fputs(path, fp);
 
@@ -270,11 +256,7 @@ static int __media_playlist_import_item_from_file(const char* playlist_path, cha
 	*item_list = NULL; *item_count = 0;
 
 	fp = fopen(playlist_path, "rb");		// Open as binary for precise estimation of file length
-	if(fp == NULL)
-	{
-		media_content_stderror("fopen fail");
-		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
-	}
+	media_content_retvm_if(fp == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "fopen fail");
 
 	fseek(fp, 0, SEEK_END);					// Move to the end of file
 	file_size = ftell(fp);				// Here we can find the size of file
@@ -412,11 +394,7 @@ int media_playlist_insert_to_db(const char *name, media_playlist_h *playlist)
 	}
 
 	media_playlist_s *_playlist = (media_playlist_s*)calloc(1, sizeof(media_playlist_s));
-	if(_playlist == NULL)
-	{
-		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-	}
+	media_content_retvm_if(_playlist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 	ret = __media_playlist_insert_playlist_record(name, &playlist_id);
 
@@ -557,11 +535,7 @@ int media_playlist_clone(media_playlist_h *dst, media_playlist_h src)
 	if(_src != NULL)
 	{
 		media_playlist_s *_dst = (media_playlist_s*)calloc(1, sizeof(media_playlist_s));
-		if(_dst == NULL)
-		{
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		_dst->playlist_id = _src->playlist_id;
 
@@ -604,9 +578,14 @@ int media_playlist_get_playlist_from_db(int playlist_id, media_playlist_h *playl
 		ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
 		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
+		media_playlist_s *_playlist = NULL;
+
 		while(sqlite3_step(stmt) == SQLITE_ROW)
 		{
-			media_playlist_s *_playlist = (media_playlist_s*)calloc(1, sizeof(media_playlist_s));
+			if(_playlist)
+				media_playlist_destroy((media_playlist_h)_playlist);
+
+			_playlist = (media_playlist_s*)calloc(1, sizeof(media_playlist_s));
 			if(_playlist == NULL)
 			{
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -662,11 +641,7 @@ int media_playlist_get_name(media_playlist_h playlist, char **name)
 		if(STRING_VALID(_playlist->name))
 		{
 			*name = strdup(_playlist->name);
-			if(*name == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(*name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
@@ -693,11 +668,7 @@ int media_playlist_get_thumbnail_path(media_playlist_h playlist, char **path)
 		if(STRING_VALID(_playlist->thumbnail_path))
 		{
 			*path = strdup(_playlist->thumbnail_path);
-			if(*path == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(*path == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
@@ -758,11 +729,7 @@ int media_playlist_set_name(media_playlist_h playlist, const char *playlist_name
 		SAFE_FREE(_playlist->name);
 
 		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
-		if(item == NULL)
-		{
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		media_content_retvm_if(item == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		item->playlist_name = strdup(playlist_name);
 		item->function = MEDIA_PLAYLIST_UPDATE_PLAYLIST_NAME;
@@ -803,11 +770,7 @@ int media_playlist_set_thumbnail_path(media_playlist_h playlist, const char *pat
 		SAFE_FREE(_playlist->thumbnail_path);
 
 		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
-		if(item == NULL)
-		{
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		media_content_retvm_if(item == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		item->thumbnail_path = strdup(path);
 		item->function = MEDIA_PLAYLIST_UPDATE_THUMBNAIL_PATH;
@@ -846,11 +809,7 @@ int media_playlist_set_play_order(media_playlist_h playlist, int playlist_member
 	if((_playlist != NULL) && (playlist_member_id > 0) && (play_order >= 0))
 	{
 		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
-		if(item == NULL)
-		{
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		media_content_retvm_if(item == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		item->playlist_member_id = playlist_member_id;
 		item->function = MEDIA_PLAYLIST_UPDATE_PLAY_ORDER;
@@ -875,11 +834,7 @@ int media_playlist_add_media(media_playlist_h playlist, const char *media_id)
 	if(_playlist != NULL && STRING_VALID(media_id))
 	{
 		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
-		if(item == NULL)
-		{
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		media_content_retvm_if(item == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		item->media_id = strdup(media_id);
 		item->function = MEDIA_PLAYLIST_ADD;
@@ -911,11 +866,7 @@ int media_playlist_remove_media(media_playlist_h playlist, int playlist_member_i
 	if((_playlist != NULL) && (playlist_member_id > 0))
 	{
 		media_playlist_item_s *item = (media_playlist_item_s*)calloc(1, sizeof(media_playlist_item_s));
-		if(item == NULL)
-		{
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		media_content_retvm_if(item == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		item->playlist_member_id = playlist_member_id;
 		item->function = MEDIA_PLAYLIST_REMOVE;
@@ -980,6 +931,9 @@ int media_playlist_update_to_db(media_playlist_h playlist)
 					ret = __media_playlist_update_play_order(_playlist->playlist_id, _playlist_item->playlist_member_id, _playlist_item->play_order);
 				}
 				break;
+
+				default :
+				break;
 			}
 		}
 	}
@@ -996,24 +950,11 @@ int media_playlist_import_from_file(const char *path, const char *playlist_name,
 	int import_item_count = 0;
 	int idx;
 
-	if(!STRING_VALID(path))
-	{
-		media_content_error("Invalid path");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if(!STRING_VALID(playlist_name))
-	{
-		media_content_error("Invalid playlist_name");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
+	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+	media_content_retvm_if(!STRING_VALID(playlist_name), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid playlist_name");
 
 	ret = media_playlist_insert_to_db(playlist_name, playlist);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("Fail to insert playlist to db");
-		return ret;
-	}
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "media_playlist_insert_to_db fail");
 
 	ret = __media_playlist_import_item_from_file(path, &import_item_list, &import_item_count);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
@@ -1094,32 +1035,14 @@ int media_playlist_export_to_file(media_playlist_h playlist, const char* path)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_playlist_s *_playlist = (media_playlist_s*)playlist;
 	GList *item_list = NULL;
-	int idx;
+	unsigned int idx = 0;
 
-	if(!STRING_VALID(path))
-	{
-		media_content_error("Invalid path");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if(_playlist == NULL)
-	{
-		media_content_error("Invalid playlist");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if(_playlist->playlist_id <= 0)
-	{
-		media_content_error("Invalid playlist id");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
+	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+	media_content_retvm_if(_playlist == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid playlist");
+	media_content_retvm_if(_playlist->playlist_id <= 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid playlist_id");
 
 	ret = _media_db_get_playlist_item(_playlist->playlist_id, NULL, __media_playlist_member_cb, &item_list);
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
-	{
-		media_content_error("Fail to get playlist from db");
-		return ret;
-	}
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "_media_db_get_playlist_item fail");
 
 	ret = __media_playlist_reset_file(path);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)

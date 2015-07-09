@@ -137,11 +137,7 @@ int media_folder_clone(media_folder_h *dst, media_folder_h src)
 	if(_src != NULL)
 	{
 		media_folder_s *_dst = (media_folder_s*)calloc(1, sizeof(media_folder_s));
-		if(_dst == NULL)
-		{
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		if(STRING_VALID(_src->folder_id))
 		{
@@ -212,11 +208,7 @@ int media_folder_get_folder_id(media_folder_h folder, char **folder_id)
 		if(STRING_VALID(_folder->folder_id))
 		{
 			*folder_id = strdup(_folder->folder_id);
-			if(*folder_id == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(*folder_id == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
@@ -237,16 +229,13 @@ int media_folder_get_path(media_folder_h folder, char **path)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_folder_s *_folder = (media_folder_s*)folder;
+
 	if(_folder)
 	{
 		if(STRING_VALID(_folder->path))
 		{
 			*path = strdup(_folder->path);
-			if(*path == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(*path == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
@@ -269,16 +258,13 @@ int media_folder_get_name(media_folder_h folder, char **name)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_folder_s *_folder = (media_folder_s*)folder;
+
 	if(_folder)
 	{
 		if(STRING_VALID(_folder->name))
 		{
 			*name = strdup(_folder->name);
-			if(*name == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(*name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
@@ -300,6 +286,7 @@ int media_folder_get_modified_time(media_folder_h folder, time_t* time)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_folder_s *_folder = (media_folder_s*)folder;
+
 	if(_folder)
 	{
 		*time = _folder->modified_time;
@@ -318,6 +305,7 @@ int media_folder_get_storage_type(media_folder_h folder, media_content_storage_e
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_folder_s *_folder = (media_folder_s*)folder;
+
 	if(_folder)
 	{
 		*storage_type = _folder->storage_type;
@@ -336,16 +324,13 @@ int media_folder_get_storage_id(media_folder_h folder, char **storage_id)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_folder_s *_folder = (media_folder_s*)folder;
+
 	if(_folder)
 	{
 		if(STRING_VALID(_folder->storage_uuid))
 		{
 			*storage_id = strdup(_folder->storage_uuid);
-			if(*storage_id == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(*storage_id == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
@@ -367,6 +352,7 @@ int media_folder_get_order(media_folder_h folder, int *order)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_folder_s *_folder = (media_folder_s*)folder;
+
 	if(_folder)
 	{
 		*order = _folder->folder_order;
@@ -401,10 +387,14 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
+	media_folder_s *_folder = NULL;
+
 	while(sqlite3_step(stmt) == SQLITE_ROW)
 	{
-		media_folder_s *_folder = (media_folder_s*)calloc(1, sizeof(media_folder_s));
+		if(_folder)
+			media_folder_destroy((media_folder_h)_folder);
 
+		_folder = (media_folder_s*)calloc(1, sizeof(media_folder_s));
 		if(_folder == NULL)
 		{
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -509,20 +499,11 @@ int media_folder_set_name(media_folder_h folder, const char *name)
 			SAFE_FREE(_folder->name);
 			SAFE_FREE(folder_path);
 			_folder->path = strdup(new_folder_path);
-
-			if(_folder->path == NULL)
-			{
-				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-			}
+			media_content_retvm_if(_folder->path == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 
 		_folder->name = strdup(name);
-		if(_folder->name == NULL)
-		{
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		media_content_retvm_if(_folder->name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 	}
 	else
 	{

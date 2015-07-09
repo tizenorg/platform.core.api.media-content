@@ -187,7 +187,7 @@ typedef struct
 	char *path;
 	char *name;
 	time_t modified_time;
-	int storage_type;
+	media_content_storage_e storage_type;
 	char *storage_uuid;
 	int folder_order;
 }media_folder_s;
@@ -391,7 +391,7 @@ typedef struct _media_content_cb_data {
 #define DB_TABLE_PLAYLIST_MAP	"playlist_map"
 #define DB_TABLE_BOOKMARK		"bookmark"
 #define DB_TABLE_STORAGE		"storage"
-#define DB_TABLE_MEDIA_VIEW	"media"
+#define DB_TABLE_MEDIA_VIEW	"media_view"
 
 /* DB View */
 #define DB_VIEW_PLAYLIST	"playlist_view"
@@ -517,7 +517,8 @@ typedef struct _media_content_cb_data {
 #define QUERY_KEYWORD_BRACKET ")"
 
 /* DB TABLE JOIN */
-#define FOLDER_MEDIA_JOIN					"("DB_TABLE_FOLDER" AS f INNER JOIN '%s' AS m ON f.folder_uuid=m.folder_uuid) WHERE m.validity=1 "
+//#define FOLDER_MEDIA_JOIN					"("DB_TABLE_FOLDER" AS f LEFT OUTER JOIN '%s' AS m ON f.folder_uuid=m.folder_uuid AND m.validity=1) WHERE f.storage_uuid IN (SELECT storage_uuid FROM "DB_TABLE_STORAGE" WHERE validity=1) "
+#define FOLDER_MEDIA_JOIN					"("DB_TABLE_FOLDER" AS f LEFT OUTER JOIN '%s' AS m ON f.folder_uuid=m.folder_uuid AND m.validity=1) WHERE f.validity=1"
 #define BOOKMARK_MEDIA_JOIN				"("DB_TABLE_BOOKMARK" AS b INNER JOIN '%s' AS m \
 											ON (b.media_uuid = m.media_uuid)) WHERE m.validity=1"
 #define ALBUM_MEDIA_JOIN					"("DB_TABLE_ALBUM" AS a INNER JOIN '%s' AS m \
@@ -645,6 +646,7 @@ int _media_db_get_group_item_by_id(int group_id, filter_h filter, media_info_cb 
 int _media_db_get_group_item(const char *group_name, filter_h filter, media_info_cb callback, void *user_data, group_list_e group_type);
 int _media_db_get_media_group_item_count(const char *group_name, filter_h filter, media_group_e group, int *item_count);
 int _media_db_get_media_group_item(const char *group_name, filter_h filter, media_group_e group, media_info_cb callback, void *user_data);
+int _media_db_get_storage(filter_h filter, media_storage_cb callback, void *user_data);
 int _media_db_get_storage_id_by_media_id(const char *media_id, char *storage_id);
 
 /**
@@ -679,7 +681,7 @@ int _media_filter_attribute_create(attribute_h *attr);
  * @see media_filter_attribute_remove()
  *
  */
-int _media_filter_attribute_add(attribute_h atrr, char *user_attr, char *platform_attr);
+int _media_filter_attribute_add(attribute_h atrr, const char *user_attr, const char *platform_attr);
 
 /**
  * @internal
@@ -754,6 +756,13 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 			} \
 		} while (0)
 
+#define media_content_retvm_if(expr, val, fmt, arg...) do { \
+			if(expr) { \
+				LOGE(FONT_COLOR_RED"[%d]"fmt"",media_content_gettid(), ##arg);     \
+				return (val); \
+			} \
+		} while (0)
+
 #define media_content_debug(fmt, arg...) do { \
 			LOGD(FONT_COLOR_RESET"[%d]"fmt"", media_content_gettid(), ##arg);     \
 		} while (0)
@@ -784,9 +793,9 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 
 #define ERR_BUF_LENGTH 256
 #define media_content_stderror(fmt) do { \
-			char buf[ERR_BUF_LENGTH] = {0, }; \
-			strerror_r(errno, buf, ERR_BUF_LENGTH);	\
-			LOGE(FONT_COLOR_RED fmt" : STANDARD ERROR [%s]", buf); \
+			char media_content_stderror_buf[ERR_BUF_LENGTH] = {0, }; \
+			strerror_r(errno, media_content_stderror_buf, ERR_BUF_LENGTH);	\
+			LOGE(FONT_COLOR_RED fmt" : STANDARD ERROR [%s]", media_content_stderror_buf); \
 		} while (0)
 
 #ifdef __cplusplus
