@@ -59,15 +59,18 @@ static void __media_info_insert_completed_cb(media_request_result_s *result, voi
 	media_insert_cb_s *_cb_data = (media_insert_cb_s *)user_data;
 
 	if (_cb_data) {
+		media_content_error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>IN CALLBACK");
 		if (result) {
 			ret = _content_error_capi(MEDIA_CONTENT_TYPE, result->result);
 		}
 
 		if (_cb_data->insert_completed_cb)
 			_cb_data->insert_completed_cb(ret, _cb_data->user_data);
+		media_content_error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>[%s]", _cb_data->insert_list_path);
 
 		if (STRING_VALID(_cb_data->insert_list_path)) {
 			if (unlink(_cb_data->insert_list_path) < 0) {
+							media_content_error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>UNLINK!!!!");
 				media_content_stderror("failed to delete");
 			}
 			SAFE_FREE(_cb_data->insert_list_path);
