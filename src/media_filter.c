@@ -698,7 +698,42 @@ static int __tokenize(GList **token_list, const char *str)
 				media_content_error("tokenize error occured");
 				return -1;
 			}
+		}
+		else if(tmp[idx] == media_token[10][0] && tmp[idx+1] == media_token[10][1])	//"!=",
+		{
+			if(idx != 0)
+			{
+				token_t *token = (token_t*)calloc(1, sizeof(token_t));
+				media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
 
+				ret = __tokenize_string(token, tmp, idx);
+				if (ret < 0)
+				{
+					SAFE_FREE(token);
+					media_content_error("tokenize error occured");
+					return -1;
+				}
+				else
+				{
+					*token_list = g_list_append(*token_list, token);
+					tmp = tmp + idx;
+				}
+			}
+			token_t *token = (token_t*)calloc(1, sizeof(token_t));
+			int size = __tokenize_operator(token, tmp, 10);
+
+			if(token != NULL && STRING_VALID(token->str))
+			{
+				*token_list = g_list_append(*token_list, token);
+				tmp += size;
+				idx = -1;
+			}
+			else
+			{
+				SAFE_FREE(token);
+				media_content_error("tokenize error occured");
+				return -1;
+			}
 		}
 	}
 
