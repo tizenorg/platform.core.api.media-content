@@ -29,6 +29,7 @@ static const char *media_token[] =
 	"<",
 	">=",
 	">",
+	"!=",
 };
 
 
