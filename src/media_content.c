@@ -676,7 +676,7 @@ int media_content_connect(void)
 			{
 				ret = __media_content_create_attribute_handle();
 				if(ret == MEDIA_CONTENT_ERROR_NONE) {
-					ret = media_svc_connect(&db_handle,tzplatform_getuid(TZ_USER_NAME), false);
+					ret = media_svc_connect(&db_handle,tzplatform_getuid(TZ_USER_NAME));
 					ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 					if(ret == MEDIA_CONTENT_ERROR_NONE) {
 						ref_count++;
