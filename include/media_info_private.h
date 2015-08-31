@@ -64,7 +64,7 @@ extern "C" {
 
 #define MEDIA_CONTENT_PATH_PHONE 	MEDIA_ROOT_PATH_INTERNAL	/**< File path prefix of files stored in phone */
 #define MEDIA_CONTENT_PATH_MMC 		MEDIA_ROOT_PATH_SDCARD		/**< File path prefix of files stored in mmc card */
-#define MEDIA_CONTENT_THUMB_DEFAULT_PATH 	tzplatform_mkpath(TZ_SYS_DATA, "file-manager-service/.thumb/thumb_default.png")
+#define MEDIA_CONTENT_THUMB_DEFAULT_PATH 	tzplatform_mkpath(TZ_USER_SHARE, "media/.thumb/thumb_default.png")
 #define MEDIA_CONTENT_INSERT_FILES_PATH		tzplatform_mkpath(TZ_USER_HOME, "share")
 
 #define MAX_QUERY_SIZE 4096
