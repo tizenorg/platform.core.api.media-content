@@ -41,7 +41,7 @@ extern "C" {
  * @brief Clones the image metadata.
  * @details The function copies the image metadata handle from a source to destination.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks The destination handle must be released with image_meta_destroy().
  *
@@ -66,7 +66,7 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src);
  *          no longer can be used to perform any operation. A new handle has to
  *          be created before next usage.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] image The image metadata handle
  *
@@ -84,7 +84,7 @@ int image_meta_destroy(image_meta_h image);
 
 /**
  * @brief Gets the ID of an image.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  image    The image metadata handle
  * @param[out] media_id The ID of an image
@@ -100,7 +100,7 @@ int image_meta_get_media_id(image_meta_h image, char **media_id);
 
 /**
  * @brief Gets the image width in pixels.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  image The image metadata handle
  * @param[out] width The image width in pixels
@@ -116,7 +116,7 @@ int image_meta_get_width(image_meta_h image, int *width);
 
 /**
  * @brief Gets the image height in pixels.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  image  The image metadata handle
  * @param[out] height The image height in pixels
@@ -132,7 +132,7 @@ int image_meta_get_height(image_meta_h image, int *height);
 
 /**
  * @brief Gets the image orientation.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  image       The image metadata handle
  * @param[out] orientation The image orientation
@@ -148,7 +148,7 @@ int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *
 
 /**
  * @brief Gets the image creation time.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  image      The image metadata handle
  * @param[out] date_taken The time, when image was taken (in seconds, since the Epoch)
@@ -164,7 +164,7 @@ int image_meta_get_date_taken(image_meta_h image, char **date_taken);
 
 /**
  * @brief Gets the burst shot ID.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a burst_id using free().
  *
@@ -255,7 +255,7 @@ int image_meta_get_model(image_meta_h image, char **model);
 
 /**
  * @brief Checks whether the media is a burst shot image.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  image         The image metadata handle
  * @param[out] is_burst_shot @c true if the media is a burst shot image,
@@ -272,7 +272,7 @@ int image_meta_is_burst_shot(image_meta_h image, bool *is_burst_shot);
 
 /**
  * @brief Sets an orientation of the image.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] image       The image metadata handle
  * @param[in] orientation The image orientation
@@ -295,7 +295,7 @@ int image_meta_set_orientation(image_meta_h image, media_content_orientation_e o
  *          database. For example, after using image_meta_set_orientation() for setting the orientation of the image, the image_meta_update_to_db() function should be called so as to update
  *          the given image attributes in the media database.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write

@@ -444,6 +444,9 @@ int _media_db_get_folder(filter_h filter, media_folder_cb callback, void *user_d
 
 		_folder->folder_order = (int)sqlite3_column_int(stmt, 6);
 
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 7)))
+			_folder->parent_folder_id= strdup((const char *)sqlite3_column_text(stmt, 7));
+
 		if(callback((media_folder_h)_folder, user_data) == false)
 		{
 			media_folder_destroy((media_folder_h) _folder);

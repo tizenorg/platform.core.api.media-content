@@ -39,7 +39,7 @@ extern "C" {
 
 /**
  * @brief Gets the number of playlists for the passed @a filter from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  filter         The handle to the filter
  * @param[out] playlist_count The count of the media playlist
@@ -65,7 +65,7 @@ int media_playlist_get_playlist_count_from_db(filter_h filter, int *playlist_cou
  *          The callback function will be invoked for every retrieved media playlist.
  *          If @c NULL is passed to the filter, no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] filter    The handle to the audio filter
  * @param[in] callback  The callback function to be invoked
@@ -92,7 +92,7 @@ int media_playlist_foreach_playlist_from_db(filter_h filter, media_playlist_cb c
 
 /**
  * @brief Gets the number of the media info for the given playlist present in the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  playlist_id  The ID of the media playlist
  * @param[in]  filter       The media filter handle
@@ -119,7 +119,7 @@ int media_playlist_get_media_count_from_db(int playlist_id, filter_h filter, int
  *          meeting desired filter option and calls registered callback function for
  *          every retrieved media info. If @c NULL is passed to the @a filter, no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] playlist_id The ID of the media playlist
  * @param[in] filter      The audio filter handle
@@ -147,7 +147,7 @@ int media_playlist_foreach_media_from_db(int playlist_id, filter_h filter, playl
 
 /**
  * @brief Inserts a new playlist with the given name into the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
@@ -178,7 +178,7 @@ int media_playlist_insert_to_db(const char *name, media_playlist_h *playlist);
 
 /**
  * @brief Deletes the given playlist from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
@@ -209,7 +209,7 @@ int media_playlist_delete_from_db(int playlist_id);
  * @details This function creates a new media playlist handle from the media database by the given @a playlist_id.
  *          The media playlist will be created and will be filled with the playlist information.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a playlist using media_playlist_destroy().
  *
@@ -239,7 +239,7 @@ int media_playlist_get_playlist_from_db(int playlist_id, media_playlist_h *playl
  *          handle no longer can be used to perform any operation. A new handle has to
  *          be created before next usage.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] playlist The media playlist handle
  *
@@ -263,7 +263,7 @@ int media_playlist_destroy(media_playlist_h playlist);
  *          media playlist foreach function such as media_playlist_foreach_playlist_from_db().
  *          To use this handle outside of these foreach functions, use this function.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks The destination handle must be released using media_playlist_destroy().
  *
@@ -285,7 +285,7 @@ int media_playlist_clone(media_playlist_h *dst, media_playlist_h src);
 
 /**
  * @brief Gets the media playlist ID.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  playlist    The media playlist handle
  * @param[out] playlist_id The ID of the media playlist
@@ -301,7 +301,7 @@ int media_playlist_get_playlist_id(media_playlist_h playlist, int *playlist_id);
 
 /**
  * @brief Gets a name of the playlist.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a playlist_name using free().
  *
@@ -320,7 +320,7 @@ int media_playlist_get_name(media_playlist_h playlist, char **playlist_name);
 
 /**
  * @brief Sets the name of the playlist.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] playlist      The media playlist handle
  * @param[in] playlist_name The name of the media playlist
@@ -340,7 +340,7 @@ int media_playlist_set_name(media_playlist_h playlist, const char *playlist_name
 
 /**
  * @brief Gets a thumbnail path of the playlist.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a path using free().
  *
@@ -359,7 +359,7 @@ int media_playlist_get_thumbnail_path(media_playlist_h playlist, char **path);
 
 /**
  * @brief Sets the thumbnail path of the playlist.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] playlist The media playlist handle
  * @param[in] path     The path of the thumbnail
@@ -379,7 +379,7 @@ int media_playlist_set_thumbnail_path(media_playlist_h playlist, const char *pat
 
 /**
  * @brief Sets the playing order in the playlist.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] playlist           The media playlist handle
  * @param[in] playlist_member_id The playlist member ID
@@ -399,7 +399,7 @@ int media_playlist_set_play_order(media_playlist_h playlist, int playlist_member
 
 /**
  * @brief Adds a new media info to the playlist.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] playlist The media playlist handle
  * @param[in] media_id The ID to the media info which is added
@@ -422,7 +422,7 @@ int media_playlist_add_media(media_playlist_h playlist, const char *media_id);
 
 /**
  * @brief Removes the playlist members related with the media from the given playlist.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] playlist           The media playlist handle
  * @param[in] playlist_member_id The playlist member ID
@@ -445,7 +445,7 @@ int media_playlist_remove_media(media_playlist_h playlist, int playlist_member_i
 
 /**
  * @brief Gets the played order of the playlist.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] playlist           The media playlist handle
  * @param[in] playlist_member_id The playlist member ID
@@ -469,7 +469,7 @@ int media_playlist_get_play_order(media_playlist_h playlist, int playlist_member
  *          media_playlist_update_to_db() function should be called so as to update
  *          the given playlist attributes in the media database.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write

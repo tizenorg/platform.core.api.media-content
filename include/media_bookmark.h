@@ -39,7 +39,7 @@ extern "C" {
 
 /**
  * @brief Inserts a new bookmark in media on the specified time offset to the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
@@ -69,7 +69,7 @@ int media_bookmark_insert_to_db(const char *media_id, time_t time, const char *t
 
 /**
  * @brief Removes a media bookmark from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
@@ -96,7 +96,7 @@ int media_bookmark_delete_from_db(int bookmark_id);
 
 /**
  * @brief Gets the number of bookmarks with an optional filter from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  filter         The handle to the media filter
  * @param[out] bookmark_count The count of the media bookmark
@@ -122,7 +122,7 @@ int media_bookmark_get_bookmark_count_from_db(filter_h filter, int *bookmark_cou
  *          The media_bookmark_h is created internally and available through media bookmark foreach function such as media_info_foreach_bookmark_from_db().
  *          To use this handle outside of these foreach functions, use this function.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks The destination handle must be released using media_bookmark_destroy().
  *
@@ -148,7 +148,7 @@ int media_bookmark_clone(media_bookmark_h *dst, media_bookmark_h src);
  *          no longer can be used to perform any operation. A new handle has to
  *          be created before the next use.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] bookmark The handle to media bookmark
  *
@@ -167,7 +167,7 @@ int media_bookmark_destroy(media_bookmark_h bookmark);
 
 /**
  * @brief Gets the bookmark ID.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  bookmark    The handle to media bookmark
  * @param[out] bookmark_id The media bookmark ID
@@ -186,7 +186,7 @@ int media_bookmark_get_bookmark_id(media_bookmark_h bookmark, int *bookmark_id);
  * @details This function returns time offset in milliseconds from beginning of the movie on which bookmark
  *          was placed.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  bookmark    The handle to media bookmark
  * @param[out] marked_time The bookmark time offset (in milliseconds)
@@ -202,7 +202,7 @@ int media_bookmark_get_marked_time(media_bookmark_h bookmark, time_t *marked_tim
 
 /**
  * @brief Gets the media bookmark thumbnail.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a path using free().
  *

@@ -41,7 +41,6 @@ static int __media_content_create_alias_attr_handle(void);
 static int __media_content_create_attribute_handle(void);
 static int __media_content_destroy_attribute_handle(void);
 
-
 static int __media_content_create_attr_handle(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -267,6 +266,13 @@ static int __media_content_create_attr_handle(void)
 
 	/* Bookmark*/
 	ret = _media_filter_attribute_add(g_attr_handle, BOOKMARK_MARKED_TIME, DB_FIELD_BOOKMARK_MARKED_TIME);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	/* Storage*/
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_STORAGE_ID, DB_FIELD_STORAGE_ID);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_STORAGE_PATH, DB_FIELD_STORAGE_PATH);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	return ret;
@@ -498,6 +504,8 @@ static int __media_content_create_alias_attr_handle(void)
 	ret = _media_filter_attribute_add(g_alias_attr_handle, FOLDER_ORDER, DB_TABLE_ALIAS_FOLDER"."DB_FIELD_FOLDER_ORDER);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
+	ret = _media_filter_attribute_add(g_alias_attr_handle, FOLDER_PARENT_FOLDER_ID, DB_TABLE_ALIAS_FOLDER"."DB_FIELD_FOLDER_PARENT_FOLDER_ID);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 	/* Playlist*/
 	ret = _media_filter_attribute_add(g_alias_attr_handle, PLAYLIST_NAME, DB_TABLE_ALIAS_PLAYLIST"."DB_FIELD_PLAYLIST_NAME);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
@@ -680,7 +688,6 @@ int media_content_connect(void)
 					ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 					if(ret == MEDIA_CONTENT_ERROR_NONE) {
 						ref_count++;
-						//__media_content_create_collate();
 					} else {
 						__media_content_destroy_attribute_handle();
 					}
@@ -771,22 +778,35 @@ int media_content_disconnect(void)
 int media_content_scan_file(const char *path)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	bool ignore_file = FALSE;
 	bool ignore_dir = FALSE;
 	char *folder_path = NULL;
 	int check_file = MEDIA_CONTENT_ERROR_NONE;
+	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
 
 	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid path");
 
 	media_content_sec_debug("Path : %s", path);
 
-	check_file = _media_util_check_file(path);
+	ret = _media_util_check_ignore_file(path, &ignore_file);
+	media_content_retvm_if(ignore_file == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+
+	memset(storage_id, 0x00, sizeof(storage_id));
+	ret = media_svc_get_storage_id(_content_get_db_handle(), path, storage_id);
+	if(ret != MS_MEDIA_ERR_NONE)
+	{
+		media_content_error("media_svc_get_storage_id failed : %d", ret);
+		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+	}
+
+	check_file = _media_util_check_file_exist(path);
 	if (check_file == MEDIA_CONTENT_ERROR_NONE) {
 		/* This means this path has to be inserted or refreshed */
 		folder_path = g_path_get_dirname(path);
 		ret = _media_util_check_ignore_dir(folder_path, &ignore_dir);
 		SAFE_FREE(folder_path);
 
-		media_content_retvm_if(ignore_dir, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
+		media_content_retvm_if(ignore_dir == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
 
 		media_svc_storage_type_e storage_type;
 
@@ -795,10 +815,10 @@ int media_content_scan_file(const char *path)
 			media_content_sec_error("media_svc_get_storage_type failed : %d (%s)", ret, path);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		}
-		ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
+		ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), storage_id, path);
 		if (ret == MS_MEDIA_ERR_NONE) {
 			/* Refresh */
-			ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, "media", path,tzplatform_getuid(TZ_USER_NAME));
+			ret = media_svc_refresh_item(_content_get_db_handle(), storage_id, storage_type, path,tzplatform_getuid(TZ_USER_NAME));
 			if(ret != MS_MEDIA_ERR_NONE) {
 				media_content_error("media_svc_refresh_item failed : %d", ret);
 				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -806,7 +826,7 @@ int media_content_scan_file(const char *path)
 
 		} else if (ret == MS_MEDIA_ERR_DB_NO_RECORD) {
 			/* Insert */
-			ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path,tzplatform_getuid(TZ_USER_NAME));
+			ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_id, storage_type, path,tzplatform_getuid(TZ_USER_NAME));
 			if(ret != MS_MEDIA_ERR_NONE) {
 				if (ret == MS_MEDIA_ERR_DB_CONSTRAINT_FAIL) {
 					media_content_sec_error("This item is already inserted. This may be normal operation because other process already did this (%s)", path);
@@ -827,7 +847,7 @@ int media_content_scan_file(const char *path)
 	} else {
 		/* This means this path has to be deleted */
 		media_content_debug("This path doesn't exists in file system... So now start to delete it from DB");
-		ret = media_svc_delete_item_by_path(_content_get_db_handle(), "media", path, tzplatform_getuid(TZ_USER_NAME));
+		ret = media_svc_delete_item_by_path(_content_get_db_handle(), storage_id, path, tzplatform_getuid(TZ_USER_NAME));
 		if(ret != MS_MEDIA_ERR_NONE) {
 			media_content_error("media_svc_delete_item_by_path failed : %d", ret);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -875,13 +895,15 @@ static int __media_content_check_dir(const char *path)
 	return MEDIA_CONTENT_ERROR_NONE;
 }
 
-
 int media_content_scan_folder(const char *path, bool is_recursive, media_scan_completed_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	bool ignore_dir = FALSE;
+	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0, };
 
 	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+
+	memset(storage_id, 0x00, sizeof(storage_id));
 
 	ret = _media_util_check_ignore_dir(path, &ignore_dir);
 	media_content_retvm_if(ignore_dir, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
@@ -896,7 +918,10 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 	cb_data->callback = callback;
 	cb_data->user_data = user_data;
 
-	ret = media_directory_scanning_async(path, is_recursive, _media_content_scan_cb, cb_data, tzplatform_getuid(TZ_USER_NAME));
+	ret = media_svc_get_storage_id(_content_get_db_handle(), path, storage_id);
+	/*FIX ME. need to check ret value?*/
+
+	ret = media_directory_scanning_async(path, storage_id, is_recursive, _media_content_scan_cb, cb_data, tzplatform_getuid(TZ_USER_NAME));
 	if(ret != MS_MEDIA_ERR_NONE) {
 		media_content_error("media_directory_scanning_async failed : %d", ret);
 	}

@@ -50,7 +50,7 @@ extern "C" {
  * @brief Connects to the media content service.
  * @details Any media content related function call should be invoked after this function call.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @return @c 0 on success, 
  *         otherwise a negative error value
@@ -70,7 +70,7 @@ int media_content_connect(void);
  * @details This function closes connection to the media content service. Any further media content related operation
  *          cannot be performed after this function is called.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @return @c 0 on success, 
  *         otherwise a negative error value
@@ -92,7 +92,7 @@ int media_content_disconnect(void);
  *          If media file is not registered to DB yet, that media file information will be added to the media DB. If it is already registered to the DB, then this tries to refresh information.
  *          If requested file does not exist on file system, information of the media file will be removed from the media DB.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write \n
@@ -124,7 +124,7 @@ int media_content_scan_file(const char *path);
  *          The sub folders are also scanned, if there are sub folders in that folder. \n
  *          If any folder must not be scanned, a blank file ".scan_ignore" has to be created in that folder.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write \n
@@ -173,7 +173,7 @@ int media_content_cancel_scan_folder(const char *path);
  * @details This function subscribes notifications of the media DB change which are published by the media server or other apps.
  *          media_content_db_update_cb() function will be called when notification of the media DB change is subscribed.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] callback  The callback to be invoked when the scanning is finished
  * @param[in] user_data The user data to be passed to the callback function
@@ -196,7 +196,7 @@ int media_content_set_db_updated_cb(media_content_db_update_cb callback, void *u
  * @brief Unsubscribes notifications of the media DB change.
  * @details This function unsubscribes notifications of the media DB change which are published by the media server or other apps.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @return @c 0 on success, 
  *         otherwise a negative error value

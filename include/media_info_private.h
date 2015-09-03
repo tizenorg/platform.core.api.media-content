@@ -184,6 +184,7 @@ typedef struct _filter_s
 typedef struct
 {
 	char *folder_id;				//image id, audio id, video id
+	char *parent_folder_id;
 	char *path;
 	char *name;
 	time_t modified_time;
@@ -196,6 +197,7 @@ typedef struct
 {
 	int tag_id;
 	char *name;
+	GList *item_list;
 }media_tag_s;
 
 typedef struct
@@ -219,6 +221,7 @@ typedef struct
 	int playlist_id;	//playlist id
 	char *name;		// playlist name
 	char *thumbnail_path;		//playlist thumbnail path
+	GList *item_list;
 }media_playlist_s;
 
 typedef struct
@@ -485,6 +488,7 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_FOLDER_STORAGE_TYPE	"storage_type"
 #define DB_FIELD_FOLDER_NAME_PINYIN	"name_pinyin"
 #define DB_FIELD_FOLDER_ORDER			"folder_order"
+#define DB_FIELD_FOLDER_PARENT_FOLDER_ID	"parent_folder_uuid"
 
 /* DB field for playlist */
 #define DB_FIELD_PLAYLIST_ID					"playlist_id"
@@ -506,6 +510,10 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_ALBUM_NAME		"name"
 #define DB_FIELD_ALBUM_ARTIST		"artist"
 
+/* DB field for Storage*/
+#define DB_FIELD_STORAGE_ID			"storage_uuid"
+#define DB_FIELD_STORAGE_PATH		"storage_path"
+
 /* DB Query Keyword */
 #define QUERY_KEYWORD_AND "AND"
 #define QUERY_KEYWORD_OR "OR"
@@ -518,7 +526,7 @@ typedef struct _media_content_cb_data {
 
 /* DB TABLE JOIN */
 //#define FOLDER_MEDIA_JOIN					"("DB_TABLE_FOLDER" AS f LEFT OUTER JOIN '%s' AS m ON f.folder_uuid=m.folder_uuid AND m.validity=1) WHERE f.storage_uuid IN (SELECT storage_uuid FROM "DB_TABLE_STORAGE" WHERE validity=1) "
-#define FOLDER_MEDIA_JOIN					"("DB_TABLE_FOLDER" AS f LEFT OUTER JOIN '%s' AS m ON f.folder_uuid=m.folder_uuid AND m.validity=1) WHERE f.validity=1"
+#define FOLDER_MEDIA_JOIN					"("DB_TABLE_FOLDER" AS f LEFT OUTER JOIN '%s' AS m ON f.folder_uuid=m.folder_uuid AND m.validity=1) WHERE f.validity=1 "
 #define BOOKMARK_MEDIA_JOIN				"("DB_TABLE_BOOKMARK" AS b INNER JOIN '%s' AS m \
 											ON (b.media_uuid = m.media_uuid)) WHERE m.validity=1"
 #define ALBUM_MEDIA_JOIN					"("DB_TABLE_ALBUM" AS a INNER JOIN '%s' AS m \
@@ -528,7 +536,7 @@ typedef struct _media_content_cb_data {
 #define SELECT_ALBUM_LIST			"SELECT DISTINCT a.album_id, a.name, a.artist, a.album_art FROM "ALBUM_MEDIA_JOIN
 #define SELECT_MEDIA_GROUP_LIST	"SELECT DISTINCT %s FROM '%s' WHERE validity=1 "
 
-#define SELECT_FOLDER_LIST 			"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time, f.storage_uuid, f.folder_order FROM "FOLDER_MEDIA_JOIN
+#define SELECT_FOLDER_LIST 			"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time, f.storage_uuid, f.folder_order, f.parent_folder_uuid FROM "FOLDER_MEDIA_JOIN
 #define SELECT_FOLDER_LIST_BY_STORAGE_ID	SELECT_FOLDER_LIST"AND f.storage_uuid='%s' "
 #define SELECT_TAG_LIST				"SELECT DISTINCT tag_id, name FROM "DB_VIEW_TAG" WHERE 1 "
 #define SELECT_PLAYLIST_LIST			"SELECT DISTINCT playlist_id, name, p_thumbnail_path FROM "DB_VIEW_PLAYLIST" WHERE 1 "

@@ -20,30 +20,6 @@
 
 static char *g_src_path = NULL;
 
-static char *__media_folder_get_update_folder_sql(media_folder_h folder);
-
-static char *__media_folder_get_update_folder_sql(media_folder_h folder)
-{
-	media_folder_s *_folder = (media_folder_s*)folder;
-	char *return_sql = NULL;
-	char *name_pinyin = NULL;
-	bool pinyin_support = FALSE;
-
-	/*Update Pinyin If Support Pinyin*/
-	media_svc_check_pinyin_support(&pinyin_support);
-	if(pinyin_support)
-		media_svc_get_pinyin(_content_get_db_handle(), _folder->name, &name_pinyin);
-
-	return_sql = sqlite3_mprintf("%q='%q', %q='%q', %q=%d, %q='%q'",
-											DB_FIELD_FOLDER_PATH, _folder->path,
-											DB_FIELD_FOLDER_NAME, _folder->name,
-											DB_FIELD_FOLDER_MODIFIED_TIME, _folder->modified_time,
-											DB_FIELD_FOLDER_NAME_PINYIN, name_pinyin);
-
-	SAFE_FREE(name_pinyin);
-	return return_sql;
-}
-
 int media_folder_get_folder_count_from_db(filter_h filter, int *folder_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -117,6 +93,7 @@ int media_folder_destroy(media_folder_h folder)
 		SAFE_FREE(_folder->path);
 		SAFE_FREE(_folder->name);
 		SAFE_FREE(_folder->folder_id);
+		SAFE_FREE(_folder->parent_folder_id);
 		SAFE_FREE(_folder->storage_uuid);
 		SAFE_FREE(_folder);
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -150,7 +127,16 @@ int media_folder_clone(media_folder_h *dst, media_folder_h src)
 			}
 		}
 
-		_dst->storage_type = _src->storage_type;
+		if(STRING_VALID(_src->parent_folder_id))
+		{
+			_dst->parent_folder_id = strdup(_src->parent_folder_id);
+			if(_dst->parent_folder_id == NULL)
+			{
+				media_folder_destroy((media_folder_h)_dst);
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
 
 		if(STRING_VALID(_src->name))
 		{
@@ -185,6 +171,10 @@ int media_folder_clone(media_folder_h *dst, media_folder_h src)
 			}
 		}
 
+		_dst->storage_type = _src->storage_type;
+		_dst->modified_time = _src->modified_time;
+		_dst->folder_order= _src->folder_order;
+
 		*dst = (media_folder_h)_dst;
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -213,6 +203,33 @@ int media_folder_get_folder_id(media_folder_h folder, char **folder_id)
 		else
 		{
 			*folder_id = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_folder_get_parent_folder_id(media_folder_h folder, char **parent_folder_id)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_folder_s *_folder = (media_folder_s*)folder;
+
+	if(_folder)
+	{
+		if(STRING_VALID(_folder->parent_folder_id))
+		{
+			*parent_folder_id = strdup(_folder->parent_folder_id);
+			media_content_retvm_if(*parent_folder_id == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+		}
+		else
+		{
+			*parent_folder_id = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
@@ -425,7 +442,6 @@ int media_folder_update_to_db(media_folder_h folder)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_folder_s *_folder = (media_folder_s*)folder;
-	char *set_sql = NULL;
 	char *sql = NULL;
 
 	if((_folder == NULL) || (_folder->folder_id == NULL))
@@ -442,27 +458,42 @@ int media_folder_update_to_db(media_folder_h folder)
 
 	if(STRING_VALID(_folder->folder_id) && g_src_path)
 	{
+		char *name_pinyin = NULL;
+		bool pinyin_support = FALSE;
+
 		/* Set modified time */
 		time_t date;
 		time(&date);
 		_folder->modified_time = date;
 
-		set_sql = __media_folder_get_update_folder_sql((media_folder_h)_folder);
-		if(set_sql == NULL)
-		{
-			SAFE_FREE(g_src_path);
-			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-		}
+		/*Update Pinyin If Support Pinyin*/
+		media_svc_check_pinyin_support(&pinyin_support);
+		if(pinyin_support)
+			media_svc_get_pinyin(_content_get_db_handle(), _folder->name, &name_pinyin);
 
-		sql = sqlite3_mprintf("UPDATE %Q SET %s WHERE folder_uuid=%Q", DB_TABLE_FOLDER, set_sql, _folder->folder_id);
+		sql = sqlite3_mprintf("UPDATE %Q SET path='%q', name='%q', modified_time=%d, name_pinyin='%q' WHERE folder_uuid=%Q",
+						DB_TABLE_FOLDER,  _folder->path, _folder->name, _folder->modified_time, name_pinyin, _folder->folder_id);
 
 		ret = _content_query_sql(sql);
-
-		sqlite3_free(set_sql);
 		sqlite3_free(sql);
-		if (ret != MEDIA_CONTENT_ERROR_NONE)
-		{
+		if (ret != MEDIA_CONTENT_ERROR_NONE) {
+			SAFE_FREE(g_src_path);
+			return ret;
+		}
+
+		/* Update all folder record's path, which are matched by old parent path */
+		char *update_folder_path_sql = NULL;
+		char src_path_slash[MAX_QUERY_SIZE + 1] = {0, };
+		char dst_path_slash[MAX_QUERY_SIZE + 1] = {0, };
+
+		snprintf(src_path_slash, sizeof(src_path_slash), "%s/", g_src_path);
+		snprintf(dst_path_slash, sizeof(dst_path_slash), "%s/", _folder->path);
+
+		update_folder_path_sql = sqlite3_mprintf("UPDATE folder SET path = REPLACE( path, '%q', '%q');", src_path_slash, dst_path_slash);
+
+		ret = _content_query_sql(sql);
+		sqlite3_free(update_folder_path_sql);
+		if (ret != MEDIA_CONTENT_ERROR_NONE) {
 			SAFE_FREE(g_src_path);
 			return ret;
 		}
@@ -486,11 +517,19 @@ int media_folder_set_name(media_folder_h folder, const char *name)
 		if (STRING_VALID(_folder->path) && STRING_VALID(_folder->name)) {
 			char *folder_path = NULL;
 			char new_folder_path[MAX_QUERY_SIZE] = {0,};
+			bool ignore_dir = FALSE;
 
 			folder_path = g_path_get_dirname(_folder->path);
 			media_content_sec_debug("Existed Folder Path : %s", _folder->path);
 			snprintf(new_folder_path, sizeof(new_folder_path), "%s/%s", folder_path, name); 
 			media_content_sec_debug("New Path : %s", new_folder_path);
+
+			ret = _media_util_check_ignore_dir(new_folder_path, &ignore_dir);
+			if (ignore_dir == TRUE) {
+				media_content_error("Invalid folder path");
+				SAFE_FREE(folder_path);
+				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+			}
 
 			SAFE_FREE(g_src_path);
 			g_src_path = strdup(_folder->path);

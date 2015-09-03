@@ -44,7 +44,7 @@ extern "C" {
  * @details This function creates a media filter handle. The handle can be
  *          used to get the filtered information based on filter properties i.e. offset, count, condition for searching and order.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release the @a filter handle using media_info_filter_destroy().
  *
@@ -68,7 +68,7 @@ int media_filter_create(filter_h *filter);
  *          handle no longer can be used to perform any operation. A new filter handle
  *          has to be created before the next usage.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] filter The handle to the media filter
  *
@@ -88,7 +88,7 @@ int media_filter_destroy(filter_h filter);
  * @details This function sets the @a offset and @a count for the given filter used to limit number of items returned.
  *          For example, if you set the @a offset as @c 10 and @a count as @c 5, then only searched data from @c 10 to @c 14 will be returned when the filter is used with foreach functions.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] filter The handle to the media filter
  * @param[in] offset The start position of the given filter (Starting from zero)
@@ -108,7 +108,7 @@ int media_filter_set_offset(filter_h filter, int offset, int count);
 
 /**
  * @brief Sets the @a condition for the given @a filter.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] filter       The handle to the media filter
  * @param[in] condition    The condition which is used WHERE clause on a query
@@ -129,7 +129,7 @@ int media_filter_set_condition(filter_h filter, const char *condition, media_con
 
 /**
  * @brief Sets the media filter content @a order and order keyword i.e. either descending or ascending.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] filter        The handle to the media filter
  * @param[in] order_type    The search order type
@@ -150,6 +150,8 @@ int media_filter_set_order(filter_h filter, media_content_order_e order_type, co
 
 /**
  * @brief Sets the @a storage id for the given @a filter.
+ * @details You can use this API when you want to search items only in the specific storage
+ *
  * @since_tizen 2.4
  *
  * @param[in] filter       The handle to the media filter
@@ -170,7 +172,7 @@ int media_filter_set_storage(filter_h filter, const char *storage_id);
 
 /**
  * @brief Gets the @a offset and @a count for the given @a filter used to limit the number of items returned.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  filter The handle to the media filter
  * @param[out] offset The start position of the given filter (Starting from zero)
@@ -190,7 +192,7 @@ int media_filter_get_offset(filter_h filter, int *offset, int *count);
 
 /**
  * @brief Gets the @a condition for the given @a filter.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a condition using free().
  *
@@ -213,7 +215,7 @@ int media_filter_get_condition(filter_h filter, char **condition, media_content_
 
 /**
  * @brief Gets the media filter's content @a order and order keyword i.e. either descending or ascending.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a order_keyword using free().
  *

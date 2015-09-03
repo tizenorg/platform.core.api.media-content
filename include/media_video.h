@@ -42,7 +42,7 @@ extern "C" {
  * @details This function copies the video metadata handle from a source to 
  *          destination.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release the destination handle using video_meta_destroy().
  *
@@ -67,7 +67,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src);
  *          no longer can be used to perform any operation. A new handle has to
  *          be created before the next use.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] video The video metadata handle
  *
@@ -86,7 +86,7 @@ int video_meta_destroy(video_meta_h video);
 
 /**
  * @brief Gets the ID of the media of the given video metadata.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a media_id using free().
  *
@@ -107,7 +107,7 @@ int video_meta_get_media_id(video_meta_h video, char **media_id);
  * @brief Gets the video's album.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a album using free().
  *
@@ -128,7 +128,7 @@ int video_meta_get_album(video_meta_h video, char **album);
  * @brief Gets the video artist.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a artist using free().
  *
@@ -149,7 +149,7 @@ int video_meta_get_artist(video_meta_h video, char **artist);
  * @brief Gets the video album artist.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a album_artist using free().
  *
@@ -170,7 +170,7 @@ int video_meta_get_album_artist(video_meta_h video, char **album_artist);
  * @brief Gets the video genre.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a genre using free().
  *
@@ -191,7 +191,7 @@ int video_meta_get_genre(video_meta_h video, char **genre);
  * @brief Gets the video composer.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a composer using free().
  *
@@ -212,7 +212,7 @@ int video_meta_get_composer(video_meta_h video, char **composer);
  * @brief Gets the year of the video.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a year using free().
  *
@@ -231,7 +231,7 @@ int video_meta_get_year(video_meta_h video, char **year);
 
 /**
  * @brief Gets the recorded date of the video.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a recorded_date using free().
  *
@@ -250,7 +250,7 @@ int video_meta_get_recorded_date(video_meta_h video, char **recorded_date);
 
 /**
  * @brief Gets the video copyright.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a copyright using free().
  *
@@ -271,7 +271,7 @@ int video_meta_get_copyright(video_meta_h video, char **copyright);
  * @brief Gets the track number of the video.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a track_num using free().
  *
@@ -290,7 +290,7 @@ int video_meta_get_track_num(video_meta_h video, char **track_num);
 
 /**
  * @brief Gets the video bit rate.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a bit_rate using free().
  *
@@ -309,7 +309,7 @@ int video_meta_get_bit_rate(video_meta_h video, int *bit_rate);
 
 /**
  * @brief Gets the duration of video metadata.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video    The video metadata handle
  * @param[out] duration The video duration in milliseconds
@@ -325,7 +325,7 @@ int video_meta_get_duration(video_meta_h video, int *duration);
 
 /**
  * @brief Gets the video width in pixels.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video The video metadata handle
  * @param[out] width The video width in pixels
@@ -341,7 +341,7 @@ int video_meta_get_width(video_meta_h video, int *width);
 
 /**
  * @brief Gets the video height in pixels.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video  The video metadata handle
  * @param[out] height The video height in pixels
@@ -358,7 +358,7 @@ int video_meta_get_height(video_meta_h video, int *height);
 /**
  * @deprecated Deprecated since 2.4. [Use media_info_get_played_count() instead]
  * @brief Gets the played count of the video.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video        The video metadata handle
  * @param[out] played_count The number of played
@@ -375,7 +375,7 @@ int video_meta_get_played_count(video_meta_h video, int *played_count);
 /**
  * @deprecated Deprecated since 2.4. [Use media_info_get_played_time() instead]
  * @brief Gets the last played time parameter of the video.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video       The video metadata handle
  * @param[out] played_time The time last played in the video
@@ -395,7 +395,7 @@ int video_meta_get_played_time(video_meta_h video, time_t *played_time);
  * @details This function returns the elapsed playback time parameter of the video as period
  *          starting from the beginning of the movie.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video           The video metadata handle
  * @param[out] played_position The position from the beginning of the video (in milliseconds)
@@ -412,7 +412,7 @@ int video_meta_get_played_position(video_meta_h video, int *played_position);
 /**
  * @deprecated Deprecated since 2.4. [Use media_info_increase_played_count() instead]
  * @brief Sets the played count of the video.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] video        The video metadata handle
  * @param[in] played_count The number of played
@@ -431,7 +431,7 @@ int video_meta_set_played_count(video_meta_h video, int played_count);
 /**
  * @deprecated Deprecated since 2.4. [Use media_info_set_played_time() instead]
  * @brief Sets the time last played parameter of the video.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] video       The video metadata handle
  * @param[in] played_time The time last played in the video
@@ -453,7 +453,7 @@ int video_meta_set_played_time(video_meta_h video, time_t played_time);
  * @details This function returns video's elapsed playback time parameter as period
  *          starting from the beginning of the movie.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks  It is NOT recommended to use this attribute for your application-specific purpose because this attribute can be overwritten by other applications (even 0).
  *
@@ -478,7 +478,7 @@ int video_meta_set_played_position(video_meta_h video, int played_position);
  *          database. For example, after using video_meta_get_played_time() for setting the played time of the video, the video_meta_update_to_db() function should be called so as to update
  *          the given video attributes in the media database.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write

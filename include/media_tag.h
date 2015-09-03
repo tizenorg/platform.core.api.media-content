@@ -41,7 +41,7 @@ extern "C" {
 
 /**
  * @brief Inserts a new tag in the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
@@ -73,7 +73,7 @@ int media_tag_insert_to_db(const char *tag_name, media_tag_h *tag);
 
 /**
  * @brief Deletes a given tag from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
@@ -100,7 +100,7 @@ int media_tag_delete_from_db(int tag_id);
 
 /**
  * @brief Gets the count of the tag for the passed @a filter from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  filter    The handle to the filter
  * @param[out] tag_count The count of the media tag
@@ -126,7 +126,7 @@ int media_tag_get_tag_count_from_db(filter_h filter, int *tag_count);
  *          and calls a registered callback function for every retrieved tag.
  *          If @c NULL is passed to the @a filter, no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] filter    The tag filter handle
  * @param[in] callback  The callback function to be invoked
@@ -153,7 +153,7 @@ int media_tag_foreach_tag_from_db (filter_h filter, media_tag_cb callback, void 
 
 /**
  * @brief Gets the number of media files for the passed @a filter in the given @a tag from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  tag_id      The ID of the media tag
  * @param[in]  filter      The handle to the media filter
@@ -180,7 +180,7 @@ int media_tag_get_media_count_from_db (int tag_id, filter_h filter, int *media_c
  *          meeting a desired @a filter and calls a registered callback function for
  *          every retrieved media item. If @c NULL is passed to the @a filter, no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] tag_id    The ID of the media tag
  * @param[in] filter    The handle to the media filter
@@ -213,7 +213,7 @@ int media_tag_foreach_media_from_db(int tag_id, filter_h filter, media_info_cb c
  *          such as media_tag_foreach_tag_from_db().
  *          To use this handle outside of these foreach functions, use this function.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release the destination handle using media_tag_destroy().
  *
@@ -237,7 +237,7 @@ int media_tag_clone(media_tag_h *dst, media_tag_h src);
  * @details This function frees all resources related to the tag handle. The tag handle can no longer
  *          be used for any operation. A new tag handle has to be created before next usage.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] tag The media tag handle
  *
@@ -257,7 +257,7 @@ int media_tag_destroy(media_tag_h tag);
 
 /**
  * @brief Gets the media tag ID.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  tag     The media tag handle
  * @param[out] tag_id  The ID of the media tag
@@ -273,7 +273,7 @@ int media_tag_get_tag_id(media_tag_h tag, int *tag_id);
 
 /**
  * @brief Gets the tag name.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a tag_name using free().
  *
@@ -296,7 +296,7 @@ int media_tag_get_name(media_tag_h tag, char **tag_name);
  * @details This function creates a new media tag handle from the media database by the given @a tag_id.
  *          Media tag will be created and will be filled with tag information.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a folder using media_tag_destroy().
  *
@@ -322,7 +322,7 @@ int media_tag_get_tag_from_db(int tag_id, media_tag_h *tag);
 
 /**
  * @brief Adds a new media info to the tag.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] tag      The media tag handle
  * @param[in] media_id The ID to the media info which is added
@@ -345,7 +345,7 @@ int media_tag_add_media(media_tag_h tag, const char *media_id);
 
 /**
  * @brief Removes the media info from the given tag.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] tag      The media tag handle
  * @param[in] media_id The ID to the media info which is removed
@@ -368,7 +368,7 @@ int media_tag_remove_media(media_tag_h tag, const char *media_id);
 
 /**
  * @brief Sets the name of the tag.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] tag      The media tag handle
  * @param[in] tag_name The name of the media tag
@@ -392,7 +392,7 @@ int media_tag_set_name(media_tag_h tag, char *tag_name);
  *          database. For example, after using media_tag_set_name() for setting the name of the tag, the media_tag_update_to_db() function should be called so as to update
  *          the given tag attributes in the media database.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write

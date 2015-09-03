@@ -233,7 +233,7 @@ int media_storage_clone(media_storage_h *dst, media_storage_h src);
  * @param[in]  storage The media storage handle
  * @param[out] storage_id  The storage id of the media storage
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
