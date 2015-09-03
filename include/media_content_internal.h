@@ -33,6 +33,22 @@ extern "C" {
  */
 
 /**
+ * @ingroup CAPI_MEDIA_CONTENT_MODULE
+ * @brief Enumeration for a media storage scan status.
+ * @since_tizen 2.4
+ */
+typedef enum{
+	MEDIA_STORAGE_SCAN_NONE	= 0,				/**< Media Scanner not detect storage yet*/
+	MEDIA_STORAGE_SCAN_PREPARE,				/**< Media Scanner detect storage but not scanning yet*/
+	MEDIA_STORAGE_SCAN_PROCESSING,			/**< Media Scanner Start Scanning storage*/
+	MEDIA_STORAGE_SCAN_STOP,					/**< Media Scanner Stop Scanning storage. Not scanning items can be exist*/
+	MEDIA_STORAGE_SCAN_DONE,					/**< Scanning Done but need to extract metadata*/
+	MEDIA_STORAGE_SCAN_META_PROCESSING,		/**< Scanning Done and start to extract metadata*/
+	MEDIA_STORAGE_SCAN_META_STOP,			/**< Stop extract metadata*/
+	MEDIA_STORAGE_SCAN_COMPLETE	,			/**< Complete scanning*/
+}media_storage_scan_status_e;
+
+/**
 * @internal
 * @brief Insert media storage to database.
 * @since_tizen 2.4
@@ -463,6 +479,21 @@ int media_info_set_storage_type(media_info_h media, media_content_storage_e stor
 * @post media_info_insert_to_db_with_data()
 */
 int media_info_set_storage_id(media_info_h media, const char *storage_id);
+
+/**
+ * @brief Gets the storage scan status of media storage.
+ * @since_tizen 2.4
+ *
+ * @param[in]  storage The media storage handle
+ * @param[out] scan_status  The storage type of the media storage
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ */
+int media_storage_get_scan_status(const char *storage_uuid, media_storage_scan_status_e *scan_status);
 
 #ifdef __cplusplus
 }

@@ -43,7 +43,7 @@ extern "C" {
 
 /**
  * @brief Gets the count of folder for the passed @a filter from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  filter       The handle to filter \n
  *                          To allow searching over different content types, you should use #filter_h.
@@ -70,7 +70,7 @@ int media_folder_get_folder_count_from_db(filter_h filter, int *folder_count);
  *          The @a callback function will be invoked for every retrieved
  *          folder. If @c NULL is passed to the @a filter, no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks Do not call updating DB fuction like media_folder_update_to_db() in your callback function, your callback function is invoked as inline function.\n
  *                   So, your callback function is in read state in SQLite. When you are in read state, sometimes you do not update DB. \n
@@ -102,7 +102,7 @@ int media_folder_foreach_folder_from_db(filter_h filter, media_folder_cb callbac
 
 /**
  * @brief Gets the count of media files for the passed @a filter in the given @a folder from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] folder_id    The ID of the media folder
  * @param[in] filter       The filter of the media content
@@ -129,7 +129,7 @@ int media_folder_get_media_count_from_db(const char *folder_id, filter_h filter,
  *          meeting desired filter option and calls registered callback function for
  *          every retrieved media item. If @c NULL is passed to the @a filter, no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks   Do not call updating DB function like media_info_update_to_db(), media_info_refresh_metadata_to_db(), audio_meta_update_to_db(), image_meta_update_to_db() and video_meta_update_to_db()  in your callback function,
  *                    your callback function is invoked as inline function. \n
@@ -167,7 +167,7 @@ int media_folder_foreach_media_from_db(const char *folder_id, filter_h filter, m
  *          media folder foreach function such as media_folder_foreach_folder_from_db(). To use this handle outside of these foreach functions,
  *          use this function.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks The destination handle must be released with media_folder_destroy().
  *
@@ -192,7 +192,7 @@ int media_folder_clone(media_folder_h *dst, media_folder_h src);
  *          no longer can be used to perform any operation. A new handle has to
  *          be created before the next use.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] folder The handle to the media folder
  *
@@ -211,7 +211,7 @@ int media_folder_destroy(media_folder_h folder);
 
 /**
  * @brief Gets the media folder ID.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a folder_id using free().
  *
@@ -228,8 +228,26 @@ int media_folder_destroy(media_folder_h folder);
 int media_folder_get_folder_id(media_folder_h folder, char **folder_id);
 
 /**
+ * @brief Gets the parent folder ID.
+ * @since_tizen 2.4
+ *
+ * @remarks You must release @a parent_folder_id using free().
+ *
+ * @param[in]  folder    The handle to the media folder
+ * @param[out] parent_folder_id The ID of the upper media folder
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ */
+int media_folder_get_parent_folder_id(media_folder_h folder, char **parent_folder_id);
+
+/**
  * @brief Gets the absolute path to the media folder.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a path using free().
  *
@@ -249,7 +267,7 @@ int media_folder_get_path(media_folder_h folder, char **path);
 
 /**
  * @brief Gets the media folder name.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a folder_name using free().
  *
@@ -268,7 +286,7 @@ int media_folder_get_name(media_folder_h folder, char **folder_name);
 
 /**
  * @brief Gets the modified date of the folder.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  folder The handle to the media folder
  * @param[out] date   The modified date of the folder
@@ -283,7 +301,7 @@ int media_folder_get_modified_time(media_folder_h folder, time_t *date);
 
 /**
  * @brief Gets the folder storage type.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  folder       The handle to the media folder
  * @param[out] storage_type The storage type of the media folder
@@ -340,7 +358,7 @@ int media_folder_get_order(media_folder_h folder, int *order);
  *
  * @details This function creates a new media folder handle from the media database by the given @a folder_id.
  *          Media folder will be created, which is filled with folder information.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a folder using media_folder_destroy().
  *
@@ -364,7 +382,7 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 
 /**
  * @brief Sets the folder name.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] folder The handle to the media folder
  * @param[in] name   The name of the media folder
@@ -412,7 +430,7 @@ int media_folder_set_order(media_folder_h folder, int order);
  *          database. For example, after using media_folder_set_name() for setting the name of the folder, the media_folder_update_to_db() function should be called so as to update
  *          the given folder attributes in the media database.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write

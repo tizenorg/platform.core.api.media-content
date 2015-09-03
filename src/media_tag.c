@@ -17,34 +17,31 @@
 
 #include <media_info_private.h>
 
-
-static __thread GList *g_tag_item_list = NULL;
-
-static void __media_tag_item_add(media_tag_item_s *item_s);
-static void __media_tag_item_release(void);
+static void __media_tag_item_add(media_tag_s *tag_s, media_tag_item_s *item_s);
+static void __media_tag_item_release(media_tag_s *tag_s);
 static int __media_tag_insert_item_to_tag(int tag_id, const char *media_id);
 static int __media_tag_remove_item_from_tag(int tag_id, const char *media_id);
 static int __media_tag_update_tag_name(int tag_id, const char *tag_name);
 static int __media_tag_get_tag_info_from_db(const char *name, media_tag_h tag);
 
-static void __media_tag_item_add(media_tag_item_s *item_s)
+static void __media_tag_item_add(media_tag_s *tag_s, media_tag_item_s *item_s)
 {
-	g_tag_item_list = g_list_append(g_tag_item_list, item_s);
+	tag_s->item_list = g_list_append(tag_s->item_list, item_s);
 }
 
-static void __media_tag_item_release(void)
+static void __media_tag_item_release(media_tag_s *tag_s)
 {
 	int idx = 0;
 	int list_cnt = 0;
 	media_tag_item_s *item = NULL;
 
-	list_cnt = g_list_length(g_tag_item_list);
+	list_cnt = g_list_length(tag_s->item_list);
 
 	media_content_debug("list_cnt : [%d]", list_cnt);
 
 	for(idx = 0; idx < list_cnt; idx++)
 	{
-		item = (media_tag_item_s*)g_list_nth_data(g_tag_item_list, idx);
+		item = (media_tag_item_s*)g_list_nth_data(tag_s->item_list, idx);
 		if(item != NULL)
 		{
 			SAFE_FREE(item->media_id);
@@ -53,8 +50,8 @@ static void __media_tag_item_release(void)
 		}
 	}
 
-	g_list_free(g_tag_item_list);
-	g_tag_item_list = NULL;
+	g_list_free(tag_s->item_list);
+	tag_s->item_list = NULL;
 
 }
 
@@ -66,7 +63,7 @@ static int __media_tag_insert_item_to_tag(int tag_id, const char *media_id)
 	query_str = sqlite3_mprintf("INSERT INTO %q (tag_id, media_uuid) values (%d, '%q')",
 			DB_TABLE_TAG_MAP, tag_id, media_id);
 	ret = _content_query_sql(query_str);
-	sqlite3_free(query_str);
+	SQLITE3_SAFE_FREE(query_str);
 
 	return ret;
 }
@@ -79,7 +76,7 @@ static int __media_tag_remove_item_from_tag(int tag_id, const char *media_id)
 	query_str = sqlite3_mprintf(REMOVE_TAG_ITEM_FROM_TAG_MAP, tag_id, media_id);
 
 	ret = _content_query_sql(query_str);
-	sqlite3_free(query_str);
+	SQLITE3_SAFE_FREE(query_str);
 
 	return ret;
 }
@@ -92,7 +89,7 @@ static int __media_tag_update_tag_name(int tag_id, const char *tag_name)
 	query_str = sqlite3_mprintf(UPDATE_TAG_NAME_FROM_TAG, tag_name, tag_id);
 
 	ret = _content_query_sql(query_str);
-	sqlite3_free(query_str);
+	SQLITE3_SAFE_FREE(query_str);
 
 	return ret;
 }
@@ -111,7 +108,7 @@ static int __media_tag_get_tag_info_from_db(const char *name, media_tag_h tag)
 	select_query = sqlite3_mprintf(SELECT_TAG_BY_NAME, name);
 
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
-	sqlite3_free(select_query);
+	SQLITE3_SAFE_FREE(select_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	while(sqlite3_step(stmt) == SQLITE_ROW)
@@ -148,7 +145,7 @@ int media_tag_insert_to_db(const char *tag_name, media_tag_h *tag)
 
 	query_str = sqlite3_mprintf(INSERT_TAG_TO_TAG, tag_name);
 	ret = _content_query_sql(query_str);
-	sqlite3_free(query_str);
+	SQLITE3_SAFE_FREE(query_str);
 
 	if(ret == MEDIA_CONTENT_ERROR_NONE)
 	{
@@ -177,7 +174,7 @@ int media_tag_delete_from_db(int tag_id)
 
 	ret = _content_query_sql(query_str);
 
-	sqlite3_free(query_str);
+	SQLITE3_SAFE_FREE(query_str);
 
 	return ret;
 }
@@ -414,7 +411,7 @@ int media_tag_add_media(media_tag_h tag, const char *media_id)
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
-		__media_tag_item_add(_item);
+		__media_tag_item_add(_tag, _item);
 	}
 	else
 	{
@@ -445,7 +442,7 @@ int media_tag_remove_media(media_tag_h tag, const char *media_id)
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
-		__media_tag_item_add(_item);
+		__media_tag_item_add(_tag, _item);
 	}
 	else
 	{
@@ -487,7 +484,7 @@ int media_tag_set_name(media_tag_h tag, char *tag_name)
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
-		__media_tag_item_add(_item);
+		__media_tag_item_add(_tag, _item);
 	}
 	else
 	{
@@ -512,10 +509,15 @@ int media_tag_update_to_db(media_tag_h tag)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	length = g_list_length(g_tag_item_list);
+	if(_tag->item_list != NULL) {
+		length = g_list_length(_tag->item_list);
+	} else {
+		media_content_debug("operation list length is 0");
+		return MEDIA_CONTENT_ERROR_NONE;
+	}
 
 	for (idx = 0; idx < length; idx++) {
-		_tag_item = (media_tag_item_s*)g_list_nth_data(g_tag_item_list, idx);
+		_tag_item = (media_tag_item_s*)g_list_nth_data(_tag->item_list, idx);
 		if(_tag_item != NULL) {
 			switch(_tag_item->function) {
 				case MEDIA_TAG_ADD:
@@ -542,7 +544,7 @@ int media_tag_update_to_db(media_tag_h tag)
 		}
 	}
 
-	__media_tag_item_release();
+	__media_tag_item_release(_tag);
 
 	return ret;
 }

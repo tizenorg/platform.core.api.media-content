@@ -17,6 +17,7 @@
 
 #include <media_content.h>
 #include <media_info_private.h>
+#include <media_content_internal.h>
 
 static void __media_storage_get_detail(sqlite3_stmt* stmt, media_storage_h storage)
 {
@@ -45,29 +46,18 @@ int media_storage_insert_to_db(const char *storage_name, const char *storage_pat
 	char *storage_uuid = NULL;
 	media_storage_s *_storage = NULL;
 
-	if(!STRING_VALID(storage_name))
-	{
-		media_content_error("Invalid Storage Name");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
+	media_content_retvm_if(!STRING_VALID(storage_name), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid storage_name");
+	media_content_retvm_if(!STRING_VALID(storage_path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid storage_path");
 
-	if(!STRING_VALID(storage_path))
-	{
-		media_content_error("Invalid path");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	storage_uuid = media_info_generate_uuid();
-	if(storage_uuid == NULL)
-	{
-		media_content_error("Fail to get storage_id");
-		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
-	}
+	ret = media_svc_generate_uuid(&storage_uuid);
+	media_content_retvm_if(ret != MS_MEDIA_ERR_NONE, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "Fail to get storage_id");
+	media_content_retvm_if(storage_uuid == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "Invalid storage_id");
 
 	ret = media_svc_insert_storage(_content_get_db_handle(), storage_uuid, storage_name, storage_path, storage_account, storage_type, tzplatform_getuid(TZ_USER_NAME));
 	if (ret != MS_MEDIA_ERR_NONE)
 	{
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		SAFE_FREE(storage_uuid);
 		return ret;
 	}
 
@@ -80,6 +70,8 @@ int media_storage_insert_to_db(const char *storage_name, const char *storage_pat
 	_storage->storage_type = storage_type;
 
 	*storage = (media_storage_h)_storage;
+
+	SAFE_FREE(storage_uuid);
 
 	return ret;
 }
@@ -94,7 +86,7 @@ int media_storage_delete_from_db(const char *storage_id)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	ret = media_svc_delete_storage(_content_get_db_handle(), storage_id, tzplatform_getuid(TZ_USER_NAME));
+	ret = media_svc_delete_storage(_content_get_db_handle(), storage_id, NULL, tzplatform_getuid(TZ_USER_NAME));
 
 	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
@@ -419,6 +411,30 @@ int media_storage_get_type(media_storage_h storage, media_content_storage_e *sto
 	{
 		*storage_type = _storage->storage_type;
 		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_storage_get_scan_status(const char *storage_uuid, media_storage_scan_status_e *scan_status)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_svc_scan_status_type_e status = MEDIA_STORAGE_SCAN_NONE;
+
+	if(STRING_VALID(storage_uuid))
+	{
+		ret = media_svc_get_storage_scan_status(_content_get_db_handle(), storage_uuid, &status);
+		if (ret != MS_MEDIA_ERR_NONE) {
+			media_content_error("media_svc_get_storage_scan_status failed");
+			ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		} else {
+			*scan_status = status;
+		}
 	}
 	else
 	{

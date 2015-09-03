@@ -696,7 +696,7 @@ int video_meta_update_to_db(video_meta_h video)
 
 		sql = sqlite3_mprintf(UPDATE_AV_META_FROM_MEDIA, storage_id, _video->played_count, _video->played_time, _video->played_position, _video->media_id);
 		ret = _content_query_sql(sql);
-		sqlite3_free(sql);
+		SQLITE3_SAFE_FREE(sql);
 	}
 	else
 	{

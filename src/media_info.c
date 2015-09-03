@@ -35,7 +35,7 @@ static int __media_info_get_media_path_by_id_from_db(const char *media_id, char 
 	select_query = sqlite3_mprintf(SELECT_MEDIA_PATH_BY_ID, media_id);
 
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
-	sqlite3_free(select_query);
+	SQLITE3_SAFE_FREE(select_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	if(sqlite3_step(stmt) == SQLITE_ROW)
@@ -175,7 +175,7 @@ static int __media_info_insert_batch(media_batch_insert_e insert_type, const cha
 		if (STRING_VALID(path_array[idx])) {
 			int size = strlen(path_array[idx]);
 
-			ret = _media_util_check_file(path_array[idx]);
+			ret = _media_util_check_file_exist(path_array[idx]);
 			if (ret != MEDIA_CONTENT_ERROR_NONE) {
 				fclose(fp);
 				if (unlink(list_path) < 0) {
@@ -454,7 +454,7 @@ int _media_info_get_media_info_from_db(const char *path, const char *storage_id,
 	select_query = sqlite3_mprintf(SELECT_MEDIA_BY_PATH, storage_id, path);
 
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
-	sqlite3_free(select_query);
+	SQLITE3_SAFE_FREE(select_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	if(sqlite3_step(stmt) == SQLITE_ROW)
@@ -472,23 +472,36 @@ int _media_info_get_media_info_from_db(const char *path, const char *storage_id,
 
 int media_info_insert_to_db(const char *path, media_info_h *info)
 {
+	bool ignore_file = FALSE;
 	bool ignore_dir = FALSE;
 	char *folder_path = NULL;
+	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid path");
 	media_content_retvm_if(info == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid info");
 
-	ret = _media_util_check_file(path);
+	ret = _media_util_check_ignore_file(path, &ignore_file);
+	media_content_retvm_if(ignore_file == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+
+	ret = _media_util_check_file_exist(path);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	folder_path = g_path_get_dirname(path);
 	ret = _media_util_check_ignore_dir(folder_path, &ignore_dir);
 	SAFE_FREE(folder_path);
 
-	media_content_retvm_if(ignore_dir, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
+	media_content_retvm_if(ignore_dir == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
 
-	ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), path);
+	memset(storage_id, 0x00, sizeof(storage_id));
+	ret = media_svc_get_storage_id(_content_get_db_handle(), path, storage_id);
+	if(ret != MS_MEDIA_ERR_NONE)
+	{
+		media_content_error("media_svc_get_storage_id failed : %d", ret);
+		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+	}
+
+	ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), storage_id, path);
 	if (ret == MS_MEDIA_ERR_DB_NO_RECORD) {
 		media_content_sec_debug("media_svc_check_item_exist_by_path : no record : %s", path);
 
@@ -500,7 +513,7 @@ int media_info_insert_to_db(const char *path, media_info_h *info)
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		}
 
-		ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_type, path, tzplatform_getuid(TZ_USER_NAME));
+		ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_id, storage_type, path, tzplatform_getuid(TZ_USER_NAME));
 
 		if(ret != MS_MEDIA_ERR_NONE) {
 			if (ret == MS_MEDIA_ERR_DB_CONSTRAINT_FAIL) {
@@ -675,15 +688,25 @@ int media_info_delete_batch_from_db(filter_h filter)
 			In this case, send noti for internal storage and external storage
 		*/
 		media_content_debug("Batch deletion is successfull. Send notification for this");
-		media_svc_publish_noti(_content_get_db_handle(), MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, MEDIA_CONTENT_PATH_PHONE, -1, NULL, NULL);
-		media_svc_publish_noti(_content_get_db_handle(), MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, MEDIA_CONTENT_PATH_MMC, -1, NULL, NULL);
+		if (_filter->storage_id != NULL) {
+			char *storage_path = NULL;
+			media_svc_get_storage_path(_content_get_db_handle(), _filter->storage_id, &storage_path);
+			if (STRING_VALID(storage_path))
+				media_svc_publish_noti(_content_get_db_handle(), MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, storage_path, -1, NULL, NULL);
+
+			SAFE_FREE(storage_path);
+		} else {
+			/*FIX ME*/
+			media_svc_publish_noti(_content_get_db_handle(), MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, MEDIA_ROOT_PATH_INTERNAL, -1, NULL, NULL);
+			media_svc_publish_noti(_content_get_db_handle(), MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, MEDIA_ROOT_PATH_SDCARD, -1, NULL, NULL);
+		}
 
 		__media_info_delete_thumb_from_list(thumb_list);
 		__media_info_release_thumb_list(thumb_list);
 	}
 
 	SAFE_FREE(condition_query);
-	sqlite3_free(query_string);
+	SQLITE3_SAFE_FREE(query_string);
 
 	return ret;
 }
@@ -2769,7 +2792,7 @@ int media_info_update_to_db(media_info_h media)
 		/* This sql is due to sqlite3_mprintf's wrong operation when using floating point in the text format */
 		/* This code will be removed when sqlite3_mprintf works clearly */
 		char *test_sql = sqlite3_mprintf("%f, %f, %f", _media->longitude, _media->latitude, _media->altitude);
-		sqlite3_free(test_sql);
+		SQLITE3_SAFE_FREE(test_sql);
 
 		/*Update Pinyin If Support Pinyin*/
 		char *file_name_pinyin = NULL;
@@ -2818,8 +2841,8 @@ int media_info_update_to_db(media_info_h media)
 		sql = sqlite3_mprintf("UPDATE %Q SET %s WHERE media_uuid=%Q", _media->storage_uuid, set_sql, _media->media_id);
 
 		ret = _content_query_sql(sql);
-		sqlite3_free(set_sql);
-		sqlite3_free(sql);
+		SQLITE3_SAFE_FREE(set_sql);
+		SQLITE3_SAFE_FREE(sql);
 
 		SAFE_FREE(description_pinyin);
 		SAFE_FREE(author_pinyin);
@@ -2829,6 +2852,38 @@ int media_info_update_to_db(media_info_h media)
 		SAFE_FREE(location_tag_pinyin);
 		SAFE_FREE(age_rating_pinyin);
 		SAFE_FREE(keyword_pinyin);
+
+		if(_media->storage_type == MEDIA_CONTENT_STORAGE_CLOUD)
+		{
+			set_sql = NULL;
+			sql = NULL;
+
+			if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO)
+			{
+				set_sql = sqlite3_mprintf("title=%Q, album=%Q, artist=%Q, genre=%Q, duration=%d, width=%d, height=%d", \
+				_media->title, _media->video_meta->album, _media->video_meta->artist, _media->video_meta->genre, _media->video_meta->duration, _media->video_meta->width, _media->video_meta->height);
+			}
+			else if((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND))
+			{
+				set_sql = sqlite3_mprintf("title=%Q, album=%Q, artist=%Q, genre=%Q, duration=%d", \
+				_media->title, _media->audio_meta->album, _media->audio_meta->artist, _media->audio_meta->genre, _media->audio_meta->duration);
+			}
+			else if(_media->media_type == MEDIA_CONTENT_TYPE_IMAGE)
+			{
+				set_sql = sqlite3_mprintf("title=%Q, width=%d, height=%d", _media->title, _media->image_meta->width, _media->image_meta->height);
+			}
+			else
+			{
+				set_sql = sqlite3_mprintf("title=%Q", _media->title);
+			}
+
+			sql = sqlite3_mprintf("UPDATE %Q SET %s WHERE media_uuid=%Q", _media->storage_uuid, set_sql, _media->media_id);
+
+			ret = _content_query_sql(sql);
+
+			SQLITE3_SAFE_FREE(set_sql);
+			SQLITE3_SAFE_FREE(sql);
+		}
 
 		if (ret == MEDIA_CONTENT_ERROR_NONE) {
 			/*  Send notification for this update */
@@ -2855,6 +2910,7 @@ int media_info_refresh_metadata_to_db(const char *media_id)
 	media_info_h media = NULL;
 	char *file_path = NULL;
 	media_content_storage_e storage_type = 0;
+	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
 
 	if(!STRING_VALID(media_id))
 	{
@@ -2876,6 +2932,13 @@ int media_info_refresh_metadata_to_db(const char *media_id)
 		return ret;
 	}
 
+	if(storage_type == MEDIA_CONTENT_STORAGE_CLOUD)
+	{
+		media_info_destroy(media);
+		media_content_error("Can't refresh cloud content!!");
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
 	ret = media_info_get_file_path(media, &file_path);
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 	{
@@ -2883,14 +2946,24 @@ int media_info_refresh_metadata_to_db(const char *media_id)
 		return ret;
 	}
 
-	ret = _media_util_check_file(file_path);
+	ret = _media_util_check_file_exist(file_path);
 	if (ret != MEDIA_CONTENT_ERROR_NONE) {
 		SAFE_FREE(file_path);
 		media_info_destroy(media);
 		return ret;
 	}
 
-	ret = media_svc_refresh_item(_content_get_db_handle(), storage_type, "media", file_path, tzplatform_getuid(TZ_USER_NAME));
+	memset(storage_id, 0x00, sizeof(storage_id));
+	ret = media_svc_get_storage_id(_content_get_db_handle(), file_path, storage_id);
+	if(ret != MS_MEDIA_ERR_NONE)
+	{
+		media_content_error("media_svc_get_storage_id failed : %d", ret);
+		SAFE_FREE(file_path);
+		media_info_destroy(media);
+		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+	}
+
+	ret = media_svc_refresh_item(_content_get_db_handle(), storage_id, storage_type, file_path, tzplatform_getuid(TZ_USER_NAME));
 	if (ret != MS_MEDIA_ERR_NONE)
 	{
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -2905,17 +2978,29 @@ int media_info_refresh_metadata_to_db(const char *media_id)
 int media_info_move_to_db(media_info_h media, const char* dst_path)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
+	bool ignore_file = FALSE;
+	bool ignore_dir = FALSE;
+	char *folder_path = NULL;
 	media_svc_storage_type_e src_storage_type = 0;
 	media_svc_storage_type_e dst_storage_type = 0;
+	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
 
 	media_content_retvm_if(media == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid media");
 	media_content_retvm_if(!STRING_VALID(dst_path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid dst_path");
 
 	media_info_s *_media = (media_info_s*)media;
 
-	ret = _media_util_check_file(dst_path);
+	ret = _media_util_check_ignore_file(dst_path, &ignore_file);
+	media_content_retvm_if(ignore_file == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+
+	ret = _media_util_check_file_exist(dst_path);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	folder_path = g_path_get_dirname(dst_path);
+	ret = _media_util_check_ignore_dir(folder_path, &ignore_dir);
+	SAFE_FREE(folder_path);
+
+	media_content_retvm_if(ignore_dir == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
 
 	ret = media_svc_get_storage_type(_media->file_path, &src_storage_type, tzplatform_getuid(TZ_USER_NAME));
 	if(ret != MS_MEDIA_ERR_NONE)
@@ -2931,7 +3016,15 @@ int media_info_move_to_db(media_info_h media, const char* dst_path)
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 	}
 
-	ret = media_svc_move_item(_content_get_db_handle(), src_storage_type, _media->file_path, dst_storage_type, dst_path, tzplatform_getuid(TZ_USER_NAME));
+	memset(storage_id, 0x00, sizeof(storage_id));
+	ret = media_svc_get_storage_id(_content_get_db_handle(), _media->file_path, storage_id);
+	if(ret != MS_MEDIA_ERR_NONE)
+	{
+		media_content_error("media_svc_get_storage_id failed : %d", ret);
+		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+	}
+
+	ret = media_svc_move_item(_content_get_db_handle(), storage_id, src_storage_type, _media->file_path, dst_storage_type, dst_path, tzplatform_getuid(TZ_USER_NAME));
 	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
@@ -2978,6 +3071,85 @@ int media_info_cancel_thumbnail(media_info_h media)
 	}
 
 	return ret;
+}
+
+static int __media_info_map_data_usr_to_svc(media_info_s *media, media_svc_content_info_s **service_content, media_content_storage_e storage_type)
+{
+	if(media == NULL)
+	{
+		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	media_svc_content_info_s *svc_content_info = calloc(1, sizeof(media_svc_content_info_s));
+	media_content_retvm_if(svc_content_info == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+
+	svc_content_info->path = g_strdup(media->file_path);
+	svc_content_info->media_type = media->media_type;
+	svc_content_info->mime_type = g_strdup(media->mime_type);
+	svc_content_info->size = media->size;
+	svc_content_info->storage_type = storage_type;
+	svc_content_info->storage_uuid = g_strdup(media->storage_uuid);
+
+	svc_content_info->added_time = media->added_time;
+	svc_content_info->modified_time = media->modified_time;
+	svc_content_info->thumbnail_path = g_strdup(media->thumbnail_path);
+	svc_content_info->is_drm = media->is_drm;
+
+	svc_content_info->media_meta.title = g_strdup(media->title);
+	svc_content_info->media_meta.rating = media->rating;
+	svc_content_info->media_meta.description = g_strdup(media->description);
+	svc_content_info->media_meta.longitude = media->longitude;
+	svc_content_info->media_meta.latitude = media->latitude;
+	svc_content_info->media_meta.altitude = media->altitude;
+	svc_content_info->media_meta.weather = g_strdup(media->weather);
+
+	switch(media->media_type)
+	{
+		case MEDIA_CONTENT_TYPE_IMAGE:
+			svc_content_info->media_meta.width = media->image_meta->width;
+			svc_content_info->media_meta.height = media->image_meta->height;
+			svc_content_info->media_meta.datetaken = g_strdup(media->image_meta->date_taken);
+			svc_content_info->media_meta.orientation = media->image_meta->orientation;
+			break;
+		case MEDIA_CONTENT_TYPE_VIDEO:
+			svc_content_info->media_meta.album = g_strdup(media->audio_meta->album);
+			svc_content_info->media_meta.artist = g_strdup(media->audio_meta->artist);
+			svc_content_info->media_meta.album_artist = g_strdup(media->audio_meta->album_artist);
+			svc_content_info->media_meta.genre = g_strdup(media->audio_meta->genre);
+			svc_content_info->media_meta.composer = g_strdup(media->audio_meta->composer);
+			svc_content_info->media_meta.year = g_strdup(media->audio_meta->year);
+			svc_content_info->media_meta.recorded_date = g_strdup(media->audio_meta->recorded_date);
+			svc_content_info->media_meta.copyright = g_strdup(media->audio_meta->copyright);
+			svc_content_info->media_meta.track_num = g_strdup(media->audio_meta->track_num);
+			svc_content_info->media_meta.bitrate = media->audio_meta->bitrate;
+			svc_content_info->media_meta.duration = media->audio_meta->duration;
+			svc_content_info->media_meta.width = media->image_meta->width;
+			svc_content_info->media_meta.height = media->image_meta->height;
+			break;
+		case MEDIA_CONTENT_TYPE_SOUND:
+		case MEDIA_CONTENT_TYPE_MUSIC:
+			svc_content_info->media_meta.album = g_strdup(media->audio_meta->album);
+			svc_content_info->media_meta.artist = g_strdup(media->audio_meta->artist);
+			svc_content_info->media_meta.album_artist = g_strdup(media->audio_meta->album_artist);
+			svc_content_info->media_meta.genre = g_strdup(media->audio_meta->genre);
+			svc_content_info->media_meta.composer = g_strdup(media->audio_meta->composer);
+			svc_content_info->media_meta.year = g_strdup(media->audio_meta->year);
+			svc_content_info->media_meta.recorded_date = g_strdup(media->audio_meta->recorded_date);
+			svc_content_info->media_meta.copyright = g_strdup(media->audio_meta->copyright);
+			svc_content_info->media_meta.track_num = g_strdup(media->audio_meta->track_num);
+			svc_content_info->media_meta.bitrate = media->audio_meta->bitrate;
+			svc_content_info->media_meta.duration = media->audio_meta->duration;
+			svc_content_info->media_meta.channel = media->audio_meta->channel;
+			svc_content_info->media_meta.samplerate = media->audio_meta->samplerate;
+			break;
+		case MEDIA_CONTENT_TYPE_OTHERS:
+		default:
+			break;
+	}
+
+	*service_content = svc_content_info;
+	return MEDIA_CONTENT_ERROR_NONE;
 }
 
 static int __media_info_set_str_data(media_info_h media, media_info_item_e data_type, const char *str_data)
@@ -3198,41 +3370,14 @@ int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info)
 
 	media_info_s *_media = (media_info_s*)media;
 
-	if(_media == NULL)
-	{
-		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if (!STRING_VALID(_media->file_path))
-	{
-		media_content_error("invalid media path");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if (!STRING_VALID(_media->mime_type))
-	{
-		media_content_error("invalid mime_type");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if (!STRING_VALID(_media->storage_uuid))
-	{
-		media_content_error("invalid storage_uuid");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if (!STRING_VALID(_media->title))
-	{
-		media_content_error("invalid title");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if(_media->storage_type < 0)
-	{
-		media_content_error("invalid storage_type");
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
+	media_content_retvm_if(_media == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid media");
+	media_content_retvm_if(!STRING_VALID(_media->file_path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid file_path");
+	media_content_retvm_if(!STRING_VALID(_media->mime_type), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid mime_type");
+	media_content_retvm_if(!STRING_VALID(_media->storage_uuid), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid storage_uuid");
+	media_content_retvm_if(!STRING_VALID(_media->title), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid title");
+	media_content_retvm_if(_media->storage_type < 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid storage_type [%d]", _media->storage_type);
+	media_content_retvm_if(_media->size <= 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid size [%d]", _media->size);
+	media_content_retvm_if(_media->modified_time <= 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid modified_time [%d]", _media->modified_time);
 
 	if ((_media->media_type < MEDIA_CONTENT_TYPE_IMAGE) || (_media->media_type > MEDIA_CONTENT_TYPE_OTHERS))
 	{
@@ -3240,21 +3385,12 @@ int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info)
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	if (_media->size <= 0)
-	{
-		media_content_error("invalid size [%d]", _media->size);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
-	if (_media->modified_time <= 0)
-	{
-		media_content_error("invalid modified_time [%d]", _media->modified_time);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-	}
-
 	media_content_sec_debug("storage[%d], path[%s], media_type[%d]", _media->storage_type, _media->file_path, _media->media_type);
 
 	media_svc_content_info_s *svc_content_info = NULL;
+
+	ret = __media_info_map_data_usr_to_svc(_media, &svc_content_info, _media->storage_type);
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "__media_info_map_data_usr_to_svc fail");
 
 	if(svc_content_info == NULL)
 	{
@@ -3264,7 +3400,7 @@ int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info)
 
 	ret = media_svc_insert_item_immediately_with_data(_content_get_db_handle(), svc_content_info, tzplatform_getuid(TZ_USER_NAME));
 	if(ret != MS_MEDIA_ERR_NONE) {
-		media_content_sec_error("media_svc_insert_item_immediately failed : %d (%s)", ret, _media->file_path);
+		media_content_sec_error("media_svc_insert_item_immediately_with_data failed : %d (%s)", ret, _media->file_path);
 		media_svc_destroy_content_info(svc_content_info);
 		SAFE_FREE(svc_content_info);
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);

@@ -40,7 +40,7 @@ extern "C" {
 
 /**
  * @brief Destroys the audio metadata.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] audio The audio metadata handle
  *
@@ -61,7 +61,7 @@ int audio_meta_destroy(audio_meta_h audio);
  * @brief Clones the audio metadata.
  * @details This function copies the audio metadata handle from source to destination.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks The destination handle must be released using audio_meta_destroy().
  *
@@ -82,7 +82,7 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src);
 
 /**
  * @brief Gets the audio ID of the given audio metadata.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a media_id using free().
  *
@@ -103,7 +103,7 @@ int audio_meta_get_media_id(audio_meta_h audio, char **media_id);
  * @brief Gets the album name of the given audio metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a album_name using free().
  *
@@ -124,7 +124,7 @@ int audio_meta_get_album(audio_meta_h audio, char **album_name);
  * @brief Gets the artist name of the given audio metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a artist_name using free().
  *
@@ -145,7 +145,7 @@ int audio_meta_get_artist(audio_meta_h audio, char **artist_name);
  * @brief Gets the album artist name of the given audio metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a album_artist_name using free().
  *
@@ -166,7 +166,7 @@ int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist_name);
  * @brief Gets the genre name of the given audio metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a genre_name using free().
  *
@@ -187,7 +187,7 @@ int audio_meta_get_genre(audio_meta_h audio, char **genre_name);
  * @brief Gets the composer name of the given audio metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a author_name using free().
  *
@@ -208,7 +208,7 @@ int audio_meta_get_composer(audio_meta_h audio, char **composer_name);
  * @brief Gets the year of the given audio metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a year using free().
  *
@@ -227,7 +227,7 @@ int audio_meta_get_year(audio_meta_h audio, char **year);
 
 /**
  * @brief Gets the recorded date of the given audio metadata.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a recorded_date using free().
  *
@@ -246,7 +246,7 @@ int audio_meta_get_recorded_date(audio_meta_h audio, char **recorded_date);
 
 /**
  * @brief Gets the copyright notice of the given audio metadata.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a copyright using free().
  *
@@ -267,7 +267,7 @@ int audio_meta_get_copyright(audio_meta_h audio, char **copyright);
  * @brief Gets the track number of the given audio metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  audio     The audio metadata handle
  * @param[out] track_num The audio track number
@@ -283,7 +283,7 @@ int audio_meta_get_track_num(audio_meta_h audio, char **track_num);
 
 /**
  * @brief Gets the bitrate of the given audio metadata in bitrate per second.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  audio    The audio metadata handle
  * @param[out] bit_rate The audio bitrate in bit per second [bps]
@@ -299,7 +299,7 @@ int audio_meta_get_bit_rate(audio_meta_h audio, int *bit_rate);
 
 /**
  * @brief Gets bit per sample of the given audio metadata.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param [in]  audio        The handle to the audio metadata
  * @param [out] bitpersample The audio bit per sample
@@ -316,7 +316,7 @@ int audio_meta_get_bitpersample(audio_meta_h audio, int *bitpersample);
 
 /**
  * @brief Gets the sample rate of the given audio metadata.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  audio       The audio metadata handle
  * @param[out] sample_rate The audio sample rate[hz]
@@ -332,7 +332,7 @@ int audio_meta_get_sample_rate(audio_meta_h audio, int *sample_rate);
 
 /**
  * @brief Gets the channel of the given audio metadata.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  audio   The audio metadata handle
  * @param[out] channel The channel of the audio
@@ -348,7 +348,7 @@ int audio_meta_get_channel(audio_meta_h audio, int *channel);
 
 /**
  * @brief Gets the track duration of the given audio metadata.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  audio    The audio metadata handle
  * @param[out] duration The audio file duration
@@ -365,7 +365,7 @@ int audio_meta_get_duration(audio_meta_h audio, int *duration);
 /**
  * @deprecated Deprecated since 2.4. [Use media_info_get_played_count() instead]
  * @brief Gets the number of times the given audio has been played.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  audio        The audio metadata handle
  * @param[out] played_count The counter of the audio played
@@ -385,7 +385,7 @@ int audio_meta_get_played_count(audio_meta_h audio, int *played_count);
  * @details This function returns audio's elapsed playback time parameter as a period
  *          starting from the beginning of the track.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  audio       The audio metadata handle
  * @param[out] played_time The elapsed time of the audio
@@ -405,7 +405,7 @@ int audio_meta_get_played_time(audio_meta_h audio, time_t *played_time);
  * @details This function returns audio's elapsed playback position parameter as a period
  *          starting from the beginning of the track.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  audio           The audio metadata handle
  * @param[out] played_position The elapsed time of the audio
@@ -422,7 +422,7 @@ int audio_meta_get_played_position(audio_meta_h audio, int *played_position);
 /**
  * @deprecated Deprecated since 2.4. [Use media_info_increase_played_count() instead]
  * @brief Sets the played count to an audio meta handle.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] audio        The audio metadata handle
  * @param[in] played_count The played count of the audio
@@ -441,7 +441,7 @@ int audio_meta_set_played_count(audio_meta_h audio, int played_count);
 /**
  * @deprecated Deprecated since 2.4. [Use media_info_set_played_time() instead]
  * @brief Sets the played time to an audio meta handle.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] audio       The audio metadata handle
  * @param[in] played_time The played time of the audio
@@ -460,7 +460,7 @@ int audio_meta_set_played_time(audio_meta_h audio, time_t played_time);
 /**
  * @deprecated Deprecated since 2.4.
  * @brief Sets the played position to an audio meta handle.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks  It is NOT recommended to use this attribute for your application-specific purpose because this attribute can be overwritten by other applications (even 0).
  *
@@ -482,7 +482,7 @@ int audio_meta_set_played_position(audio_meta_h audio, int played_position);
  * @brief Updates an audio metadata with modified attributes in the media database.
  * @details The function updates the given audio meta in the media database.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
  *

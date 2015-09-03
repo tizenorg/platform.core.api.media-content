@@ -41,7 +41,7 @@ extern "C" {
 
 /**
  * @brief Gets the number of the album for the passed @a filter from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  filter      The media filter handle
  * @param[out] album_count The count of the media album
@@ -67,7 +67,7 @@ int media_album_get_album_count_from_db(filter_h filter, int *album_count);
  *          The callback function will be invoked for every retrieved media album.
  *          If @c NULL is passed to the filter, no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] filter    The media filter handle
  * @param[in] callback  The callback function to be invoked
@@ -94,7 +94,7 @@ int media_album_foreach_album_from_db(filter_h filter, media_album_cb callback, 
 
 /**
  * @brief Gets the number of media info for the given album present in the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  album_id    The ID of the media album
  * @param[in]  filter      The media filter handle
@@ -122,7 +122,7 @@ int media_album_get_media_count_from_db (int album_id, filter_h filter, int *med
  *          meeting desired filter option and calls registered callback function for
  *          every retrieved media info. If @c NULL is passed to the @a filter, no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] album_id  The ID of the media album
  * @param[in] filter    The media filter handle
@@ -154,7 +154,7 @@ int media_album_foreach_media_from_db(int album_id, filter_h filter, media_info_
  *          can no longer be used to perform any operation. A new handle has to
  *          be created before the next use.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] album The media album handle
  *
@@ -178,7 +178,7 @@ int media_album_destroy(media_album_h album);
  *          media album foreach function such as media_album_foreach_album_from_db(). To use this handle outside of these foreach functions,
  *          use this function.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release the destination handle using media_album_destroy().
  *
@@ -200,7 +200,7 @@ int media_album_clone(media_album_h *dst, media_album_h src);
 
 /**
  * @brief Gets the ID of the album.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  album    The media album handle
  * @param[out] album_id The media album ID
@@ -219,7 +219,7 @@ int media_album_get_album_id(media_album_h album, int *album_id);
 
 /**
  * @brief Gets the name of the album.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a album_name using free().
  *
@@ -238,7 +238,7 @@ int media_album_get_name(media_album_h album, char **album_name);
 
 /**
  * @brief Gets the name of the artist from the given album.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a artist using free().
  *
@@ -257,7 +257,7 @@ int media_album_get_artist(media_album_h album, char **artist);
 
 /**
  * @brief Gets the album art path from the album.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a album_art using free().
  *
@@ -280,7 +280,7 @@ int media_album_get_album_art(media_album_h album, char **album_art);
  * @details This function creates a new media album handle from the media database by the given @a album_id.
  *          Media album will be created and will be filled with the album information.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a folder using media_album_destroy().
  *
@@ -317,7 +317,7 @@ int media_album_get_album_from_db(int album_id, media_album_h *album);
 
  /**
  * @brief Gets the number of the group for the passed @a filter from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  filter       The media filter handle
  * @param[in]  group        The type of the media group
@@ -344,7 +344,7 @@ int media_group_get_group_count_from_db(filter_h filter, media_group_e group, in
  *          The callback function will be invoked for every retrieved media group.
  *          If @c NULL is passed to the filter, no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] filter    The media filter handle
  * @param[in] group     The type of the media group
@@ -372,7 +372,7 @@ int media_group_foreach_group_from_db(filter_h filter, media_group_e group, medi
 
  /**
  * @brief Gets the count of the media info for the given media group present in the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  group_name  The name of the media group
  * @param[in]  group       The type of the media group
@@ -401,7 +401,7 @@ int media_group_get_media_count_from_db(const char *group_name, media_group_e gr
  *          meeting desired filter option and calls registered callback function for
  *          every retrieved media info. If @c NULL is passed to the @a filter, no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] group_name The name of the media group
  * @param[in] group      The type of the media group

@@ -47,7 +47,7 @@ extern "C" {
  *          This function is only called when the media server is busy and the user needs to get quick result of inserting
  *          e.g. Taking a photo while media server is busy and the user wants to see the quick snapshot of the photo taken.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write \n
@@ -87,7 +87,7 @@ int media_info_insert_to_db (const char *path, media_info_h *info);
  *          Normally, inserting a media file in database is done automatically by the media server, without calling this function.
  *          This function invokes media_insert_completed_cb() callback function when insertion to the media database is finished.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write \n
@@ -128,7 +128,7 @@ int media_info_insert_batch_to_db(const char **path_array,unsigned int array_len
  * @details This function inserts burst images into the content storage.
  *          media_insert_burst_shot_completed_cb() will be called when insertion to media database is finished.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write \n
@@ -170,7 +170,7 @@ int media_info_insert_burst_shot_to_db(const char **path_array,unsigned int arra
  *          Normally, deleting a media file in the database is done automatically by the media server, without calling this function.
  *          This function is only called when the media server is busy and user needs to get quick result of deleting.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
@@ -201,7 +201,7 @@ int media_info_delete_from_db(const char *media_id);
  *          Normally, deleting  media files in the database are done automatically by the media server, without calling this function.
  *          This function is only called when the media server is busy and user needs to get quick result of deleting.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
@@ -232,7 +232,7 @@ int media_info_delete_batch_from_db(filter_h filter);
  *          can no longer be used to perform any operation. New media info handle has to
  *          be created before the next usage.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media  The media info handle
  *
@@ -257,7 +257,7 @@ int media_info_destroy(media_info_h media);
  *          available through media info foreach function such as media_info_foreach_media_from_db().
  *          To use this handle outside of these foreach functions, use this function.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release the destination handle using media_info_destroy().
  *
@@ -284,7 +284,7 @@ int media_info_clone(media_info_h *dst, media_info_h src);
 
 /**
  * @brief Gets the count of media info for the passed @a filter from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  filter      The handle to filter
  * @param[out] media_count The count of media
@@ -310,7 +310,7 @@ int media_info_get_media_count_from_db(filter_h filter, int *media_count);
  *          The @a callback function will be invoked for every retrieved media info.
  *          If @c NULL is passed to the @a filter, then no filtering is applied.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks Do not call updating DB function like media_info_update_to_db(), media_info_refresh_metadata_to_db(), audio_meta_update_to_db(), image_meta_update_to_db() and video_meta_update_to_db()  in your callback function,
  *                   your callback function is invoked as inline function.
@@ -342,7 +342,7 @@ int media_info_foreach_media_from_db(filter_h filter, media_info_cb callback, vo
 
 /**
  * @brief Gets the count of media tags for the passed @a filter in the given @a media_id from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media_id  The ID of the media info
  * @param[in]  filter    The handle to the media filter
@@ -367,7 +367,7 @@ int media_info_get_tag_count_from_db(const char *media_id, filter_h filter, int 
  * @brief Iterates through the media tag in the given media info from the media database.
  * @details This function gets all the media tags associated with the given @a media_id and calls registered callback function for every retrieved media tag.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media_id  The ID of the media info
  * @param[in] filter    The handle to the media filter
@@ -394,7 +394,7 @@ int media_info_foreach_tag_from_db(const char *media_id, filter_h filter, media_
 
 /**
  * @brief Gets the number of bookmarks for the passed @a filter in the given media ID from the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media_id        The ID of the media info
  * @param[in]  filter          The handle to the media filter
@@ -419,7 +419,7 @@ int media_info_get_bookmark_count_from_db(const char *media_id, filter_h filter,
  * @brief Iterates through the media bookmark in the given media info from the media database.
  * @details This function gets all media bookmarks associated with the given media and calls registered callback function for every retrieved media bookmark.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media_id  The ID of the media info
  * @param[in] filter    The handle to the media filter
@@ -448,7 +448,7 @@ int media_info_foreach_bookmark_from_db (const char *media_id, filter_h filter, 
  * @brief Gets the image metadata for a given media info.
  * @details This function returns an image metadata handle retrieved from the media info.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release the @a image handle using image_meta_destroy().
  *
@@ -470,7 +470,7 @@ int media_info_get_image(media_info_h media, image_meta_h *image);
  * @brief Gets a video metadata for a given media info.
  * @details This function returns a video metadata handle retrieved from the media info handle.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release the @a video handle using video_meta_destroy().
  *
@@ -493,7 +493,7 @@ int media_info_get_video(media_info_h media, video_meta_h *video);
  * @brief Gets an audio metadata for a given media info.
  * @details This function returns an audio metadata handle retrieved from the media info handle.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release the @a audio handle using audio_meta_destroy().
  *
@@ -514,7 +514,7 @@ int media_info_get_audio(media_info_h media, audio_meta_h *audio);
 
 /**
  * @brief Gets the tag ID for the media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media The media info handle
  * @param[out] media_id     The ID of the media tag
@@ -530,7 +530,7 @@ int media_info_get_media_id(media_info_h media, char **media_id);
 
 /**
  * @brief Gets the path to the media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a path using free().
  *
@@ -550,7 +550,7 @@ int media_info_get_file_path(media_info_h media, char **path);
 
 /**
  * @brief Gets the name of the media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a name using free().
  *
@@ -569,7 +569,7 @@ int media_info_get_display_name(media_info_h media, char **name);
 
 /**
  * @brief Gets the content type of the media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media The media info handle
  * @param[out] type  The type of the media content (#media_content_type_e)
@@ -585,7 +585,7 @@ int media_info_get_media_type(media_info_h media, media_content_type_e *type);
 
 /**
  * @brief Gets the MIME type from the media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a mime_type using free().
  *
@@ -604,7 +604,7 @@ int media_info_get_mime_type(media_info_h media, char **mime_type);
 
 /**
  * @brief Gets the media file size.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media The media info handle
  * @param[out] size  The type of the media content
@@ -620,7 +620,7 @@ int media_info_get_size(media_info_h media, unsigned long long *size);
 
 /**
  * @brief Gets the addition time of the media.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media      The media info handle
  * @param[out] added_time The added time to the DB
@@ -636,7 +636,7 @@ int media_info_get_added_time(media_info_h media, time_t *added_time);
 
 /**
  * @brief Gets the date of modification of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media The media info handle
  * @param[out] time  The date of modification of the file \n
@@ -655,7 +655,7 @@ int media_info_get_modified_time(media_info_h media, time_t *time);
  * @brief Gets the timeline of media info.
  * @details If the image file has the creation time, the value of the timeline is the creation time.\n
  *          Otherwise, the value of the timeline is the same as modified time.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media The media info handle
  * @param[out] time  The date of the timeline
@@ -671,7 +671,7 @@ int media_info_get_timeline(media_info_h media, time_t* time);
 
 /**
  * @brief Gets the thumbnail of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a path using free().
  *
@@ -690,7 +690,7 @@ int media_info_get_thumbnail_path(media_info_h media, char **path);
 
 /**
  * @brief Gets the description of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a description using free().
  *
@@ -709,7 +709,7 @@ int media_info_get_description(media_info_h media, char **description);
 
 /**
  * @brief Gets the longitude of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media     The media info handle
  * @param[out] longitude The longitude of the media info
@@ -725,7 +725,7 @@ int media_info_get_longitude(media_info_h media, double* longitude);
 
 /**
  * @brief Gets the latitude of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media    The media info handle
  * @param[out] latitude The latitude of the media info
@@ -742,7 +742,7 @@ int media_info_get_latitude(media_info_h media, double* latitude);
 
 /**
  * @brief Gets the altitude of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media    The media info handle
  * @param[out] altitude The altitude of the media info
@@ -758,7 +758,7 @@ int media_info_get_altitude(media_info_h media, double* altitude);
 
 /**
  * @brief Gets the weather of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media   The media info handle
  * @param[out] weather The weather of the media info
@@ -774,7 +774,7 @@ int media_info_get_weather(media_info_h media, char **weather);
 
 /**
  * @brief Gets the rating of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media  The media info handle
  * @param[out] rating The rating of the media info
@@ -790,7 +790,7 @@ int media_info_get_rating(media_info_h media, int *rating);
 
 /**
  * @brief Gets the favorite status of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media     The media info handle
  * @param[out] favorite  @c true if media info is set as favorite, 
@@ -807,7 +807,7 @@ int media_info_get_favorite(media_info_h media, bool* favorite);
 
 /**
  * @brief Gets the author of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a author using free().
  *
@@ -826,7 +826,7 @@ int media_info_get_author(media_info_h media, char **author);
 
 /**
  * @brief Gets the provider of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a provider using free().
  *
@@ -845,7 +845,7 @@ int media_info_get_provider(media_info_h media, char **provider);
 
 /**
  * @brief Gets the content name of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a content_name using free().
  *
@@ -864,7 +864,7 @@ int media_info_get_content_name(media_info_h media, char **content_name);
 
 /**
  * @brief Gets the title of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a title using free().
  *
@@ -883,7 +883,7 @@ int media_info_get_title(media_info_h media, char **title);
 
 /**
  * @brief Gets the category of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a category using free().
  *
@@ -902,7 +902,7 @@ int media_info_get_category(media_info_h media, char **category);
 
 /**
  * @brief Gets the location tag of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a location_tag using free().
  *
@@ -921,7 +921,7 @@ int media_info_get_location_tag(media_info_h media, char **location_tag);
 
 /**
  * @brief Gets the age_rating of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a age_rating using free().
  *
@@ -940,7 +940,7 @@ int media_info_get_age_rating(media_info_h media, char **age_rating);
 
 /**
  * @brief Gets the keyword of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a keyword using free().
  *
@@ -978,7 +978,7 @@ int media_info_get_storage_id(media_info_h media, char **storage_id);
 
 /**
  * @brief Checks whether the media is protected via DRM.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media  The media info handle
  * @param[out] is_drm @c true if media is DRM media,
@@ -995,7 +995,7 @@ int media_info_is_drm(media_info_h media, bool *is_drm);
 
 /**
  * @brief Gets the storage type of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media        The media info handle
  * @param[out] storage_type The storage type of the media info
@@ -1047,7 +1047,7 @@ int media_info_get_played_time(media_info_h media, time_t *played_time);
  * @details This function creates a new media handle from the media database by the given @a media_id.
  *          Media info will be created and filled with information.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a media using media_tag_destroy().
  *
@@ -1104,7 +1104,7 @@ int media_info_set_played_time(media_info_h media);
 
 /**
  * @brief Sets the display name of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media        The media info handle
  * @param[in] display_name The display name of the media info
@@ -1124,7 +1124,7 @@ int media_info_set_display_name(media_info_h media, const char *display_name);
 
 /**
  * @brief Sets the description of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media       The media info handle
  * @param[in] description The description of the media info
@@ -1144,7 +1144,7 @@ int media_info_set_description(media_info_h media, const char *description);
 
 /**
  * @brief Sets the longitude of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media     The media info handle
  * @param[in] longitude The longitude of the media info
@@ -1163,7 +1163,7 @@ int media_info_set_longitude(media_info_h media, double longitude);
 
 /**
  * @brief Sets the latitude of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media    The media info handle
  * @param[in] latitude The latitude of the media info
@@ -1182,7 +1182,7 @@ int media_info_set_latitude(media_info_h media, double latitude);
 
 /**
  * @brief Sets the altitude of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media    The media info handle
  * @param[in] altitude The altitude of the media info
@@ -1201,7 +1201,7 @@ int media_info_set_altitude(media_info_h media, double altitude);
 
 /**
  * @brief Sets the weather of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media   The media info handle
  * @param[in] weather The weather of the media info
@@ -1221,7 +1221,7 @@ int media_info_set_weather(media_info_h media, const char *weather);
 
 /**
  * @brief Sets the rating of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media  The media info handle
  * @param[in] rating The rating of the media info
@@ -1240,7 +1240,7 @@ int media_info_set_rating(media_info_h media, int rating);
 
 /**
  * @brief Sets the favorite of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media    The media info handle
  * @param[in] favorite Set @c true to set the media info as favorite,
@@ -1258,7 +1258,7 @@ int media_info_set_favorite(media_info_h media, bool favorite);
 
 /**
  * @brief Sets the author of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media  The media info handle
  * @param[in] author The author of the media info
@@ -1275,7 +1275,7 @@ int media_info_set_author(media_info_h media, const char *author);
 
 /**
  * @brief Sets the provider of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media    The media info handle
  * @param[in] provider The provider of the media info
@@ -1292,7 +1292,7 @@ int media_info_set_provider(media_info_h media, const char *provider);
 
 /**
  * @brief Sets the content name of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media        The media info handle
  * @param[in] content_name The content name of the media info
@@ -1311,7 +1311,7 @@ int media_info_set_content_name(media_info_h media, const char *content_name);
 
 /**
  * @brief Sets the category of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media    The media info handle
  * @param[in] category The category of the media info
@@ -1330,7 +1330,7 @@ int media_info_set_category(media_info_h media, const char *category);
 
 /**
  * @brief Sets the location tag of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media        The media info handle
  * @param[in] location_tag The location of the media info
@@ -1349,7 +1349,7 @@ int media_info_set_location_tag(media_info_h media, const char *location_tag);
 
 /**
  * @brief Sets the age rating of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media      The media info handle
  * @param[in] age_rating The age rating of the media info
@@ -1368,7 +1368,7 @@ int media_info_set_age_rating(media_info_h media, const char *age_rating);
 
 /**
  * @brief Sets the keyword of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media   The media info handle
  * @param[in] keyword The keyword of the media info
@@ -1390,7 +1390,7 @@ int media_info_set_keyword(media_info_h media, const char *keyword);
  * 
  * @details The function updates the given media info in the media database.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
  *
@@ -1434,7 +1434,7 @@ int media_info_update_to_db(media_info_h media);
 
 /**
  * @brief Refreshes the media metadata to the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write \n
@@ -1468,7 +1468,7 @@ int media_info_refresh_metadata_to_db(const char *media_id);
 
 /**
  * @brief Sets the added time of media info.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] media      The media info handle
  * @param[in] added_time The added time of the media info
@@ -1487,7 +1487,7 @@ int media_info_set_added_time(media_info_h media, time_t added_time);
 
 /**
  * @brief Moves the media info to the given destination path in the media database.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write \n
@@ -1525,10 +1525,12 @@ int media_info_move_to_db(media_info_h media, const char* dst_path);
  * @details This function creates an thumbnail image for given media item and calls registered callback function for completion of creating the thumbnail.
  *          If a thumbnail already exists for the given media, then the path of thumbnail will be returned in callback function.
  *
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
+ *
+ * @remarks If you want to destory media handle before callback invoked, you must cancel thumbnail request by using media_info_cancel_thumbnail()
  *
  * @param[in] media     The media info handle
  * @param[in] callback  The callback function to be invoked
@@ -1554,7 +1556,7 @@ int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb
 
 /**
  * @brief Cancels the creation of image's thumbnail for the given media.
- * @since_tizen 2.3
+ * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write

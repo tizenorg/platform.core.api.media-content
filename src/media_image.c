@@ -448,7 +448,7 @@ int image_meta_update_to_db(image_meta_h image)
 
 		sql = sqlite3_mprintf(UPDATE_IMAGE_META_FROM_MEDIA, storage_id, _image->orientation, _image->weather, _image->media_id);
 		ret = _content_query_sql(sql);
-		sqlite3_free(sql);
+		SQLITE3_SAFE_FREE(sql);
 	}
 	else
 	{

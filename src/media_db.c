@@ -444,6 +444,9 @@ int _media_db_get_folder(filter_h filter, media_folder_cb callback, void *user_d
 
 		_folder->folder_order = (int)sqlite3_column_int(stmt, 6);
 
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 7)))
+			_folder->parent_folder_id= strdup((const char *)sqlite3_column_text(stmt, 7));
+
 		if(callback((media_folder_h)_folder, user_data) == false)
 		{
 			media_folder_destroy((media_folder_h) _folder);
@@ -816,7 +819,7 @@ int _media_db_get_group_item_count(const char *group_name, filter_h filter, grou
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 	{
 		if(tmp_query != NULL)
-			sqlite3_free(tmp_query);
+			SQLITE3_SAFE_FREE(tmp_query);
 		return ret;
 	}
 
@@ -837,7 +840,7 @@ int _media_db_get_group_item_count(const char *group_name, filter_h filter, grou
 
 	ret = _content_query_prepare(&stmt, select_query, condition_query, option_query);
 	if(tmp_query != NULL)
-		sqlite3_free(tmp_query);
+		SQLITE3_SAFE_FREE(tmp_query);
 	SAFE_FREE(condition_query);
 	SAFE_FREE(option_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
@@ -1036,7 +1039,7 @@ int _media_db_get_media_group_item_count(const char *group_name, filter_h filter
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 	{
 		if(tmp_query != NULL)
-			sqlite3_free(tmp_query);
+			SQLITE3_SAFE_FREE(tmp_query);
 		return ret;
 	}
 
@@ -1052,7 +1055,7 @@ int _media_db_get_media_group_item_count(const char *group_name, filter_h filter
 
 	ret = _content_query_prepare(&stmt, select_query, condition_query, option_query);
 	if(tmp_query != NULL)
-		sqlite3_free(tmp_query);
+		SQLITE3_SAFE_FREE(tmp_query);
 	SAFE_FREE(condition_query);
 	SAFE_FREE(option_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
@@ -1102,13 +1105,13 @@ int _media_db_get_media_group_item(const char *group_name, filter_h filter, medi
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 	{
 		if(tmp_query != NULL)
-			sqlite3_free(tmp_query);
+			SQLITE3_SAFE_FREE(tmp_query);
 		return ret;
 	}
 
 	ret = _content_query_prepare(&stmt, select_query, condition_query, option_query);
 	if(tmp_query != NULL)
-		sqlite3_free(tmp_query);
+		SQLITE3_SAFE_FREE(tmp_query);
 	SAFE_FREE(condition_query);
 	SAFE_FREE(option_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
@@ -1213,7 +1216,7 @@ int _media_db_get_storage_id_by_media_id(const char *media_id, char *storage_id)
 	select_query = sqlite3_mprintf(SELECT_MEDIA_STORAGE_ID_BY_ID, media_id);
 
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
-	sqlite3_free(select_query);
+	SQLITE3_SAFE_FREE(select_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	if(sqlite3_step(stmt) == SQLITE_ROW)

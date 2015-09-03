@@ -27,7 +27,7 @@ int media_bookmark_insert_to_db(const char *media_id, time_t time, const char *t
 	{
 		sql = sqlite3_mprintf(INSERT_BOOKMARK_TO_BOOKMARK, media_id, time, thumbnail_path);
 		ret = _content_query_sql(sql);
-		sqlite3_free(sql);
+		SQLITE3_SAFE_FREE(sql);
 	}
 	else
 	{
@@ -53,7 +53,7 @@ int media_bookmark_delete_from_db(int bookmark_id)
 
 	ret = _content_query_sql(query_str);
 
-	sqlite3_free(query_str);
+	SQLITE3_SAFE_FREE(query_str);
 
 	return ret;
 }

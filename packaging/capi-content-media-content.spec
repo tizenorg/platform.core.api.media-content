@@ -12,6 +12,7 @@ BuildRequires:  pkgconfig(capi-base-common)
 BuildRequires:  pkgconfig(libmedia-service)
 BuildRequires:  pkgconfig(media-thumbnail)
 BuildRequires:  pkgconfig(libmedia-utils)
+BuildRequires:  pkgconfig(vconf)
 BuildRequires:  pkgconfig(libtzplatform-config)
 
 %description
