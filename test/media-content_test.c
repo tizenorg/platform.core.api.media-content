@@ -559,6 +559,13 @@ bool folder_list_cb(media_folder_h folder, void *user_data)
 		}
 		media_content_debug("folder_id = [%s]", folder_id);
 
+		if(media_folder_get_parent_folder_id(folder, &str_val) != MEDIA_CONTENT_ERROR_NONE)
+		{
+			media_content_error("[ERROR] media_folder_get_parent_folder_id is failed");
+			return false;
+		}
+		media_content_debug("parent_folder_id = [%s]", str_val);
+
 		if(media_folder_get_path(folder, &str_val) != MEDIA_CONTENT_ERROR_NONE)
 		{
 			SAFE_FREE(folder_id);

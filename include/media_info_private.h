@@ -63,9 +63,6 @@ extern "C" {
 #define SQLITE3_FINALIZE(x)	{if(x != NULL) {sqlite3_finalize(x);}}
 #define SQLITE3_SAFE_FREE(x)	{if(x != NULL) {sqlite3_free(x);x = NULL;}}
 
-
-#define MEDIA_CONTENT_PATH_PHONE 	MEDIA_ROOT_PATH_INTERNAL	/**< File path prefix of files stored in phone */
-#define MEDIA_CONTENT_PATH_MMC 		MEDIA_ROOT_PATH_SDCARD		/**< File path prefix of files stored in mmc card */
 #define MEDIA_CONTENT_THUMB_DEFAULT_PATH 	tzplatform_mkpath(TZ_USER_SHARE, "media/.thumb/thumb_default.png")
 #define MEDIA_CONTENT_INSERT_FILES_PATH		tzplatform_getenv(TZ_USER_SHARE)
 
