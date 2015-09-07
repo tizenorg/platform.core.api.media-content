@@ -3061,7 +3061,7 @@ int media_info_cancel_thumbnail(media_info_h media)
 
 	if(_media != NULL && STRING_VALID(_media->media_id) && STRING_VALID(_media->file_path))
 	{
-		ret = thumbnail_request_cancel_media(_media->file_path, tzplatform_getuid(TZ_USER_NAME));
+		ret = thumbnail_request_cancel_media(_media->file_path);
 		ret = _content_error_capi(MEDIA_THUMBNAIL_TYPE, ret);
 	}
 	else
