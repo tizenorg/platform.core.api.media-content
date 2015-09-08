@@ -905,11 +905,11 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 
 	memset(storage_id, 0x00, sizeof(storage_id));
 
-	ret = _media_util_check_ignore_dir(path, &ignore_dir);
-	media_content_retvm_if(ignore_dir, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
-
 	ret = __media_content_check_dir(path);
 	media_content_retvm_if(ret == MEDIA_CONTENT_ERROR_PERMISSION_DENIED, ret, "Permission Denied");
+
+	ret = _media_util_check_ignore_dir(path, &ignore_dir);
+	media_content_retvm_if(ignore_dir, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
 
 	media_content_scan_cb_data *cb_data = NULL;
 	cb_data = (media_content_scan_cb_data *)malloc(sizeof(media_content_scan_cb_data));
