@@ -161,6 +161,7 @@ typedef enum {
 	MEDIA_GROUP_TAG_BY_MEDIA_ID,
 	MEDIA_GROUP_BOOKMARK_BY_MEDIA_ID,
 	MEDIA_GROUP_STORAGE,
+	MEDIA_GROUP_FACE_BY_MEDIA_ID,
 } group_list_e;
 
 typedef enum {
@@ -349,6 +350,18 @@ typedef struct
 	int storage_type;
 }media_storage_s;
 
+typedef struct
+{
+	char *face_id;				/* face uuid */
+	char *media_id;			/* media uuid */
+	unsigned int face_rect_x;	/* x position of face */
+	unsigned int face_rect_y;	/* y position of face */
+	unsigned int face_rect_w;	/* width of face */
+	unsigned int face_rect_h;	/* height of face */
+	int orientation;			/* orientation */
+	char *face_tag;			/* face tag */
+}media_face_s;
+
 typedef struct _attribute_map_s
 {
 	GHashTable *attr_map;
@@ -394,6 +407,8 @@ typedef struct _media_content_cb_data {
 #define DB_TABLE_BOOKMARK		"bookmark"
 #define DB_TABLE_STORAGE		"storage"
 #define DB_TABLE_MEDIA_VIEW	"media_view"
+#define DB_TABLE_FACE			"face"
+#define DB_TABLE_FACE_SCAN_LIST	"face_scan_list"
 
 /* DB View */
 #define DB_VIEW_PLAYLIST	"playlist_view"
@@ -513,6 +528,9 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_STORAGE_ID			"storage_uuid"
 #define DB_FIELD_STORAGE_PATH		"storage_path"
 
+/* DB field for Face */
+#define DB_FIELD_FACE_TAG			"face_tag"
+
 /* DB Query Keyword */
 #define QUERY_KEYWORD_AND "AND"
 #define QUERY_KEYWORD_OR "OR"
@@ -530,6 +548,8 @@ typedef struct _media_content_cb_data {
 											ON (b.media_uuid = m.media_uuid)) WHERE m.validity=1"
 #define ALBUM_MEDIA_JOIN					"("DB_TABLE_ALBUM" AS a INNER JOIN '%s' AS m \
 											ON (a.album_id = m.album_id)) WHERE m.validity=1"
+#define FACE_MEDIA_JOIN						"("DB_TABLE_FACE" AS fa INNER JOIN '%s' AS m \
+												ON (fa.media_uuid = m.media_uuid)) WHERE m.validity=1"
 
 /* Get Group List */
 #define SELECT_ALBUM_LIST			"SELECT DISTINCT a.album_id, a.name, a.artist, a.album_art FROM "ALBUM_MEDIA_JOIN
@@ -628,6 +648,14 @@ typedef struct _media_content_cb_data {
 #define SELECT_STORAGE_LIST 				"SELECT * FROM "DB_TABLE_STORAGE" WHERE validity=1"
 #define SELECT_STORAGE_INFO_FROM_STORAGE	"SELECT * FROM "DB_TABLE_STORAGE" WHERE validity=1 AND storage_uuid='%s'"
 
+/* Face */
+#define DELETE_FACE_FROM_FACE			"DELETE FROM "DB_TABLE_FACE" WHERE face_uuid='%q'"
+#define INSERT_FACE_TO_FACE				"INSERT INTO "DB_TABLE_FACE" (face_uuid, media_uuid, face_rect_x , face_rect_y, face_rect_w, face_rect_h, orientation, face_tag) VALUES ('%q', '%q', %d, %d, %d, %d, %d, %Q);"
+#define UPDATE_FACE_TO_FACE			"UPDATE "DB_TABLE_FACE" SET face_rect_x=%d, face_rect_y=%d, face_rect_w=%d, face_rect_h=%d, orientation=%d, face_tag=%Q WHERE face_uuid='%q'"
+#define SELECT_MEDIA_COUNT_FROM_MEDIA_BY_ID		"SELECT COUNT(*) FROM "DB_TABLE_MEDIA_VIEW" WHERE media_uuid='%q' AND validity=1"
+#define SELECT_FACE_COUNT_BY_MEDIA_ID		"SELECT COUNT(*) FROM "FACE_MEDIA_JOIN" AND fa.media_uuid='%s'"
+#define SELECT_FACE_LIST_BY_MEDIA_ID		"SELECT fa.face_uuid, fa.media_uuid, fa.face_rect_x, fa.face_rect_y, fa.face_rect_w, fa.face_rect_h, fa.orientation, fa.face_tag FROM "FACE_MEDIA_JOIN" AND fa.media_uuid='%s'"
+
 #define DEFAULT_MEDIA_STORAGE_ID 			"media"
 
 int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condition_query, char *option_query);
@@ -647,6 +675,7 @@ int _media_db_get_playlist(filter_h filter, media_playlist_cb callback, void *us
 int _media_db_get_playlist_item(int playlist_id, filter_h filter, playlist_member_cb callback, void *user_data);
 int _media_db_get_tag(const char *media_id, filter_h filter, media_tag_cb callback, void *user_data);
 int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark_cb callback, void *user_data);
+int _media_db_get_face(const char *media_id, filter_h filter, media_face_cb callback, void *user_data);
 int _media_db_get_group_item_count_by_id(int group_id, filter_h filter, group_list_e group_type, int *item_count);
 int _media_db_get_group_item_count(const char *group_name, filter_h filter, group_list_e group_type, int *item_count);
 int _media_db_get_group_item_by_id(int group_id, filter_h filter, media_info_cb callback, void *user_data, group_list_e group_type);
