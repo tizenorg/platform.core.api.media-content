@@ -699,6 +699,74 @@ int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark
 
 }
 
+int _media_db_get_face(const char *media_id, filter_h filter, media_face_cb callback, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char select_query[MAX_QUERY_SIZE] = {0, };
+	char *condition_query = NULL;
+	char *option_query = NULL;
+	sqlite3_stmt *stmt = NULL;
+	attribute_h attr = NULL;
+	filter_s *_filter = (filter_s*)filter;
+
+	attr = _content_get_attirbute_handle();
+
+	memset(select_query, 0x00, sizeof(select_query));
+
+	if((_filter != NULL) && STRING_VALID(_filter->storage_id))
+		snprintf(select_query, sizeof(select_query), SELECT_FACE_LIST_BY_MEDIA_ID, _filter->storage_id, media_id);
+	else
+		snprintf(select_query, sizeof(select_query), SELECT_FACE_LIST_BY_MEDIA_ID, DB_TABLE_MEDIA_VIEW, media_id);
+
+	ret = __media_db_make_query(filter, attr, select_query, sizeof(select_query), &condition_query, &option_query);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _content_query_prepare(&stmt, select_query, condition_query, option_query);
+	SAFE_FREE(condition_query);
+	SAFE_FREE(option_query);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	while(sqlite3_step(stmt) == SQLITE_ROW)
+	{
+		media_face_s *face = (media_face_s*)calloc(1, sizeof(media_face_s));
+
+		if(face == NULL)
+		{
+			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+			SQLITE3_FINALIZE(stmt);
+			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+		}
+
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
+			face->face_id = strdup((const char *)sqlite3_column_text(stmt, 0));
+
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
+			face->media_id = strdup((const char *)sqlite3_column_text(stmt, 1));
+
+		face->face_rect_x = (int)sqlite3_column_int(stmt, 2);
+		face->face_rect_y = (int)sqlite3_column_int(stmt, 3);
+		face->face_rect_w = (int)sqlite3_column_int(stmt, 4);
+		face->face_rect_h = (int)sqlite3_column_int(stmt, 5);
+		face->orientation= (int)sqlite3_column_int(stmt, 6);
+
+		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 7)))
+			face->face_tag = strdup((const char *)sqlite3_column_text(stmt, 7));
+
+		if(callback((media_face_h)face, user_data) == false)
+		{
+			media_face_destroy((media_face_h)face);
+			break;
+		}
+
+		media_face_destroy((media_face_h)face);
+	}
+
+	SQLITE3_FINALIZE(stmt);
+
+	return ret;
+
+}
+
 int _media_db_get_group_item_count_by_id(int group_id, filter_h filter, group_list_e group_type, int *item_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -806,6 +874,15 @@ int _media_db_get_group_item_count(const char *group_name, filter_h filter, grou
 	else if(group_type == MEDIA_GROUP_STORAGE)
 	{
 		tmp_query = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_STORAGE, group_name, group_name);
+
+		SAFE_STRLCAT(select_query, tmp_query, sizeof(select_query));
+	}
+	else if (group_type == MEDIA_GROUP_FACE_BY_MEDIA_ID)
+	{
+		if((_filter != NULL) && STRING_VALID(_filter->storage_id))
+			tmp_query = sqlite3_mprintf(SELECT_FACE_COUNT_BY_MEDIA_ID, _filter->storage_id, group_name);
+		else
+			tmp_query = sqlite3_mprintf(SELECT_FACE_COUNT_BY_MEDIA_ID, DB_TABLE_MEDIA_VIEW, group_name);
 
 		SAFE_STRLCAT(select_query, tmp_query, sizeof(select_query));
 	}
