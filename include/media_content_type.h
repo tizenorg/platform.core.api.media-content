@@ -270,6 +270,13 @@ typedef struct filter_s *filter_h;
 typedef void *media_storage_h;
 
 /**
+ * @ingroup CAPI_CONTENT_MEDIA_FACE_MODULE
+ * @brief The structure type for the Media face handle.
+ * @since_tizen 3.0
+ */
+typedef void *media_face_h;
+
+/**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Called when the media scanning is finished.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -564,6 +571,27 @@ typedef bool (*media_group_cb)(const char *group_name, void *user_data);
  * @see media_storage_foreach_storage_from_db()
  */
 typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
+
+/**
+ * @ingroup CAPI_CONTENT_MEDIA_FACE_MODULE
+ * @brief Called for every face in the obtained list of face.
+ * @since_tizen 3.0
+ *
+ * @details Iterates over a media face list.
+ *
+ * @remarks You should not destroy @a face returned by this function.
+ *
+ * @param[in] face     The handle of the media face
+ * @param[in] user_data  The user data passed from the foreach function
+ *
+ * @return @c true to continue with the next iteration of the loop,
+ *         otherwise @c false to break out of the loop
+ *
+ * @pre media_info_foreach_face_from_db() will invoke this function.
+ *
+ * @see media_info_foreach_face_from_db()
+ */
+typedef bool (*media_face_cb)(media_face_h face, void *user_data);
 
 /**
  * @}
@@ -1187,6 +1215,12 @@ typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
  * @since_tizen 2.4
  */
 #define MEDIA_STORAGE_PATH				"STORAGE_PATH"  /**< Storage path */
+
+/**
+ * @brief You can use above define to set the condition of face filter and order keyword.
+ * @since_tizen 3.0
+ */
+#define MEDIA_FACE_TAG						"MEDIA_FACE_TAG"	/**< face tag */
 
 /**
  * @}
