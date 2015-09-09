@@ -1432,6 +1432,40 @@ int media_info_foreach_bookmark_from_db (const char *media_id, filter_h filter, 
 	return ret;
 }
 
+int media_info_get_face_count_from_db(const char *media_id, filter_h filter, int *face_count)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	if(STRING_VALID(media_id) && face_count)
+	{
+		ret = _media_db_get_group_item_count(media_id, filter, MEDIA_GROUP_FACE_BY_MEDIA_ID, face_count);
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_foreach_face_from_db (const char *media_id, filter_h filter, media_face_cb callback, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	if((callback != NULL) && STRING_VALID(media_id))
+	{
+		ret = _media_db_get_face(media_id, filter, callback, user_data);
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
 int media_info_get_image(media_info_h media, image_meta_h *image)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
