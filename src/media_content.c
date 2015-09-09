@@ -275,6 +275,10 @@ static int __media_content_create_attr_handle(void)
 	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_STORAGE_PATH, DB_FIELD_STORAGE_PATH);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
+	/* Face */
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_FACE_TAG, DB_FIELD_FACE_TAG);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
 	return ret;
 }
 
