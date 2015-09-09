@@ -3081,6 +3081,154 @@ int test_noti()
 	return ret;
 }
 
+bool media_face_test_cb(media_face_h face, void *user_data)
+{
+	char *face_id = NULL;
+	char *media_id = NULL;
+	unsigned int rect_x = 0;
+	unsigned int rect_y = 0;
+	unsigned int rect_w = 0;
+	unsigned int rect_h = 0;
+	int orientation = 0;
+	char *face_tag = NULL;
+
+	media_face_get_face_id(face, &face_id);
+	media_face_get_media_id(face, &media_id);
+	media_face_get_face_rect(face, &rect_x, &rect_y, &rect_w, &rect_h);
+	media_face_get_orientation(face, &orientation);
+	media_face_get_tag(face, &face_tag);
+
+	media_content_debug("face_id [%s] media_id [%s]", face_id, media_id);
+	media_content_debug("rect_x [%d] rect_y [%d] rect_w [%d] rect_h [%d] orientation [%d]", rect_x, rect_y, rect_w, rect_h, orientation);
+	media_content_debug("tag [%s]", face_tag);
+
+	if (user_data != NULL) {
+		media_face_h new_face = NULL;
+		media_face_clone(&new_face, face);
+
+		GList **list = (GList**)user_data;
+		*list = g_list_append(*list, new_face);
+	}
+
+	SAFE_FREE(face_id);
+	SAFE_FREE(media_id);
+	SAFE_FREE(face_tag);
+
+	return true;
+}
+
+int test_face(void)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	filter_h filter = NULL;
+	GList *all_item_list = NULL;
+	int i = 0;
+
+	ret = media_filter_create(&filter);
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "fail media_filter_create");
+
+	ret = media_filter_set_condition(filter, "MEDIA_TYPE = 0", MEDIA_CONTENT_COLLATE_DEFAULT);
+	if(ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_filter_destroy(filter);
+		media_content_error("Fail to set condition");
+		return ret;
+	}
+
+	ret = media_info_foreach_media_from_db(filter, gallery_media_item_cb, &all_item_list);
+	if(ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_content_error("media_info_foreach_media_from_db failed: %d", ret);
+		media_filter_destroy(filter);
+		return ret;
+	}
+
+	for(i = 0; i < g_list_length(all_item_list); i++) {
+		media_info_h media_handle = NULL;
+		char *media_id = NULL;
+		int face_count = 0;
+
+		media_handle = (media_info_h)g_list_nth_data(all_item_list, i);
+
+		ret = media_info_get_media_id(media_handle, &media_id);
+		if(ret != MEDIA_CONTENT_ERROR_NONE)
+			media_content_error("media_info_get_media_id failed: %d", ret);
+
+		ret = media_info_get_face_count_from_db(media_id, filter, &face_count);
+		if(ret != MEDIA_CONTENT_ERROR_NONE)
+			media_content_error("media_info_get_face_count_from_db failed: %d", ret);
+
+		media_content_error("media_id [%s] face_count [%d]", media_id, face_count);
+
+		ret = media_info_foreach_face_from_db(media_id, filter, media_face_test_cb, NULL);
+		if(ret != MEDIA_CONTENT_ERROR_NONE)
+			media_content_error("media_info_foreach_face_from_db failed: %d", ret);
+
+		media_info_destroy(media_handle);
+	}
+
+	media_filter_destroy(filter);
+
+	return ret;
+}
+
+int test_face_add_del(void)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char *media_id = "ecca7366-e085-41d8-a12b-cbdfc2b9c5fc";
+
+	/* Insert Test */
+	media_face_h face = NULL;
+
+	char *face_tag = "test_face_tag";
+
+	ret = media_face_create_handle(&face);
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "fail media_face_create_handle");
+
+	ret = media_face_set_media_id(face, media_id);
+	ret = media_face_set_face_rect(face, 10, 12, 50, 100);
+	ret = media_face_set_orientation(face, 5);
+	ret = media_face_set_tag(face, face_tag);
+
+	ret = media_face_insert_to_db(face);
+	ret = media_face_destroy(face);
+
+	/* Update Test */
+	GList *all_item_list = NULL;
+	filter_h filter = NULL;
+	ret = media_filter_create(&filter);
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "fail media_filter_create");
+
+	ret = media_filter_set_condition(filter, "MEDIA_FACE_TAG IS NOT NULL", MEDIA_CONTENT_COLLATE_DEFAULT);
+	if(ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_filter_destroy(filter);
+		media_content_error("Fail to set condition");
+		return ret;
+	}
+
+	ret = media_info_foreach_face_from_db(media_id, filter, media_face_test_cb, &all_item_list);
+
+	if (g_list_length(all_item_list) > 0 ) {
+		media_face_h face_handle = NULL;
+		face_handle = (media_face_h)g_list_nth_data(all_item_list, 0);
+
+		ret = media_face_set_face_rect(face_handle, 20, 22, 70, 70);
+		ret = media_face_set_orientation(face_handle, 3);
+		ret = media_face_set_tag(face_handle, NULL);
+		ret = media_face_update_to_db(face_handle);
+
+		media_face_destroy(face_handle);
+	}
+
+	media_filter_destroy(filter);
+
+	/* Delete Test */
+	char *face_id = "5e58a3a8-f0b2-4c29-b799-b49a70dc2313";
+
+	/* Delete Test*/
+	ret = media_face_delete_from_db(face_id);
+
+	return ret;
+}
+
 int main(int argc, char *argv[])
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;

@@ -445,6 +445,45 @@ int media_info_get_bookmark_count_from_db(const char *media_id, filter_h filter,
 int media_info_foreach_bookmark_from_db (const char *media_id, filter_h filter, media_bookmark_cb callback, void *user_data);
 
 /**
+ * @brief Gets the number of face for the passed @a media_id from the media database.
+ * @since_tizen 3.0
+ * @param[in] media_id media id
+ * @param[in]  filter          The handle to the media filter
+ * @param[out] face_count The count of media face
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED DB operation failed
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @pre This function requires opened connection to content service by media_content_connect().
+ * @see media_content_connect()
+ *
+ */
+int media_info_get_face_count_from_db(const char *media_id, filter_h filter, int *face_count);
+
+/**
+ * @brief Iterates through the media files with optional @a media_id in the given @a face @a face from the media database.
+ * @details This function gets all media face info associated with the given media id and
+ * meeting desired filter option and calls registered callback function for
+ * every retrieved media face info. If NULL is passed to the @a filter, no filtering is applied.
+ * @since_tizen 3.0
+ * @param [in] media_id media id
+ * @param[in]  filter          The handle to the media filter
+ * @param [in] callback The callback function to invoke
+ * @param [in] user_data The user data to be passed to the callback function
+ * @return 0 on success, otherwise a negative error value.
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @pre This function requires opened connection to content service by media_content_connect().
+ * @see media_content_connect()
+ * @see media_filter_create()
+ *
+ */
+int media_info_foreach_face_from_db (const char *media_id, filter_h filter, media_face_cb callback, void *user_data);
+
+/**
  * @brief Gets the image metadata for a given media info.
  * @details This function returns an image metadata handle retrieved from the media info.
  *
