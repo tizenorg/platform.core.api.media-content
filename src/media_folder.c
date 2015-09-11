@@ -472,7 +472,7 @@ int media_folder_update_to_db(media_folder_h folder)
 			media_svc_get_pinyin(_content_get_db_handle(), _folder->name, &name_pinyin);
 
 		sql = sqlite3_mprintf("UPDATE %Q SET path='%q', name='%q', modified_time=%d, name_pinyin='%q' WHERE folder_uuid=%Q",
-						DB_TABLE_FOLDER,  _folder->path, _folder->name, _folder->modified_time, name_pinyin, _folder->folder_id);
+						DB_TABLE_FOLDER, _folder->path, _folder->name, _folder->modified_time, name_pinyin, _folder->folder_id);
 
 		ret = _content_query_sql(sql);
 		SQLITE3_SAFE_FREE(sql);

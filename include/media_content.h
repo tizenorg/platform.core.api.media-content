@@ -135,7 +135,8 @@ int media_content_scan_file(const char *path);
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
  *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
- *                   If you can access both storage, you must add all privilege.
+ *                   If you can access both storage, you must add all privilege. \n
+ *                   If you do not update media folder or item in content storage, you cannot see proper folder and media files in the Application which use media database.
  *
  * @param[in] path         The folder path
  * @param[in] is_recursive Set @c true to scan recursively subdirectories,

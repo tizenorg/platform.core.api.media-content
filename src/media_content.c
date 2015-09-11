@@ -197,52 +197,52 @@ static int __media_content_create_attr_handle(void)
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	/* Pinyin*/
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_FILE_NAME_PINYIN,  DB_FIELD_MEDIA_FILE_NAME_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_FILE_NAME_PINYIN, DB_FIELD_MEDIA_FILE_NAME_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_TITLE_PINYIN,  DB_FIELD_MEDIA_TITLE_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_TITLE_PINYIN, DB_FIELD_MEDIA_TITLE_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ALBUM_PINYIN,  DB_FIELD_MEDIA_ALBUM_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ALBUM_PINYIN, DB_FIELD_MEDIA_ALBUM_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ARTIST_PINYIN,  DB_FIELD_MEDIA_ARTIST_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ARTIST_PINYIN, DB_FIELD_MEDIA_ARTIST_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ALBUM_ARTIST_PINYIN,  DB_FIELD_MEDIA_ALBUM_ARTIST_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ALBUM_ARTIST_PINYIN, DB_FIELD_MEDIA_ALBUM_ARTIST_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_GENRE_PINYIN,  DB_FIELD_MEDIA_GENRE_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_GENRE_PINYIN, DB_FIELD_MEDIA_GENRE_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_COMPOSER_PINYIN,  DB_FIELD_MEDIA_COMPOSER_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_COMPOSER_PINYIN, DB_FIELD_MEDIA_COMPOSER_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_COPYRIGHT_PINYIN,  DB_FIELD_MEDIA_COPYRIGHT_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_COPYRIGHT_PINYIN, DB_FIELD_MEDIA_COPYRIGHT_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_DESCRIPTION_PINYIN,  DB_FIELD_MEDIA_DESCRIPTION_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_DESCRIPTION_PINYIN, DB_FIELD_MEDIA_DESCRIPTION_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_AUTHOR_PINYIN,  DB_FIELD_MEDIA_AUTHOR_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_AUTHOR_PINYIN, DB_FIELD_MEDIA_AUTHOR_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_PROVIDER_PINYIN,  DB_FIELD_MEDIA_PROVIDER_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_PROVIDER_PINYIN, DB_FIELD_MEDIA_PROVIDER_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_CONTENT_NAME_PINYIN,  DB_FIELD_MEDIA_CONTENT_NAME_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_CONTENT_NAME_PINYIN, DB_FIELD_MEDIA_CONTENT_NAME_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_CATEGORY_PINYIN,  DB_FIELD_MEDIA_CATEGORY_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_CATEGORY_PINYIN, DB_FIELD_MEDIA_CATEGORY_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_LOCATION_TAG_PINYIN,  DB_FIELD_MEDIA_LOCATION_TAG_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_LOCATION_TAG_PINYIN, DB_FIELD_MEDIA_LOCATION_TAG_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_AGE_RATING_PINYIN,  DB_FIELD_MEDIA_AGE_RATING_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_AGE_RATING_PINYIN, DB_FIELD_MEDIA_AGE_RATING_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_KEYWORD_PINYIN,  DB_FIELD_MEDIA_KEYWORD_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_KEYWORD_PINYIN, DB_FIELD_MEDIA_KEYWORD_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	/* Playlist*/
@@ -438,52 +438,52 @@ static int __media_content_create_alias_attr_handle(void)
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	/* Pinyin*/
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_FILE_NAME_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_FILE_NAME_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_FILE_NAME_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_FILE_NAME_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_TITLE_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_TITLE_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_TITLE_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_TITLE_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ALBUM_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ALBUM_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ALBUM_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ALBUM_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ARTIST_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ARTIST_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ARTIST_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ARTIST_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ALBUM_ARTIST_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ALBUM_ARTIST_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ALBUM_ARTIST_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ALBUM_ARTIST_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_GENRE_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_GENRE_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_GENRE_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_GENRE_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_COMPOSER_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_COMPOSER_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_COMPOSER_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_COMPOSER_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_COPYRIGHT_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_COPYRIGHT_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_COPYRIGHT_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_COPYRIGHT_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_DESCRIPTION_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_DESCRIPTION_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_DESCRIPTION_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_DESCRIPTION_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_AUTHOR_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_AUTHOR_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_AUTHOR_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_AUTHOR_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_PROVIDER_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_PROVIDER_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_PROVIDER_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_PROVIDER_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_CONTENT_NAME_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_CONTENT_NAME_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_CONTENT_NAME_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_CONTENT_NAME_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_CATEGORY_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_CATEGORY_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_CATEGORY_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_CATEGORY_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_LOCATION_TAG_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_LOCATION_TAG_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_LOCATION_TAG_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_LOCATION_TAG_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_AGE_RATING_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_AGE_RATING_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_AGE_RATING_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_AGE_RATING_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_KEYWORD_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_KEYWORD_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_KEYWORD_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_KEYWORD_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	/* Folder */
@@ -786,7 +786,7 @@ int media_content_scan_file(const char *path)
 	bool ignore_dir = FALSE;
 	char *folder_path = NULL;
 	int check_file = MEDIA_CONTENT_ERROR_NONE;
-	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
+	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0, };
 
 	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid path");
 

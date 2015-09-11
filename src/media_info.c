@@ -536,6 +536,7 @@ int media_info_insert_to_db(const char *path, media_info_h *info)
 	ret = _media_info_get_media_info_from_db(path, DEFAULT_MEDIA_STORAGE_ID, (media_info_h)_media);
 
 	*info = (media_info_h)_media;
+
 	return ret;
 }
 
@@ -684,9 +685,7 @@ int media_info_delete_batch_from_db(filter_h filter)
 
 	ret = _content_query_sql(query_string);
 	if (ret == MEDIA_CONTENT_ERROR_NONE) {
-		/*  Send notification for this
-			In this case, send noti for internal storage and external storage
-		*/
+		/* Send notification for this In this case, send noti for internal storage and external storage */
 		media_content_debug("Batch deletion is successfull. Send notification for this");
 		if (_filter->storage_id != NULL) {
 			char *storage_path = NULL;
@@ -2920,7 +2919,7 @@ int media_info_update_to_db(media_info_h media)
 		}
 
 		if (ret == MEDIA_CONTENT_ERROR_NONE) {
-			/*  Send notification for this update */
+			/* Send notification for this update */
 			media_content_debug("Update is successfull. Send notification for this");
 			if (_media->file_path && _media->mime_type) {
 				media_svc_publish_noti(_content_get_db_handle(), MS_MEDIA_ITEM_FILE, MS_MEDIA_ITEM_UPDATE, _media->file_path, _media->media_type, _media->media_id, _media->mime_type);

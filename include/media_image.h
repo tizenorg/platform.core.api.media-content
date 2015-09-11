@@ -150,6 +150,8 @@ int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *
  * @brief Gets the image creation time.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
+ * @remarks You must release @a date_taken using free().
+ *
  * @param[in]  image      The image metadata handle
  * @param[out] date_taken The time, when image was taken (in seconds, since the Epoch)
  *

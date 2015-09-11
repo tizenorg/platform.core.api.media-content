@@ -43,9 +43,7 @@ extern "C" {
 /**
  * @brief  Inserts a media file into the media database.
  * @details This function inserts a media item into the content storage.
- *          Normally, inserting a media file in database is done automatically by the media server, without calling this function.
- *          This function is only called when the media server is busy and the user needs to get quick result of inserting
- *          e.g. Taking a photo while media server is busy and the user wants to see the quick snapshot of the photo taken.
+ *          When the system is restarted, even if you do not use this function, media files are inserted to content storage automatically by the media server.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -58,7 +56,8 @@ extern "C" {
  *                   You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
  *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
- *                   If you can access both storage, you must add all privilege.
+ *                   If you can access both storage, you must add all privilege. \n
+ *                   If you do not insert media item into content storage, you cannot see media files in the Application which use media database.
  *
  * @param[in]  path The path to the media file
  * @param[out] info The handle to the media info
@@ -84,7 +83,7 @@ int media_info_insert_to_db (const char *path, media_info_h *info);
 /**
  * @brief Inserts media files into the media database, asynchronously.
  * @details This function inserts media items into the content storage.
- *          Normally, inserting a media file in database is done automatically by the media server, without calling this function.
+ *          When the system is restarted, even if you do not use this function, media files are inserted to content storage automatically by the media server.
  *          This function invokes media_insert_completed_cb() callback function when insertion to the media database is finished.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -97,7 +96,8 @@ int media_info_insert_to_db (const char *path, media_info_h *info);
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
  *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
- *                   If you can access both storage, you must add all privilege.
+ *                   If you can access both storage, you must add all privilege. \n
+ *                   If you do not insert media item into content storage, you cannot see media files in the Application which use media database.
  *
  * @param[in] path_array   The path array to the media files
  * @param[in] array_length The length of the array
