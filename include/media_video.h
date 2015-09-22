@@ -98,6 +98,7 @@ int video_meta_destroy(video_meta_h video);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_media_id(video_meta_h video, char **media_id);
 
@@ -119,6 +120,7 @@ int video_meta_get_media_id(video_meta_h video, char **media_id);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_album(video_meta_h video, char **album);
 
@@ -140,6 +142,7 @@ int video_meta_get_album(video_meta_h video, char **album);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_artist(video_meta_h video, char **artist);
 
@@ -161,6 +164,7 @@ int video_meta_get_artist(video_meta_h video, char **artist);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_album_artist(video_meta_h video, char **album_artist);
 
@@ -182,6 +186,7 @@ int video_meta_get_album_artist(video_meta_h video, char **album_artist);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_genre(video_meta_h video, char **genre);
 
@@ -203,6 +208,7 @@ int video_meta_get_genre(video_meta_h video, char **genre);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_composer(video_meta_h video, char **composer);
 
@@ -224,6 +230,7 @@ int video_meta_get_composer(video_meta_h video, char **composer);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_year(video_meta_h video, char **year);
 
@@ -243,6 +250,7 @@ int video_meta_get_year(video_meta_h video, char **year);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_recorded_date(video_meta_h video, char **recorded_date);
 
@@ -262,6 +270,7 @@ int video_meta_get_recorded_date(video_meta_h video, char **recorded_date);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_copyright(video_meta_h video, char **copyright);
 
@@ -283,6 +292,7 @@ int video_meta_get_copyright(video_meta_h video, char **copyright);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_track_num(video_meta_h video, char **track_num);
 
@@ -299,6 +309,7 @@ int video_meta_get_track_num(video_meta_h video, char **track_num);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_bit_rate(video_meta_h video, int *bit_rate);
 
@@ -315,6 +326,7 @@ int video_meta_get_bit_rate(video_meta_h video, int *bit_rate);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_duration(video_meta_h video, int *duration);
 
@@ -331,6 +343,7 @@ int video_meta_get_duration(video_meta_h video, int *duration);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_width(video_meta_h video, int *width);
 
@@ -347,6 +360,7 @@ int video_meta_get_width(video_meta_h video, int *width);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int video_meta_get_height(video_meta_h video, int *height);
 
