@@ -3089,7 +3089,7 @@ bool media_face_test_cb(media_face_h face, void *user_data)
 	unsigned int rect_y = 0;
 	unsigned int rect_w = 0;
 	unsigned int rect_h = 0;
-	int orientation = 0;
+	media_content_orientation_e orientation = 0;
 	char *face_tag = NULL;
 
 	media_face_get_face_id(face, &face_id);
@@ -3180,10 +3180,9 @@ int test_face_add_del(void)
 
 	char *face_tag = "test_face_tag";
 
-	ret = media_face_create_handle(&face);
+	ret = media_face_create_handle(media_id, &face);
 	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "fail media_face_create_handle");
 
-	ret = media_face_set_media_id(face, media_id);
 	ret = media_face_set_face_rect(face, 10, 12, 50, 100);
 	ret = media_face_set_orientation(face, 5);
 	ret = media_face_set_tag(face, face_tag);
@@ -3325,6 +3324,14 @@ int main(int argc, char *argv[])
 		return MEDIA_CONTENT_ERROR_NONE;
 
 	ret = test_noti();
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		return MEDIA_CONTENT_ERROR_NONE;
+
+	ret = test_face();
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		return MEDIA_CONTENT_ERROR_NONE;
+
+	ret = test_face_add_del();
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		return MEDIA_CONTENT_ERROR_NONE;
 #endif

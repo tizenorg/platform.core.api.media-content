@@ -17,6 +17,31 @@
 #include <media_face.h>
 #include <media_info_private.h>
 
+static int __media_face_check_media_id(const char *media_id)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char *query_str = NULL;
+	sqlite3_stmt *stmt = NULL;
+	int item_count = 0;
+
+	media_content_retvm_if(!STRING_VALID(media_id), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid media_id");
+
+	query_str = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_MEDIA_BY_ID, media_id);
+	ret = _content_query_prepare(&stmt, query_str, NULL, NULL);
+	SQLITE3_SAFE_FREE(query_str);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	while(sqlite3_step(stmt) == SQLITE_ROW)
+	{
+		item_count = (int)sqlite3_column_int(stmt, 0);
+	}
+	SQLITE3_FINALIZE(stmt);
+
+	media_content_retvm_if(item_count == 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid media_id");
+
+	return MEDIA_CONTENT_ERROR_NONE;
+}
+
 int media_face_clone(media_face_h *dst, media_face_h src)
 {
 	media_face_s *_src = (media_face_s*)src;
@@ -168,46 +193,22 @@ int media_face_get_tag(media_face_h face, char **tag)
 	return MEDIA_CONTENT_ERROR_NONE;
 }
 
-int media_face_create_handle(media_face_h *face)
+int media_face_create_handle(const char *media_id, media_face_h *face)
 {
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	media_content_retvm_if(!STRING_VALID(media_id), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid media_id");
 	media_content_retvm_if(face == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid handle");
+
+	ret = __media_face_check_media_id(media_id);
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Not exist media_id");
 
 	media_face_s* _face = calloc(1, sizeof(media_face_s));
 	media_content_retvm_if(_face == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "Out of memory");
 
-	*face = (media_face_h)_face;
-
-	return MEDIA_CONTENT_ERROR_NONE;
-}
-
-int media_face_set_media_id(media_face_h face, const char *media_id)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-	media_face_s* _face = (media_face_s*)face;
-	char *query_str = NULL;
-	sqlite3_stmt *stmt = NULL;
-	int item_count = 0;
-
-	media_content_retvm_if(face == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid handle");
-	media_content_retvm_if(!STRING_VALID(media_id), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid media_id");
-
-	query_str = sqlite3_mprintf(SELECT_MEDIA_COUNT_FROM_MEDIA_BY_ID, media_id);
-	ret = _content_query_prepare(&stmt, query_str, NULL, NULL);
-	SQLITE3_SAFE_FREE(query_str);
-	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-
-	while(sqlite3_step(stmt) == SQLITE_ROW)
-	{
-		item_count = (int)sqlite3_column_int(stmt, 0);
-	}
-	SQLITE3_FINALIZE(stmt);
-
-	media_content_retvm_if(item_count == 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid media_id");
-
-	SAFE_FREE(_face->media_id);
-
 	_face->media_id = strdup(media_id);
-	media_content_retvm_if(_face->media_id == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "Out of memory");
+
+	*face = (media_face_h)_face;
 
 	return MEDIA_CONTENT_ERROR_NONE;
 }
@@ -264,7 +265,7 @@ int media_face_insert_to_db(media_face_h face)
 	media_content_retvm_if(face == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid handle");
 	media_content_retvm_if(_face->media_id == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid media_id");
 	media_content_retvm_if(_face->face_rect_w == 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid rect_w");
-	media_content_retvm_if(_face->face_rect_w == 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid rect_h");
+	media_content_retvm_if(_face->face_rect_h == 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid rect_h");
 
 	ret = media_svc_generate_uuid(&face_uuid);
 	media_content_retvm_if(ret != MS_MEDIA_ERR_NONE, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "Fail to generate face_id");
@@ -291,6 +292,8 @@ int media_face_update_to_db(media_face_h face)
 	media_content_retvm_if(face == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid handle");
 	media_content_retvm_if(_face->face_id == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid face_id");
 	media_content_retvm_if(_face->media_id == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid media_id");
+	media_content_retvm_if(_face->face_rect_w == 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid rect_w");
+	media_content_retvm_if(_face->face_rect_h == 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid rect_h");
 
 	query_str = sqlite3_mprintf(UPDATE_FACE_TO_FACE, _face->face_rect_x, _face->face_rect_y, _face->face_rect_w, _face->face_rect_h, _face->orientation, _face->face_tag, _face->face_id);
 
