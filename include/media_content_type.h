@@ -147,7 +147,8 @@ typedef enum
     MEDIA_CONTENT_ERROR_OUT_OF_MEMORY           = TIZEN_ERROR_OUT_OF_MEMORY,           /**< Out of memory */
     MEDIA_CONTENT_ERROR_INVALID_OPERATION       = TIZEN_ERROR_INVALID_OPERATION,       /**< Invalid Operation */
     MEDIA_CONTENT_FILE_NO_SPACE_ON_DEVICE       = TIZEN_ERROR_FILE_NO_SPACE_ON_DEVICE, /**< No space left on device */
-    MEDIA_CONTENT_ERROR_PERMISSION_DENIED		  = TIZEN_ERROR_PERMISSION_DENIED,		  /**< Permission denied */
+    MEDIA_CONTENT_ERROR_PERMISSION_DENIED		 = TIZEN_ERROR_PERMISSION_DENIED,		  /**< Permission denied */
+    MEDIA_CONTENT_ERROR_NO_DATA 				 = TIZEN_ERROR_NO_DATA, 				  /**< No data available */
     MEDIA_CONTENT_ERROR_DB_FAILED               = MEDIA_CONTENT_ERROR_CLASS | 0x01,    /**< DB operation failed */
     MEDIA_CONTENT_ERROR_DB_BUSY                 = MEDIA_CONTENT_ERROR_CLASS | 0x02,    /**< DB operation BUSY */
     MEDIA_CONTENT_ERROR_NETWORK                 = MEDIA_CONTENT_ERROR_CLASS | 0x03,    /**< Network Fail */

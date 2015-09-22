@@ -564,6 +564,7 @@ int media_info_get_audio(media_info_h media, audio_meta_h *audio);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_media_id(media_info_h media, char **media_id);
 
@@ -583,6 +584,7 @@ int media_info_get_media_id(media_info_h media, char **media_id);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  *
  */
 int media_info_get_file_path(media_info_h media, char **path);
@@ -603,6 +605,7 @@ int media_info_get_file_path(media_info_h media, char **path);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_display_name(media_info_h media, char **name);
 
@@ -619,6 +622,7 @@ int media_info_get_display_name(media_info_h media, char **name);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_media_type(media_info_h media, media_content_type_e *type);
 
@@ -638,6 +642,7 @@ int media_info_get_media_type(media_info_h media, media_content_type_e *type);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_mime_type(media_info_h media, char **mime_type);
 
@@ -654,6 +659,7 @@ int media_info_get_mime_type(media_info_h media, char **mime_type);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_size(media_info_h media, unsigned long long *size);
 
@@ -670,6 +676,7 @@ int media_info_get_size(media_info_h media, unsigned long long *size);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_added_time(media_info_h media, time_t *added_time);
 
@@ -687,6 +694,7 @@ int media_info_get_added_time(media_info_h media, time_t *added_time);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_modified_time(media_info_h media, time_t *time);
 
@@ -705,6 +713,7 @@ int media_info_get_modified_time(media_info_h media, time_t *time);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_timeline(media_info_h media, time_t* time);
 
@@ -724,6 +733,7 @@ int media_info_get_timeline(media_info_h media, time_t* time);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_thumbnail_path(media_info_h media, char **path);
 
@@ -743,6 +753,7 @@ int media_info_get_thumbnail_path(media_info_h media, char **path);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_description(media_info_h media, char **description);
 
@@ -759,6 +770,7 @@ int media_info_get_description(media_info_h media, char **description);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_longitude(media_info_h media, double* longitude);
 
@@ -775,6 +787,7 @@ int media_info_get_longitude(media_info_h media, double* longitude);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  *
  */
 int media_info_get_latitude(media_info_h media, double* latitude);
@@ -792,6 +805,7 @@ int media_info_get_latitude(media_info_h media, double* latitude);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_altitude(media_info_h media, double* altitude);
 
@@ -808,6 +822,7 @@ int media_info_get_altitude(media_info_h media, double* altitude);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_weather(media_info_h media, char **weather);
 
@@ -824,6 +839,7 @@ int media_info_get_weather(media_info_h media, char **weather);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_rating(media_info_h media, int *rating);
 
@@ -841,6 +857,7 @@ int media_info_get_rating(media_info_h media, int *rating);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_favorite(media_info_h media, bool* favorite);
 
@@ -860,6 +877,7 @@ int media_info_get_favorite(media_info_h media, bool* favorite);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_author(media_info_h media, char **author);
 
@@ -879,6 +897,7 @@ int media_info_get_author(media_info_h media, char **author);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_provider(media_info_h media, char **provider);
 
@@ -898,6 +917,7 @@ int media_info_get_provider(media_info_h media, char **provider);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_content_name(media_info_h media, char **content_name);
 
@@ -917,6 +937,7 @@ int media_info_get_content_name(media_info_h media, char **content_name);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_title(media_info_h media, char **title);
 
@@ -936,6 +957,7 @@ int media_info_get_title(media_info_h media, char **title);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_category(media_info_h media, char **category);
 
@@ -955,6 +977,7 @@ int media_info_get_category(media_info_h media, char **category);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_location_tag(media_info_h media, char **location_tag);
 
@@ -974,6 +997,7 @@ int media_info_get_location_tag(media_info_h media, char **location_tag);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_age_rating(media_info_h media, char **age_rating);
 
@@ -993,6 +1017,7 @@ int media_info_get_age_rating(media_info_h media, char **age_rating);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_keyword(media_info_h media, char **keyword);
 
@@ -1012,6 +1037,7 @@ int media_info_get_keyword(media_info_h media, char **keyword);
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_storage_id(media_info_h media, char **storage_id);
 
@@ -1045,6 +1071,7 @@ int media_info_is_drm(media_info_h media, bool *is_drm);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_storage_type(media_info_h media, media_content_storage_e *storage_type);
 
@@ -1060,6 +1087,7 @@ int media_info_get_storage_type(media_info_h media, media_content_storage_e *sto
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_played_count(media_info_h media, int *played_count);
 
@@ -1077,6 +1105,7 @@ int media_info_get_played_count(media_info_h media, int *played_count);
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int media_info_get_played_time(media_info_h media, time_t *played_time);
 
@@ -1616,6 +1645,152 @@ int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb
  * @see media_content_connect()
  */
 int media_info_cancel_thumbnail(media_info_h media);
+
+/**
+* @brief Creates the media info handle.
+* @details If the information about the file that is already known, you can use this API to generate empty handler.
+*          And you can add the information to the generated handler using media_info_set_XXX() API.
+*          After filling the information to the handler, you can insert into database using media_info_insert_to_db_with_data() API.
+* @since_tizen 3.0
+*
+* @remarks You must release @a media using media_info_destroy().
+*
+* @param[in] path The media info handle
+* @param[out] media The media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB operation failed
+* @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+*
+* @see media_info_insert_to_db_with_data()
+* @see media_info_destroy()
+*/
+int media_info_create(const char *path, media_info_h *media);
+
+/**
+* @brief Inserts media info to database with media info data.
+* @details After filling the information to the generated handler using media_info_create() API, you can insert into database using this API.
+* @since_tizen 3.0
+*
+* @remarks You must create media handle using media_info_create(),
+*               and release @a info using media_info_destroy().
+*
+* @privlevel platform
+* @privilege %http://tizen.org/privilege/content.write
+*
+* @param[in] media The path of the media info
+* @param[out] info The media info handle to get data from database
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB operation failed
+* @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+*
+* @see media_info_create()
+*/
+int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info);
+
+/**
+* @brief Sets the title of media info handle.
+* @since_tizen 3.0
+*
+* @param[in] media The media info handle
+* @param[in] title The title of media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB operation failed
+* @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+*
+* @post media_info_insert_to_db_with_data()
+*/
+int media_info_set_title(media_info_h media, const char *title);
+
+/**
+* @brief Sets the album of media info handle.
+* @since_tizen 3.0
+*
+* @param[in] media The media info handle
+* @param[in] album The album of media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB operation failed
+* @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+*
+* @post media_info_insert_to_db_with_data()
+*/
+int media_info_set_album(media_info_h media, const char *album);
+
+/**
+* @brief Sets the artist of media info handle.
+* @since_tizen 3.0
+*
+* @param[in] media The media info handle
+* @param[in] artist The artist of media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB operation failed
+* @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+*
+* @post media_info_insert_to_db_with_data()
+*/
+int media_info_set_artist(media_info_h media, const char *artist);
+
+/**
+* @brief Sets the genre of media info handle.
+* @since_tizen 3.0
+*
+* @param[in] media The media info handle
+* @param[in] genre The genre of media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB operation failed
+* @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+*
+* @post media_info_insert_to_db_with_data()
+*/
+int media_info_set_genre(media_info_h media, const char *genre);
+
+/**
+* @brief Sets the recorded date of media info handle.
+* @since_tizen 3.0
+*
+* @param[in] media The media info handle
+* @param[in] recorded_date The recorded date of media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB operation failed
+* @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+*
+* @post media_info_insert_to_db_with_data()
+*/
+int media_info_set_recorded_date(media_info_h media, const char *recorded_date);
 
 /**
  * @}

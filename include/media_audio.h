@@ -96,6 +96,7 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_media_id(audio_meta_h audio, char **media_id);
 
@@ -117,6 +118,7 @@ int audio_meta_get_media_id(audio_meta_h audio, char **media_id);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_album(audio_meta_h audio, char **album_name);
 
@@ -138,6 +140,7 @@ int audio_meta_get_album(audio_meta_h audio, char **album_name);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_artist(audio_meta_h audio, char **artist_name);
 
@@ -159,6 +162,7 @@ int audio_meta_get_artist(audio_meta_h audio, char **artist_name);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist_name);
 
@@ -180,6 +184,7 @@ int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist_name);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_genre(audio_meta_h audio, char **genre_name);
 
@@ -201,6 +206,7 @@ int audio_meta_get_genre(audio_meta_h audio, char **genre_name);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_composer(audio_meta_h audio, char **composer_name);
 
@@ -222,6 +228,7 @@ int audio_meta_get_composer(audio_meta_h audio, char **composer_name);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_year(audio_meta_h audio, char **year);
 
@@ -241,6 +248,7 @@ int audio_meta_get_year(audio_meta_h audio, char **year);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_recorded_date(audio_meta_h audio, char **recorded_date);
 
@@ -260,6 +268,7 @@ int audio_meta_get_recorded_date(audio_meta_h audio, char **recorded_date);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_copyright(audio_meta_h audio, char **copyright);
 
@@ -278,6 +287,7 @@ int audio_meta_get_copyright(audio_meta_h audio, char **copyright);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_track_num(audio_meta_h audio, char **track_num);
 
@@ -294,6 +304,7 @@ int audio_meta_get_track_num(audio_meta_h audio, char **track_num);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_bit_rate(audio_meta_h audio, int *bit_rate);
 
@@ -310,6 +321,7 @@ int audio_meta_get_bit_rate(audio_meta_h audio, int *bit_rate);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 
 int audio_meta_get_bitpersample(audio_meta_h audio, int *bitpersample);
@@ -327,6 +339,7 @@ int audio_meta_get_bitpersample(audio_meta_h audio, int *bitpersample);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_sample_rate(audio_meta_h audio, int *sample_rate);
 
@@ -343,6 +356,7 @@ int audio_meta_get_sample_rate(audio_meta_h audio, int *sample_rate);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_channel(audio_meta_h audio, int *channel);
 
@@ -359,6 +373,7 @@ int audio_meta_get_channel(audio_meta_h audio, int *channel);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int audio_meta_get_duration(audio_meta_h audio, int *duration);
 

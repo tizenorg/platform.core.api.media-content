@@ -95,6 +95,7 @@ int image_meta_destroy(image_meta_h image);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int image_meta_get_media_id(image_meta_h image, char **media_id);
 
@@ -111,6 +112,7 @@ int image_meta_get_media_id(image_meta_h image, char **media_id);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int image_meta_get_width(image_meta_h image, int *width);
 
@@ -127,6 +129,7 @@ int image_meta_get_width(image_meta_h image, int *width);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int image_meta_get_height(image_meta_h image, int *height);
 
@@ -143,6 +146,7 @@ int image_meta_get_height(image_meta_h image, int *height);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *orientation);
 
@@ -159,6 +163,7 @@ int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int image_meta_get_date_taken(image_meta_h image, char **date_taken);
 
@@ -178,6 +183,7 @@ int image_meta_get_date_taken(image_meta_h image, char **date_taken);
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  */
 int image_meta_get_burst_id(image_meta_h image, char **burst_id);
 
@@ -196,6 +202,7 @@ int image_meta_get_burst_id(image_meta_h image, char **burst_id);
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  *
  */
 int image_meta_get_exposure_time(image_meta_h image, char **exposure_time);
@@ -213,6 +220,7 @@ int image_meta_get_exposure_time(image_meta_h image, char **exposure_time);
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  *
  */
 int image_meta_get_fnumber(image_meta_h image, double *fnumber);
@@ -230,6 +238,7 @@ int image_meta_get_fnumber(image_meta_h image, double *fnumber);
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  *
  */
 int image_meta_get_iso(image_meta_h image, int *iso);
@@ -249,6 +258,7 @@ int image_meta_get_iso(image_meta_h image, int *iso);
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NO_DATA No data available
  *
  */
 int image_meta_get_model(image_meta_h image, char **model);
