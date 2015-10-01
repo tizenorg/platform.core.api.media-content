@@ -25,7 +25,7 @@ extern "C" {
 
 /**
  * @file media_face.h
- * @brief This file contains the media face API and related to all operations with the face information of the image in Meida DB. \n
+ * @brief This file contains the media face API and related to all operations with the face information of the image in Media DB. \n
  *             Functions include cloning and destroying the face handler, getting face information such as face id, face coordinates in file, \n
  *             face tag. Face information detected and managed by DB automatically when image contents scanning.  \n
  *             And you can insert,update,delete face information manually.
@@ -54,6 +54,7 @@ extern "C" {
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  *
  * @see media_face_destroy()
  * @see media_face_foreach_face_from_db()
@@ -74,6 +75,7 @@ int media_face_clone(media_face_h *dst, media_face_h src);
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  *
  * @see media_face_clone()
  *
@@ -94,6 +96,7 @@ int media_face_destroy(media_face_h face);
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  */
 int media_face_get_face_id(media_face_h face, char **face_id);
 
@@ -109,6 +112,7 @@ int media_face_get_face_id(media_face_h face, char **face_id);
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  */
 int media_face_get_media_id(media_face_h face, char **media_id);
 
@@ -127,6 +131,7 @@ int media_face_get_media_id(media_face_h face, char **media_id);
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  */
 int media_face_get_face_rect(media_face_h face, unsigned int *rect_x, unsigned int *rect_y, unsigned int *rect_w, unsigned int *rect_h);
 
@@ -142,6 +147,7 @@ int media_face_get_face_rect(media_face_h face, unsigned int *rect_x, unsigned i
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  */
 int media_face_get_orientation(media_face_h face, media_content_orientation_e *orientation);
 
@@ -156,6 +162,7 @@ int media_face_get_orientation(media_face_h face, media_content_orientation_e *o
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  */
 int media_face_get_tag(media_face_h face, char **tag);
 
@@ -169,6 +176,7 @@ int media_face_get_tag(media_face_h face, char **tag);
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  * @see media_face_destroy()
  */
 int media_face_create_handle(const char *media_id, media_face_h *face);
@@ -188,6 +196,7 @@ int media_face_create_handle(const char *media_id, media_face_h *face);
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  *
  * @post media_face_insert_to_db()
  * @post media_face_update_to_db()
@@ -208,6 +217,7 @@ int media_face_set_face_rect(media_face_h face, unsigned int rect_x, unsigned in
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  *
  * @post media_face_insert_to_db()
  * @post media_face_update_to_db()
@@ -227,6 +237,7 @@ int media_face_set_orientation(media_face_h face, media_content_orientation_e or
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  *
  * @post media_face_insert_to_db()
  * @post media_face_update_to_db()
@@ -250,6 +261,7 @@ int media_face_set_tag(media_face_h face, const char *tag);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  *
  * @see media_content_connect()
  * @see media_face_destroy()
@@ -275,6 +287,7 @@ int media_face_insert_to_db(media_face_h face);
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  *
  * @pre This function requires opened connection to content service by media_content_connect().
  *
@@ -299,6 +312,7 @@ int media_face_update_to_db(media_face_h face);
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED Not supported
  *
  * @pre This function requires opened connection to content service by media_content_connect().
  * @see media_content_connect()
