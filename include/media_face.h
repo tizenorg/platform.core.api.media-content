@@ -25,7 +25,7 @@ extern "C" {
 
 /**
  * @file media_face.h
- * @brief This file contains the media face API and related to all operations with the face information of the image in Meida DB. \n
+ * @brief This file contains the media face API and related to all operations with the face information of the image in Media DB. \n
  *             Functions include cloning and destroying the face handler, getting face information such as face id, face coordinates in file, \n
  *             face tag. Face information detected and managed by DB automatically when image contents scanning.  \n
  *             And you can insert,update,delete face information manually.
@@ -169,9 +169,10 @@ int media_face_get_tag(media_face_h face, char **tag);
  * @return 0 on success, otherwise a negative error value.
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
  * @see media_face_destroy()
  */
-int media_face_create_handle(const char *media_id, media_face_h *face);
+int media_face_create(const char *media_id, media_face_h *face);
 
 /**
  * @brief Sets the face rectangle of the face handle
