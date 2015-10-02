@@ -3399,17 +3399,21 @@ int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info)
 
 	media_content_retvm_if(_media == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid media");
 	media_content_retvm_if(!STRING_VALID(_media->file_path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid file_path");
-	media_content_retvm_if(!STRING_VALID(_media->mime_type), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid mime_type");
 	media_content_retvm_if(!STRING_VALID(_media->storage_uuid), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid storage_uuid");
-	media_content_retvm_if(!STRING_VALID(_media->title), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid title");
 	media_content_retvm_if(_media->storage_type < 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid storage_type [%d]", _media->storage_type);
-	media_content_retvm_if(_media->size <= 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid size [%d]", _media->size);
-	media_content_retvm_if(_media->modified_time <= 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid modified_time [%d]", _media->modified_time);
 
-	if ((_media->media_type < MEDIA_CONTENT_TYPE_IMAGE) || (_media->media_type > MEDIA_CONTENT_TYPE_OTHERS))
-	{
-		media_content_error("invalid media type [%d]", _media->media_type);
-		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	/* Cloud Item should be filled whole info*/
+	if (_media->storage_type == MEDIA_CONTENT_STORAGE_CLOUD) {
+		media_content_retvm_if(!STRING_VALID(_media->mime_type), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid mime_type");
+		media_content_retvm_if(!STRING_VALID(_media->title), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid title");
+		media_content_retvm_if(_media->size <= 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid size [%d]", _media->size);
+		media_content_retvm_if(_media->modified_time <= 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid modified_time [%d]", _media->modified_time);
+
+		if ((_media->media_type < MEDIA_CONTENT_TYPE_IMAGE) || (_media->media_type > MEDIA_CONTENT_TYPE_OTHERS))
+		{
+			media_content_error("invalid media type [%d]", _media->media_type);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
 	}
 
 	media_content_sec_debug("storage[%d], path[%s], media_type[%d]", _media->storage_type, _media->file_path, _media->media_type);
