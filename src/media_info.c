@@ -3443,6 +3443,93 @@ int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info)
 	return ret;
 }
 
+int media_info_create(const char *path, media_info_h *media)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0, };
+	media_svc_storage_type_e storage_type = 0;
+
+	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+	media_content_retvm_if(media == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid media");
+
+	memset(storage_id, 0x00, sizeof(storage_id));
+
+	if (strstr(MEDIA_ROOT_PATH_CLOUD, path) == NULL) {
+		bool ignore_file = FALSE;
+		bool ignore_dir = FALSE;
+		char *folder_path = NULL;
+
+		ret = _media_util_check_ignore_file(path, &ignore_file);
+		media_content_retvm_if(ignore_file == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+
+		ret = _media_util_check_file_exist(path);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+		folder_path = g_path_get_dirname(path);
+		ret = _media_util_check_ignore_dir(folder_path, &ignore_dir);
+		SAFE_FREE(folder_path);
+		media_content_retvm_if(ignore_dir == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
+
+		ret = media_svc_get_storage_id(_content_get_db_handle(), path, storage_id);
+		if(ret != MS_MEDIA_ERR_NONE)
+		{
+			media_content_error("media_svc_get_storage_id failed : %d", ret);
+			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		}
+
+		ret = media_svc_get_storage_type(path, &storage_type, tzplatform_getuid(TZ_USER_NAME));
+		if(ret != MS_MEDIA_ERR_NONE) {
+			media_content_sec_error("media_svc_get_storage_type failed : %d", ret);
+			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		}
+	}
+
+	media_info_s *_media = (media_info_s*)calloc(1,sizeof(media_info_s));
+	media_content_retvm_if(_media == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+
+	_media->audio_meta = (audio_meta_s *)calloc(1, sizeof(audio_meta_s));
+	if(_media->audio_meta == NULL)
+	{
+		SAFE_FREE(_media);
+		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
+
+	_media->video_meta = (video_meta_s *)calloc(1, sizeof(video_meta_s));
+	if(_media->video_meta == NULL)
+	{
+		SAFE_FREE(_media->audio_meta);
+		SAFE_FREE(_media);
+		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
+
+	_media->image_meta = (image_meta_s *)calloc(1, sizeof(image_meta_s));
+	if(_media->image_meta == NULL)
+	{
+		SAFE_FREE(_media->audio_meta);
+		SAFE_FREE(_media->video_meta);
+		SAFE_FREE(_media);
+		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
+
+	_media->file_path = g_strdup(path);
+	_media->storage_type = -1;
+	_media->media_type = -1;
+	_media->modified_time = -1;
+	_media->size = -1;
+
+	if(STRING_VALID(storage_id)) {
+		_media->storage_uuid = g_strdup(storage_id);
+		_media->storage_type = storage_type;
+	}
+
+	*media = (media_info_h)_media;
+
+	return ret;
+}
+
 int media_info_create_handle(media_info_h *media)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;

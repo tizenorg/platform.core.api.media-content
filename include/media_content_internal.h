@@ -136,6 +136,7 @@ int media_storage_get_storage_account(media_storage_h storage, char **storage_ac
 * @see media_info_destroy()
 */
 int media_info_create_handle(media_info_h *media);
+int media_info_create(const char *path, media_info_h *media);
 
 /**
 * @internal
