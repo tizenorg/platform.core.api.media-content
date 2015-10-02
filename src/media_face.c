@@ -193,7 +193,7 @@ int media_face_get_tag(media_face_h face, char **tag)
 	return MEDIA_CONTENT_ERROR_NONE;
 }
 
-int media_face_create_handle(const char *media_id, media_face_h *face)
+int media_face_create(const char *media_id, media_face_h *face)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 

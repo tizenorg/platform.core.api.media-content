@@ -3180,8 +3180,8 @@ int test_face_add_del(void)
 
 	char *face_tag = "test_face_tag";
 
-	ret = media_face_create_handle(media_id, &face);
-	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "fail media_face_create_handle");
+	ret = media_face_create(media_id, &face);
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "fail media_face_create");
 
 	ret = media_face_set_face_rect(face, 10, 12, 50, 100);
 	ret = media_face_set_orientation(face, 5);
