@@ -3134,48 +3134,47 @@ static int __media_info_map_data_usr_to_svc(media_info_s *media, media_svc_conte
 	svc_content_info->media_meta.altitude = media->altitude;
 	svc_content_info->media_meta.weather = g_strdup(media->weather);
 
-	switch(media->media_type)
-	{
-		case MEDIA_CONTENT_TYPE_IMAGE:
-			svc_content_info->media_meta.width = media->image_meta->width;
-			svc_content_info->media_meta.height = media->image_meta->height;
-			svc_content_info->media_meta.datetaken = g_strdup(media->image_meta->date_taken);
-			svc_content_info->media_meta.orientation = media->image_meta->orientation;
-			break;
-		case MEDIA_CONTENT_TYPE_VIDEO:
-			svc_content_info->media_meta.album = g_strdup(media->audio_meta->album);
-			svc_content_info->media_meta.artist = g_strdup(media->audio_meta->artist);
-			svc_content_info->media_meta.album_artist = g_strdup(media->audio_meta->album_artist);
-			svc_content_info->media_meta.genre = g_strdup(media->audio_meta->genre);
-			svc_content_info->media_meta.composer = g_strdup(media->audio_meta->composer);
-			svc_content_info->media_meta.year = g_strdup(media->audio_meta->year);
-			svc_content_info->media_meta.recorded_date = g_strdup(media->audio_meta->recorded_date);
-			svc_content_info->media_meta.copyright = g_strdup(media->audio_meta->copyright);
-			svc_content_info->media_meta.track_num = g_strdup(media->audio_meta->track_num);
-			svc_content_info->media_meta.bitrate = media->audio_meta->bitrate;
-			svc_content_info->media_meta.duration = media->audio_meta->duration;
-			svc_content_info->media_meta.width = media->image_meta->width;
-			svc_content_info->media_meta.height = media->image_meta->height;
-			break;
-		case MEDIA_CONTENT_TYPE_SOUND:
-		case MEDIA_CONTENT_TYPE_MUSIC:
-			svc_content_info->media_meta.album = g_strdup(media->audio_meta->album);
-			svc_content_info->media_meta.artist = g_strdup(media->audio_meta->artist);
-			svc_content_info->media_meta.album_artist = g_strdup(media->audio_meta->album_artist);
-			svc_content_info->media_meta.genre = g_strdup(media->audio_meta->genre);
-			svc_content_info->media_meta.composer = g_strdup(media->audio_meta->composer);
-			svc_content_info->media_meta.year = g_strdup(media->audio_meta->year);
-			svc_content_info->media_meta.recorded_date = g_strdup(media->audio_meta->recorded_date);
-			svc_content_info->media_meta.copyright = g_strdup(media->audio_meta->copyright);
-			svc_content_info->media_meta.track_num = g_strdup(media->audio_meta->track_num);
-			svc_content_info->media_meta.bitrate = media->audio_meta->bitrate;
-			svc_content_info->media_meta.duration = media->audio_meta->duration;
-			svc_content_info->media_meta.channel = media->audio_meta->channel;
-			svc_content_info->media_meta.samplerate = media->audio_meta->samplerate;
-			break;
-		case MEDIA_CONTENT_TYPE_OTHERS:
-		default:
-			break;
+	svc_content_info->media_meta.album = g_strdup(media->audio_meta->album);
+	svc_content_info->media_meta.artist = g_strdup(media->audio_meta->artist);
+	svc_content_info->media_meta.genre = g_strdup(media->audio_meta->genre);
+	svc_content_info->media_meta.recorded_date = g_strdup(media->audio_meta->recorded_date);
+
+	if(storage_type == MEDIA_CONTENT_STORAGE_CLOUD) {
+		switch(media->media_type)
+		{
+			case MEDIA_CONTENT_TYPE_IMAGE:
+				svc_content_info->media_meta.width = media->image_meta->width;
+				svc_content_info->media_meta.height = media->image_meta->height;
+				svc_content_info->media_meta.datetaken = g_strdup(media->image_meta->date_taken);
+				svc_content_info->media_meta.orientation = media->image_meta->orientation;
+				break;
+			case MEDIA_CONTENT_TYPE_VIDEO:
+				svc_content_info->media_meta.album_artist = g_strdup(media->audio_meta->album_artist);
+				svc_content_info->media_meta.composer = g_strdup(media->audio_meta->composer);
+				svc_content_info->media_meta.year = g_strdup(media->audio_meta->year);
+				svc_content_info->media_meta.copyright = g_strdup(media->audio_meta->copyright);
+				svc_content_info->media_meta.track_num = g_strdup(media->audio_meta->track_num);
+				svc_content_info->media_meta.bitrate = media->audio_meta->bitrate;
+				svc_content_info->media_meta.duration = media->audio_meta->duration;
+				svc_content_info->media_meta.width = media->image_meta->width;
+				svc_content_info->media_meta.height = media->image_meta->height;
+				break;
+			case MEDIA_CONTENT_TYPE_SOUND:
+			case MEDIA_CONTENT_TYPE_MUSIC:
+				svc_content_info->media_meta.album_artist = g_strdup(media->audio_meta->album_artist);
+				svc_content_info->media_meta.composer = g_strdup(media->audio_meta->composer);
+				svc_content_info->media_meta.year = g_strdup(media->audio_meta->year);
+				svc_content_info->media_meta.copyright = g_strdup(media->audio_meta->copyright);
+				svc_content_info->media_meta.track_num = g_strdup(media->audio_meta->track_num);
+				svc_content_info->media_meta.bitrate = media->audio_meta->bitrate;
+				svc_content_info->media_meta.duration = media->audio_meta->duration;
+				svc_content_info->media_meta.channel = media->audio_meta->channel;
+				svc_content_info->media_meta.samplerate = media->audio_meta->samplerate;
+				break;
+			case MEDIA_CONTENT_TYPE_OTHERS:
+			default:
+				break;
+		}
 	}
 
 	*service_content = svc_content_info;
@@ -3252,7 +3251,7 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 			}
 			break;
 		case MEDIA_INFO_ALBUM:
-			if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO)
+			//if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO)
 			{
 				SAFE_FREE(_media->video_meta->album);
 				if(STRING_VALID(str_data))
@@ -3265,7 +3264,7 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 					_media->video_meta->album = NULL;
 				}
 			}
-			else if((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND))
+			//else if((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND))
 			{
 				SAFE_FREE(_media->audio_meta->album);
 				if(STRING_VALID(str_data))
@@ -3278,14 +3277,9 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 					_media->audio_meta->album = NULL;
 				}
 			}
-			else
-			{
-				media_content_error("Invalid media type");
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
 			break;
 		case MEDIA_INFO_ARTIST:
-			if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO)
+			//if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO)
 			{
 				SAFE_FREE(_media->video_meta->artist);
 				if(STRING_VALID(str_data))
@@ -3298,7 +3292,7 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 					_media->video_meta->artist = NULL;
 				}
 			}
-			else if((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND))
+			//else if((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND))
 			{
 				SAFE_FREE(_media->audio_meta->artist);
 				if(STRING_VALID(str_data))
@@ -3311,14 +3305,9 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 					_media->audio_meta->artist = NULL;
 				}
 			}
-			else
-			{
-				media_content_error("Invalid media type");
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
 			break;
 		case MEDIA_INFO_GENRE:
-			if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO)
+			//if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO)
 			{
 				SAFE_FREE(_media->video_meta->genre);
 				if(STRING_VALID(str_data))
@@ -3331,7 +3320,7 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 					_media->video_meta->genre = NULL;
 				}
 			}
-			else if((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND))
+			//else if((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND))
 			{
 				SAFE_FREE(_media->audio_meta->genre);
 				if(STRING_VALID(str_data))
@@ -3344,14 +3333,9 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 					_media->audio_meta->genre = NULL;
 				}
 			}
-			else
-			{
-				media_content_error("Invalid media type");
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
 			break;
 		case MEDIA_INFO_RECORDED_DATE:
-			if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO)
+			//if(_media->media_type == MEDIA_CONTENT_TYPE_VIDEO)
 			{
 				SAFE_FREE(_media->video_meta->recorded_date);
 				if(STRING_VALID(str_data))
@@ -3364,7 +3348,7 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 					_media->video_meta->recorded_date = NULL;
 				}
 			}
-			else if((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND))
+			//else if((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND))
 			{
 				SAFE_FREE(_media->audio_meta->recorded_date);
 				if(STRING_VALID(str_data))
@@ -3376,11 +3360,6 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 				{
 					_media->audio_meta->recorded_date = NULL;
 				}
-			}
-			else
-			{
-				media_content_error("Invalid media type");
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 			}
 			break;
 		default:
