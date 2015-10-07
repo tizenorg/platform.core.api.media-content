@@ -3381,6 +3381,85 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 	return MEDIA_CONTENT_ERROR_NONE;
 }
 
+static int __media_info_destroy(media_info_h media)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if(_media)
+	{
+		SAFE_FREE(_media->media_id);
+		SAFE_FREE(_media->file_path);
+		SAFE_FREE(_media->display_name);
+		SAFE_FREE(_media->mime_type);
+		SAFE_FREE(_media->thumbnail_path);
+		SAFE_FREE(_media->description);
+		SAFE_FREE(_media->author);
+		SAFE_FREE(_media->provider);
+		SAFE_FREE(_media->content_name);
+		SAFE_FREE(_media->category);
+		SAFE_FREE(_media->location_tag);
+		SAFE_FREE(_media->age_rating);
+		SAFE_FREE(_media->keyword);
+		SAFE_FREE(_media->title);
+		SAFE_FREE(_media->weather);
+		SAFE_FREE(_media->storage_uuid);
+
+		if(_media->image_meta) {
+			SAFE_FREE(_media->image_meta->media_id);
+			SAFE_FREE(_media->image_meta->date_taken);
+			SAFE_FREE(_media->image_meta->burst_id);
+			SAFE_FREE(_media->image_meta->exposure_time);
+			SAFE_FREE(_media->image_meta->model);
+			SAFE_FREE(_media->image_meta->title);
+			SAFE_FREE(_media->image_meta->weather);
+
+			SAFE_FREE(_media->image_meta);
+		}
+
+		if(_media->video_meta) {
+			SAFE_FREE(_media->video_meta->media_id);
+			SAFE_FREE(_media->video_meta->title);
+			SAFE_FREE(_media->video_meta->album);
+			SAFE_FREE(_media->video_meta->artist);
+			SAFE_FREE(_media->video_meta->album_artist);
+			SAFE_FREE(_media->video_meta->genre);
+			SAFE_FREE(_media->video_meta->composer);
+			SAFE_FREE(_media->video_meta->year);
+			SAFE_FREE(_media->video_meta->recorded_date);
+			SAFE_FREE(_media->video_meta->copyright);
+			SAFE_FREE(_media->video_meta->track_num);
+
+			SAFE_FREE(_media->video_meta);
+		}
+
+		if(_media->audio_meta) {
+			SAFE_FREE(_media->audio_meta->media_id);
+			SAFE_FREE(_media->audio_meta->title);
+			SAFE_FREE(_media->audio_meta->album);
+			SAFE_FREE(_media->audio_meta->artist);
+			SAFE_FREE(_media->audio_meta->album_artist);
+			SAFE_FREE(_media->audio_meta->genre);
+			SAFE_FREE(_media->audio_meta->composer);
+			SAFE_FREE(_media->audio_meta->year);
+			SAFE_FREE(_media->audio_meta->recorded_date);
+			SAFE_FREE(_media->audio_meta->copyright);
+			SAFE_FREE(_media->audio_meta->track_num);
+
+			SAFE_FREE(_media->audio_meta);
+		}
+
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
 int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -3432,6 +3511,18 @@ int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info)
 		ret = _media_info_get_media_info_from_db(_media->file_path, _media->storage_uuid, (media_info_h)_get_media);
 
 		*info = (media_info_h)_get_media;
+
+		/*Fill out the handle*/
+		char *media_file_path = g_strdup(_media->file_path);
+		char *media_string_uuid = g_strdup(_media->storage_uuid);
+
+		__media_info_destroy(media);
+		ret = _media_info_get_media_info_from_db(media_file_path, media_string_uuid, media);
+		if(ret != MEDIA_CONTENT_ERROR_NONE)
+			media_content_error("_media_info_get_media_info_from_db fail", ret);
+
+		SAFE_FREE(media_file_path);
+		SAFE_FREE(media_string_uuid);
 	}
 
 	return ret;
@@ -3510,9 +3601,9 @@ int media_info_create(const char *path, media_info_h *media)
 
 	_media->file_path = g_strdup(path);
 	_media->storage_type = -1;
-	_media->media_type = -1;
-	_media->modified_time = -1;
-	_media->size = -1;
+	_media->media_type = 0;
+	_media->modified_time = 0;
+	_media->size = 0;
 	_media->longitude= MEDIA_SVC_DEFAULT_GPS_VALUE;
 	_media->latitude = MEDIA_SVC_DEFAULT_GPS_VALUE;
 	_media->altitude= MEDIA_SVC_DEFAULT_GPS_VALUE;
