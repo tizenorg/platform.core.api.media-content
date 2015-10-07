@@ -3115,6 +3115,7 @@ static int __media_info_map_data_usr_to_svc(media_info_s *media, media_svc_conte
 	media_content_retvm_if(svc_content_info == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 	svc_content_info->path = g_strdup(media->file_path);
+	svc_content_info->file_name = g_strdup(media->display_name);
 	svc_content_info->media_type = media->media_type;
 	svc_content_info->mime_type = g_strdup(media->mime_type);
 	svc_content_info->size = media->size;
@@ -3125,6 +3126,9 @@ static int __media_info_map_data_usr_to_svc(media_info_s *media, media_svc_conte
 	svc_content_info->modified_time = media->modified_time;
 	svc_content_info->thumbnail_path = g_strdup(media->thumbnail_path);
 	svc_content_info->is_drm = media->is_drm;
+	svc_content_info->last_played_time= media->played_time;
+	svc_content_info->played_count= media->played_count;
+	svc_content_info->favourate= media->favourite;
 
 	svc_content_info->media_meta.title = g_strdup(media->title);
 	svc_content_info->media_meta.rating = media->rating;
@@ -3133,6 +3137,13 @@ static int __media_info_map_data_usr_to_svc(media_info_s *media, media_svc_conte
 	svc_content_info->media_meta.latitude = media->latitude;
 	svc_content_info->media_meta.altitude = media->altitude;
 	svc_content_info->media_meta.weather = g_strdup(media->weather);
+	svc_content_info->media_meta.category = g_strdup(media->category);
+	svc_content_info->media_meta.keyword = g_strdup(media->keyword);
+	svc_content_info->media_meta.location_tag = g_strdup(media->location_tag);
+	svc_content_info->media_meta.content_name = g_strdup(media->content_name);
+	svc_content_info->media_meta.age_rating = g_strdup(media->age_rating);
+	svc_content_info->media_meta.author = g_strdup(media->author);
+	svc_content_info->media_meta.provider = g_strdup(media->provider);
 
 	svc_content_info->media_meta.album = g_strdup(media->audio_meta->album);
 	svc_content_info->media_meta.artist = g_strdup(media->audio_meta->artist);
@@ -3502,6 +3513,9 @@ int media_info_create(const char *path, media_info_h *media)
 	_media->media_type = -1;
 	_media->modified_time = -1;
 	_media->size = -1;
+	_media->longitude= MEDIA_SVC_DEFAULT_GPS_VALUE;
+	_media->latitude = MEDIA_SVC_DEFAULT_GPS_VALUE;
+	_media->altitude= MEDIA_SVC_DEFAULT_GPS_VALUE;
 
 	if(STRING_VALID(storage_id)) {
 		_media->storage_uuid = g_strdup(storage_id);
