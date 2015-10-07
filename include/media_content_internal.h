@@ -496,53 +496,6 @@ int media_info_set_storage_id(media_info_h media, const char *storage_id);
  */
 int media_storage_get_scan_status(const char *storage_uuid, media_storage_scan_status_e *scan_status);
 
-/* Handle for dbus notification to use multiple callback */
-typedef void *media_content_noti_h;
-
-/**
- * @brief Subscribes notifications of the media DB change.
- * @details This function subscribes notifications of the media DB change which are published by the media server or other apps.
- *          media_content_db_update_cb() function will be called when notification of the media DB change is subscribed.
- *
- * @since_tizen 2.4
- *
- * @param[in] callback  The callback to be invoked when the scanning is finished
- * @param[in] user_data The user data to be passed to the callback function
- *
- * @return @c 0 on success,
- *         otherwise a negative error value
- *
- * @retval #MEDIA_CONTENT_ERROR_NONE Successful
- * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
- * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
- * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
- *
- * @see media_content_db_update_cb()
- * @see media_content_unset_db_updated_cb_v2()
- */
-int media_content_set_db_updated_cb_v2(media_content_noti_h *noti_handle, media_content_db_update_cb callback, void *user_data);
-
-
-/**
- * @brief Unsubscribes notifications of the media DB change.
- * @details This function unsubscribes notifications of the media DB change which are published by the media server or other apps.
- *
- * @since_tizen 2.4
- *
- * @return @c 0 on success,
- *         otherwise a negative error value
- *
- * @retval #MEDIA_CONTENT_ERROR_NONE Successful
- * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
- *
- * @pre media_content_set_db_updated_cb_v2()
- *
- * @see media_content_set_db_updated_cb_v2()
- */
-int media_content_unset_db_updated_cb_v2(media_content_noti_h noti_handle);
-
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
