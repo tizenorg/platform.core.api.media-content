@@ -307,10 +307,7 @@ int _media_db_get_media_group(media_group_e group, filter_h filter, media_group_
 
 	while(sqlite3_step(stmt) == SQLITE_ROW)
 	{
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
-		{
-			name = strdup((const char *)sqlite3_column_text(stmt, 0));
-		}
+		name = g_strdup((const char *)sqlite3_column_text(stmt, 0));
 
 		if(callback(name, user_data) == false)
 		{
@@ -364,15 +361,9 @@ int _media_db_get_album(filter_h filter, media_album_cb callback, void *user_dat
 		}
 
 		album->album_id = (int)sqlite3_column_int(stmt, 0);
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-			album->name = strdup((const char *)sqlite3_column_text(stmt, 1));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
-			album->artist = strdup((const char *)sqlite3_column_text(stmt, 2));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
-			album->album_art_path = strdup((const char *)sqlite3_column_text(stmt, 3));
+		album->name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
+		album->artist = g_strdup((const char *)sqlite3_column_text(stmt, 2));
+		album->album_art_path = g_strdup((const char *)sqlite3_column_text(stmt, 3));
 
 		if(callback((media_album_h)album, user_data) == false)
 		{
@@ -426,26 +417,14 @@ int _media_db_get_folder(filter_h filter, media_folder_cb callback, void *user_d
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
-			_folder->folder_id = strdup((const char *)sqlite3_column_text(stmt, 0));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-			_folder->path = strdup((const char *)sqlite3_column_text(stmt, 1));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
-			_folder->name = strdup((const char *)sqlite3_column_text(stmt, 2));
-
+		_folder->folder_id = g_strdup((const char *)sqlite3_column_text(stmt, 0));
+		_folder->path = g_strdup((const char *)sqlite3_column_text(stmt, 1));
+		_folder->name = g_strdup((const char *)sqlite3_column_text(stmt, 2));
 		_folder->storage_type = (int)sqlite3_column_int(stmt, 3);
-
 		_folder->modified_time = (int)sqlite3_column_int(stmt, 4);
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 5)))
-			_folder->storage_uuid = strdup((const char *)sqlite3_column_text(stmt, 5));
-
+		_folder->storage_uuid = g_strdup((const char *)sqlite3_column_text(stmt, 5));
 		_folder->folder_order = (int)sqlite3_column_int(stmt, 6);
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 7)))
-			_folder->parent_folder_id= strdup((const char *)sqlite3_column_text(stmt, 7));
+		_folder->parent_folder_id= g_strdup((const char *)sqlite3_column_text(stmt, 7));
 
 		if(callback((media_folder_h)_folder, user_data) == false)
 		{
@@ -499,12 +478,8 @@ int _media_db_get_playlist(filter_h filter, media_playlist_cb callback, void *us
 		}
 
 		_playlist->playlist_id = (int)sqlite3_column_int(stmt, 0);
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-			_playlist->name = strdup((const char *)sqlite3_column_text(stmt, 1));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
-			_playlist->thumbnail_path = strdup((const char *)sqlite3_column_text(stmt, 2));
+		_playlist->name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
+		_playlist->thumbnail_path = g_strdup((const char *)sqlite3_column_text(stmt, 2));
 
 		if(callback((media_playlist_h)_playlist, user_data) == false)
 		{
@@ -619,9 +594,7 @@ int _media_db_get_tag(const char *media_id, filter_h filter, media_tag_cb callba
 		}
 
 		_tag->tag_id = (int)sqlite3_column_int(stmt, 0);
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-			_tag->name = strdup((const char *)sqlite3_column_text(stmt, 1));
+		_tag->name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
 
 		if(callback((media_tag_h)_tag, user_data) == false)
 		{
@@ -675,14 +648,9 @@ int _media_db_get_bookmark(const char *media_id, filter_h filter, media_bookmark
 		}
 
 		bookmark->bookmark_id = (int)sqlite3_column_int(stmt, 0);
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-			bookmark->media_id = strdup((const char *)sqlite3_column_text(stmt, 1));
-
+		bookmark->media_id = g_strdup((const char *)sqlite3_column_text(stmt, 1));
 		bookmark->marked_time = (int)sqlite3_column_int(stmt, 2);
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
-			bookmark->thumbnail_path = strdup((const char *)sqlite3_column_text(stmt, 3));
+		bookmark->thumbnail_path = g_strdup((const char *)sqlite3_column_text(stmt, 3));
 
 		if(callback((media_bookmark_h)bookmark, user_data) == false)
 		{
@@ -737,20 +705,14 @@ int _media_db_get_face(const char *media_id, filter_h filter, media_face_cb call
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
-			face->face_id = strdup((const char *)sqlite3_column_text(stmt, 0));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-			face->media_id = strdup((const char *)sqlite3_column_text(stmt, 1));
-
+		face->face_id = g_strdup((const char *)sqlite3_column_text(stmt, 0));
+		face->media_id = g_strdup((const char *)sqlite3_column_text(stmt, 1));
 		face->face_rect_x = (int)sqlite3_column_int(stmt, 2);
 		face->face_rect_y = (int)sqlite3_column_int(stmt, 3);
 		face->face_rect_w = (int)sqlite3_column_int(stmt, 4);
 		face->face_rect_h = (int)sqlite3_column_int(stmt, 5);
 		face->orientation= (int)sqlite3_column_int(stmt, 6);
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 7)))
-			face->face_tag = strdup((const char *)sqlite3_column_text(stmt, 7));
+		face->face_tag = g_strdup((const char *)sqlite3_column_text(stmt, 7));
 
 		if(callback((media_face_h)face, user_data) == false)
 		{
@@ -1256,18 +1218,10 @@ int _media_db_get_storage(filter_h filter, media_storage_cb callback, void *user
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
-			_storage->storage_id = strdup((const char *)sqlite3_column_text(stmt, 0));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-			_storage->storage_name = strdup((const char *)sqlite3_column_text(stmt, 1));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
-			_storage->storage_path = strdup((const char *)sqlite3_column_text(stmt, 2));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 3)))
-			_storage->storage_account = strdup((const char *)sqlite3_column_text(stmt, 3));
-
+		_storage->storage_id = g_strdup((const char *)sqlite3_column_text(stmt, 0));
+		_storage->storage_name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
+		_storage->storage_path = g_strdup((const char *)sqlite3_column_text(stmt, 2));
+		_storage->storage_account = g_strdup((const char *)sqlite3_column_text(stmt, 3));
 		_storage->storage_type = (int)sqlite3_column_int(stmt, 4);
 
 		if(callback((media_storage_h)_storage, user_data) == false)
