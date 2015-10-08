@@ -421,14 +421,9 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 
 		media_content_error("folder handle %x", _folder);
 
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 0)))
-			_folder->folder_id = strdup((const char *)sqlite3_column_text(stmt, 0));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-			_folder->path = strdup((const char *)sqlite3_column_text(stmt, 1));
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 2)))
-			_folder->name = strdup((const char *)sqlite3_column_text(stmt, 2));
+		_folder->folder_id = g_strdup((const char *)sqlite3_column_text(stmt, 0));
+		_folder->path = g_strdup((const char *)sqlite3_column_text(stmt, 1));
+		_folder->name = g_strdup((const char *)sqlite3_column_text(stmt, 2));
 
 		*folder = (media_folder_h)_folder;
 	}
