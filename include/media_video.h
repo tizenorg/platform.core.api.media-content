@@ -15,7 +15,6 @@
 */
 
 
-
 #ifndef __TIZEN_VIDEO_META_H__
 #define __TIZEN_VIDEO_META_H__
 
@@ -39,8 +38,7 @@ extern "C" {
 
 /**
  * @brief Clones the video metadata.
- * @details This function copies the video metadata handle from a source to 
- *          destination.
+ * @details This function copies the video metadata handle from a source to destination.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -104,7 +102,7 @@ int video_meta_destroy(video_meta_h video);
 int video_meta_get_media_id(video_meta_h video, char **media_id);
 
 /**
- * @brief Gets the video's album.
+ * @brief Gets the album of the given video metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -112,7 +110,7 @@ int video_meta_get_media_id(video_meta_h video, char **media_id);
  * @remarks You must release @a album using free().
  *
  * @param[in]  video The video metadata handle
- * @param[out] album The video album or @c NULL
+ * @param[out] album The album of the video metadata
  *
  * @return @c 0 on success, 
  *         otherwise a negative error value
@@ -125,7 +123,7 @@ int video_meta_get_media_id(video_meta_h video, char **media_id);
 int video_meta_get_album(video_meta_h video, char **album);
 
 /**
- * @brief Gets the video artist.
+ * @brief Gets the artist of the given video metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -167,7 +165,7 @@ int video_meta_get_artist(video_meta_h video, char **artist);
 int video_meta_get_album_artist(video_meta_h video, char **album_artist);
 
 /**
- * @brief Gets the video genre.
+ * @brief Gets the genre of the given video metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -188,7 +186,7 @@ int video_meta_get_album_artist(video_meta_h video, char **album_artist);
 int video_meta_get_genre(video_meta_h video, char **genre);
 
 /**
- * @brief Gets the video composer.
+ * @brief Gets the composer of the given video metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -209,7 +207,7 @@ int video_meta_get_genre(video_meta_h video, char **genre);
 int video_meta_get_composer(video_meta_h video, char **composer);
 
 /**
- * @brief Gets the year of the video.
+ * @brief Gets the year of the given video metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -249,7 +247,7 @@ int video_meta_get_year(video_meta_h video, char **year);
 int video_meta_get_recorded_date(video_meta_h video, char **recorded_date);
 
 /**
- * @brief Gets the video copyright.
+ * @brief Gets the copyright notice of the given video metadata.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a copyright using free().
@@ -268,7 +266,7 @@ int video_meta_get_recorded_date(video_meta_h video, char **recorded_date);
 int video_meta_get_copyright(video_meta_h video, char **copyright);
 
 /**
- * @brief Gets the track number of the video.
+ * @brief Gets the track number of the given videoo metadata.
  * @details If the value is an empty string, the method returns "Unknown".
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -289,26 +287,23 @@ int video_meta_get_copyright(video_meta_h video, char **copyright);
 int video_meta_get_track_num(video_meta_h video, char **track_num);
 
 /**
- * @brief Gets the video bit rate.
+ * @brief Gets the bitrate of the given video metadata in bitrate per second.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
- * @remarks You must release @a bit_rate using free().
- *
- * @param[in]  video     The video metadata handle
- * @param[out] bit_rate  The bit rate of the video metadata
+ * @param[in]  video    The video metadata handle
+ * @param[out] bit_rate The video bit rate in bit per second [bps]
  *
  * @return @c 0 on success, 
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  */
 int video_meta_get_bit_rate(video_meta_h video, int *bit_rate);
 
 /**
- * @brief Gets the duration of video metadata.
+ * @brief Gets the track duration of the given videoo metadata.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video    The video metadata handle
@@ -324,7 +319,7 @@ int video_meta_get_bit_rate(video_meta_h video, int *bit_rate);
 int video_meta_get_duration(video_meta_h video, int *duration);
 
 /**
- * @brief Gets the video width in pixels.
+ * @brief Gets the width of the given videoo metadata.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video The video metadata handle
@@ -340,7 +335,7 @@ int video_meta_get_duration(video_meta_h video, int *duration);
 int video_meta_get_width(video_meta_h video, int *width);
 
 /**
- * @brief Gets the video height in pixels.
+ * @brief Gets the height of the given videoo metadata.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video  The video metadata handle
@@ -361,7 +356,7 @@ int video_meta_get_height(video_meta_h video, int *height);
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video        The video metadata handle
- * @param[out] played_count The number of played
+ * @param[out] played_count The counter of the video played
  *
  * @return @c 0 on success, 
  *         otherwise a negative error value
@@ -378,7 +373,7 @@ int video_meta_get_played_count(video_meta_h video, int *played_count);
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video       The video metadata handle
- * @param[out] played_time The time last played in the video
+ * @param[out] played_time The last played time of the video
  *
  * @return @c 0 on success, 
  *         otherwise a negative error value
@@ -391,14 +386,14 @@ int video_meta_get_played_time(video_meta_h video, time_t *played_time);
 
 /**
  * @deprecated Deprecated since 2.4.
- * @brief Gets the position played parameter of the video.
- * @details This function returns the elapsed playback time parameter of the video as period
+ * @brief Gets the played position parameter of the video.
+ * @details This function returns the elapsed playback position parameter of the video as period
  *          starting from the beginning of the movie.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  video           The video metadata handle
- * @param[out] played_position The position from the beginning of the video (in milliseconds)
+ * @param[out] played_position The elapsed time of the video
  *
  * @return @c 0 on success, 
  *         otherwise a negative error value
@@ -430,11 +425,11 @@ int video_meta_set_played_count(video_meta_h video, int played_count);
 
 /**
  * @deprecated Deprecated since 2.4. [Use media_info_set_played_time() instead]
- * @brief Sets the time last played parameter of the video.
+ * @brief Sets the last played time of the video.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in] video       The video metadata handle
- * @param[in] played_time The time last played in the video
+ * @param[in] played_time The last played time of the video
  *
  * @return @c 0 on success, 
  *         otherwise a negative error value
@@ -449,9 +444,7 @@ int video_meta_set_played_time(video_meta_h video, time_t played_time);
 
 /**
  * @deprecated Deprecated since 2.4.
- * @brief Sets the position played parameter of the video.
- * @details This function returns video's elapsed playback time parameter as period
- *          starting from the beginning of the movie.
+ * @brief Sets the played position of the video.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -472,11 +465,9 @@ int video_meta_set_played_time(video_meta_h video, time_t played_time);
 int video_meta_set_played_position(video_meta_h video, int played_position);
 
 /**
- * @brief Updates the video to the media database.
- *
+ * @brief Updates an video metadata with modified attributes in the media database.
  * @details The function updates the given video meta in the media database. The function should be called after any change in video attributes, to be updated to the media
- *          database. For example, after using video_meta_get_played_time() for setting the played time of the video, the video_meta_update_to_db() function should be called so as to update
- *          the given video attributes in the media database.
+ *          database. For example, for setting the played time using video_meta_get_played_time(), after that the video_meta_update_to_db() function should be called to update media database.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -503,7 +494,7 @@ int video_meta_set_played_position(video_meta_h video, int played_position);
  *
  * @see media_content_connect()
  * @see video_meta_set_played_time()
- * @see video_meta_set_played_count()s
+ * @see video_meta_set_played_count()
  * @see video_meta_set_played_position()
  */
 int video_meta_update_to_db(video_meta_h video);
@@ -515,4 +506,5 @@ int video_meta_update_to_db(video_meta_h video);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
 #endif /*__TIZEN_VIDEO_META_H__*/

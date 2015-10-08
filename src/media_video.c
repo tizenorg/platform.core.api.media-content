@@ -287,7 +287,6 @@ int video_meta_get_artist(video_meta_h video, char **artist)
 	}
 
 	return ret;
-
 }
 
 int video_meta_get_album_artist(video_meta_h video, char **album_artist)

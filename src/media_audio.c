@@ -229,7 +229,7 @@ int audio_meta_get_media_id(audio_meta_h audio, char **media_id)
 	return ret;
 }
 
-int audio_meta_get_album(audio_meta_h audio, char **album_name)
+int audio_meta_get_album(audio_meta_h audio, char **album)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
@@ -237,12 +237,12 @@ int audio_meta_get_album(audio_meta_h audio, char **album_name)
 	{
 		if(STRING_VALID(_audio->album))
 		{
-			*album_name = strdup(_audio->album);
-			media_content_retvm_if(*album_name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+			*album = strdup(_audio->album);
+			media_content_retvm_if(*album == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
-			*album_name = NULL;
+			*album = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 
@@ -256,7 +256,7 @@ int audio_meta_get_album(audio_meta_h audio, char **album_name)
 	return ret;
 }
 
-int audio_meta_get_artist(audio_meta_h audio, char **artist_name)
+int audio_meta_get_artist(audio_meta_h audio, char **artist)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
@@ -265,12 +265,12 @@ int audio_meta_get_artist(audio_meta_h audio, char **artist_name)
 	{
 		if(STRING_VALID(_audio->artist))
 		{
-			*artist_name = strdup(_audio->artist);
-			media_content_retvm_if(*artist_name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+			*artist = strdup(_audio->artist);
+			media_content_retvm_if(*artist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
-			*artist_name = NULL;
+			*artist = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 
@@ -284,7 +284,7 @@ int audio_meta_get_artist(audio_meta_h audio, char **artist_name)
 	return ret;
 }
 
-int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist_name)
+int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
@@ -293,12 +293,12 @@ int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist_name)
 	{
 		if(STRING_VALID(_audio->album_artist))
 		{
-			*album_artist_name = strdup(_audio->album_artist);
-			media_content_retvm_if(*album_artist_name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+			*album_artist = strdup(_audio->album_artist);
+			media_content_retvm_if(*album_artist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
-			*album_artist_name = NULL;
+			*album_artist = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 
@@ -312,7 +312,7 @@ int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist_name)
 	return ret;
 }
 
-int audio_meta_get_genre(audio_meta_h audio, char **genre_name)
+int audio_meta_get_genre(audio_meta_h audio, char **genre)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
@@ -321,12 +321,12 @@ int audio_meta_get_genre(audio_meta_h audio, char **genre_name)
 	{
 		if(STRING_VALID(_audio->genre))
 		{
-			*genre_name = strdup(_audio->genre);
-			media_content_retvm_if(*genre_name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+			*genre = strdup(_audio->genre);
+			media_content_retvm_if(*genre == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
-			*genre_name = NULL;
+			*genre = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -340,7 +340,7 @@ int audio_meta_get_genre(audio_meta_h audio, char **genre_name)
 	return ret;
 }
 
-int audio_meta_get_composer(audio_meta_h audio, char **composer_name)
+int audio_meta_get_composer(audio_meta_h audio, char **composer)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
@@ -349,12 +349,12 @@ int audio_meta_get_composer(audio_meta_h audio, char **composer_name)
 	{
 		if(STRING_VALID(_audio->composer))
 		{
-			*composer_name = strdup(_audio->composer);
-			media_content_retvm_if(*composer_name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+			*composer = strdup(_audio->composer);
+			media_content_retvm_if(*composer == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		}
 		else
 		{
-			*composer_name = NULL;
+			*composer = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
