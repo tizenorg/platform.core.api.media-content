@@ -113,15 +113,10 @@ static int __media_tag_get_tag_info_from_db(const char *name, media_tag_h tag)
 
 	while(sqlite3_step(stmt) == SQLITE_ROW)
 	{
+		SAFE_FREE(tag_name);
+
 		id = (int)sqlite3_column_int(stmt,0);
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-		{
-			if(tag_name)
-				SAFE_FREE(tag_name);
-
-			tag_name = strdup((const char *)sqlite3_column_text(stmt, 1));
-		}
+		tag_name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
 	}
 
 	_tag->tag_id = id;
@@ -377,11 +372,7 @@ int media_tag_get_tag_from_db(int tag_id, media_tag_h *tag)
 		}
 
 		_tag->tag_id = (int)sqlite3_column_int(stmt, 0);
-
-		if(STRING_VALID((const char *)sqlite3_column_text(stmt, 1)))
-		{
-			_tag->name = strdup((const char *)sqlite3_column_text(stmt, 1));
-		}
+		_tag->name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
 
 		*tag = (media_tag_h)_tag;
 	}
