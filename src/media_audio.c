@@ -580,7 +580,7 @@ int audio_meta_get_played_count(audio_meta_h audio, int *played_count)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if(_audio)
+	if(_audio && played_count)
 	{
 		*played_count = _audio->played_count;
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -635,7 +635,6 @@ int audio_meta_get_played_position(audio_meta_h audio, int *played_position)
 int audio_meta_set_played_count(audio_meta_h audio, int played_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
 	if((_audio != NULL) && (played_count >= 0))
@@ -654,7 +653,6 @@ int audio_meta_set_played_count(audio_meta_h audio, int played_count)
 int audio_meta_set_played_time(audio_meta_h audio, time_t played_time)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
 	if((_audio != NULL) && (played_time >= 0))
@@ -696,7 +694,7 @@ int audio_meta_update_to_db(audio_meta_h audio)
 
 	if(_audio != NULL && STRING_VALID(_audio->media_id))
 	{
-		char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
+		char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0, };
 		memset(storage_id, 0x00, sizeof(storage_id));
 
 		ret = _media_db_get_storage_id_by_media_id(_audio->media_id, storage_id);

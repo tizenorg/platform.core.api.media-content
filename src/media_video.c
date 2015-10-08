@@ -38,7 +38,6 @@ int video_meta_destroy(video_meta_h video)
 		SAFE_FREE(_video->track_num);
 		SAFE_FREE(_video);
 
-		SAFE_FREE(_video);
 		ret = MEDIA_CONTENT_ERROR_NONE;
 	}
 	else
@@ -258,8 +257,8 @@ int video_meta_get_album(video_meta_h video, char **album)
 	}
 
 	return ret;
-
 }
+
 int video_meta_get_artist(video_meta_h video, char **artist)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -630,7 +629,7 @@ int video_meta_set_played_count(video_meta_h video, int played_count)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if(_video != NULL)
+	if((_video != NULL) && (played_count >= 0))
 	{
 		_video->played_count = played_count;
 	}
@@ -648,7 +647,7 @@ int video_meta_set_played_time(video_meta_h video, time_t played_time)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if(_video != NULL)
+	if((_video != NULL) && (played_time >= 0))
 	{
 		_video->played_time = played_time;
 	}
@@ -666,7 +665,7 @@ int video_meta_set_played_position(video_meta_h video, int played_position)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if(_video != NULL)
+	if((_video != NULL) && (played_position >= 0))
 	{
 		_video->played_position = played_position;
 	}
@@ -687,7 +686,7 @@ int video_meta_update_to_db(video_meta_h video)
 
 	if(_video != NULL && STRING_VALID(_video->media_id))
 	{
-		char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
+		char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0, };
 		memset(storage_id, 0x00, sizeof(storage_id));
 
 		ret = _media_db_get_storage_id_by_media_id(_video->media_id, storage_id);
