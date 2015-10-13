@@ -138,21 +138,16 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 		else
 		{
 			/*If root path, Stop Scanning*/
-			if((storage_type == MEDIA_SVC_STORAGE_INTERNAL) && (strcmp(search_path, MEDIA_ROOT_PATH_INTERNAL) == 0))
-			{
+			if((storage_type == MEDIA_SVC_STORAGE_INTERNAL) && (strcmp(search_path, MEDIA_ROOT_PATH_INTERNAL) == 0)) {
 				break;
-			}
-			else if((storage_type == MEDIA_SVC_STORAGE_EXTERNAL) && (strcmp(search_path, MEDIA_ROOT_PATH_SDCARD) == 0))
-			{
+			} else if((storage_type == MEDIA_SVC_STORAGE_EXTERNAL) && (STRING_VALID(MEDIA_ROOT_PATH_SDCARD)) && (strcmp(search_path, MEDIA_ROOT_PATH_SDCARD) == 0)) {
 				break;
-			}
-			else if(storage_type == MEDIA_SVC_STORAGE_EXTERNAL_USB)
-			{
+			} else if(storage_type == MEDIA_SVC_STORAGE_EXTERNAL_USB) {
 				char *parent_folder_path = NULL;
 				bool is_root = FALSE;
 
 				parent_folder_path = g_path_get_dirname(search_path);
-				if (strcmp(search_path, MEDIA_ROOT_PATH_USB) == 0)
+				if (STRING_VALID(MEDIA_ROOT_PATH_USB) && (strcmp(search_path, MEDIA_ROOT_PATH_USB) == 0))
 					is_root = TRUE;
 
 				SAFE_FREE(parent_folder_path);

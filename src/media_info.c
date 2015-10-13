@@ -111,8 +111,7 @@ static bool __media_info_delete_batch_cb(media_info_h media, void *user_data)
 	media_content_type_e media_type = 0;
 	GArray *thumb_list = (GArray *)user_data;
 
-	if (media == NULL)
-	{
+	if (media == NULL) {
 		media_content_debug("NO Item");
 		return true;
 	}
@@ -122,7 +121,7 @@ static bool __media_info_delete_batch_cb(media_info_h media, void *user_data)
 		media_content_debug("media_type : [%d]", media_type);
 
 		media_info_get_thumbnail_path(media, &thumb_path);
-		if (STRING_VALID(thumb_path)) {
+		if (STRING_VALID(thumb_path) && STRING_VALID(MEDIA_CONTENT_THUMB_DEFAULT_PATH)) {
 			if (strncmp(MEDIA_CONTENT_THUMB_DEFAULT_PATH, thumb_path, strlen(MEDIA_CONTENT_THUMB_DEFAULT_PATH)) != 0) {
 				g_array_append_val(thumb_list, thumb_path);
 			}
@@ -3365,7 +3364,7 @@ int media_info_create(const char *path, media_info_h *media)
 
 	memset(storage_id, 0x00, sizeof(storage_id));
 
-	if (strstr(MEDIA_ROOT_PATH_CLOUD, path) == NULL) {
+	if (STRING_VALID(MEDIA_ROOT_PATH_CLOUD) && (strstr(MEDIA_ROOT_PATH_CLOUD, path) == NULL)) {
 		bool ignore_file = FALSE;
 		bool ignore_dir = FALSE;
 		char *folder_path = NULL;
