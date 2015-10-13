@@ -16,6 +16,7 @@
 
 
 #include <media_info_private.h>
+#include <vconf.h>
 
 static const char *media_token[] =
 {
