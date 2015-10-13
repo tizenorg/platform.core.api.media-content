@@ -31,10 +31,9 @@ static int __media_face_check_media_id(const char *media_id)
 	SQLITE3_SAFE_FREE(query_str);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	while(sqlite3_step(stmt) == SQLITE_ROW)
-	{
+	while (sqlite3_step(stmt) == SQLITE_ROW)
 		item_count = (int)sqlite3_column_int(stmt, 0);
-	}
+
 	SQLITE3_FINALIZE(stmt);
 
 	media_content_retvm_if(item_count == 0, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid media_id");
@@ -51,22 +50,18 @@ int media_face_clone(media_face_h *dst, media_face_h src)
 	media_face_s *_dst = (media_face_s *)calloc(1, sizeof(media_face_s));
 	media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
-	if (STRING_VALID(_src->face_id))
-	{
+	if (STRING_VALID(_src->face_id)) {
 		_dst->face_id = strdup(_src->face_id);
-		if(_dst->face_id== NULL)
-		{
+		if (_dst->face_id == NULL) {
 			media_face_destroy((media_face_h)_dst);
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 	}
 
-	if (STRING_VALID(_src->media_id))
-	{
+	if (STRING_VALID(_src->media_id)) {
 		_dst->media_id = strdup(_src->media_id);
-		if(_dst->media_id== NULL)
-		{
+		if (_dst->media_id == NULL) {
 			media_face_destroy((media_face_h)_dst);
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -79,11 +74,9 @@ int media_face_clone(media_face_h *dst, media_face_h src)
 	_dst->face_rect_h = _src->face_rect_h;
 	_dst->orientation = _src->orientation;
 
-	if (STRING_VALID(_src->face_tag))
-	{
+	if (STRING_VALID(_src->face_tag)) {
 		_dst->face_tag = strdup(_src->face_tag);
-		if(_dst->face_tag== NULL)
-		{
+		if (_dst->face_tag == NULL) {
 			media_face_destroy((media_face_h)_dst);
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -107,7 +100,7 @@ int media_face_destroy(media_face_h face)
 	SAFE_FREE(_face);
 
 	return MEDIA_CONTENT_ERROR_NONE;
-} 
+}
 
 int media_face_get_face_id(media_face_h face, char **face_id)
 {
@@ -115,38 +108,32 @@ int media_face_get_face_id(media_face_h face, char **face_id)
 
 	media_content_retvm_if(face == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid handle");
 
-	if(STRING_VALID(_face->face_id))
-	{
+	if (STRING_VALID(_face->face_id)) {
 		*face_id = strdup(_face->face_id);
 		media_content_retvm_if(*face_id == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "Out of memory");
-	}
-	else
-	{
+	} else {
 		*face_id = NULL;
 	}
 
 	return MEDIA_CONTENT_ERROR_NONE;
 }
- 
+
 int media_face_get_media_id(media_face_h face, char **media_id)
 {
 	media_face_s* _face = (media_face_s*)face;
 
 	media_content_retvm_if(face == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid handle");
 
-	if(STRING_VALID(_face->media_id))
-	{
+	if (STRING_VALID(_face->media_id)) {
 		*media_id = strdup(_face->media_id);
 		media_content_retvm_if(*media_id == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "Out of memory");
-	}
-	else
-	{
+	} else {
 		*media_id = NULL;
 	}
 
 	return MEDIA_CONTENT_ERROR_NONE;
 }
- 
+
 int media_face_get_face_rect(media_face_h face, unsigned int *rect_x, unsigned int *rect_y, unsigned int *rect_w, unsigned int *rect_h)
 {
 	media_face_s* _face = (media_face_s*)face;
@@ -180,13 +167,10 @@ int media_face_get_tag(media_face_h face, char **tag)
 
 	media_content_retvm_if(face == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid handle");
 
-	if (STRING_VALID(_face->face_tag))
-	{
+	if (STRING_VALID(_face->face_tag)) {
 		*tag = strdup(_face->face_tag);
 		media_content_retvm_if(*tag == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "Out of memory");
-	}
-	else
-	{
+	} else {
 		*tag = NULL;
 	}
 

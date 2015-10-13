@@ -63,7 +63,7 @@ extern "C" {
  * @param[in]  path The path to the media file
  * @param[out] info The handle to the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -79,7 +79,7 @@ extern "C" {
  *
  * @see media_content_connect()
  */
-int media_info_insert_to_db (const char *path, media_info_h *info);
+int media_info_insert_to_db(const char *path, media_info_h *info);
 
 /**
  * @brief Inserts media files into the media database, asynchronously.
@@ -104,7 +104,7 @@ int media_info_insert_to_db (const char *path, media_info_h *info);
  * @param[in] callback     The callback to be invoked when media items inserted completely
  * @param[in] user_data    The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -121,7 +121,7 @@ int media_info_insert_to_db (const char *path, media_info_h *info);
  * @see media_content_connect()
  * @see media_insert_completed_cb()
  */
-int media_info_insert_batch_to_db(const char **path_array,unsigned int array_length, media_insert_completed_cb callback, void *user_data);
+int media_info_insert_batch_to_db(const char **path_array, unsigned int array_length, media_insert_completed_cb callback, void *user_data);
 
 /**
  * @brief Inserts the burst shot images into the media database, asynchronously.
@@ -145,7 +145,7 @@ int media_info_insert_batch_to_db(const char **path_array,unsigned int array_len
  * @param[in] callback     The callback to be invoked when the images are inserted completely
  * @param[in] user_data    The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -162,7 +162,7 @@ int media_info_insert_batch_to_db(const char **path_array,unsigned int array_len
  * @see media_content_connect()
  * @see media_insert_burst_shot_completed_cb()
  */
-int media_info_insert_burst_shot_to_db(const char **path_array,unsigned int array_length, media_insert_burst_shot_completed_cb callback, void *user_data);
+int media_info_insert_burst_shot_to_db(const char **path_array, unsigned int array_length, media_insert_burst_shot_completed_cb callback, void *user_data);
 
 /**
  * @brief Deletes a media file from the media database.
@@ -177,7 +177,7 @@ int media_info_insert_burst_shot_to_db(const char **path_array,unsigned int arra
  *
  * @param[in] media_id  The ID to the media file
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -208,7 +208,7 @@ int media_info_delete_from_db(const char *media_id);
  *
  * @param[in] filter  The handle to filter
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -236,7 +236,7 @@ int media_info_delete_batch_from_db(filter_h filter);
  *
  * @param[in]  media  The media info handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -264,7 +264,7 @@ int media_info_destroy(media_info_h media);
  * @param[out] dst  The destination handle to the media info
  * @param[in]  src  The source handle to media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -289,7 +289,7 @@ int media_info_clone(media_info_h *dst, media_info_h src);
  * @param[in]  filter      The handle to filter
  * @param[out] media_count The count of media
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -321,7 +321,7 @@ int media_info_get_media_count_from_db(filter_h filter, int *media_count);
  * @param[in] callback  The callback function to be invoked
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -348,7 +348,7 @@ int media_info_foreach_media_from_db(filter_h filter, media_info_cb callback, vo
  * @param[in]  filter    The handle to the media filter
  * @param[out] tag_count The count of the media tag
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -374,7 +374,7 @@ int media_info_get_tag_count_from_db(const char *media_id, filter_h filter, int 
  * @param[in] callback  The callback function to be invoked
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -400,7 +400,7 @@ int media_info_foreach_tag_from_db(const char *media_id, filter_h filter, media_
  * @param[in]  filter          The handle to the media filter
  * @param[out] bookmark_count  The count of the media tag
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -426,7 +426,7 @@ int media_info_get_bookmark_count_from_db(const char *media_id, filter_h filter,
  * @param[in] callback  The callback function to be invoked
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -442,7 +442,7 @@ int media_info_get_bookmark_count_from_db(const char *media_id, filter_h filter,
  * @see media_content_connect()
  * @see media_bookmark_cb()
  */
-int media_info_foreach_bookmark_from_db (const char *media_id, filter_h filter, media_bookmark_cb callback, void *user_data);
+int media_info_foreach_bookmark_from_db(const char *media_id, filter_h filter, media_bookmark_cb callback, void *user_data);
 
 /**
  * @brief Gets the number of face for the passed @a media_id from the media database.
@@ -481,7 +481,7 @@ int media_info_get_face_count_from_db(const char *media_id, filter_h filter, int
  * @see media_filter_create()
  *
  */
-int media_info_foreach_face_from_db (const char *media_id, filter_h filter, media_face_cb callback, void *user_data);
+int media_info_foreach_face_from_db(const char *media_id, filter_h filter, media_face_cb callback, void *user_data);
 
 /**
  * @brief Gets the image metadata for a given media info.
@@ -494,7 +494,7 @@ int media_info_foreach_face_from_db (const char *media_id, filter_h filter, medi
  * @param[in]  media  The media info handle
  * @param[out] image  A handle to image metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -516,7 +516,7 @@ int media_info_get_image(media_info_h media, image_meta_h *image);
  * @param[in]  media The media info handle
  * @param[out] video A handle to the video meta
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -539,7 +539,7 @@ int media_info_get_video(media_info_h media, video_meta_h *video);
  * @param[in]  media The media info handle
  * @param[out] audio A handle to the audio meta
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -558,7 +558,7 @@ int media_info_get_audio(media_info_h media, audio_meta_h *audio);
  * @param[in]  media The media info handle
  * @param[out] media_id     The ID of the media tag
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -576,7 +576,7 @@ int media_info_get_media_id(media_info_h media, char **media_id);
  * @param[in]  media The media info handle
  * @param[out] path  The path of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -596,7 +596,7 @@ int media_info_get_file_path(media_info_h media, char **path);
  * @param[in]  media The media info handle
  * @param[out] name  The name of media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -613,7 +613,7 @@ int media_info_get_display_name(media_info_h media, char **name);
  * @param[in]  media The media info handle
  * @param[out] type  The type of the media content (#media_content_type_e)
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -631,7 +631,7 @@ int media_info_get_media_type(media_info_h media, media_content_type_e *type);
  * @param[in]  media     The media info handle
  * @param[out] mime_type The MIME type of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -648,7 +648,7 @@ int media_info_get_mime_type(media_info_h media, char **mime_type);
  * @param[in]  media The media info handle
  * @param[out] size  The type of the media content
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -664,7 +664,7 @@ int media_info_get_size(media_info_h media, unsigned long long *size);
  * @param[in]  media      The media info handle
  * @param[out] added_time The added time to the DB
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -681,7 +681,7 @@ int media_info_get_added_time(media_info_h media, time_t *added_time);
  * @param[out] time  The date of modification of the file \n
  *                   Get from the file.
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -699,7 +699,7 @@ int media_info_get_modified_time(media_info_h media, time_t *time);
  * @param[in]  media The media info handle
  * @param[out] time  The date of the timeline
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -717,7 +717,7 @@ int media_info_get_timeline(media_info_h media, time_t* time);
  * @param[in]  media The media info handle
  * @param[out] path  The path to the thumbnail of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -736,7 +736,7 @@ int media_info_get_thumbnail_path(media_info_h media, char **path);
  * @param[in]  media       The media info handle
  * @param[out] description The description of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -753,7 +753,7 @@ int media_info_get_description(media_info_h media, char **description);
  * @param[in]  media     The media info handle
  * @param[out] longitude The longitude of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -769,7 +769,7 @@ int media_info_get_longitude(media_info_h media, double* longitude);
  * @param[in]  media    The media info handle
  * @param[out] latitude The latitude of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -786,7 +786,7 @@ int media_info_get_latitude(media_info_h media, double* latitude);
  * @param[in]  media    The media info handle
  * @param[out] altitude The altitude of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -802,7 +802,7 @@ int media_info_get_altitude(media_info_h media, double* altitude);
  * @param[in]  media   The media info handle
  * @param[out] weather The weather of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -818,7 +818,7 @@ int media_info_get_weather(media_info_h media, char **weather);
  * @param[in]  media  The media info handle
  * @param[out] rating The rating of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -832,10 +832,10 @@ int media_info_get_rating(media_info_h media, int *rating);
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media     The media info handle
- * @param[out] favorite  @c true if media info is set as favorite, 
+ * @param[out] favorite  @c true if media info is set as favorite,
  *                       otherwise @c false if media info is not set as favorite
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -853,7 +853,7 @@ int media_info_get_favorite(media_info_h media, bool* favorite);
  * @param[in]  media  The media info handle
  * @param[out] author The author of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -872,7 +872,7 @@ int media_info_get_author(media_info_h media, char **author);
  * @param[in]  media    The media info handle
  * @param[out] provider The provider of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -891,7 +891,7 @@ int media_info_get_provider(media_info_h media, char **provider);
  * @param[in]  media        The media info handle
  * @param[out] content_name The content name of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -910,7 +910,7 @@ int media_info_get_content_name(media_info_h media, char **content_name);
  * @param[in]  media  The media info handle
  * @param[out] title  The title of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -929,7 +929,7 @@ int media_info_get_title(media_info_h media, char **title);
  * @param[in]  media    The media info handle
  * @param[out] category The category of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -948,7 +948,7 @@ int media_info_get_category(media_info_h media, char **category);
  * @param[in]  media        The media info handle
  * @param[out] location_tag The location of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -967,7 +967,7 @@ int media_info_get_location_tag(media_info_h media, char **location_tag);
  * @param[in]  media      The media info handle
  * @param[out] age_rating The age rating of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -986,7 +986,7 @@ int media_info_get_age_rating(media_info_h media, char **age_rating);
  * @param[in]  media   The media info handle
  * @param[out] keyword The keyword of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1005,7 +1005,7 @@ int media_info_get_keyword(media_info_h media, char **keyword);
  * @param[in]  media   The media info handle
  * @param[out] storage_id The storage id of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1023,7 +1023,7 @@ int media_info_get_storage_id(media_info_h media, char **storage_id);
  * @param[out] is_drm @c true if media is DRM media,
  *                    otherwise @c false if media is not DRM media
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1039,7 +1039,7 @@ int media_info_is_drm(media_info_h media, bool *is_drm);
  * @param[in]  media        The media info handle
  * @param[out] storage_type The storage type of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1148,7 +1148,7 @@ int media_info_set_played_time(media_info_h media);
  * @param[in] media        The media info handle
  * @param[in] display_name The display name of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1168,7 +1168,7 @@ int media_info_set_display_name(media_info_h media, const char *display_name);
  * @param[in] media       The media info handle
  * @param[in] description The description of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1188,7 +1188,7 @@ int media_info_set_description(media_info_h media, const char *description);
  * @param[in] media     The media info handle
  * @param[in] longitude The longitude of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1207,7 +1207,7 @@ int media_info_set_longitude(media_info_h media, double longitude);
  * @param[in] media    The media info handle
  * @param[in] latitude The latitude of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1226,7 +1226,7 @@ int media_info_set_latitude(media_info_h media, double latitude);
  * @param[in] media    The media info handle
  * @param[in] altitude The altitude of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1245,7 +1245,7 @@ int media_info_set_altitude(media_info_h media, double altitude);
  * @param[in] media   The media info handle
  * @param[in] weather The weather of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1265,7 +1265,7 @@ int media_info_set_weather(media_info_h media, const char *weather);
  * @param[in] media  The media info handle
  * @param[in] rating The rating of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1285,7 +1285,7 @@ int media_info_set_rating(media_info_h media, int rating);
  * @param[in] favorite Set @c true to set the media info as favorite,
  *                     otherwise set @c false to not set the media info as favorite
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1302,7 +1302,7 @@ int media_info_set_favorite(media_info_h media, bool favorite);
  * @param[in] media  The media info handle
  * @param[in] author The author of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1319,7 +1319,7 @@ int media_info_set_author(media_info_h media, const char *author);
  * @param[in] media    The media info handle
  * @param[in] provider The provider of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1336,7 +1336,7 @@ int media_info_set_provider(media_info_h media, const char *provider);
  * @param[in] media        The media info handle
  * @param[in] content_name The content name of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1355,7 +1355,7 @@ int media_info_set_content_name(media_info_h media, const char *content_name);
  * @param[in] media    The media info handle
  * @param[in] category The category of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1374,7 +1374,7 @@ int media_info_set_category(media_info_h media, const char *category);
  * @param[in] media        The media info handle
  * @param[in] location_tag The location of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1393,7 +1393,7 @@ int media_info_set_location_tag(media_info_h media, const char *location_tag);
  * @param[in] media      The media info handle
  * @param[in] age_rating The age rating of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1412,7 +1412,7 @@ int media_info_set_age_rating(media_info_h media, const char *age_rating);
  * @param[in] media   The media info handle
  * @param[in] keyword The keyword of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1426,7 +1426,7 @@ int media_info_set_keyword(media_info_h media, const char *keyword);
 
 /**
  * @brief Updates the media info to the media database.
- * 
+ *
  * @details The function updates the given media info in the media database.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -1440,7 +1440,7 @@ int media_info_set_keyword(media_info_h media, const char *keyword);
  *
  * @param[in] media The media info handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1487,7 +1487,7 @@ int media_info_update_to_db(media_info_h media);
  *
  * @param[in] media_id The ID of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1512,7 +1512,7 @@ int media_info_refresh_metadata_to_db(const char *media_id);
  * @param[in] media      The media info handle
  * @param[in] added_time The added time of the media info
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1541,7 +1541,7 @@ int media_info_set_added_time(media_info_h media, time_t added_time);
  * @param[in] media    The media info handle
  * @param[in] dst_path The path of destination
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1575,7 +1575,7 @@ int media_info_move_to_db(media_info_h media, const char* dst_path);
  * @param[in] callback  The callback function to be invoked
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -1604,7 +1604,7 @@ int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb
  *
  * @param[in] media The media info handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful

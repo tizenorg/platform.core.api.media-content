@@ -53,7 +53,7 @@ extern "C" {
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE      Successful
@@ -73,7 +73,7 @@ int media_content_connect(void);
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE      Successful
@@ -107,7 +107,7 @@ int media_content_disconnect(void);
  *
  * @param[in] path The file path
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -143,7 +143,7 @@ int media_content_scan_file(const char *path);
  * @param[in] callback     The callback to be invoked when the scanning is finished
  * @param[in] user_data    The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -159,7 +159,7 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
  *
  * @param[in] path         The folder path
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -179,7 +179,7 @@ int media_content_cancel_scan_folder(const char *path);
  * @param[in] callback  The callback to be invoked when the scanning is finished
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -199,7 +199,7 @@ int media_content_set_db_updated_cb(media_content_db_update_cb callback, void *u
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
