@@ -16,6 +16,7 @@
 
 
 #include <media_info_private.h>
+#include <vconf.h>
 
 static const char *media_token[] =
 {
@@ -55,13 +56,11 @@ static int __tokenize(GList **token_list, const char *str);
 
 static bool __is_pinyin_needed(void)
 {
-#if 0
 	char *lang = NULL;
 	const char *china = "zh_CN";
 	const char *hongkong = "zh_HK";
-#endif
 	int ret = FALSE;
-#if 0
+
 	/*Check CSC first*/
 	bool pinyin_support = FALSE;
 	media_svc_check_pinyin_support(&pinyin_support);
@@ -79,7 +78,7 @@ static bool __is_pinyin_needed(void)
 
 		SAFE_FREE(lang);
 	}
-#endif
+
 	return ret;
 }
 
