@@ -48,13 +48,12 @@ extern "C" {
  * @brief Enumeration for the media file format.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
-typedef enum
-{
-    MEDIA_CONTENT_TYPE_IMAGE   = 0,  /**<The type of an image */
-    MEDIA_CONTENT_TYPE_VIDEO   = 1,  /**<The type of a video */
-    MEDIA_CONTENT_TYPE_SOUND   = 2,  /**<The type of sound */
-    MEDIA_CONTENT_TYPE_MUSIC   = 3,  /**<The type of music */
-    MEDIA_CONTENT_TYPE_OTHERS  = 4,  /**<The type of other */
+typedef enum {
+	MEDIA_CONTENT_TYPE_IMAGE   = 0,  /**<The type of an image */
+	MEDIA_CONTENT_TYPE_VIDEO   = 1,  /**<The type of a video */
+	MEDIA_CONTENT_TYPE_SOUND   = 2,  /**<The type of sound */
+	MEDIA_CONTENT_TYPE_MUSIC   = 3,  /**<The type of music */
+	MEDIA_CONTENT_TYPE_OTHERS  = 4,  /**<The type of other */
 } media_content_type_e;
 
 /**
@@ -63,8 +62,7 @@ typedef enum
  * @details This information is used to establish where the folder is.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
-typedef enum
-{
+typedef enum {
 	MEDIA_CONTENT_STORAGE_INTERNAL	= 0,  /**< The device's internal storage */
 	MEDIA_CONTENT_STORAGE_EXTERNAL	= 1,  /**< The device's external storage like sd card*/
 	MEDIA_CONTENT_STORAGE_EXTERNAL_USB = 2, /**< The external USB storage (Since 2.4) */
@@ -77,8 +75,8 @@ typedef enum
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum {
-    MEDIA_ITEM_FILE       = 0,              /**< File type, an item updated to DB */
-    MEDIA_ITEM_DIRECTORY  = 1,              /**< Directory type, an item updated to DB */
+	MEDIA_ITEM_FILE	   = 0,              /**< File type, an item updated to DB */
+	MEDIA_ITEM_DIRECTORY  = 1,              /**< Directory type, an item updated to DB */
 } media_content_db_update_item_type_e;
 
 /**
@@ -87,9 +85,9 @@ typedef enum {
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum {
-    MEDIA_CONTENT_INSERT  = 0,              /**< Insert, the type of DB update */
-    MEDIA_CONTENT_DELETE  = 1,              /**< Delete, The type of DB update */
-    MEDIA_CONTENT_UPDATE  = 2,              /**< Update, The type of DB update */
+	MEDIA_CONTENT_INSERT  = 0,              /**< Insert, the type of DB update */
+	MEDIA_CONTENT_DELETE  = 1,              /**< Delete, The type of DB update */
+	MEDIA_CONTENT_UPDATE  = 2,              /**< Update, The type of DB update */
 } media_content_db_update_type_e;
 
 /**
@@ -98,15 +96,15 @@ typedef enum {
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum {
-    MEDIA_CONTENT_ORIENTATION_NOT_AVAILABLE  = 0,       /**< Not available*/
-    MEDIA_CONTENT_ORIENTATION_NORMAL         = 1,       /**< Normal*/
-    MEDIA_CONTENT_ORIENTATION_HFLIP          = 2,       /**< Flip horizontal*/
-    MEDIA_CONTENT_ORIENTATION_ROT_180        = 3,       /**< Rotate 180 degrees*/
-    MEDIA_CONTENT_ORIENTATION_VFLIP          = 4,       /**< Flip vertical*/
-    MEDIA_CONTENT_ORIENTATION_TRANSPOSE      = 5,       /**< Transpose*/
-    MEDIA_CONTENT_ORIENTATION_ROT_90         = 6,       /**< Rotate 90 degrees*/
-    MEDIA_CONTENT_ORIENTATION_TRANSVERSE     = 7,       /**< Transverse*/
-    MEDIA_CONTENT_ORIENTATION_ROT_270        = 8,       /**< Rotate 270 degrees*/
+	MEDIA_CONTENT_ORIENTATION_NOT_AVAILABLE  = 0,       /**< Not available*/
+	MEDIA_CONTENT_ORIENTATION_NORMAL         = 1,       /**< Normal*/
+	MEDIA_CONTENT_ORIENTATION_HFLIP          = 2,       /**< Flip horizontal*/
+	MEDIA_CONTENT_ORIENTATION_ROT_180        = 3,       /**< Rotate 180 degrees*/
+	MEDIA_CONTENT_ORIENTATION_VFLIP          = 4,       /**< Flip vertical*/
+	MEDIA_CONTENT_ORIENTATION_TRANSPOSE      = 5,       /**< Transpose*/
+	MEDIA_CONTENT_ORIENTATION_ROT_90         = 6,       /**< Rotate 90 degrees*/
+	MEDIA_CONTENT_ORIENTATION_TRANSVERSE     = 7,       /**< Transverse*/
+	MEDIA_CONTENT_ORIENTATION_ROT_270        = 8,       /**< Rotate 270 degrees*/
 } media_content_orientation_e;
 
 /**
@@ -114,10 +112,9 @@ typedef enum {
  * @brief Enumeration for ordering.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
-typedef enum
-{
-    MEDIA_CONTENT_ORDER_ASC   = 0,      /**< Ascending order*/
-    MEDIA_CONTENT_ORDER_DESC  = 1,      /**< Descending order*/
+typedef enum {
+	MEDIA_CONTENT_ORDER_ASC   = 0,      /**< Ascending order*/
+	MEDIA_CONTENT_ORDER_DESC  = 1,      /**< Descending order*/
 } media_content_order_e;
 
 /**
@@ -125,12 +122,11 @@ typedef enum
  * @brief Enumeration for collations.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
-typedef enum
-{
-    MEDIA_CONTENT_COLLATE_DEFAULT   = 0,        /**< Default collation BINARY */
-    MEDIA_CONTENT_COLLATE_NOCASE    = 1,        /**< Collation NOCASE, not case sensitive */
-    MEDIA_CONTENT_COLLATE_RTRIM     = 2,        /**< Collation RTRIM, trailing space characters are ignored */
-    MEDIA_CONTENT_COLLATE_LOCALIZED = 3,        /**< Collation LOCALIZATION, NOCASE also applied */
+typedef enum {
+	MEDIA_CONTENT_COLLATE_DEFAULT   = 0,        /**< Default collation BINARY */
+	MEDIA_CONTENT_COLLATE_NOCASE    = 1,        /**< Collation NOCASE, not case sensitive */
+	MEDIA_CONTENT_COLLATE_RTRIM     = 2,        /**< Collation RTRIM, trailing space characters are ignored */
+	MEDIA_CONTENT_COLLATE_LOCALIZED = 3,        /**< Collation LOCALIZATION, NOCASE also applied */
 } media_content_collation_e;
 
 #define MEDIA_CONTENT_ERROR_CLASS				TIZEN_ERROR_MEDIA_CONTENT
@@ -140,18 +136,17 @@ typedef enum
  * @brief Enumeration for a media content error.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
- typedef enum
-{
-    MEDIA_CONTENT_ERROR_NONE                    = TIZEN_ERROR_NONE,                    /**< Successful */
-    MEDIA_CONTENT_ERROR_INVALID_PARAMETER       = TIZEN_ERROR_INVALID_PARAMETER,       /**< Invalid parameter */
-    MEDIA_CONTENT_ERROR_OUT_OF_MEMORY           = TIZEN_ERROR_OUT_OF_MEMORY,           /**< Out of memory */
-    MEDIA_CONTENT_ERROR_INVALID_OPERATION       = TIZEN_ERROR_INVALID_OPERATION,       /**< Invalid Operation */
-    MEDIA_CONTENT_FILE_NO_SPACE_ON_DEVICE       = TIZEN_ERROR_FILE_NO_SPACE_ON_DEVICE, /**< No space left on device */
-    MEDIA_CONTENT_ERROR_PERMISSION_DENIED		  = TIZEN_ERROR_PERMISSION_DENIED,		  /**< Permission denied */
-    MEDIA_CONTENT_ERROR_DB_FAILED               = MEDIA_CONTENT_ERROR_CLASS | 0x01,    /**< DB operation failed */
-    MEDIA_CONTENT_ERROR_DB_BUSY                 = MEDIA_CONTENT_ERROR_CLASS | 0x02,    /**< DB operation BUSY */
-    MEDIA_CONTENT_ERROR_NETWORK                 = MEDIA_CONTENT_ERROR_CLASS | 0x03,    /**< Network Fail */
-    MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT     = MEDIA_CONTENT_ERROR_CLASS | 0x04,    /**< Unsupported Content */
+typedef enum {
+	MEDIA_CONTENT_ERROR_NONE                    = TIZEN_ERROR_NONE,                    /**< Successful */
+	MEDIA_CONTENT_ERROR_INVALID_PARAMETER       = TIZEN_ERROR_INVALID_PARAMETER,       /**< Invalid parameter */
+	MEDIA_CONTENT_ERROR_OUT_OF_MEMORY           = TIZEN_ERROR_OUT_OF_MEMORY,           /**< Out of memory */
+	MEDIA_CONTENT_ERROR_INVALID_OPERATION       = TIZEN_ERROR_INVALID_OPERATION,       /**< Invalid Operation */
+	MEDIA_CONTENT_FILE_NO_SPACE_ON_DEVICE       = TIZEN_ERROR_FILE_NO_SPACE_ON_DEVICE, /**< No space left on device */
+	MEDIA_CONTENT_ERROR_PERMISSION_DENIED		  = TIZEN_ERROR_PERMISSION_DENIED,		  /**< Permission denied */
+	MEDIA_CONTENT_ERROR_DB_FAILED               = MEDIA_CONTENT_ERROR_CLASS | 0x01,    /**< DB operation failed */
+	MEDIA_CONTENT_ERROR_DB_BUSY                 = MEDIA_CONTENT_ERROR_CLASS | 0x02,    /**< DB operation BUSY */
+	MEDIA_CONTENT_ERROR_NETWORK                 = MEDIA_CONTENT_ERROR_CLASS | 0x03,    /**< Network Fail */
+	MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT     = MEDIA_CONTENT_ERROR_CLASS | 0x04,    /**< Unsupported Content */
 } media_content_error_e;
 
 /**
@@ -160,36 +155,36 @@ typedef enum
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum {
-    MEDIA_CONTENT_GROUP_DISPLAY_NAME = 0,    /**< Media group ID for display name */
-    MEDIA_CONTENT_GROUP_TYPE,                /**< Media group ID for a media type */
-    MEDIA_CONTENT_GROUP_MIME_TYPE,           /**< Media group ID for a mime type */
-    MEDIA_CONTENT_GROUP_SIZE,                /**< Media group ID for content size */
-    MEDIA_CONTENT_GROUP_ADDED_TIME,          /**< Media group ID for the added time */
-    MEDIA_CONTENT_GROUP_MODIFIED_TIME,       /**< Media group ID for the modified time */
-    MEDIA_CONTENT_GROUP_TITLE,               /**< Media group ID for a content title */
-    MEDIA_CONTENT_GROUP_ARTIST,              /**< Media group ID for an artist*/
-    MEDIA_CONTENT_GROUP_ALBUM_ARTIST,        /**< Media group ID for an album artist */
-    MEDIA_CONTENT_GROUP_GENRE,               /**< Media group ID for a genre*/
-    MEDIA_CONTENT_GROUP_COMPOSER,            /**< Media group ID for a composer*/
-    MEDIA_CONTENT_GROUP_YEAR,                /**< Media group ID for a year*/
-    MEDIA_CONTENT_GROUP_RECORDED_DATE,       /**< Media group ID for the recorded date*/
-    MEDIA_CONTENT_GROUP_COPYRIGHT,           /**< Media group ID for the copyright*/
-    MEDIA_CONTENT_GROUP_TRACK_NUM,           /**< Media group ID for a track number*/
-    MEDIA_CONTENT_GROUP_DESCRIPTION,         /**< Media group ID for a description */
-    MEDIA_CONTENT_GROUP_LONGITUDE,           /**< Media group ID for the longitude*/
-    MEDIA_CONTENT_GROUP_LATITUDE,            /**< Media group ID for the latitude*/
-    MEDIA_CONTENT_GROUP_ALTITUDE,            /**< Media group ID for the altitude*/
-    MEDIA_CONTENT_GROUP_BURST_IMAGE,         /**< Media group ID for the burst shot*/
-    MEDIA_CONTENT_GROUP_RATING,              /**< Media group ID for a rating*/
-    MEDIA_CONTENT_GROUP_AUTHOR,              /**< Media group ID for an author*/
-    MEDIA_CONTENT_GROUP_PROVIDER,            /**< Media group ID for a provider*/
-    MEDIA_CONTENT_GROUP_CONTENT_NAME,        /**< Media group ID for the content name*/
-    MEDIA_CONTENT_GROUP_CATEGORY,            /**< Media group ID for a category*/
-    MEDIA_CONTENT_GROUP_LOCATION_TAG,        /**< Media group ID for a location tag*/
-    MEDIA_CONTENT_GROUP_AGE_RATING,          /**< Media group ID for an age rating*/
-    MEDIA_CONTENT_GROUP_KEYWORD,             /**< Media group ID for a keyword*/
-    MEDIA_CONTENT_GROUP_WEATHER,             /**< Media group ID for the weather*/
-    MEDIA_CONTENT_GROUP_MAX                  /**< Invalid media group ID*/
+	MEDIA_CONTENT_GROUP_DISPLAY_NAME = 0,    /**< Media group ID for display name */
+	MEDIA_CONTENT_GROUP_TYPE,                /**< Media group ID for a media type */
+	MEDIA_CONTENT_GROUP_MIME_TYPE,           /**< Media group ID for a mime type */
+	MEDIA_CONTENT_GROUP_SIZE,                /**< Media group ID for content size */
+	MEDIA_CONTENT_GROUP_ADDED_TIME,          /**< Media group ID for the added time */
+	MEDIA_CONTENT_GROUP_MODIFIED_TIME,       /**< Media group ID for the modified time */
+	MEDIA_CONTENT_GROUP_TITLE,               /**< Media group ID for a content title */
+	MEDIA_CONTENT_GROUP_ARTIST,              /**< Media group ID for an artist*/
+	MEDIA_CONTENT_GROUP_ALBUM_ARTIST,        /**< Media group ID for an album artist */
+	MEDIA_CONTENT_GROUP_GENRE,               /**< Media group ID for a genre*/
+	MEDIA_CONTENT_GROUP_COMPOSER,            /**< Media group ID for a composer*/
+	MEDIA_CONTENT_GROUP_YEAR,                /**< Media group ID for a year*/
+	MEDIA_CONTENT_GROUP_RECORDED_DATE,       /**< Media group ID for the recorded date*/
+	MEDIA_CONTENT_GROUP_COPYRIGHT,           /**< Media group ID for the copyright*/
+	MEDIA_CONTENT_GROUP_TRACK_NUM,           /**< Media group ID for a track number*/
+	MEDIA_CONTENT_GROUP_DESCRIPTION,         /**< Media group ID for a description */
+	MEDIA_CONTENT_GROUP_LONGITUDE,           /**< Media group ID for the longitude*/
+	MEDIA_CONTENT_GROUP_LATITUDE,            /**< Media group ID for the latitude*/
+	MEDIA_CONTENT_GROUP_ALTITUDE,            /**< Media group ID for the altitude*/
+	MEDIA_CONTENT_GROUP_BURST_IMAGE,         /**< Media group ID for the burst shot*/
+	MEDIA_CONTENT_GROUP_RATING,              /**< Media group ID for a rating*/
+	MEDIA_CONTENT_GROUP_AUTHOR,              /**< Media group ID for an author*/
+	MEDIA_CONTENT_GROUP_PROVIDER,            /**< Media group ID for a provider*/
+	MEDIA_CONTENT_GROUP_CONTENT_NAME,        /**< Media group ID for the content name*/
+	MEDIA_CONTENT_GROUP_CATEGORY,            /**< Media group ID for a category*/
+	MEDIA_CONTENT_GROUP_LOCATION_TAG,        /**< Media group ID for a location tag*/
+	MEDIA_CONTENT_GROUP_AGE_RATING,          /**< Media group ID for an age rating*/
+	MEDIA_CONTENT_GROUP_KEYWORD,             /**< Media group ID for a keyword*/
+	MEDIA_CONTENT_GROUP_WEATHER,             /**< Media group ID for the weather*/
+	MEDIA_CONTENT_GROUP_MAX                  /**< Invalid media group ID*/
 } media_group_e;
 
 /**
@@ -310,15 +305,15 @@ typedef void (*media_scan_completed_cb)(media_content_error_e error, void * user
  * @see media_content_db_update_subscribe()
  */
 typedef void (*media_content_db_update_cb)(
-                                    media_content_error_e error,
-                                    int pid,
-                                    media_content_db_update_item_type_e update_item,
-                                    media_content_db_update_type_e update_type,
-                                    media_content_type_e media_type,
-                                    char *uuid,
-                                    char *path,
-                                    char *mime_type,
-                                    void *user_data);
+				media_content_error_e error,
+				int pid,
+				media_content_db_update_item_type_e update_item,
+				media_content_db_update_type_e update_type,
+				media_content_type_e media_type,
+				char *uuid,
+				char *path,
+				char *mime_type,
+				void *user_data);
 
 
 /**
@@ -462,7 +457,7 @@ typedef bool (*media_playlist_cb)(media_playlist_h playlist, void *user_data);
  * @see media_info_clone()
  * @see media_playlist_foreach_media_from_db()
  */
-typedef bool(* playlist_member_cb)(int playlist_member_id, media_info_h media, void *user_data);
+typedef bool (*playlist_member_cb)(int playlist_member_id, media_info_h media, void *user_data);
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_TAG_MODULE
