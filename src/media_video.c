@@ -23,7 +23,7 @@ int video_meta_destroy(video_meta_h video)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if(_video)
+	if (_video)
 	{
 		SAFE_FREE(_video->media_id);
 		SAFE_FREE(_video->title);
@@ -54,7 +54,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_src = (video_meta_s*)src;
 
-	if(_src != NULL)
+	if (_src != NULL)
 	{
 		video_meta_s *_dst = (video_meta_s*)calloc(1, sizeof(video_meta_s));
 		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
@@ -205,7 +205,7 @@ int video_meta_get_media_id(video_meta_h video, char **media_id)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video)
+	if (_video)
 	{
 		if(STRING_VALID(_video->media_id))
 		{
@@ -234,7 +234,7 @@ int video_meta_get_album(video_meta_h video, char **album)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video)
+	if (_video)
 	{
 		if(STRING_VALID(_video->album))
 		{
@@ -263,7 +263,7 @@ int video_meta_get_artist(video_meta_h video, char **artist)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video)
+	if (_video)
 	{
 		if(STRING_VALID(_video->artist))
 		{
@@ -292,7 +292,7 @@ int video_meta_get_album_artist(video_meta_h video, char **album_artist)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video)
+	if (_video)
 	{
 		if(STRING_VALID(_video->album_artist))
 		{
@@ -315,14 +315,13 @@ int video_meta_get_album_artist(video_meta_h video, char **album_artist)
 	}
 
 	return ret;
-
 }
 
 int video_meta_get_genre(video_meta_h video, char **genre)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video)
+	if (_video)
 	{
 		if(STRING_VALID(_video->genre))
 		{
@@ -351,7 +350,7 @@ int video_meta_get_composer(video_meta_h video, char **composer)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video)
+	if (_video)
 	{
 		if(STRING_VALID(_video->composer))
 		{
@@ -380,7 +379,7 @@ int video_meta_get_year(video_meta_h video, char **year)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video)
+	if (_video)
 	{
 		if(STRING_VALID(_video->year))
 		{
@@ -409,7 +408,7 @@ int video_meta_get_recorded_date(video_meta_h video, char **recorded_date)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video)
+	if (_video)
 	{
 		if(STRING_VALID(_video->recorded_date))
 		{
@@ -438,7 +437,7 @@ int video_meta_get_copyright(video_meta_h video, char **copyright)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video)
+	if (_video)
 	{
 		if(STRING_VALID(_video->copyright))
 		{
@@ -467,7 +466,7 @@ int video_meta_get_track_num(video_meta_h video, char **track_num)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video)
+	if (_video)
 	{
 		if(STRING_VALID(_video->track_num))
 		{
@@ -497,7 +496,7 @@ int video_meta_get_bit_rate(video_meta_h video, int *bit_rate)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if(_video && bit_rate)
+	if (_video && bit_rate)
 	{
 		*bit_rate = _video->bitrate;
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -516,7 +515,7 @@ int video_meta_get_duration(video_meta_h video, int *duration)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if(_video && duration)
+	if (_video && duration)
 	{
 		*duration = _video->duration;
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -535,7 +534,7 @@ int video_meta_get_width(video_meta_h video, int *width)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if(_video && width)
+	if (_video && width)
 	{
 		*width = _video->width;
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -553,7 +552,7 @@ int video_meta_get_height(video_meta_h video, int *height)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
-	if(_video && height)
+	if (_video && height)
 	{
 		*height = _video->height;
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -572,7 +571,7 @@ int video_meta_get_played_count(video_meta_h video, int *played_count)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if(_video && played_count)
+	if (_video && played_count)
 	{
 		*played_count = _video->played_count;
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -591,7 +590,7 @@ int video_meta_get_played_time(video_meta_h video, time_t* played_time)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if(_video)
+	if (_video)
 	{
 		*played_time = _video->played_time;
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -610,7 +609,7 @@ int video_meta_get_played_position(video_meta_h video, int *played_position)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if(_video)
+	if (_video)
 	{
 		*played_position = _video->played_position;
 		ret = MEDIA_CONTENT_ERROR_NONE;
@@ -629,7 +628,7 @@ int video_meta_set_played_count(video_meta_h video, int played_count)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if((_video != NULL) && (played_count >= 0))
+	if ((_video != NULL) && (played_count >= 0))
 	{
 		_video->played_count = played_count;
 	}
@@ -647,7 +646,7 @@ int video_meta_set_played_time(video_meta_h video, time_t played_time)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if((_video != NULL) && (played_time >= 0))
+	if ((_video != NULL) && (played_time >= 0))
 	{
 		_video->played_time = played_time;
 	}
@@ -665,7 +664,7 @@ int video_meta_set_played_position(video_meta_h video, int played_position)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 
-	if((_video != NULL) && (played_position >= 0))
+	if ((_video != NULL) && (played_position >= 0))
 	{
 		_video->played_position = played_position;
 	}
@@ -684,7 +683,7 @@ int video_meta_update_to_db(video_meta_h video)
 	video_meta_s *_video = (video_meta_s*)video;
 	char *sql = NULL;
 
-	if(_video != NULL && STRING_VALID(_video->media_id))
+	if (_video != NULL && STRING_VALID(_video->media_id))
 	{
 		char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0, };
 		memset(storage_id, 0x00, sizeof(storage_id));
