@@ -603,10 +603,10 @@ int __media_content_cynara_check(const char *privilege)
 		smack = fgets(buf, sizeof(buf), pFile);
 		fclose(pFile);
 	} else {
+		SAFE_FREE(session);
 		media_content_error("current info read failed");
 		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 	}
-
 
 	G_LOCK(cynara_mutex);
 	result = cynara_check(_cynara, smack, session, c_uid, privilege);
