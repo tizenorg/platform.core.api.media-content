@@ -1618,6 +1618,149 @@ int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb
 int media_info_cancel_thumbnail(media_info_h media);
 
 /**
+* @brief Creates the media info handle.
+* @details If the information about the file that is already known, you can use this API to generate empty handler.
+*          And you can add the information to the generated handler using media_info_set_XXX() API.
+*          After filling the information to the handler, you can insert into database using media_info_insert_to_db_with_data() API.
+* @since_tizen 3.0
+*
+*
+* @privilege %http://tizen.org/privilege/mediastorage \n
+*			%http://tizen.org/privilege/externalstorage
+*
+* @remarks If you want to access only internal storage with this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
+*                   Or if you want to access only external storage with this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+*                   If you can access both storage, you must add all privilege.
+*
+* @param[in] path The media info handle
+* @param[out] media The media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB operation failed
+* @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+*
+* @see media_info_insert_to_db_with_data()
+* @see media_info_destroy()
+*/
+int media_info_create(const char *path, media_info_h *media);
+
+/**
+* @brief Inserts media info to database with media info data.
+* @details After filling the information to the generated handler using media_info_create() API, you can insert into database using this API.
+* @since_tizen 3.0
+*
+* @remarks You must create media handle using media_info_create(),
+*               and release @a info using media_info_destroy().
+*
+* @privlevel public
+* @privilege %http://tizen.org/privilege/content.write
+*
+* @param[in] media The path of the media info
+* @param[out] info The media info handle to get data from database
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB operation failed
+* @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+*
+* @see media_info_create()
+*/
+int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info);
+
+/**
+* @brief Sets the title of media info handle.
+* @since_tizen 3.0
+*
+* @param[in] media The media info handle
+* @param[in] title The title of media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+*
+* @post media_info_insert_to_db_with_data()
+*/
+int media_info_set_title(media_info_h media, const char *title);
+
+/**
+* @brief Sets the album of media info handle.
+* @since_tizen 3.0
+*
+* @param[in] media The media info handle
+* @param[in] album The album of media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+*
+* @post media_info_insert_to_db_with_data()
+*/
+int media_info_set_album(media_info_h media, const char *album);
+
+/**
+* @brief Sets the artist of media info handle.
+* @since_tizen 3.0
+*
+* @param[in] media The media info handle
+* @param[in] artist The artist of media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+*
+* @post media_info_insert_to_db_with_data()
+*/
+int media_info_set_artist(media_info_h media, const char *artist);
+
+/**
+* @brief Sets the genre of media info handle.
+* @since_tizen 3.0
+*
+* @param[in] media The media info handle
+* @param[in] genre The genre of media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+*
+* @post media_info_insert_to_db_with_data()
+*/
+int media_info_set_genre(media_info_h media, const char *genre);
+
+/**
+* @brief Sets the recorded date of media info handle.
+* @since_tizen 3.0
+*
+* @param[in] media The media info handle
+* @param[in] recorded_date The recorded date of media info handle
+*
+* @return @c 0 on success,
+*           otherwise a negative error value
+*
+* @retval #MEDIA_CONTENT_ERROR_NONE Successful
+* @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+*
+* @post media_info_insert_to_db_with_data()
+*/
+int media_info_set_recorded_date(media_info_h media, const char *recorded_date);
+
+
+/**
  * @}
  */
 
