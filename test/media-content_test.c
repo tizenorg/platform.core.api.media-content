@@ -2779,6 +2779,7 @@ int test_batch_operations()
 	int ret = -1;
 	int i;
 	char *file_list[10];
+	char *path = NULL;
 
 	for (i = 0; i < 10; i++) {
 		char filepath[255] = {0,};
