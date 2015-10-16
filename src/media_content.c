@@ -1098,6 +1098,35 @@ int media_content_set_db_updated_cb_v2(media_content_noti_h *noti_handle, media_
 	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }
 
+int media_content_add_db_updated_cb(media_content_db_update_cb callback, void *user_data, media_content_noti_h *noti_handle)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_noti_cb_s *noti_info = NULL;
+
+	if (noti_handle == NULL) {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	if (callback == NULL) {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	noti_info = (media_noti_cb_s *)calloc(1, sizeof(media_noti_cb_s));
+	if (noti_info == NULL) {
+		media_content_error("Failed to create noti info");
+		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
+
+	noti_info->update_noti_cb = callback;
+	noti_info->user_data = user_data;
+
+	ret = media_db_update_subscribe_internal((MediaNotiHandle*)noti_handle, _media_content_db_update_noti_cb, (void *)noti_info);
+
+	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
+}
+
 void __media_content_clear_user_data(void *user_data)
 {
 	media_noti_cb_s *noti_info = user_data;
@@ -1115,3 +1144,14 @@ int media_content_unset_db_updated_cb_v2(media_content_noti_h noti_handle)
 
 	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }
+
+
+int media_content_remove_db_updated_cb(media_content_noti_h noti_handle)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	ret = media_db_update_unsubscribe_internal((MediaNotiHandle)noti_handle, __media_content_clear_user_data);
+
+	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
+}
+
