@@ -331,9 +331,6 @@ int media_info_set_storage_id(media_info_h media, const char *storage_id);
  */
 int media_storage_get_scan_status(const char *storage_uuid, media_storage_scan_status_e *scan_status);
 
-/* Handle for dbus notification to use multiple callback */
-typedef void *media_content_noti_h;
-
 /**
  * @brief Subscribes notifications of the media DB change.
  * @details This function subscribes notifications of the media DB change which are published by the media server or other apps.
