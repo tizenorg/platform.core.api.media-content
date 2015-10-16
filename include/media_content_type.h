@@ -273,6 +273,13 @@ typedef void *media_storage_h;
 typedef void *media_face_h;
 
 /**
+ * @ingroup CAPI_CONTENT_MEDIA_CONTENT_MODULE
+ * @brief The structure type for the Media content noti handle.
+ * @since_tizen 3.0
+ */
+typedef void *media_content_noti_h;
+
+/**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Called when the media scanning is finished.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
