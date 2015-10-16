@@ -138,7 +138,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 		else
 		{
 			/*If root path, Stop Scanning*/
-			if((storage_type == MEDIA_SVC_STORAGE_INTERNAL) && (strcmp(search_path, MEDIA_ROOT_PATH_INTERNAL) == 0)) {
+			if((storage_type == MEDIA_SVC_STORAGE_INTERNAL) && (STRING_VALID(MEDIA_ROOT_PATH_INTERNAL)) &&strcmp(search_path, MEDIA_ROOT_PATH_INTERNAL) == 0)) {
 				break;
 			} else if((storage_type == MEDIA_SVC_STORAGE_EXTERNAL) && (STRING_VALID(MEDIA_ROOT_PATH_SDCARD)) && (strcmp(search_path, MEDIA_ROOT_PATH_SDCARD) == 0)) {
 				break;

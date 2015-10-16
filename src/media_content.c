@@ -588,7 +588,7 @@ int __media_content_cynara_check(const char *privilege)
 		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 	}
 
-	sprintf(c_uid, "%d", tzplatform_getuid(TZ_USER_NAME));
+	snprintf(c_uid, sizeof(c_uid), "%d", tzplatform_getuid(TZ_USER_NAME));
 
 	pid = getpid();
 
