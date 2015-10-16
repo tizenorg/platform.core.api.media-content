@@ -170,6 +170,7 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 int media_content_cancel_scan_folder(const char *path);
 
 /**
+ * @deprecated Deprecated since 3.0. Use media_content_add_db_updated_cb() instead.
  * @brief Subscribes notifications of the media DB change.
  * @details This function subscribes notifications of the media DB change which are published by the media server or other apps.
  *          media_content_db_update_cb() function will be called when notification of the media DB change is subscribed.
@@ -194,6 +195,7 @@ int media_content_cancel_scan_folder(const char *path);
 int media_content_set_db_updated_cb(media_content_db_update_cb callback, void *user_data);
 
 /**
+ * @deprecated Deprecated since 3.0. Use media_content_remove_db_updated_cb() instead.
  * @brief Unsubscribes notifications of the media DB change.
  * @details This function unsubscribes notifications of the media DB change which are published by the media server or other apps.
  *
@@ -210,6 +212,55 @@ int media_content_set_db_updated_cb(media_content_db_update_cb callback, void *u
  * @see media_content_set_db_updated_cb()
  */
 int media_content_unset_db_updated_cb(void);
+
+/**
+ * @brief Subscribes notifications of the media DB change.
+ * @details This function subscribes notifications of the media DB change which are published by the media server or other apps. \n
+ *          media_content_db_update_cb() function will be called when notification of the media DB change is subscribed. \n
+ *          Using this API, multiple callback is possible to register in one process.
+ *
+ * @since_tizen 3.0
+ *
+ * @remarks  To release the registered callback, you must use media_content_remove_db_updated_cb() API.
+ *                    media_content_unset_db_updated_cb() API can not release the callback using this API.
+ *
+ * @param[out] noti_handle The handle to db updated notification
+ * @param[in] callback  The callback to be invoked when the scanning is finished
+ * @param[in] user_data The user data to be passed to the callback function
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ *
+ * @see media_content_db_update_cb()
+ * @see media_content_remove_db_updated_cb()
+ */
+int media_content_add_db_updated_cb(media_content_noti_h *noti_handle, media_content_db_update_cb callback, void *user_data);
+
+
+/**
+ * @brief Unsubscribes notifications of the media DB change.
+ * @details This function unsubscribes notifications of the media DB change which are published by the media server or other apps.
+ *
+ * @since_tizen 3.0
+ *
+ * @param[in] noti_handle The handle to db updated notification
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ *
+ * @pre media_content_add_db_updated_cb()
+ *
+ * @see media_content_add_db_updated_cb()
+ */
+int media_content_remove_db_updated_cb(media_content_noti_h noti_handle);
 
 /**
  * @}
