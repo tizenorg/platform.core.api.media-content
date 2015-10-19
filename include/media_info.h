@@ -1660,7 +1660,6 @@ int media_info_create(const char *path, media_info_h *media);
 * @privilege %http://tizen.org/privilege/content.write
 *
 * @param[in] media The media info handle to be inserted
-* @param[out] info The media info handle to get data from database
 *
 * @return @c 0 on success,
 *           otherwise a negative error value
@@ -1672,7 +1671,7 @@ int media_info_create(const char *path, media_info_h *media);
 *
 * @see media_info_create()
 */
-int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info);
+int media_info_insert_to_db_with_data(media_info_h media);
 
 /**
 * @brief Sets the title of media info handle.
