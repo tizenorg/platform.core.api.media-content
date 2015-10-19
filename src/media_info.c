@@ -2845,7 +2845,7 @@ static int __media_info_destroy(media_info_h media)
 	return ret;
 }
 
-int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info)
+int media_info_insert_to_db_with_data(media_info_h media)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
@@ -2887,26 +2887,17 @@ int media_info_insert_to_db_with_data(media_info_h media, media_info_h *info)
 	media_svc_destroy_content_info(svc_content_info);
 	SAFE_FREE(svc_content_info);
 
-	if (info != NULL) {
-		media_info_s *_get_media = (media_info_s*)calloc(1, sizeof(media_info_s));
-		media_content_retvm_if(_get_media == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+	/*Fill out the handle*/
+	char *media_file_path = g_strdup(_media->file_path);
+	char *media_string_uuid = g_strdup(_media->storage_uuid);
 
-		ret = _media_info_get_media_info_from_db(_media->file_path, _media->storage_uuid, (media_info_h)_get_media);
+	__media_info_destroy(media);
+	ret = _media_info_get_media_info_from_db(media_file_path, media_string_uuid, media);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("_media_info_get_media_info_from_db fail", ret);
 
-		*info = (media_info_h)_get_media;
-
-		/*Fill out the handle*/
-		char *media_file_path = g_strdup(_media->file_path);
-		char *media_string_uuid = g_strdup(_media->storage_uuid);
-
-		__media_info_destroy(media);
-		ret = _media_info_get_media_info_from_db(media_file_path, media_string_uuid, media);
-		if (ret != MEDIA_CONTENT_ERROR_NONE)
-			media_content_error("_media_info_get_media_info_from_db fail", ret);
-
-		SAFE_FREE(media_file_path);
-		SAFE_FREE(media_string_uuid);
-	}
+	SAFE_FREE(media_file_path);
+	SAFE_FREE(media_string_uuid);
 
 	return ret;
 }
@@ -2991,49 +2982,6 @@ int media_info_create(const char *path, media_info_h *media)
 		_media->storage_uuid = g_strdup(storage_id);
 		_media->storage_type = storage_type;
 	}
-
-	*media = (media_info_h)_media;
-
-	return ret;
-}
-
-int media_info_create_handle(media_info_h *media)
-{
-	int ret = MEDIA_CONTENT_ERROR_NONE;
-
-	media_content_retvm_if(media == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid handle");
-
-	media_info_s *_media = (media_info_s*)calloc(1, sizeof(media_info_s));
-	media_content_retvm_if(_media == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-
-	_media->audio_meta = (audio_meta_s *)calloc(1, sizeof(audio_meta_s));
-	if (_media->audio_meta == NULL) {
-		SAFE_FREE(_media);
-		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-	}
-
-	_media->video_meta = (video_meta_s *)calloc(1, sizeof(video_meta_s));
-	if (_media->video_meta == NULL) {
-		SAFE_FREE(_media->audio_meta);
-		SAFE_FREE(_media);
-		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-	}
-
-	_media->image_meta = (image_meta_s *)calloc(1, sizeof(image_meta_s));
-	if (_media->image_meta == NULL) {
-		SAFE_FREE(_media->audio_meta);
-		SAFE_FREE(_media->video_meta);
-		SAFE_FREE(_media);
-		media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
-		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-	}
-
-	_media->storage_type = -1;
-	_media->media_type = -1;
-	_media->modified_time = -1;
-	_media->size = -1;
 
 	*media = (media_info_h)_media;
 

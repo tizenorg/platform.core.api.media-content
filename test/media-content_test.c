@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <media_content.h>
-#include <media_content_internal.h>
 #include <media_info_private.h>
 #include <dlog.h>
 #include <pthread.h>
@@ -3081,6 +3080,147 @@ int test_noti()
 	return ret;
 }
 
+int test_create_handle(void)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_h media = NULL;
+	const char *path = "/home/owner/content/test/test.txt";
+	char *str_value = NULL;
+	int int_value = -1;
+	bool bool_value = FALSE;
+	unsigned long long content_size = 0;
+	time_t modified_time = 0;
+	double double_value = 0.0;
+
+	ret = media_info_create(path, &media);
+
+	ret = media_info_set_title(media, "test_title");
+	ret = media_info_set_album(media, "test_album");
+	ret = media_info_set_artist(media, "test_artist");
+	ret = media_info_set_genre(media, "test_genre");
+	ret = media_info_set_recorded_date(media, "test_recorded_date");
+	ret = media_info_set_age_rating(media, "test_age_rating");
+	ret = media_info_set_author(media, "test_author");
+	ret = media_info_set_category(media, "test_category");
+	ret = media_info_set_content_name(media, "test_content_name");
+	ret = media_info_set_description(media, "test_description");
+	ret = media_info_set_display_name(media, "test_display_name");
+	ret = media_info_set_keyword(media, "test_keyword");
+	ret = media_info_set_location_tag(media, "test_location_tag");
+	ret = media_info_set_weather(media, "test_weather");
+	ret = media_info_set_provider(media, "test_provider");
+
+	ret = media_info_set_altitude(media, 100.10);
+	ret = media_info_set_latitude(media, 200.20);
+	ret = media_info_set_longitude(media, 300.30);
+	ret = media_info_set_rating(media, 10);
+	ret = media_info_set_played_time(media);
+	ret = media_info_set_favorite(media, TRUE);
+	ret = media_info_increase_played_count(media);
+	ret = media_info_set_added_time(media, 12345);
+
+	ret = media_info_insert_to_db_with_data(media);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+	{
+		media_content_error("media_info_insert_to_db_with_data failed : %d\n", ret);
+		media_info_destroy(media);
+		return ret;
+	}
+
+	ret = media_info_get_media_id(media, &str_value);
+	media_content_debug("media_id = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_file_path(media, &str_value);
+	media_content_debug("file_path = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_title(media, &str_value);
+	media_content_debug("title = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_age_rating(media, &str_value);
+	media_content_debug("age_rating = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_author(media, &str_value);
+	media_content_debug("author = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_category(media, &str_value);
+	media_content_debug("category = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_content_name(media, &str_value);
+	media_content_debug("content_name = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_description(media, &str_value);
+	media_content_debug("description = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_display_name(media, &str_value);
+	media_content_debug("display_name = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_keyword(media, &str_value);
+	media_content_debug("keyword = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_location_tag(media, &str_value);
+	media_content_debug("location_tag = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_weather(media, &str_value);
+	media_content_debug("weather = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_provider(media, &str_value);
+	media_content_debug("provider = [%s]", str_value);
+	SAFE_FREE(str_value);
+
+	ret = media_info_get_longitude(media, &double_value);
+	media_content_debug("longitude = [%lf]", double_value);
+
+	ret = media_info_get_latitude(media, &double_value);
+	media_content_debug("latitude = [%lf]", double_value);
+
+	ret = media_info_get_altitude(media, &double_value);
+	media_content_debug("altitud = [%lf]", double_value);
+
+	ret = media_info_get_rating(media, &int_value);
+	media_content_debug("rating = [%d]", int_value);
+
+	ret = media_info_get_favorite(media, &bool_value);
+	media_content_debug("favorite = [%d]", bool_value);
+
+	ret = media_info_get_played_time(media, &modified_time);
+	media_content_debug("played_time = [%d]", modified_time);
+
+	ret = media_info_get_played_count(media, &int_value);
+	media_content_debug("played_count = [%d]", int_value);
+
+	ret = media_info_get_added_time(media, &modified_time);
+	media_content_debug("added_time = [%d]", modified_time);
+
+	ret = media_info_get_size(media, &content_size);
+	media_content_debug("size = [%d]", content_size);
+
+	ret = media_info_get_modified_time(media, &modified_time);
+	media_content_debug("modified_time = [%d]", modified_time);
+
+	ret = media_info_get_media_type(media, (media_content_type_e *)&int_value);
+	media_content_debug("media_type = [%d]", int_value);
+
+	ret = media_info_get_storage_type(media, (media_content_storage_e *)&int_value);
+	media_content_debug("storage_type = [%d]", int_value);
+
+	media_info_destroy(media);
+
+	return ret;
+
+}
+
 bool media_face_test_cb(media_face_h face, void *user_data)
 {
 	char *face_id = NULL;
@@ -3327,6 +3467,10 @@ int main(int argc, char *argv[])
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		return MEDIA_CONTENT_ERROR_NONE;
 
+	ret = test_create_handle();
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		return MEDIA_CONTENT_ERROR_NONE;
+
 	ret = test_face();
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		return MEDIA_CONTENT_ERROR_NONE;
@@ -3335,6 +3479,7 @@ int main(int argc, char *argv[])
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
 		return MEDIA_CONTENT_ERROR_NONE;
 #endif
+	ret = test_create_handle();
 
 	ret = test_disconnect_database();
 	if(ret != MEDIA_CONTENT_ERROR_NONE)
