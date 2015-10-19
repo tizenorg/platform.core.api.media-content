@@ -29,7 +29,7 @@ int _media_util_check_file_exist(const char *path)
 
 	/* check the file exits actually */
 	exist = open(path, O_RDONLY);
-	if(exist < 0) {
+	if (exist < 0) {
 		media_content_sec_debug("path [%s]", path);
 		media_content_stderror("open file fail");
 		if (errno == EACCES || errno == EPERM) {
@@ -50,8 +50,7 @@ int _media_util_check_ignore_file(const char *path, bool *ignore)
 
 	*ignore = FALSE;
 
-	if(strstr(path, "/.") != NULL)
-	{
+	if (strstr(path, "/.") != NULL) {
 		*ignore = TRUE;
 		media_content_error("hidden path");
 		media_content_sec_debug("path : %s", path);
@@ -73,8 +72,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 
 	*ignore = FALSE;
 	/*1. Check Hidden Directory*/
-	if(strstr(dir_path, "/.") != NULL)
-	{
+	if (strstr(dir_path, "/.") != NULL) {
 		*ignore = TRUE;
 		media_content_error("hidden path");
 		return MEDIA_CONTENT_ERROR_NONE;
@@ -82,8 +80,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 
 	/*2. Check Scan Ignore Directory*/
 	ret = media_svc_get_storage_type(dir_path, &storage_type, tzplatform_getuid(TZ_USER_NAME));
-	if(ret != MS_MEDIA_ERR_NONE)
-	{
+	if (ret != MS_MEDIA_ERR_NONE) {
 		media_content_error("media_svc_get_storage_type failed : %d", ret);
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 	}
@@ -96,8 +93,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 	char search_path[4096] = {0, };
 
 	strncpy(search_path, dir_path, strlen(dir_path));
-	while(STRING_VALID(search_path))
-	{
+	while (STRING_VALID(search_path)) {
 		dp = opendir(search_path);
 		if (dp == NULL) {
 			*ignore = TRUE;
@@ -108,20 +104,16 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 
 		media_content_retvm_if(dp == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "Open Directory fail");
 
-		while (!readdir_r(dp, &entry, &result))
-		{
+		while (!readdir_r(dp, &entry, &result)) {
 			if (result == NULL)
 				break;
 
-			if(STRING_VALID(entry.d_name) && (strcmp(entry.d_name, scan_ignore) == 0))
-			{
+			if (STRING_VALID(entry.d_name) && (strcmp(entry.d_name, scan_ignore) == 0)) {
 				media_content_error("Find Ignore path");
 				media_content_sec_debug("Ignore path[%s]", search_path);
 				find = TRUE;
 				break;
-			}
-			else
-			{
+			} else {
 				//media_content_sec_debug("entry.d_name[%s]", entry.d_name);
 				continue;
 			}
@@ -130,19 +122,16 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 		if (dp)	closedir(dp);
 		dp = NULL;
 
-		if(find)
-		{
+		if (find) {
 			*ignore = TRUE;
 			break;
-		}
-		else
-		{
+		} else {
 			/*If root path, Stop Scanning*/
-			if((storage_type == MEDIA_SVC_STORAGE_INTERNAL) && (STRING_VALID(MEDIA_ROOT_PATH_INTERNAL) && strcmp(search_path, MEDIA_ROOT_PATH_INTERNAL) == 0)) {
+			if ((storage_type == MEDIA_SVC_STORAGE_INTERNAL) && (STRING_VALID(MEDIA_ROOT_PATH_INTERNAL) && strcmp(search_path, MEDIA_ROOT_PATH_INTERNAL) == 0)) {
 				break;
-			} else if((storage_type == MEDIA_SVC_STORAGE_EXTERNAL) && (STRING_VALID(MEDIA_ROOT_PATH_SDCARD)) && (strcmp(search_path, MEDIA_ROOT_PATH_SDCARD) == 0)) {
+			} else if ((storage_type == MEDIA_SVC_STORAGE_EXTERNAL) && (STRING_VALID(MEDIA_ROOT_PATH_SDCARD)) && (strcmp(search_path, MEDIA_ROOT_PATH_SDCARD) == 0)) {
 				break;
-			} else if(storage_type == MEDIA_SVC_STORAGE_EXTERNAL_USB) {
+			} else if (storage_type == MEDIA_SVC_STORAGE_EXTERNAL_USB) {
 				char *parent_folder_path = NULL;
 				bool is_root = FALSE;
 
@@ -157,14 +146,11 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 			}
 
 			leaf_path = strrchr(search_path, '/');
-			if(leaf_path != NULL)
-			{
+			if (leaf_path != NULL) {
 				int seek_len = leaf_path -search_path;
 				search_path[seek_len] = '\0';
 				//media_content_sec_debug("go to other dir [%s]", search_path);
-			}
-			else
-			{
+			} else {
 				media_content_debug("Fail to find leaf path");
 				break;
 			}

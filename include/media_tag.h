@@ -149,7 +149,7 @@ int media_tag_get_tag_count_from_db(filter_h filter, int *tag_count);
  * @see #media_tag_cb
  * @see media_filter_create()
  */
-int media_tag_foreach_tag_from_db (filter_h filter, media_tag_cb callback, void *user_data);
+int media_tag_foreach_tag_from_db(filter_h filter, media_tag_cb callback, void *user_data);
 
 /**
  * @brief Gets the number of media files for the passed @a filter in the given @a tag from the media database.
@@ -172,7 +172,7 @@ int media_tag_foreach_tag_from_db (filter_h filter, media_tag_cb callback, void 
  *
  * @see media_content_connect()
  */
-int media_tag_get_media_count_from_db (int tag_id, filter_h filter, int *media_count);
+int media_tag_get_media_count_from_db(int tag_id, filter_h filter, int *media_count);
 
 /**
  * @brief Iterates through media items for a given tag from the media database.

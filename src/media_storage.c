@@ -46,8 +46,7 @@ int media_storage_insert_to_db(const char *storage_name, const char *storage_pat
 	media_content_retvm_if(storage_uuid == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "Invalid storage_id");
 
 	ret = media_svc_insert_storage(_content_get_db_handle(), storage_uuid, storage_name, storage_path, storage_account, storage_type, tzplatform_getuid(TZ_USER_NAME));
-	if (ret != MS_MEDIA_ERR_NONE)
-	{
+	if (ret != MS_MEDIA_ERR_NONE) {
 		ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		SAFE_FREE(storage_uuid);
 		return ret;
@@ -72,8 +71,7 @@ int media_storage_delete_from_db(const char *storage_id)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if(!STRING_VALID(storage_id))
-	{
+	if (!STRING_VALID(storage_id)) {
 		media_content_error("Invalid Storage ID");
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -89,8 +87,7 @@ int media_storage_get_storage_info_from_db(const char *storage_id, media_storage
 	char select_query[DEFAULT_QUERY_SIZE];
 	sqlite3_stmt *stmt = NULL;
 
-	if(!STRING_VALID(storage_id) || (storage == NULL))
-	{
+	if (!STRING_VALID(storage_id) || (storage == NULL)) {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -101,12 +98,10 @@ int media_storage_get_storage_info_from_db(const char *storage_id, media_storage
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	while(sqlite3_step(stmt) == SQLITE_ROW)
-	{
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
 		media_storage_s *_storage = (media_storage_s*)calloc(1, sizeof(media_storage_s));
 
-		if(_storage == NULL)
-		{
+		if (_storage == NULL) {
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			SQLITE3_FINALIZE(stmt);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -126,12 +121,9 @@ int media_storage_get_storage_count_from_db(filter_h filter, int *storage_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if(storage_count)
-	{
+	if (storage_count) {
 		ret = _media_db_get_group_count(filter, MEDIA_GROUP_STORAGE, storage_count);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -143,12 +135,9 @@ int media_storage_foreach_storage_from_db(filter_h filter, media_storage_cb call
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if(callback != NULL)
-	{
+	if (callback != NULL) {
 		ret = _media_db_get_storage(filter, callback, user_data);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -160,12 +149,9 @@ int media_storage_get_media_count_from_db(const char *storage_id, filter_h filte
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if(STRING_VALID(storage_id) && media_count)
-	{
+	if (STRING_VALID(storage_id) && media_count) {
 		ret = _media_db_get_group_item_count(storage_id, filter, MEDIA_GROUP_STORAGE, media_count);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -177,12 +163,9 @@ int media_storage_foreach_media_from_db(const char *storage_id, filter_h filter,
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if((callback != NULL) && STRING_VALID(storage_id))
-	{
+	if ((callback != NULL) && STRING_VALID(storage_id)) {
 		ret = _media_db_get_group_item(storage_id, filter, callback, user_data, MEDIA_GROUP_STORAGE);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -194,8 +177,7 @@ int media_storage_destroy(media_storage_h storage)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_storage_s *_storage = (media_storage_s*)storage;
-	if(_storage)
-	{
+	if (_storage) {
 		SAFE_FREE(_storage->storage_id);
 		SAFE_FREE(_storage->storage_path);
 		SAFE_FREE(_storage->storage_name);
@@ -203,9 +185,7 @@ int media_storage_destroy(media_storage_h storage)
 		SAFE_FREE(_storage);
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -218,49 +198,40 @@ int media_storage_clone(media_storage_h *dst, media_storage_h src)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_storage_s *_src = (media_storage_s*)src;
 
-	if(_src != NULL)
-	{
+	if (_src != NULL) {
 		media_storage_s *_dst = (media_storage_s*)calloc(1, sizeof(media_storage_s));
 		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
-		if(STRING_VALID(_src->storage_id))
-		{
+		if (STRING_VALID(_src->storage_id)) {
 			_dst->storage_id = strdup(_src->storage_id);
-			if(_dst->storage_id == NULL)
-			{
+			if (_dst->storage_id == NULL) {
 				media_storage_destroy((media_storage_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->storage_name))
-		{
+		if (STRING_VALID(_src->storage_name)) {
 			_dst->storage_name = strdup(_src->storage_name);
-			if(_dst->storage_name == NULL)
-			{
+			if (_dst->storage_name == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_storage_destroy((media_storage_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->storage_path))
-		{
+		if (STRING_VALID(_src->storage_path)) {
 			_dst->storage_path = strdup(_src->storage_path);
-			if(_dst->storage_path == NULL)
-			{
+			if (_dst->storage_path == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_storage_destroy((media_storage_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->storage_account))
-		{
+		if (STRING_VALID(_src->storage_account)) {
 			_dst->storage_account = strdup(_src->storage_account);
-			if(_dst->storage_account == NULL)
-			{
+			if (_dst->storage_account == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_storage_destroy((media_storage_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -272,9 +243,7 @@ int media_storage_clone(media_storage_h *dst, media_storage_h src)
 		*dst = (media_storage_h)_dst;
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -287,22 +256,16 @@ int media_storage_get_id(media_storage_h storage, char **storage_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_storage_s *_storage = (media_storage_s*)storage;
 
-	if(_storage && storage_id)
-	{
-		if(STRING_VALID(_storage->storage_id))
-		{
+	if (_storage && storage_id) {
+		if (STRING_VALID(_storage->storage_id)) {
 			*storage_id = strdup(_storage->storage_id);
 			media_content_retvm_if(*storage_id == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*storage_id = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -315,22 +278,16 @@ int media_storage_get_name(media_storage_h storage, char **storage_name)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_storage_s *_storage = (media_storage_s*)storage;
 
-	if(_storage && storage_name)
-	{
-		if(STRING_VALID(_storage->storage_name))
-		{
+	if (_storage && storage_name) {
+		if (STRING_VALID(_storage->storage_name)) {
 			*storage_name = strdup(_storage->storage_name);
 			media_content_retvm_if(*storage_name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*storage_name = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -343,22 +300,16 @@ int media_storage_get_path(media_storage_h storage, char **storage_path)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_storage_s *_storage = (media_storage_s*)storage;
 
-	if(_storage && storage_path)
-	{
-		if(STRING_VALID(_storage->storage_path))
-		{
+	if (_storage && storage_path) {
+		if (STRING_VALID(_storage->storage_path)) {
 			*storage_path = strdup(_storage->storage_path);
 			media_content_retvm_if(*storage_path == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*storage_path = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -371,22 +322,16 @@ int media_storage_get_storage_account(media_storage_h storage, char **storage_ac
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_storage_s *_storage = (media_storage_s*)storage;
 
-	if(_storage && storage_account)
-	{
-		if(STRING_VALID(_storage->storage_account))
-		{
+	if (_storage && storage_account) {
+		if (STRING_VALID(_storage->storage_account)) {
 			*storage_account = strdup(_storage->storage_account);
 			media_content_retvm_if(*storage_account == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*storage_account = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -399,13 +344,10 @@ int media_storage_get_type(media_storage_h storage, media_content_storage_e *sto
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_storage_s *_storage = (media_storage_s*)storage;
 
-	if(_storage && storage_type)
-	{
+	if (_storage && storage_type) {
 		*storage_type = _storage->storage_type;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -418,8 +360,7 @@ int media_storage_get_scan_status(const char *storage_uuid, media_storage_scan_s
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_svc_scan_status_type_e status = MEDIA_STORAGE_SCAN_NONE;
 
-	if(STRING_VALID(storage_uuid))
-	{
+	if (STRING_VALID(storage_uuid)) {
 		ret = media_svc_get_storage_scan_status(_content_get_db_handle(), storage_uuid, &status);
 		if (ret != MS_MEDIA_ERR_NONE) {
 			media_content_error("media_svc_get_storage_scan_status failed");
@@ -427,9 +368,7 @@ int media_storage_get_scan_status(const char *storage_uuid, media_storage_scan_s
 		} else {
 			*scan_status = status;
 		}
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}

@@ -23,14 +23,11 @@ int media_bookmark_insert_to_db(const char *media_id, time_t time, const char *t
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	char *sql = NULL;
 
-	if(STRING_VALID(media_id))
-	{
+	if (STRING_VALID(media_id)) {
 		sql = sqlite3_mprintf(INSERT_BOOKMARK_TO_BOOKMARK, media_id, time, thumbnail_path);
 		ret = _content_query_sql(sql);
 		SQLITE3_SAFE_FREE(sql);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -43,8 +40,7 @@ int media_bookmark_delete_from_db(int bookmark_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	char *query_str = NULL;
 
-	if(bookmark_id < 0)
-	{
+	if (bookmark_id < 0) {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -62,8 +58,7 @@ int media_bookmark_get_bookmark_count_from_db(filter_h filter, int *bookmark_cou
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if (bookmark_count == NULL)
-	{
+	if (bookmark_count == NULL) {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -78,15 +73,12 @@ int media_bookmark_destroy(media_bookmark_h bookmark)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_bookmark_s *_bookmark = (media_bookmark_s*)bookmark;
 
-	if(_bookmark)
-	{
+	if (_bookmark) {
 		SAFE_FREE(_bookmark->media_id);
 		SAFE_FREE(_bookmark->thumbnail_path);
 		free(_bookmark);
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -97,19 +89,16 @@ int media_bookmark_clone(media_bookmark_h *dst, media_bookmark_h src)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if((src != NULL))
-	{
+	if ((src != NULL)) {
 		media_bookmark_s *_src = (media_bookmark_s*)src;
 		media_bookmark_s *_dst = (media_bookmark_s*)calloc(1, sizeof(media_bookmark_s));
 		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		_dst->bookmark_id = _src->bookmark_id;
 
-		if(STRING_VALID(_src->media_id))
-		{
-			_dst->media_id = (char*)strdup(_src->media_id);
-			if(_dst->media_id == NULL)
-			{
+		if (STRING_VALID(_src->media_id)) {
+			_dst->media_id = (char *)strdup(_src->media_id);
+			if (_dst->media_id == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_bookmark_destroy((media_bookmark_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -118,11 +107,9 @@ int media_bookmark_clone(media_bookmark_h *dst, media_bookmark_h src)
 
 		_dst->marked_time = _src->marked_time;
 
-		if(STRING_VALID(_src->thumbnail_path))
-		{
+		if (STRING_VALID(_src->thumbnail_path)) {
 			_dst->thumbnail_path = (char*)strdup(_src->thumbnail_path);
-			if(_dst->thumbnail_path == NULL)
-			{
+			if (_dst->thumbnail_path == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_bookmark_destroy((media_bookmark_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -132,9 +119,7 @@ int media_bookmark_clone(media_bookmark_h *dst, media_bookmark_h src)
 		*dst = (media_bookmark_h)_dst;
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -147,13 +132,10 @@ int media_bookmark_get_bookmark_id(media_bookmark_h bookmark, int *bookmark_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_bookmark_s *_bookmark = (media_bookmark_s*)bookmark;
 
-	if(_bookmark)
-	{
+	if (_bookmark) {
 		*bookmark_id = _bookmark->bookmark_id;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -166,13 +148,10 @@ int media_bookmark_get_marked_time(media_bookmark_h bookmark, time_t* marked_tim
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_bookmark_s *_bookmark = (media_bookmark_s*)bookmark;
 
-	if(_bookmark)
-	{
+	if (_bookmark) {
 		*marked_time = _bookmark->marked_time;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -185,22 +164,16 @@ int media_bookmark_get_thumbnail_path(media_bookmark_h bookmark, char **path)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_bookmark_s *_bookmark = (media_bookmark_s*)bookmark;
 
-	if(_bookmark)
-	{
-		if(STRING_VALID(_bookmark->thumbnail_path))
-		{
+	if (_bookmark) {
+		if (STRING_VALID(_bookmark->thumbnail_path)) {
 			*path = strdup(_bookmark->thumbnail_path);
 			media_content_retvm_if(*path == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*path = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}

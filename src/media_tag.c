@@ -39,11 +39,9 @@ static void __media_tag_item_release(media_tag_s *tag_s)
 
 	media_content_debug("list_cnt : [%d]", list_cnt);
 
-	for(idx = 0; idx < list_cnt; idx++)
-	{
+	for (idx = 0; idx < list_cnt; idx++) {
 		item = (media_tag_item_s*)g_list_nth_data(tag_s->item_list, idx);
-		if(item != NULL)
-		{
+		if (item != NULL) {
 			SAFE_FREE(item->media_id);
 			SAFE_FREE(item->tag_name);
 			SAFE_FREE(item);
@@ -111,11 +109,10 @@ static int __media_tag_get_tag_info_from_db(const char *name, media_tag_h tag)
 	SQLITE3_SAFE_FREE(select_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	while(sqlite3_step(stmt) == SQLITE_ROW)
-	{
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
 		SAFE_FREE(tag_name);
 
-		id = (int)sqlite3_column_int(stmt,0);
+		id = (int)sqlite3_column_int(stmt, 0);
 		tag_name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
 	}
 
@@ -132,8 +129,7 @@ int media_tag_insert_to_db(const char *tag_name, media_tag_h *tag)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	char *query_str = NULL;
 
-	if(!STRING_VALID(tag_name))
-	{
+	if (!STRING_VALID(tag_name)) {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -142,8 +138,7 @@ int media_tag_insert_to_db(const char *tag_name, media_tag_h *tag)
 	ret = _content_query_sql(query_str);
 	SQLITE3_SAFE_FREE(query_str);
 
-	if(ret == MEDIA_CONTENT_ERROR_NONE)
-	{
+	if (ret == MEDIA_CONTENT_ERROR_NONE) {
 		media_tag_s *_tag = (media_tag_s*)calloc(1, sizeof(media_tag_s));
 		media_content_retvm_if(_tag == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
@@ -159,8 +154,7 @@ int media_tag_delete_from_db(int tag_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	char *query_str = NULL;
 
-	if(tag_id < 0)
-	{
+	if (tag_id < 0) {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -178,12 +172,9 @@ int media_tag_get_tag_count_from_db(filter_h filter, int *tag_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if(tag_count != NULL)
-	{
+	if (tag_count != NULL) {
 		ret = _media_db_get_group_count(filter, MEDIA_GROUP_TAG, tag_count);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -191,12 +182,11 @@ int media_tag_get_tag_count_from_db(filter_h filter, int *tag_count)
 	return ret;
 }
 
-int media_tag_foreach_tag_from_db (filter_h filter, media_tag_cb callback, void *user_data)
+int media_tag_foreach_tag_from_db(filter_h filter, media_tag_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if(callback == NULL)
-	{
+	if (callback == NULL) {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -210,12 +200,9 @@ int media_tag_get_media_count_from_db(int tag_id, filter_h filter, int *media_co
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if((tag_id > 0) && (media_count != NULL))
-	{
+	if ((tag_id > 0) && (media_count != NULL)) {
 		ret = _media_db_get_group_item_count_by_id(tag_id, filter, MEDIA_GROUP_TAG, media_count);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -227,8 +214,7 @@ int media_tag_foreach_media_from_db(int tag_id, filter_h filter, media_info_cb c
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	if(callback == NULL)
-	{
+	if (callback == NULL) {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -242,14 +228,11 @@ int media_tag_destroy(media_tag_h tag)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_tag_s *_tag = (media_tag_s*)tag;
-	if(_tag)
-	{
+	if (_tag) {
 		SAFE_FREE(_tag->name);
 		SAFE_FREE(_tag);
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -262,18 +245,15 @@ int media_tag_clone(media_tag_h *dst, media_tag_h src)
 	media_tag_s *_src = (media_tag_s*)src;
 	media_tag_s *_dst = NULL;
 
-	if((_src != NULL))
-	{
+	if ((_src != NULL)) {
 		_dst = (media_tag_s*)calloc(1, sizeof(media_tag_s));
 		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		_dst->tag_id = _src->tag_id;
 
-		if(STRING_VALID(_src->name))
-		{
+		if (STRING_VALID(_src->name)) {
 			_dst->name = strdup(_src->name);
-			if(_dst->name == NULL)
-			{
+			if (_dst->name == NULL) {
 				SAFE_FREE(_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -281,9 +261,7 @@ int media_tag_clone(media_tag_h *dst, media_tag_h src)
 		}
 		*dst = (media_tag_h)_dst;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -296,13 +274,10 @@ int media_tag_get_tag_id(media_tag_h tag, int *tag_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_tag_s *_tag = (media_tag_s*)tag;
 
-	if((_tag != NULL) && (tag_id != NULL))
-	{
+	if ((_tag != NULL) && (tag_id != NULL)) {
 		*tag_id = _tag->tag_id;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -314,22 +289,16 @@ int media_tag_get_name(media_tag_h tag, char **name)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_tag_s *_tag = (media_tag_s*)tag;
-	if(_tag)
-	{
-		if(STRING_VALID(_tag->name))
-		{
+	if (_tag) {
+		if (STRING_VALID(_tag->name)) {
 			*name = strdup(_tag->name);
 			media_content_retvm_if(*name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*name = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -343,8 +312,7 @@ int media_tag_get_tag_from_db(int tag_id, media_tag_h *tag)
 	sqlite3_stmt *stmt = NULL;
 	char select_query[DEFAULT_QUERY_SIZE];
 
-	if(tag_id <= 0)
-	{
+	if (tag_id <= 0) {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -358,14 +326,12 @@ int media_tag_get_tag_from_db(int tag_id, media_tag_h *tag)
 
 	media_tag_s *_tag = NULL;
 
-	while(sqlite3_step(stmt) == SQLITE_ROW)
-	{
-		if(_tag)
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		if (_tag)
 			media_tag_destroy((media_tag_h)_tag);
 
 		_tag = (media_tag_s*)calloc(1, sizeof(media_tag_s));
-		if(_tag == NULL)
-		{
+		if (_tag == NULL) {
 			SQLITE3_FINALIZE(stmt);
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -387,25 +353,21 @@ int media_tag_add_media(media_tag_h tag, const char *media_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_tag_s *_tag = (media_tag_s*)tag;
 
-	if((_tag != NULL) && STRING_VALID(media_id))
-	{
+	if ((_tag != NULL) && STRING_VALID(media_id)) {
 		media_tag_item_s *_item = (media_tag_item_s*)calloc(1, sizeof(media_tag_item_s));
 		media_content_retvm_if(_item == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		_item->media_id = strdup(media_id);
 		_item->function = MEDIA_TAG_ADD;
 
-		if(_item->media_id == NULL)
-		{
+		if (_item->media_id == NULL) {
 			SAFE_FREE(_item);
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
 		__media_tag_item_add(_tag, _item);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -418,25 +380,21 @@ int media_tag_remove_media(media_tag_h tag, const char *media_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_tag_s *_tag = (media_tag_s*)tag;
 
-	if(_tag != NULL && STRING_VALID(media_id))
-	{
+	if (_tag != NULL && STRING_VALID(media_id)) {
 		media_tag_item_s *_item = (media_tag_item_s*)calloc(1, sizeof(media_tag_item_s));
 		media_content_retvm_if(_item == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		_item->media_id = strdup(media_id);
 		_item->function = MEDIA_TAG_REMOVE;
 
-		if(_item->media_id == NULL)
-		{
+		if (_item->media_id == NULL) {
 			SAFE_FREE(_item);
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
 		__media_tag_item_add(_tag, _item);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -449,8 +407,7 @@ int media_tag_set_name(media_tag_h tag, char *tag_name)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_tag_s *_tag = (media_tag_s*)tag;
 
-	if(_tag != NULL && STRING_VALID(tag_name))
-	{
+	if (_tag != NULL && STRING_VALID(tag_name)) {
 		SAFE_FREE(_tag->name);
 
 		media_tag_item_s *_item = (media_tag_item_s*)calloc(1, sizeof(media_tag_item_s));
@@ -459,16 +416,14 @@ int media_tag_set_name(media_tag_h tag, char *tag_name)
 		_item->tag_name = strdup(tag_name);
 		_item->function = MEDIA_TAG_UPDATE_TAG_NAME;
 
-		if(_item->tag_name == NULL)
-		{
+		if (_item->tag_name == NULL) {
 			SAFE_FREE(_item);
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 			return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 		}
 
 		_tag->name = strdup(tag_name);
-		if(_tag->name == NULL)
-		{
+		if (_tag->name == NULL) {
 			SAFE_FREE(_item->tag_name);
 			SAFE_FREE(_item);
 			media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -476,9 +431,7 @@ int media_tag_set_name(media_tag_h tag, char *tag_name)
 		}
 
 		__media_tag_item_add(_tag, _item);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -494,13 +447,12 @@ int media_tag_update_to_db(media_tag_h tag)
 	int length = 0;
 	media_tag_item_s *_tag_item = NULL;
 
-	if(_tag == NULL)
-	{
+	if (_tag == NULL) {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
 
-	if(_tag->item_list != NULL) {
+	if (_tag->item_list != NULL) {
 		length = g_list_length(_tag->item_list);
 	} else {
 		media_content_debug("operation list length is 0");
@@ -509,8 +461,8 @@ int media_tag_update_to_db(media_tag_h tag)
 
 	for (idx = 0; idx < length; idx++) {
 		_tag_item = (media_tag_item_s*)g_list_nth_data(_tag->item_list, idx);
-		if(_tag_item != NULL) {
-			switch(_tag_item->function) {
+		if (_tag_item != NULL) {
+			switch (_tag_item->function) {
 				case MEDIA_TAG_ADD:
 				{
 					ret = __media_tag_insert_item_to_tag(_tag->tag_id, _tag_item->media_id);

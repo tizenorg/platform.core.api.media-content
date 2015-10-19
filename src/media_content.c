@@ -212,52 +212,52 @@ static int __media_content_create_attr_handle(void)
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	/* Pinyin*/
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_FILE_NAME_PINYIN,  DB_FIELD_MEDIA_FILE_NAME_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_FILE_NAME_PINYIN, DB_FIELD_MEDIA_FILE_NAME_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_TITLE_PINYIN,  DB_FIELD_MEDIA_TITLE_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_TITLE_PINYIN, DB_FIELD_MEDIA_TITLE_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ALBUM_PINYIN,  DB_FIELD_MEDIA_ALBUM_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ALBUM_PINYIN, DB_FIELD_MEDIA_ALBUM_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ARTIST_PINYIN,  DB_FIELD_MEDIA_ARTIST_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ARTIST_PINYIN, DB_FIELD_MEDIA_ARTIST_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ALBUM_ARTIST_PINYIN,  DB_FIELD_MEDIA_ALBUM_ARTIST_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_ALBUM_ARTIST_PINYIN, DB_FIELD_MEDIA_ALBUM_ARTIST_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_GENRE_PINYIN,  DB_FIELD_MEDIA_GENRE_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_GENRE_PINYIN, DB_FIELD_MEDIA_GENRE_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_COMPOSER_PINYIN,  DB_FIELD_MEDIA_COMPOSER_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_COMPOSER_PINYIN, DB_FIELD_MEDIA_COMPOSER_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_COPYRIGHT_PINYIN,  DB_FIELD_MEDIA_COPYRIGHT_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_COPYRIGHT_PINYIN, DB_FIELD_MEDIA_COPYRIGHT_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_DESCRIPTION_PINYIN,  DB_FIELD_MEDIA_DESCRIPTION_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_DESCRIPTION_PINYIN, DB_FIELD_MEDIA_DESCRIPTION_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_AUTHOR_PINYIN,  DB_FIELD_MEDIA_AUTHOR_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_AUTHOR_PINYIN, DB_FIELD_MEDIA_AUTHOR_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_PROVIDER_PINYIN,  DB_FIELD_MEDIA_PROVIDER_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_PROVIDER_PINYIN, DB_FIELD_MEDIA_PROVIDER_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_CONTENT_NAME_PINYIN,  DB_FIELD_MEDIA_CONTENT_NAME_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_CONTENT_NAME_PINYIN, DB_FIELD_MEDIA_CONTENT_NAME_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_CATEGORY_PINYIN,  DB_FIELD_MEDIA_CATEGORY_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_CATEGORY_PINYIN, DB_FIELD_MEDIA_CATEGORY_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_LOCATION_TAG_PINYIN,  DB_FIELD_MEDIA_LOCATION_TAG_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_LOCATION_TAG_PINYIN, DB_FIELD_MEDIA_LOCATION_TAG_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_AGE_RATING_PINYIN,  DB_FIELD_MEDIA_AGE_RATING_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_AGE_RATING_PINYIN, DB_FIELD_MEDIA_AGE_RATING_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_KEYWORD_PINYIN,  DB_FIELD_MEDIA_KEYWORD_PINYIN);
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_KEYWORD_PINYIN, DB_FIELD_MEDIA_KEYWORD_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	/* Playlist*/
@@ -453,52 +453,52 @@ static int __media_content_create_alias_attr_handle(void)
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	/* Pinyin*/
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_FILE_NAME_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_FILE_NAME_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_FILE_NAME_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_FILE_NAME_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_TITLE_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_TITLE_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_TITLE_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_TITLE_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ALBUM_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ALBUM_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ALBUM_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ALBUM_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ARTIST_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ARTIST_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ARTIST_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ARTIST_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ALBUM_ARTIST_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ALBUM_ARTIST_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_ALBUM_ARTIST_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_ALBUM_ARTIST_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_GENRE_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_GENRE_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_GENRE_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_GENRE_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_COMPOSER_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_COMPOSER_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_COMPOSER_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_COMPOSER_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_COPYRIGHT_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_COPYRIGHT_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_COPYRIGHT_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_COPYRIGHT_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_DESCRIPTION_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_DESCRIPTION_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_DESCRIPTION_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_DESCRIPTION_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_AUTHOR_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_AUTHOR_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_AUTHOR_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_AUTHOR_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_PROVIDER_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_PROVIDER_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_PROVIDER_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_PROVIDER_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_CONTENT_NAME_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_CONTENT_NAME_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_CONTENT_NAME_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_CONTENT_NAME_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_CATEGORY_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_CATEGORY_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_CATEGORY_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_CATEGORY_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_LOCATION_TAG_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_LOCATION_TAG_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_LOCATION_TAG_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_LOCATION_TAG_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_AGE_RATING_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_AGE_RATING_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_AGE_RATING_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_AGE_RATING_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_KEYWORD_PINYIN,  DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_KEYWORD_PINYIN);
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_KEYWORD_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_KEYWORD_PINYIN);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	/* Folder */
@@ -551,7 +551,7 @@ static int __media_content_create_attribute_handle(void)
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	ret = __media_content_create_alias_attr_handle();
-	if(ret != MEDIA_CONTENT_ERROR_NONE)
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		_media_filter_attribute_destory(g_attr_handle);
 
 	return ret;
@@ -570,7 +570,7 @@ static int __media_content_destroy_attribute_handle(void)
 	return ret;
 }
 
-/* Temporary Code [remove after  inserted gid patch by security part] */
+/* Temporary Code [remove after inserted gid patch by security part] */
 int __media_content_cynara_check(const char *privilege)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -598,7 +598,7 @@ int __media_content_cynara_check(const char *privilege)
 		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
 	}
 
-	pFile = fopen( "/proc/self/attr/current", "r" );
+	pFile = fopen("/proc/self/attr/current", "r");
 	if (pFile != NULL) {
 		smack = fgets(buf, sizeof(buf), pFile);
 		fclose(pFile);
@@ -649,11 +649,11 @@ int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condit
 	media_content_retvm_if(db_handle == NULL, MEDIA_CONTENT_ERROR_DB_FAILED, "database is not connected");
 	media_content_retvm_if(!STRING_VALID(select_query), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid select_query");
 
-	if(!STRING_VALID(condition_query)) {
+	if (!STRING_VALID(condition_query)) {
 		condition_query = (char *)" ";
 	}
 
-	if(!STRING_VALID(option_query)) {
+	if (!STRING_VALID(option_query)) {
 		option_query = (char *)" ";
 
 	}
@@ -672,8 +672,7 @@ int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condit
 	media_content_sec_debug("Query : [%s]", query);
 
 	err = sqlite3_prepare_v2((sqlite3*)db_handle, query, strlen(query), stmt, NULL);
-	if(err != SQLITE_OK)
-	{
+	if (err != SQLITE_OK) {
 		media_content_error("DB_FAILED(0x%08x) fail to sqlite3_prepare(), %s", MEDIA_CONTENT_ERROR_DB_FAILED, sqlite3_errmsg((sqlite3*)db_handle));
 
 		if (err == SQLITE_BUSY) {
@@ -693,41 +692,40 @@ int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condit
 
 int _content_error_capi(int type, int content_error)
 {
-	if(content_error != MEDIA_CONTENT_ERROR_NONE)
-	{
+	if (content_error != MEDIA_CONTENT_ERROR_NONE) {
 		media_content_error("[type : %d] content_error : %d ", type, content_error);
 	}
 
 	/*Error None*/
-	if(content_error == MS_MEDIA_ERR_NONE)
+	if (content_error == MS_MEDIA_ERR_NONE)
 		return MEDIA_CONTENT_ERROR_NONE;
 
 	/* Internal operation error*/
-	else if((content_error == MS_MEDIA_ERR_INVALID_PARAMETER) ||
+	else if ((content_error == MS_MEDIA_ERR_INVALID_PARAMETER) ||
 		(content_error == MS_MEDIA_ERR_INVALID_PATH) ||
 		(content_error == MS_MEDIA_ERR_THUMB_DUPLICATED_REQUEST))
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 
-	else if(content_error == MS_MEDIA_ERR_OUT_OF_MEMORY)
+	else if (content_error == MS_MEDIA_ERR_OUT_OF_MEMORY)
 		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 
 	/* DB operation error*/
-	else if(content_error == MS_MEDIA_ERR_DB_BUSY_FAIL)
+	else if (content_error == MS_MEDIA_ERR_DB_BUSY_FAIL)
 		return MEDIA_CONTENT_ERROR_DB_BUSY;
 
-	else if((content_error <= MS_MEDIA_ERR_DB_CONNECT_FAIL) && (content_error >= MS_MEDIA_ERR_DB_INTERNAL))
+	else if ((content_error <= MS_MEDIA_ERR_DB_CONNECT_FAIL) && (content_error >= MS_MEDIA_ERR_DB_INTERNAL))
 		return MEDIA_CONTENT_ERROR_DB_FAILED;
 
 	/* IPC operation error*/
-	else if((content_error <= MS_MEDIA_ERR_SOCKET_CONN) && (content_error >= MS_MEDIA_ERR_SOCKET_INTERNAL))
+	else if ((content_error <= MS_MEDIA_ERR_SOCKET_CONN) && (content_error >= MS_MEDIA_ERR_SOCKET_INTERNAL))
 		return MEDIA_CONTENT_ERROR_NETWORK;
 
 	/* MEDIA SERVER error*/
-	else if(content_error == MS_MEDIA_ERR_PERMISSION_DENIED)
+	else if (content_error == MS_MEDIA_ERR_PERMISSION_DENIED)
 		return MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
 
 	/* Thumbnail error*/
-	else if(content_error == MS_MEDIA_ERR_THUMB_TOO_BIG)
+	else if (content_error == MS_MEDIA_ERR_THUMB_TOO_BIG)
 			return MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT;
 
 	/*ETC*/
@@ -739,7 +737,7 @@ int _content_query_sql(char *query_str)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	//DB will be updated by Media Server.
-	ret = media_svc_request_update_db(query_str,tzplatform_getuid(TZ_USER_NAME));
+	ret = media_svc_request_update_db(query_str, tzplatform_getuid(TZ_USER_NAME));
 
 	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
@@ -751,15 +749,13 @@ int media_content_connect(void)
 	if (g_mutex_trylock(&db_mutex)) {
 		media_content_info("ref count : %d", ref_count);
 
-		if(ref_count == 0)
-		{
-			if(db_handle == NULL)
-			{
+		if (ref_count == 0) {
+			if (db_handle == NULL) {
 				ret = __media_content_create_attribute_handle();
-				if(ret == MEDIA_CONTENT_ERROR_NONE) {
-					ret = media_svc_connect(&db_handle,tzplatform_getuid(TZ_USER_NAME), false);
+				if (ret == MEDIA_CONTENT_ERROR_NONE) {
+					ret = media_svc_connect(&db_handle, tzplatform_getuid(TZ_USER_NAME), false);
 					ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-					if(ret == MEDIA_CONTENT_ERROR_NONE) {
+					if (ret == MEDIA_CONTENT_ERROR_NONE) {
 						ref_count++;
 					} else {
 						__media_content_destroy_attribute_handle();
@@ -772,7 +768,7 @@ int media_content_connect(void)
 				ret = MEDIA_CONTENT_ERROR_DB_FAILED;
 			}
 		} else {
-			if(db_handle != NULL) {
+			if (db_handle != NULL) {
 				ref_count++;
 			} else {
 				media_content_error("Wrong DB Handle status");
@@ -796,29 +792,24 @@ int media_content_disconnect(void)
 
 	if (g_mutex_trylock(&db_mutex)) {
 		media_content_debug("ref count : %d", ref_count);
-		if(ref_count > 0)
-		{
-			if(db_handle != NULL) {
+		if (ref_count > 0) {
+			if (db_handle != NULL) {
 				ref_count--;
 			} else {
 				media_content_error("Wrong DB Handle status");
 				ret = MEDIA_CONTENT_ERROR_DB_FAILED;
 			}
-		}
-		else
-		{
+		} else {
 			media_content_error("DB_FAILED(0x%08x) database is not connected", MEDIA_CONTENT_ERROR_DB_FAILED);
 			g_mutex_unlock(&db_mutex);
 			return MEDIA_CONTENT_ERROR_DB_FAILED;
 		}
 
-		if(ref_count == 0)
-		{
-			if(db_handle != NULL)
-			{
+		if (ref_count == 0) {
+			if (db_handle != NULL) {
 				ret = media_svc_disconnect(db_handle);
 				ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-				if(ret == MEDIA_CONTENT_ERROR_NONE) {
+				if (ret == MEDIA_CONTENT_ERROR_NONE) {
 					ret = __media_content_destroy_attribute_handle();
 					db_handle = NULL;
 				} else {
@@ -866,8 +857,7 @@ int media_content_scan_file(const char *path)
 
 	memset(storage_id, 0x00, sizeof(storage_id));
 	ret = media_svc_get_storage_id(_content_get_db_handle(), path, storage_id);
-	if(ret != MS_MEDIA_ERR_NONE)
-	{
+	if (ret != MS_MEDIA_ERR_NONE) {
 		media_content_error("media_svc_get_storage_id failed : %d", ret);
 		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 	}
@@ -884,23 +874,23 @@ int media_content_scan_file(const char *path)
 		media_svc_storage_type_e storage_type;
 
 		ret = media_svc_get_storage_type(path, &storage_type, tzplatform_getuid(TZ_USER_NAME));
-		if(ret != MS_MEDIA_ERR_NONE) {
+		if (ret != MS_MEDIA_ERR_NONE) {
 			media_content_sec_error("media_svc_get_storage_type failed : %d (%s)", ret, path);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		}
 		ret = media_svc_check_item_exist_by_path(_content_get_db_handle(), storage_id, path);
 		if (ret == MS_MEDIA_ERR_NONE) {
 			/* Refresh */
-			ret = media_svc_refresh_item(_content_get_db_handle(), storage_id, storage_type, path,tzplatform_getuid(TZ_USER_NAME));
-			if(ret != MS_MEDIA_ERR_NONE) {
+			ret = media_svc_refresh_item(_content_get_db_handle(), storage_id, storage_type, path, tzplatform_getuid(TZ_USER_NAME));
+			if (ret != MS_MEDIA_ERR_NONE) {
 				media_content_error("media_svc_refresh_item failed : %d", ret);
 				return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 			}
 
 		} else if (ret == MS_MEDIA_ERR_DB_NO_RECORD) {
 			/* Insert */
-			ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_id, storage_type, path,tzplatform_getuid(TZ_USER_NAME));
-			if(ret != MS_MEDIA_ERR_NONE) {
+			ret = media_svc_insert_item_immediately(_content_get_db_handle(), storage_id, storage_type, path, tzplatform_getuid(TZ_USER_NAME));
+			if (ret != MS_MEDIA_ERR_NONE) {
 				if (ret == MS_MEDIA_ERR_DB_CONSTRAINT_FAIL) {
 					media_content_sec_error("This item is already inserted. This may be normal operation because other process already did this (%s)", path);
 					ret = MEDIA_CONTENT_ERROR_NONE;
@@ -921,7 +911,7 @@ int media_content_scan_file(const char *path)
 		/* This means this path has to be deleted */
 		media_content_debug("This path doesn't exists in file system... So now start to delete it from DB");
 		ret = media_svc_delete_item_by_path(_content_get_db_handle(), storage_id, path, tzplatform_getuid(TZ_USER_NAME));
-		if(ret != MS_MEDIA_ERR_NONE) {
+		if (ret != MS_MEDIA_ERR_NONE) {
 			media_content_error("media_svc_delete_item_by_path failed : %d", ret);
 			return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 		}
@@ -976,7 +966,7 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 
 	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
 
-	/* Temporary Code [remove after  inserted gid patch by security part] */
+	/* Temporary Code [remove after inserted gid patch by security part] */
 	if (strncmp(path, "/usr/storage", strlen("/usr/storage")) == 0) {
 		ret = __media_content_cynara_check("http://tizen.org/privilege/externalstorage");
 		media_content_retvm_if(ret == MEDIA_CONTENT_ERROR_PERMISSION_DENIED, ret, "Permission Denied");
@@ -1004,7 +994,7 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 	/*FIX ME. need to check ret value?*/
 
 	ret = media_directory_scanning_async(path, storage_id, is_recursive, _media_content_scan_cb, cb_data, tzplatform_getuid(TZ_USER_NAME));
-	if(ret != MS_MEDIA_ERR_NONE) {
+	if (ret != MS_MEDIA_ERR_NONE) {
 		media_content_error("media_directory_scanning_async failed : %d", ret);
 	}
 
@@ -1016,7 +1006,7 @@ int media_content_cancel_scan_folder(const char *path)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	ret = media_directory_scanning_cancel(path, tzplatform_getuid(TZ_USER_NAME));
-	if(ret != MS_MEDIA_ERR_NONE) {
+	if (ret != MS_MEDIA_ERR_NONE) {
 		media_content_error("media_directory_scanning_async failed : %d", ret);
 	}
 
@@ -1037,8 +1027,7 @@ void _media_content_db_update_noti_cb(
 
 	media_noti_cb_s *_noti_info = (media_noti_cb_s *)user_data;
 
-	if(_noti_info != NULL)
-	{
+	if (_noti_info != NULL) {
 		if (_noti_info->update_noti_cb)
 			_noti_info->update_noti_cb(error_value, pid, item, update_type, content_type, uuid, path, mime_type, _noti_info->user_data);
 	}
@@ -1053,7 +1042,7 @@ int media_content_set_db_updated_cb(media_content_db_update_cb callback, void *u
 	media_content_retvm_if(callback == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid callback");
 	media_content_retvm_if(g_noti_info != NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "Noti callback is already set");
 
-	g_noti_info = (media_noti_cb_s*)calloc(1, sizeof(media_noti_cb_s));
+	g_noti_info = (media_noti_cb_s *)calloc(1, sizeof(media_noti_cb_s));
 	media_content_retvm_if(g_noti_info == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 	g_noti_info->update_noti_cb = callback;
@@ -1076,48 +1065,47 @@ int media_content_unset_db_updated_cb(void)
 
 int media_content_set_db_updated_cb_v2(media_content_noti_h *noti_handle, media_content_db_update_cb callback, void *user_data)
 {
-        int ret = MEDIA_CONTENT_ERROR_NONE;
-        media_noti_cb_s *noti_info = NULL;
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_noti_cb_s *noti_info = NULL;
 
-        if (noti_handle == NULL) {
-                media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-                return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-        }
+	if (noti_handle == NULL) {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
 
-        if (callback == NULL) {
-                media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-                return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-        }
+	if (callback == NULL) {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
 
-        noti_info = (media_noti_cb_s*)calloc(1, sizeof(media_noti_cb_s));
-        if (noti_info == NULL) {
-                media_content_error("Failed to create noti info");
-                return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
-        }
+	noti_info = (media_noti_cb_s *)calloc(1, sizeof(media_noti_cb_s));
+	if (noti_info == NULL) {
+		media_content_error("Failed to create noti info");
+		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+	}
 
-        noti_info->update_noti_cb = callback;
-        noti_info->user_data = user_data;
+	noti_info->update_noti_cb = callback;
+	noti_info->user_data = user_data;
 
-        ret = media_db_update_subscribe_internal((MediaNotiHandle*)noti_handle, _media_content_db_update_noti_cb, (void *)noti_info);
+	ret = media_db_update_subscribe_internal((MediaNotiHandle*)noti_handle, _media_content_db_update_noti_cb, (void *)noti_info);
 
-        return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
+	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }
 
 void __media_content_clear_user_data(void *user_data)
 {
-        media_noti_cb_s *noti_info = user_data;
+	media_noti_cb_s *noti_info = user_data;
 
-        SAFE_FREE(noti_info);
+	SAFE_FREE(noti_info);
 
-        return;
+	return;
 }
 
 int media_content_unset_db_updated_cb_v2(media_content_noti_h noti_handle)
 {
-        int ret = MEDIA_CONTENT_ERROR_NONE;
+	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-        ret = media_db_update_unsubscribe_internal((MediaNotiHandle)noti_handle, __media_content_clear_user_data);
+	ret = media_db_update_unsubscribe_internal((MediaNotiHandle)noti_handle, __media_content_clear_user_data);
 
-        return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
+	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }
-

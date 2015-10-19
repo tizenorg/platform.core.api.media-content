@@ -49,11 +49,11 @@ extern "C" {
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum {
-	MEDIA_CONTENT_TYPE_IMAGE   = 0,  /**<The type of an image */
-	MEDIA_CONTENT_TYPE_VIDEO   = 1,  /**<The type of a video */
-	MEDIA_CONTENT_TYPE_SOUND   = 2,  /**<The type of sound */
-	MEDIA_CONTENT_TYPE_MUSIC   = 3,  /**<The type of music */
-	MEDIA_CONTENT_TYPE_OTHERS  = 4,  /**<The type of other */
+	MEDIA_CONTENT_TYPE_IMAGE		= 0,	/**<The type of an image */
+	MEDIA_CONTENT_TYPE_VIDEO		= 1,	/**<The type of a video */
+	MEDIA_CONTENT_TYPE_SOUND	= 2,	/**<The type of sound */
+	MEDIA_CONTENT_TYPE_MUSIC		= 3,	/**<The type of music */
+	MEDIA_CONTENT_TYPE_OTHERS	= 4,	/**<The type of other */
 } media_content_type_e;
 
 /**
@@ -63,10 +63,10 @@ typedef enum {
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum {
-	MEDIA_CONTENT_STORAGE_INTERNAL	= 0,  /**< The device's internal storage */
-	MEDIA_CONTENT_STORAGE_EXTERNAL	= 1,  /**< The device's external storage like sd card*/
+	MEDIA_CONTENT_STORAGE_INTERNAL	= 0,	/**< The device's internal storage */
+	MEDIA_CONTENT_STORAGE_EXTERNAL	= 1,	/**< The device's external storage like sd card*/
 	MEDIA_CONTENT_STORAGE_EXTERNAL_USB = 2, /**< The external USB storage (Since 2.4) */
-	MEDIA_CONTENT_STORAGE_CLOUD	= 100,  /**< The Cloud storage (Since 2.4) */
+	MEDIA_CONTENT_STORAGE_CLOUD	= 100,	/**< The Cloud storage (Since 2.4) */
 } media_content_storage_e;
 
 /**
@@ -75,8 +75,8 @@ typedef enum {
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum {
-	MEDIA_ITEM_FILE	   = 0,              /**< File type, an item updated to DB */
-	MEDIA_ITEM_DIRECTORY  = 1,              /**< Directory type, an item updated to DB */
+	MEDIA_ITEM_FILE		= 0,		/**< File type, an item updated to DB */
+	MEDIA_ITEM_DIRECTORY	= 1,		/**< Directory type, an item updated to DB */
 } media_content_db_update_item_type_e;
 
 /**
@@ -85,9 +85,9 @@ typedef enum {
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum {
-	MEDIA_CONTENT_INSERT  = 0,              /**< Insert, the type of DB update */
-	MEDIA_CONTENT_DELETE  = 1,              /**< Delete, The type of DB update */
-	MEDIA_CONTENT_UPDATE  = 2,              /**< Update, The type of DB update */
+	MEDIA_CONTENT_INSERT		= 0,		/**< Insert, the type of DB update */
+	MEDIA_CONTENT_DELETE		= 1,		/**< Delete, The type of DB update */
+	MEDIA_CONTENT_UPDATE	= 2,		/**< Update, The type of DB update */
 } media_content_db_update_type_e;
 
 /**

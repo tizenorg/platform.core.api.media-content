@@ -23,8 +23,7 @@ int audio_meta_destroy(audio_meta_h audio)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
+	if (_audio) {
 		SAFE_FREE(_audio->media_id);
 		SAFE_FREE(_audio->title);
 		SAFE_FREE(_audio->album);
@@ -39,9 +38,7 @@ int audio_meta_destroy(audio_meta_h audio)
 		SAFE_FREE(_audio);
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -54,126 +51,103 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_src = (audio_meta_s*)src;
 
-	if (_src != NULL)
-	{
+	if (_src != NULL) {
 		audio_meta_s *_dst = (audio_meta_s*)calloc(1, sizeof(audio_meta_s));
 		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
-		if(STRING_VALID(_src->media_id))
-		{
+		if (STRING_VALID(_src->media_id)) {
 			_dst->media_id = strdup(_src->media_id);
-			if (_dst->media_id == NULL)
-			{
+			if (_dst->media_id == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->title))
-		{
+		if (STRING_VALID(_src->title)) {
 			_dst->title = strdup(_src->title);
-			if(_dst->title == NULL)
-			{
+			if (_dst->title == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->album))
-		{
+		if (STRING_VALID(_src->album)) {
 			_dst->album = strdup(_src->album);
-			if(_dst->album == NULL)
-			{
+			if (_dst->album == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->artist))
-		{
+		if (STRING_VALID(_src->artist)) {
 			_dst->artist = strdup(_src->artist);
-			if(_dst->artist == NULL)
-			{
+			if (_dst->artist == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->album_artist))
-		{
+		if (STRING_VALID(_src->album_artist)) {
 			_dst->album_artist = strdup(_src->album_artist);
-			if(_dst->album_artist == NULL)
-			{
+			if (_dst->album_artist == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->genre))
-		{
+		if (STRING_VALID(_src->genre)) {
 			_dst->genre = strdup(_src->genre);
-			if(_dst->genre == NULL)
-			{
+			if (_dst->genre == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->composer))
-		{
+		if (STRING_VALID(_src->composer)) {
 			_dst->composer = strdup(_src->composer);
-			if(_dst->composer == NULL)
-			{
+			if (_dst->composer == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->year))
-		{
+		if (STRING_VALID(_src->year)) {
 			_dst->year = strdup(_src->year);
-			if(_dst->year == NULL)
-			{
+			if (_dst->year == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->recorded_date))
-		{
+		if (STRING_VALID(_src->recorded_date)) {
 			_dst->recorded_date = strdup(_src->recorded_date);
-			if(_dst->recorded_date == NULL)
-			{
+			if (_dst->recorded_date == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->copyright))
-		{
+		if (STRING_VALID(_src->copyright)) {
 			_dst->copyright = strdup(_src->copyright);
-			if(_dst->copyright == NULL)
-			{
+			if (_dst->copyright == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
 
-		if(STRING_VALID(_src->track_num))
-		{
+		if (STRING_VALID(_src->track_num)) {
 			_dst->track_num = strdup(_src->track_num);
-			if(_dst->track_num == NULL)
-			{
+			if (_dst->track_num == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
@@ -192,9 +166,7 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 		*dst = (audio_meta_h)_dst;
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -206,22 +178,16 @@ int audio_meta_get_media_id(audio_meta_h audio, char **media_id)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
-	if (_audio)
-	{
-		if (STRING_VALID(_audio->media_id))
-		{
+	if (_audio) {
+		if (STRING_VALID(_audio->media_id)) {
 			*media_id = strdup(_audio->media_id);
 			media_content_retvm_if(*media_id == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*media_id = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -233,22 +199,16 @@ int audio_meta_get_album(audio_meta_h audio, char **album)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
-	if (_audio)
-	{
-		if(STRING_VALID(_audio->album))
-		{
+	if (_audio) {
+		if (STRING_VALID(_audio->album)) {
 			*album = strdup(_audio->album);
 			media_content_retvm_if(*album == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*album = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -261,22 +221,16 @@ int audio_meta_get_artist(audio_meta_h audio, char **artist)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
-		if(STRING_VALID(_audio->artist))
-		{
+	if (_audio) {
+		if (STRING_VALID(_audio->artist)) {
 			*artist = strdup(_audio->artist);
 			media_content_retvm_if(*artist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*artist = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -289,22 +243,16 @@ int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
-		if(STRING_VALID(_audio->album_artist))
-		{
+	if (_audio) {
+		if (STRING_VALID(_audio->album_artist)) {
 			*album_artist = strdup(_audio->album_artist);
 			media_content_retvm_if(*album_artist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*album_artist = NULL;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -317,22 +265,16 @@ int audio_meta_get_genre(audio_meta_h audio, char **genre)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
-		if(STRING_VALID(_audio->genre))
-		{
+	if (_audio) {
+		if (STRING_VALID(_audio->genre)) {
 			*genre = strdup(_audio->genre);
 			media_content_retvm_if(*genre == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*genre = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -345,22 +287,16 @@ int audio_meta_get_composer(audio_meta_h audio, char **composer)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
-		if(STRING_VALID(_audio->composer))
-		{
+	if (_audio) {
+		if (STRING_VALID(_audio->composer)) {
 			*composer = strdup(_audio->composer);
 			media_content_retvm_if(*composer == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*composer = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -373,22 +309,16 @@ int audio_meta_get_year(audio_meta_h audio, char **year)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
-		if(STRING_VALID(_audio->year))
-		{
+	if (_audio) {
+		if (STRING_VALID(_audio->year)) {
 			*year = strdup(_audio->year);
 			media_content_retvm_if(*year == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*year = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -401,22 +331,16 @@ int audio_meta_get_recorded_date(audio_meta_h audio, char **recorded_date)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
-		if(STRING_VALID(_audio->recorded_date))
-		{
+	if (_audio) {
+		if (STRING_VALID(_audio->recorded_date)) {
 			*recorded_date = strdup(_audio->recorded_date);
 			media_content_retvm_if(*recorded_date == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*recorded_date = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -429,22 +353,16 @@ int audio_meta_get_copyright(audio_meta_h audio, char **copyright)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
-		if(STRING_VALID(_audio->copyright))
-		{
+	if (_audio) {
+		if (STRING_VALID(_audio->copyright)) {
 			*copyright = strdup(_audio->copyright);
 			media_content_retvm_if(*copyright == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*copyright = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -457,22 +375,16 @@ int audio_meta_get_track_num(audio_meta_h audio, char **track_num)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
-		if(STRING_VALID(_audio->track_num))
-		{
+	if (_audio) {
+		if (STRING_VALID(_audio->track_num)) {
 			*track_num = strdup(_audio->track_num);
 			media_content_retvm_if(*track_num == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-		}
-		else
-		{
+		} else {
 			*track_num = NULL;
 		}
 
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -485,13 +397,10 @@ int audio_meta_get_bit_rate(audio_meta_h audio, int *bit_rate)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio && bit_rate)
-	{
+	if (_audio && bit_rate) {
 		*bit_rate = _audio->bitrate;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -504,13 +413,10 @@ int audio_meta_get_bitpersample(audio_meta_h audio, int *bitpersample)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio && bitpersample)
-	{
+	if (_audio && bitpersample) {
 		*bitpersample = _audio->bitpersample;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -523,13 +429,10 @@ int audio_meta_get_sample_rate(audio_meta_h audio, int *sample_rate)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio && sample_rate)
-	{
+	if (_audio && sample_rate) {
 		*sample_rate = _audio->samplerate;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -542,13 +445,10 @@ int audio_meta_get_channel(audio_meta_h audio, int *channel)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio && channel)
-	{
+	if (_audio && channel) {
 		*channel = _audio->channel;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -561,13 +461,10 @@ int audio_meta_get_duration(audio_meta_h audio, int *duration)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
+	if (_audio) {
 		*duration = _audio->duration;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -580,13 +477,10 @@ int audio_meta_get_played_count(audio_meta_h audio, int *played_count)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio && played_count)
-	{
+	if (_audio && played_count) {
 		*played_count = _audio->played_count;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -599,13 +493,10 @@ int audio_meta_get_played_time(audio_meta_h audio, time_t* played_time)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
+	if (_audio) {
 		*played_time = _audio->played_time;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -618,13 +509,10 @@ int audio_meta_get_played_position(audio_meta_h audio, int *played_position)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if (_audio)
-	{
+	if (_audio) {
 		*played_position = _audio->played_position;
 		ret = MEDIA_CONTENT_ERROR_NONE;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -637,12 +525,9 @@ int audio_meta_set_played_count(audio_meta_h audio, int played_count)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if ((_audio != NULL) && (played_count >= 0))
-	{
+	if ((_audio != NULL) && (played_count >= 0)) {
 		_audio->played_count = played_count;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -655,12 +540,9 @@ int audio_meta_set_played_time(audio_meta_h audio, time_t played_time)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if ((_audio != NULL) && (played_time >= 0))
-	{
+	if ((_audio != NULL) && (played_time >= 0)) {
 		_audio->played_time = played_time;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -673,12 +555,9 @@ int audio_meta_set_played_position(audio_meta_h audio, int played_position)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
-	if ((_audio != NULL) && (played_position >= 0))
-	{
+	if ((_audio != NULL) && (played_position >= 0)) {
 		_audio->played_position = played_position;
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -692,8 +571,7 @@ int audio_meta_update_to_db(audio_meta_h audio)
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 	char *sql = NULL;
 
-	if (_audio != NULL && STRING_VALID(_audio->media_id))
-	{
+	if (_audio != NULL && STRING_VALID(_audio->media_id)) {
 		char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0, };
 		memset(storage_id, 0x00, sizeof(storage_id));
 
@@ -703,9 +581,7 @@ int audio_meta_update_to_db(audio_meta_h audio)
 		sql = sqlite3_mprintf(UPDATE_AV_META_FROM_MEDIA, storage_id, _audio->played_count, _audio->played_time, _audio->played_position, _audio->media_id);
 		ret = _content_query_sql(sql);
 		SQLITE3_SAFE_FREE(sql);
-	}
-	else
-	{
+	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
