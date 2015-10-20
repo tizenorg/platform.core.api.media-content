@@ -103,7 +103,7 @@ int audio_meta_get_media_id(audio_meta_h audio, char **media_id);
 
 /**
  * @brief Gets the album of the given audio metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If no value, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -124,7 +124,7 @@ int audio_meta_get_album(audio_meta_h audio, char **album);
 
 /**
  * @brief Gets the artist of the given audio metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If no value, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -145,7 +145,7 @@ int audio_meta_get_artist(audio_meta_h audio, char **artist);
 
 /**
  * @brief Gets the album artist of the given audio metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If no value, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -166,7 +166,7 @@ int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist);
 
 /**
  * @brief Gets the genre of the given audio metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If no value, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -187,7 +187,7 @@ int audio_meta_get_genre(audio_meta_h audio, char **genre);
 
 /**
  * @brief Gets the composer of the given audio metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If no value, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -208,7 +208,7 @@ int audio_meta_get_composer(audio_meta_h audio, char **composer);
 
 /**
  * @brief Gets the year of the given audio metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If no value, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -248,6 +248,7 @@ int audio_meta_get_recorded_date(audio_meta_h audio, char **recorded_date);
 
 /**
  * @brief Gets the copyright notice of the given audio metadata.
+ * @details If no value, the method returns empty string.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a copyright using free().
@@ -267,7 +268,7 @@ int audio_meta_get_copyright(audio_meta_h audio, char **copyright);
 
 /**
  * @brief Gets the track number of the given audio metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If no value, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
