@@ -706,13 +706,15 @@ int media_info_get_modified_time(media_info_h media, time_t *time);
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  */
-int media_info_get_timeline(media_info_h media, time_t* time);
+int media_info_get_timeline(media_info_h media, time_t *time);
 
 /**
  * @brief Gets the thumbnail of media info.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
- * @remarks You must release @a path using free().
+ * @remarks You must release @a path using free(). \n
+ *                   If the thumbnail extraction for the given media has not been requested yet, this API returns NULL. To create a thumbnail, you should use media_info_create_thumbnail() API. \n
+ *                   Since 3.0, this function returns an empty string if media_info_create_thumbnail() has failed to create a thumbnail for the given media.
  *
  * @param[in]  media The media info handle
  * @param[out] path  The path to the thumbnail of the media info
