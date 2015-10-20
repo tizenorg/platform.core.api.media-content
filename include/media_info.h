@@ -729,6 +729,7 @@ int media_info_get_thumbnail_path(media_info_h media, char **path);
 
 /**
  * @brief Gets the description of media info.
+ * @details If the media info has no description, the method returns empty string.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a description using free().
@@ -903,6 +904,7 @@ int media_info_get_content_name(media_info_h media, char **content_name);
 
 /**
  * @brief Gets the title of media info.
+ * @details If the media info has no title, the method returns empty string.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a title using free().
