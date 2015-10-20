@@ -103,7 +103,8 @@ int video_meta_get_media_id(video_meta_h video, char **media_id);
 
 /**
  * @brief Gets the album of the given video metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If the value is an empty string, the method returns "Unknown". \n
+ *                Since 3.0, if the media content has no album info, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -124,7 +125,8 @@ int video_meta_get_album(video_meta_h video, char **album);
 
 /**
  * @brief Gets the artist of the given video metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If the value is an empty string, the method returns "Unknown". \n
+ *                Since 3.0, if the media content has no artist info, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -145,7 +147,8 @@ int video_meta_get_artist(video_meta_h video, char **artist);
 
 /**
  * @brief Gets the video album artist.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If the value is an empty string, the method returns "Unknown". \n
+ *                Since 3.0, if the media content has no album artist info, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -166,7 +169,8 @@ int video_meta_get_album_artist(video_meta_h video, char **album_artist);
 
 /**
  * @brief Gets the genre of the given video metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If the value is an empty string, the method returns "Unknown". \n
+ *                Since 3.0, if the media content has no genre info, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -187,7 +191,8 @@ int video_meta_get_genre(video_meta_h video, char **genre);
 
 /**
  * @brief Gets the composer of the given video metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If the value is an empty string, the method returns "Unknown". \n
+ *                Since 3.0, if the media content has no composer info, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -208,7 +213,8 @@ int video_meta_get_composer(video_meta_h video, char **composer);
 
 /**
  * @brief Gets the year of the given video metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If the value is an empty string, the method returns "Unknown". \n
+ *                Since 3.0, if the media content has no year info, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -248,6 +254,9 @@ int video_meta_get_recorded_date(video_meta_h video, char **recorded_date);
 
 /**
  * @brief Gets the copyright notice of the given video metadata.
+ * @details If the value is an empty string, the method returns "Unknown". \n
+ *                Since 3.0, if the media content has no copyright info, the method returns empty string.
+ *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @remarks You must release @a copyright using free().
@@ -267,7 +276,8 @@ int video_meta_get_copyright(video_meta_h video, char **copyright);
 
 /**
  * @brief Gets the track number of the given videoo metadata.
- * @details If the value is an empty string, the method returns "Unknown".
+ * @details If the value is an empty string, the method returns "Unknown". \n
+ *                Since 3.0, if the media content has no track info, the method returns empty string.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
