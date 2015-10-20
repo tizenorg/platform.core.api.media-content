@@ -712,7 +712,10 @@ int media_info_get_timeline(media_info_h media, time_t* time);
  * @brief Gets the thumbnail of media info.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
- * @remarks You must release @a path using free().
+ * @remarks You must release @a path using free(). \n
+ *                   If the framework fails to create thumbnails, this method returns empty string. \n
+ *                   If the framework does not create thumbnails yet, this method returns NULL. \n
+ *                   So, if you need thumbnails to be created immediately, you can use media_info_create_thumbnail() API.
  *
  * @param[in]  media The media info handle
  * @param[out] path  The path to the thumbnail of the media info
