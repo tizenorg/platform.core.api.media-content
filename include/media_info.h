@@ -1562,14 +1562,16 @@ int media_info_move_to_db(media_info_h media, const char* dst_path);
 /**
  * @brief Creates a thumbnail image for the given media, asynchronously.
  * @details This function creates an thumbnail image for given media item and calls registered callback function for completion of creating the thumbnail.
- *          If a thumbnail already exists for the given media, then the path of thumbnail will be returned in callback function.
+ *          If a thumbnail already exists for the given media, then the path of thumbnail will be returned in callback function. \n
+ *          Thumbnail is optional information. So if you want to see the thumbnail in your application, you have to use this API(Since 3.0).
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
  *
- * @remarks If you want to destory media handle before callback invoked, you must cancel thumbnail request by using media_info_cancel_thumbnail()
+ * @remarks If you want to destory media handle before callback invoked, you must cancel thumbnail request by using media_info_cancel_thumbnail() \n
+ *                   If returned thumbnail path in callback is empty string, the framework fails to create thumbnail(since 3.0).
  *
  * @param[in] media     The media info handle
  * @param[in] callback  The callback function to be invoked
