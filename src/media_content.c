@@ -980,8 +980,14 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 	ret = __media_content_check_dir(path);
 	media_content_retvm_if(ret == MEDIA_CONTENT_ERROR_PERMISSION_DENIED, ret, "Permission Denied");
 
+	if (ret == MEDIA_CONTENT_ERROR_NONE) {
+		/* If directory exist check that's ignore directory or not*/
 	ret = _media_util_check_ignore_dir(path, &ignore_dir);
-	media_content_retvm_if(ignore_dir, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
+		media_content_retvm_if(ignore_dir == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
+	} else {
+		/* This means this folder has to be deleted */
+		media_content_debug("This path doesn't exists in file system... So will be deleted it from DB");
+	}
 
 	media_content_scan_cb_data *cb_data = NULL;
 	cb_data = (media_content_scan_cb_data *)malloc(sizeof(media_content_scan_cb_data));
