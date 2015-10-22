@@ -1569,14 +1569,17 @@ int media_info_move_to_db(media_info_h media, const char* dst_path);
 /**
  * @brief Creates a thumbnail image for the given media, asynchronously.
  * @details This function creates an thumbnail image for given media item and calls registered callback function for completion of creating the thumbnail.
- *          If a thumbnail already exists for the given media, then the path of thumbnail will be returned in callback function.
+ *          If a thumbnail already exists for the given media, then the path of thumbnail will be returned in callback function. \n
+ *          Since 3.0, a thumbnail is not automatically extracted during media scanning. \n
+ *          Therefore, if there exists no thumbnail for the given media, you MUST call this function to create a thumbnail.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
  *
- * @remarks If you want to destory media handle before callback invoked, you must cancel thumbnail request by using media_info_cancel_thumbnail()
+ * @remarks If you want to destory media handle before callback invoked, you must cancel thumbnail request by using media_info_cancel_thumbnail() \n
+ *          Since 3.0, if creation of a thumbnail is failed, empty string will be passed through media_thumbnail_completed_cb().
  *
  * @param[in] media     The media info handle
  * @param[in] callback  The callback function to be invoked
