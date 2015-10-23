@@ -87,6 +87,8 @@ int media_face_destroy(media_face_h face);
  *
  * @since_tizen 3.0
  *
+ * @remarks You must release @a face_id using free().
+ *
  * @param [in] face The face handle
  * @param [out] face_id The uuid of the face handle
  *
@@ -101,6 +103,8 @@ int media_face_get_face_id(media_face_h face, char **face_id);
  * @brief Gets the media uuid from the face handle.
  *
  * @since_tizen 3.0
+ *
+ * @remarks You must release @a media_id using free().
  *
  * @param [in] face The face handle
  * @param [out] media_id The media uuid of the face handle
@@ -149,6 +153,8 @@ int media_face_get_orientation(media_face_h face, media_content_orientation_e *o
  * @brief Gets the tag from the face handle.
  *
  * @since_tizen 3.0
+ *
+ * @remarks You must release @a tag using free().
  *
  * @param [in] face The face handle
  * @param [out] tag The tag of the face handle
