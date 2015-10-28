@@ -2321,13 +2321,40 @@ int media_info_update_to_db(media_info_h media)
 				media_svc_get_pinyin(_content_get_db_handle(), _media->keyword, &keyword_pinyin);
 		}
 
+		char *album = NULL;
+		char *artist = NULL;
+		char *genre = NULL;
+		char *recorded_date = NULL;
+
+		if (_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) {
+			if (_media->video_meta->album != NULL)
+				album = strdup(_media->video_meta->album);
+			if (_media->video_meta->artist != NULL)
+				artist = strdup(_media->video_meta->artist);
+			if (_media->video_meta->genre != NULL)
+				genre = strdup(_media->video_meta->genre);
+			if (_media->video_meta->recorded_date != NULL)
+				recorded_date = strdup(_media->video_meta->recorded_date);
+		} else if ((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND)) {
+			if (_media->audio_meta->album != NULL)
+				album = strdup(_media->audio_meta->album);
+			if (_media->audio_meta->artist != NULL)
+				artist = strdup(_media->audio_meta->artist);
+			if (_media->audio_meta->genre != NULL)
+				genre = strdup(_media->audio_meta->genre);
+			if (_media->audio_meta->recorded_date != NULL)
+				recorded_date = strdup(_media->audio_meta->recorded_date);
+		}
+
 		set_sql = sqlite3_mprintf("file_name=%Q, added_time=%d, description=%Q, longitude=%f, latitude=%f, altitude=%f, \
 			played_count=%d, last_played_time=%d, last_played_position=%d, \
 			rating=%d, favourite=%d, author=%Q, provider=%Q, content_name=%Q, category=%Q, location_tag=%Q, age_rating=%Q, keyword=%Q, weather=%Q, sync_status=%d, \
-			file_name_pinyin=%Q, description_pinyin=%Q, author_pinyin=%Q, provider_pinyin=%Q, content_name_pinyin=%Q, category_pinyin=%Q, location_tag_pinyin=%Q, age_rating_pinyin=%Q, keyword_pinyin=%Q, title=%Q",
+			file_name_pinyin=%Q, description_pinyin=%Q, author_pinyin=%Q, provider_pinyin=%Q, content_name_pinyin=%Q, category_pinyin=%Q, location_tag_pinyin=%Q, age_rating_pinyin=%Q, keyword_pinyin=%Q, title=%Q, \
+			album=%Q, artist=%Q, genre=%Q, recorded_date=%Q",
 			_media->display_name, _media->added_time, _media->description, _media->longitude, _media->latitude, _media->altitude, _media->played_count, _media->played_time, _media->played_position, _media->rating, _media->favourite,
 			_media->author, _media->provider, _media->content_name, _media->category, _media->location_tag, _media->age_rating, _media->keyword, _media->weather, _media->sync_status,
-			file_name_pinyin, description_pinyin, author_pinyin, provider_pinyin, content_name_pinyin, category_pinyin, location_tag_pinyin, age_rating_pinyin, keyword_pinyin, _media->title);
+			file_name_pinyin, description_pinyin, author_pinyin, provider_pinyin, content_name_pinyin, category_pinyin, location_tag_pinyin, age_rating_pinyin, keyword_pinyin, _media->title,
+			album, artist, genre, recorded_date);
 
 		sql = sqlite3_mprintf("UPDATE %Q SET %s WHERE media_uuid=%Q", _media->storage_uuid, set_sql, _media->media_id);
 
@@ -2343,6 +2370,11 @@ int media_info_update_to_db(media_info_h media)
 		SAFE_FREE(location_tag_pinyin);
 		SAFE_FREE(age_rating_pinyin);
 		SAFE_FREE(keyword_pinyin);
+
+		SAFE_FREE(album);
+		SAFE_FREE(artist);
+		SAFE_FREE(genre);
+		SAFE_FREE(recorded_date);
 
 		if (_media->storage_type == MEDIA_CONTENT_STORAGE_CLOUD) {
 			set_sql = NULL;
