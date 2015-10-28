@@ -2674,90 +2674,118 @@ static int __media_info_set_str_data(media_info_h media, media_info_item_e data_
 		}
 		break;
 	case MEDIA_INFO_ALBUM:
-		/* if (_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) */
-		{
+		if (STRING_VALID(_media->media_id)) {
+			if (_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) {
+				SAFE_FREE(_media->video_meta->album);
+				if (str_data != NULL) {
+					_media->video_meta->album = strdup(str_data);
+					media_content_retvm_if(_media->video_meta->album == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+				}
+			} else if ((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND)) {
+				SAFE_FREE(_media->audio_meta->album);
+				if (str_data != NULL) {
+					_media->audio_meta->album = strdup(str_data);
+					media_content_retvm_if(_media->audio_meta->album == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+				}
+			}
+		} else {
 			SAFE_FREE(_media->video_meta->album);
-			if (STRING_VALID(str_data)) {
+			if (str_data != NULL) {
 				_media->video_meta->album = strdup(str_data);
 				media_content_retvm_if(_media->video_meta->album == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-			} else {
-				_media->video_meta->album = NULL;
 			}
-		}
-		/* else if ((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND)) */
-		{
+
 			SAFE_FREE(_media->audio_meta->album);
-			if (STRING_VALID(str_data)) {
+			if (str_data != NULL) {
 				_media->audio_meta->album = strdup(str_data);
 				media_content_retvm_if(_media->audio_meta->album == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-			} else {
-				_media->audio_meta->album = NULL;
 			}
 		}
 		break;
 	case MEDIA_INFO_ARTIST:
-		/* if (_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) */
-		{
+		if (STRING_VALID(_media->media_id)) {
+			if (_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) {
+				SAFE_FREE(_media->video_meta->artist);
+				if (str_data != NULL) {
+					_media->video_meta->artist = strdup(str_data);
+					media_content_retvm_if(_media->video_meta->artist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+				}
+			} else if ((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND)) {
+				SAFE_FREE(_media->audio_meta->artist);
+				if (str_data != NULL) {
+					_media->audio_meta->artist = strdup(str_data);
+					media_content_retvm_if(_media->audio_meta->artist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+				}
+			}
+		} else {
 			SAFE_FREE(_media->video_meta->artist);
-			if (STRING_VALID(str_data)) {
+			if (str_data != NULL) {
 				_media->video_meta->artist = strdup(str_data);
 				media_content_retvm_if(_media->video_meta->artist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-			} else {
-				_media->video_meta->artist = NULL;
 			}
-		}
-		/* else if ((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND)) */
-		{
+
 			SAFE_FREE(_media->audio_meta->artist);
-			if (STRING_VALID(str_data)) {
+			if (str_data != NULL) {
 				_media->audio_meta->artist = strdup(str_data);
 				media_content_retvm_if(_media->audio_meta->artist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-			} else {
-				_media->audio_meta->artist = NULL;
 			}
 		}
 		break;
 	case MEDIA_INFO_GENRE:
-		/* if (_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) */
-		{
+		if (STRING_VALID(_media->media_id)) {
+			if (_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) {
+				SAFE_FREE(_media->video_meta->genre);
+				if (str_data != NULL) {
+					_media->video_meta->genre = strdup(str_data);
+					media_content_retvm_if(_media->video_meta->genre == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+				}
+			} else if ((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND)) {
+				SAFE_FREE(_media->audio_meta->genre);
+				if (str_data != NULL) {
+					_media->audio_meta->genre = strdup(str_data);
+					media_content_retvm_if(_media->audio_meta->genre == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+				}
+			}
+		} else {
 			SAFE_FREE(_media->video_meta->genre);
-			if (STRING_VALID(str_data)) {
+			if (str_data != NULL) {
 				_media->video_meta->genre = strdup(str_data);
 				media_content_retvm_if(_media->video_meta->genre == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-			} else {
-				_media->video_meta->genre = NULL;
 			}
-		}
-		/* else if ((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND)) */
-		{
+
 			SAFE_FREE(_media->audio_meta->genre);
-			if (STRING_VALID(str_data)) {
+			if (str_data != NULL) {
 				_media->audio_meta->genre = strdup(str_data);
 				media_content_retvm_if(_media->audio_meta->genre == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-			} else {
-				_media->audio_meta->genre = NULL;
 			}
 		}
 		break;
 	case MEDIA_INFO_RECORDED_DATE:
-		/* if (_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) */
-		{
+		if (STRING_VALID(_media->media_id)) {
+			if (_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) {
+				SAFE_FREE(_media->video_meta->recorded_date);
+				if (str_data != NULL) {
+					_media->video_meta->recorded_date = strdup(str_data);
+					media_content_retvm_if(_media->video_meta->recorded_date == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+				}
+			} else if ((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND)) {
+				SAFE_FREE(_media->audio_meta->recorded_date);
+				if (str_data != NULL) {
+					_media->audio_meta->recorded_date = strdup(str_data);
+					media_content_retvm_if(_media->audio_meta->recorded_date == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+				}
+			}
+		} else {
 			SAFE_FREE(_media->video_meta->recorded_date);
-			if (STRING_VALID(str_data)) {
+			if (str_data != NULL) {
 				_media->video_meta->recorded_date = strdup(str_data);
 				media_content_retvm_if(_media->video_meta->recorded_date == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-			} else {
-				_media->video_meta->recorded_date = NULL;
 			}
-		}
-		/* else if ((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND)) */
-		{
+
 			SAFE_FREE(_media->audio_meta->recorded_date);
-			if (STRING_VALID(str_data)) {
+			if (str_data != NULL) {
 				_media->audio_meta->recorded_date = strdup(str_data);
 				media_content_retvm_if(_media->audio_meta->recorded_date == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
-			} else {
-				_media->audio_meta->recorded_date = NULL;
 			}
 		}
 		break;
