@@ -55,8 +55,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		video_meta_s *_dst = (video_meta_s*)calloc(1, sizeof(video_meta_s));
 		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
-		if (STRING_VALID(_src->media_id)) {
-			_dst->media_id = strdup(_src->media_id);
+		if (_src->media_id != NULL) {
+			_dst->media_id = g_strdup(_src->media_id);
 			if (_dst->media_id == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -64,8 +64,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->title)) {
-			_dst->title = strdup(_src->title);
+		if (_src->title != NULL) {
+			_dst->title = g_strdup(_src->title);
 			if (_dst->title == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -73,8 +73,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->album)) {
-			_dst->album = strdup(_src->album);
+		if (_src->album != NULL) {
+			_dst->album = g_strdup(_src->album);
 			if (_dst->album == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -82,8 +82,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->artist)) {
-			_dst->artist = strdup(_src->artist);
+		if (_src->artist != NULL) {
+			_dst->artist = g_strdup(_src->artist);
 			if (_dst->artist == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -91,8 +91,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->album_artist)) {
-			_dst->album_artist = strdup(_src->album_artist);
+		if (_src->album_artist != NULL) {
+			_dst->album_artist = g_strdup(_src->album_artist);
 			if (_dst->album_artist == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -100,8 +100,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->genre)) {
-			_dst->genre = strdup(_src->genre);
+		if (_src->genre != NULL) {
+			_dst->genre = g_strdup(_src->genre);
 			if (_dst->genre == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -109,8 +109,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->composer)) {
-			_dst->composer = strdup(_src->composer);
+		if (_src->composer != NULL) {
+			_dst->composer = g_strdup(_src->composer);
 			if (_dst->composer == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -118,8 +118,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->year)) {
-			_dst->year = strdup(_src->year);
+		if (_src->year != NULL) {
+			_dst->year = g_strdup(_src->year);
 			if (_dst->year == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -127,8 +127,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->recorded_date)) {
-			_dst->recorded_date = strdup(_src->recorded_date);
+		if (_src->recorded_date != NULL) {
+			_dst->recorded_date = g_strdup(_src->recorded_date);
 			if (_dst->recorded_date == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -136,8 +136,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->copyright)) {
-			_dst->copyright = strdup(_src->copyright);
+		if (_src->copyright != NULL) {
+			_dst->copyright = g_strdup(_src->copyright);
 			if (_dst->copyright == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -145,8 +145,8 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->track_num)) {
-			_dst->track_num = strdup(_src->track_num);
+		if (_src->track_num != NULL) {
+			_dst->track_num = g_strdup(_src->track_num);
 			if (_dst->track_num == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -178,7 +178,7 @@ int video_meta_get_media_id(video_meta_h video, char **media_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 	if (_video) {
-		if (STRING_VALID(_video->media_id)) {
+		if (_video->media_id != NULL) {
 			char *new_string = strdup(_video->media_id);
 			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
@@ -201,7 +201,7 @@ int video_meta_get_album(video_meta_h video, char **album)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 	if (_video) {
-		if (STRING_VALID(_video->album)) {
+		if (_video->album != NULL) {
 			char *new_string = strdup(_video->album);
 			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
@@ -224,7 +224,7 @@ int video_meta_get_artist(video_meta_h video, char **artist)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 	if (_video) {
-		if (STRING_VALID(_video->artist)) {
+		if (_video->artist != NULL) {
 			char *new_string = strdup(_video->artist);
 			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
@@ -247,7 +247,7 @@ int video_meta_get_album_artist(video_meta_h video, char **album_artist)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 	if (_video) {
-		if (STRING_VALID(_video->album_artist)) {
+		if (_video->album_artist != NULL) {
 			char *new_string = strdup(_video->album_artist);
 			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
@@ -270,7 +270,7 @@ int video_meta_get_genre(video_meta_h video, char **genre)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 	if (_video) {
-		if (STRING_VALID(_video->genre)) {
+		if (_video->genre != NULL) {
 			char *new_string = strdup(_video->genre);
 			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
@@ -293,7 +293,7 @@ int video_meta_get_composer(video_meta_h video, char **composer)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 	if (_video) {
-		if (STRING_VALID(_video->composer)) {
+		if (_video->composer != NULL) {
 			char *new_string = strdup(_video->composer);
 			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
@@ -316,7 +316,7 @@ int video_meta_get_year(video_meta_h video, char **year)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 	if (_video) {
-		if (STRING_VALID(_video->year)) {
+		if (_video->year != NULL) {
 			char *new_string = strdup(_video->year);
 			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
@@ -339,7 +339,7 @@ int video_meta_get_recorded_date(video_meta_h video, char **recorded_date)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 	if (_video) {
-		if (STRING_VALID(_video->recorded_date)) {
+		if (_video->recorded_date != NULL) {
 			char *new_string = strdup(_video->recorded_date);
 			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
@@ -362,7 +362,7 @@ int video_meta_get_copyright(video_meta_h video, char **copyright)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 	if (_video) {
-		if (STRING_VALID(_video->copyright)) {
+		if (_video->copyright != NULL) {
 			char *new_string = strdup(_video->copyright);
 			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
@@ -385,7 +385,7 @@ int video_meta_get_track_num(video_meta_h video, char **track_num)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	video_meta_s *_video = (video_meta_s*)video;
 	if (_video) {
-		if (STRING_VALID(_video->track_num)) {
+		if (_video->track_num != NULL) {
 			char *new_string = strdup(_video->track_num);
 			media_content_retvm_if(new_string == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 

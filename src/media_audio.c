@@ -55,8 +55,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 		audio_meta_s *_dst = (audio_meta_s*)calloc(1, sizeof(audio_meta_s));
 		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
-		if (STRING_VALID(_src->media_id)) {
-			_dst->media_id = strdup(_src->media_id);
+		if (_src->media_id != NULL) {
+			_dst->media_id = g_strdup(_src->media_id);
 			if (_dst->media_id == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -64,8 +64,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->title)) {
-			_dst->title = strdup(_src->title);
+		if (_src->title != NULL) {
+			_dst->title = g_strdup(_src->title);
 			if (_dst->title == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -73,8 +73,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->album)) {
-			_dst->album = strdup(_src->album);
+		if (_src->album != NULL) {
+			_dst->album = g_strdup(_src->album);
 			if (_dst->album == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -82,8 +82,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->artist)) {
-			_dst->artist = strdup(_src->artist);
+		if (_src->artist != NULL) {
+			_dst->artist = g_strdup(_src->artist);
 			if (_dst->artist == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -91,8 +91,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->album_artist)) {
-			_dst->album_artist = strdup(_src->album_artist);
+		if (_src->album_artist != NULL) {
+			_dst->album_artist = g_strdup(_src->album_artist);
 			if (_dst->album_artist == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -100,8 +100,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->genre)) {
-			_dst->genre = strdup(_src->genre);
+		if (_src->genre != NULL) {
+			_dst->genre = g_strdup(_src->genre);
 			if (_dst->genre == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -109,8 +109,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->composer)) {
-			_dst->composer = strdup(_src->composer);
+		if (_src->composer != NULL) {
+			_dst->composer = g_strdup(_src->composer);
 			if (_dst->composer == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -118,8 +118,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->year)) {
-			_dst->year = strdup(_src->year);
+		if (_src->year != NULL) {
+			_dst->year = g_strdup(_src->year);
 			if (_dst->year == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -127,8 +127,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->recorded_date)) {
-			_dst->recorded_date = strdup(_src->recorded_date);
+		if (_src->recorded_date != NULL) {
+			_dst->recorded_date = g_strdup(_src->recorded_date);
 			if (_dst->recorded_date == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -136,8 +136,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->copyright)) {
-			_dst->copyright = strdup(_src->copyright);
+		if (_src->copyright != NULL) {
+			_dst->copyright = g_strdup(_src->copyright);
 			if (_dst->copyright == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -145,8 +145,8 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->track_num)) {
-			_dst->track_num = strdup(_src->track_num);
+		if (_src->track_num != NULL) {
+			_dst->track_num = g_strdup(_src->track_num);
 			if (_dst->track_num == NULL) {
 				audio_meta_destroy((audio_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -200,8 +200,8 @@ int audio_meta_get_album(audio_meta_h audio, char **album)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 	if (_audio) {
-		if (STRING_VALID(_audio->album)) {
-			*album = strdup(_audio->album);
+		if (_audio->album != NULL) {
+			*album = g_strdup(_audio->album);		/*album can be empty string*/
 			media_content_retvm_if(*album == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*album = NULL;
@@ -222,8 +222,8 @@ int audio_meta_get_artist(audio_meta_h audio, char **artist)
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
 	if (_audio) {
-		if (STRING_VALID(_audio->artist)) {
-			*artist = strdup(_audio->artist);
+		if (_audio->artist != NULL) {
+			*artist = g_strdup(_audio->artist);	/*artist can be empty string*/
 			media_content_retvm_if(*artist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*artist = NULL;
@@ -244,8 +244,8 @@ int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist)
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
 	if (_audio) {
-		if (STRING_VALID(_audio->album_artist)) {
-			*album_artist = strdup(_audio->album_artist);
+		if (_audio->album_artist != NULL) {
+			*album_artist = g_strdup(_audio->album_artist);	/*album_artist can be empty string*/
 			media_content_retvm_if(*album_artist == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*album_artist = NULL;
@@ -266,8 +266,8 @@ int audio_meta_get_genre(audio_meta_h audio, char **genre)
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
 	if (_audio) {
-		if (STRING_VALID(_audio->genre)) {
-			*genre = strdup(_audio->genre);
+		if (_audio->genre != NULL) {
+			*genre = g_strdup(_audio->genre);	/*genre can be empty string*/
 			media_content_retvm_if(*genre == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*genre = NULL;
@@ -288,8 +288,8 @@ int audio_meta_get_composer(audio_meta_h audio, char **composer)
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
 	if (_audio) {
-		if (STRING_VALID(_audio->composer)) {
-			*composer = strdup(_audio->composer);
+		if (_audio->composer != NULL) {
+			*composer = g_strdup(_audio->composer);	/*composer can be empty string*/
 			media_content_retvm_if(*composer == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*composer = NULL;
@@ -310,8 +310,8 @@ int audio_meta_get_year(audio_meta_h audio, char **year)
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
 	if (_audio) {
-		if (STRING_VALID(_audio->year)) {
-			*year = strdup(_audio->year);
+		if (_audio->year != NULL) {
+			*year = g_strdup(_audio->year);	/*year can be empty string*/
 			media_content_retvm_if(*year == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*year = NULL;
@@ -332,8 +332,8 @@ int audio_meta_get_recorded_date(audio_meta_h audio, char **recorded_date)
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
 	if (_audio) {
-		if (STRING_VALID(_audio->recorded_date)) {
-			*recorded_date = strdup(_audio->recorded_date);
+		if (_audio->recorded_date != NULL) {
+			*recorded_date = g_strdup(_audio->recorded_date);
 			media_content_retvm_if(*recorded_date == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*recorded_date = NULL;
@@ -354,8 +354,8 @@ int audio_meta_get_copyright(audio_meta_h audio, char **copyright)
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
 	if (_audio) {
-		if (STRING_VALID(_audio->copyright)) {
-			*copyright = strdup(_audio->copyright);
+		if (_audio->copyright != NULL) {
+			*copyright = g_strdup(_audio->copyright);	/*copyright can be empty string*/
 			media_content_retvm_if(*copyright == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*copyright = NULL;
@@ -376,8 +376,8 @@ int audio_meta_get_track_num(audio_meta_h audio, char **track_num)
 	audio_meta_s *_audio = (audio_meta_s*)audio;
 
 	if (_audio) {
-		if (STRING_VALID(_audio->track_num)) {
-			*track_num = strdup(_audio->track_num);
+		if (_audio->track_num != NULL) {
+			*track_num = g_strdup(_audio->track_num);	/*track_num can be empty string*/
 			media_content_retvm_if(*track_num == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*track_num = NULL;
