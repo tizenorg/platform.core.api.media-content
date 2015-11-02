@@ -84,9 +84,9 @@ static void __media_info_thumbnail_completed_cb(int error, const char *path, voi
 
 	if (_thumb_cb != NULL) {
 		media = _thumb_cb->handle;
-		if ((media != NULL) && STRING_VALID(path)) {
+		if ((media != NULL) && (path != NULL)) {
 			SAFE_FREE(media->thumbnail_path);
-			media->thumbnail_path = strdup(path);
+			media->thumbnail_path = g_strdup(path);
 		}
 
 		media_content_debug("error [%d], thumbnail_path [%s]", error, path);
@@ -669,48 +669,48 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		media_info_s *_dst = (media_info_s*)calloc(1, sizeof(media_info_s));
 		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
-		if (STRING_VALID(_src->media_id)) {
-			_dst->media_id = strdup(_src->media_id);
+		if (_src->media_id) {
+			_dst->media_id = g_strdup(_src->media_id);
 			if (_dst->media_id == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->file_path)) {
-			_dst->file_path = strdup(_src->file_path);
+		if (_src->file_path) {
+			_dst->file_path = g_strdup(_src->file_path);
 			if (_dst->file_path == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->display_name)) {
-			_dst->display_name = strdup(_src->display_name);
+		if (_src->display_name != NULL) {
+			_dst->display_name = g_strdup(_src->display_name);
 			if (_dst->display_name == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->mime_type)) {
-			_dst->mime_type = strdup(_src->mime_type);
+		if (_src->mime_type) {
+			_dst->mime_type = g_strdup(_src->mime_type);
 			if (_dst->mime_type == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->thumbnail_path)) {
-			_dst->thumbnail_path = strdup(_src->thumbnail_path);
+		if (_src->thumbnail_path != NULL) {
+			_dst->thumbnail_path = g_strdup(_src->thumbnail_path);
 			if (_dst->thumbnail_path == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->description)) {
-			_dst->description = strdup(_src->description);
+		if (_src->description != NULL) {
+			_dst->description = g_strdup(_src->description);
 			if (_dst->description == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -718,8 +718,8 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->weather)) {
-			_dst->weather = strdup(_src->weather);
+		if (_src->weather != NULL) {
+			_dst->weather = g_strdup(_src->weather);
 			if (_dst->weather == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -727,64 +727,64 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->title)) {
-			_dst->title = strdup(_src->title);
+		if (_src->title != NULL) {
+			_dst->title = g_strdup(_src->title);
 			if (_dst->title == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->author)) {
-			_dst->author = strdup(_src->author);
+		if (_src->author != NULL) {
+			_dst->author = g_strdup(_src->author);
 			if (_dst->author == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->provider)) {
-			_dst->provider = strdup(_src->provider);
+		if (_src->provider != NULL) {
+			_dst->provider = g_strdup(_src->provider);
 			if (_dst->provider == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->content_name)) {
-			_dst->content_name = strdup(_src->content_name);
+		if (_src->content_name != NULL) {
+			_dst->content_name = g_strdup(_src->content_name);
 			if (_dst->content_name == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->category)) {
-			_dst->category = strdup(_src->category);
+		if (_src->category != NULL) {
+			_dst->category = g_strdup(_src->category);
 			if (_dst->category == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->location_tag)) {
-			_dst->location_tag = strdup(_src->location_tag);
+		if (_src->location_tag != NULL) {
+			_dst->location_tag = g_strdup(_src->location_tag);
 			if (_dst->location_tag == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->age_rating)) {
-			_dst->age_rating = strdup(_src->age_rating);
+		if (_src->age_rating != NULL) {
+			_dst->age_rating = g_strdup(_src->age_rating);
 			if (_dst->age_rating == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
-		if (STRING_VALID(_src->keyword)) {
-			_dst->keyword = strdup(_src->keyword);
+		if (_src->keyword != NULL) {
+			_dst->keyword = g_strdup(_src->keyword);
 			if (_dst->keyword == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -792,8 +792,8 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 
-		if (STRING_VALID(_src->storage_uuid)) {
-			_dst->storage_uuid = strdup(_src->storage_uuid);
+		if (_src->storage_uuid != NULL) {
+			_dst->storage_uuid = g_strdup(_src->storage_uuid);
 			if (_dst->storage_uuid == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -826,8 +826,8 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 
-			if (STRING_VALID(_src->image_meta->media_id)) {
-				_dst->image_meta->media_id = strdup(_src->image_meta->media_id);
+			if (_src->image_meta->media_id != NULL) {
+				_dst->image_meta->media_id = g_strdup(_src->image_meta->media_id);
 				if (_dst->image_meta->media_id == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -835,8 +835,8 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 
-			if (STRING_VALID(_src->image_meta->date_taken)) {
-				_dst->image_meta->date_taken = strdup(_src->image_meta->date_taken);
+			if (_src->image_meta->date_taken != NULL) {
+				_dst->image_meta->date_taken = g_strdup(_src->image_meta->date_taken);
 				if (_dst->image_meta->date_taken == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -844,8 +844,8 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 
-			if (STRING_VALID(_src->image_meta->burst_id)) {
-				_dst->image_meta->burst_id = strdup(_src->image_meta->burst_id);
+			if (_src->image_meta->burst_id != NULL) {
+				_dst->image_meta->burst_id = g_strdup(_src->image_meta->burst_id);
 				if (_dst->image_meta->burst_id == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -853,8 +853,8 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 
-			if (STRING_VALID(_src->image_meta->weather)) {
-				_dst->image_meta->weather = strdup(_src->image_meta->weather);
+			if (_src->image_meta->weather != NULL) {
+				_dst->image_meta->weather = g_strdup(_src->image_meta->weather);
 				if (_dst->image_meta->weather == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -862,8 +862,8 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 
-			if (STRING_VALID(_src->image_meta->exposure_time)) {
-				_dst->image_meta->exposure_time = strdup(_src->image_meta->exposure_time);
+			if (_src->image_meta->exposure_time != NULL) {
+				_dst->image_meta->exposure_time = g_strdup(_src->image_meta->exposure_time);
 				if (_dst->image_meta->exposure_time == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -871,8 +871,8 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 
-			if (STRING_VALID(_src->image_meta->model)) {
-				_dst->image_meta->model = strdup(_src->image_meta->model);
+			if (_src->image_meta->model != NULL) {
+				_dst->image_meta->model = g_strdup(_src->image_meta->model);
 				if (_dst->image_meta->model == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -894,88 +894,88 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 
-			if (STRING_VALID(_src->video_meta->media_id)) {
-				_dst->video_meta->media_id = strdup(_src->video_meta->media_id);
+			if (_src->video_meta->media_id != NULL) {
+				_dst->video_meta->media_id = g_strdup(_src->video_meta->media_id);
 				if (_dst->video_meta->media_id == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->video_meta->title)) {
-				_dst->video_meta->title = strdup(_src->video_meta->title);
+			if (_src->video_meta->title != NULL) {
+				_dst->video_meta->title = g_strdup(_src->video_meta->title);
 				if (_dst->video_meta->title == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->video_meta->album)) {
-				_dst->video_meta->album = strdup(_src->video_meta->album);
+			if (_src->video_meta->album != NULL) {
+				_dst->video_meta->album = g_strdup(_src->video_meta->album);
 				if (_dst->video_meta->album == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->video_meta->artist)) {
-				_dst->video_meta->artist = strdup(_src->video_meta->artist);
+			if (_src->video_meta->artist != NULL) {
+				_dst->video_meta->artist = g_strdup(_src->video_meta->artist);
 				if (_dst->video_meta->artist == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->video_meta->album_artist)) {
-				_dst->video_meta->album_artist = strdup(_src->video_meta->album_artist);
+			if (_src->video_meta->album_artist != NULL) {
+				_dst->video_meta->album_artist = g_strdup(_src->video_meta->album_artist);
 				if (_dst->video_meta->album_artist == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->video_meta->genre)) {
-				_dst->video_meta->genre = strdup(_src->video_meta->genre);
+			if (_src->video_meta->genre != NULL) {
+				_dst->video_meta->genre = g_strdup(_src->video_meta->genre);
 				if (_dst->video_meta->genre == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->video_meta->composer)) {
-				_dst->video_meta->composer = strdup(_src->video_meta->composer);
+			if (_src->video_meta->composer != NULL) {
+				_dst->video_meta->composer = g_strdup(_src->video_meta->composer);
 				if (_dst->video_meta->composer == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->video_meta->year)) {
-				_dst->video_meta->year = strdup(_src->video_meta->year);
+			if (_src->video_meta->year != NULL) {
+				_dst->video_meta->year = g_strdup(_src->video_meta->year);
 				if (_dst->video_meta->year == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->video_meta->recorded_date)) {
-				_dst->video_meta->recorded_date = strdup(_src->video_meta->recorded_date);
+			if (_src->video_meta->recorded_date != NULL) {
+				_dst->video_meta->recorded_date = g_strdup(_src->video_meta->recorded_date);
 				if (_dst->video_meta->recorded_date == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->video_meta->copyright)) {
-				_dst->video_meta->copyright = strdup(_src->video_meta->copyright);
+			if (_src->video_meta->copyright != NULL) {
+				_dst->video_meta->copyright = g_strdup(_src->video_meta->copyright);
 				if (_dst->video_meta->copyright == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->video_meta->track_num)) {
-				_dst->video_meta->track_num = strdup(_src->video_meta->track_num);
+			if (_src->video_meta->track_num != NULL) {
+				_dst->video_meta->track_num = g_strdup(_src->video_meta->track_num);
 				if (_dst->video_meta->track_num == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -999,88 +999,88 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 
-			if (STRING_VALID(_src->audio_meta->media_id)) {
-				_dst->audio_meta->media_id = strdup(_src->audio_meta->media_id);
+			if (_src->audio_meta->media_id != NULL) {
+				_dst->audio_meta->media_id = g_strdup(_src->audio_meta->media_id);
 				if (_dst->audio_meta->media_id == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->audio_meta->title)) {
-				_dst->audio_meta->title = strdup(_src->audio_meta->title);
+			if (_src->audio_meta->title != NULL) {
+				_dst->audio_meta->title = g_strdup(_src->audio_meta->title);
 				if (_dst->audio_meta->title == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->audio_meta->album)) {
-				_dst->audio_meta->album = strdup(_src->audio_meta->album);
+			if (_src->audio_meta->album != NULL) {
+				_dst->audio_meta->album = g_strdup(_src->audio_meta->album);
 				if (_dst->audio_meta->album == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->audio_meta->artist)) {
-				_dst->audio_meta->artist = strdup(_src->audio_meta->artist);
+			if (_src->audio_meta->artist != NULL) {
+				_dst->audio_meta->artist = g_strdup(_src->audio_meta->artist);
 				if (_dst->audio_meta->artist == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->audio_meta->album_artist)) {
-				_dst->audio_meta->album_artist = strdup(_src->audio_meta->album_artist);
+			if (_src->audio_meta->album_artist != NULL) {
+				_dst->audio_meta->album_artist = g_strdup(_src->audio_meta->album_artist);
 				if (_dst->audio_meta->album_artist == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->audio_meta->genre)) {
-				_dst->audio_meta->genre = strdup(_src->audio_meta->genre);
+			if (_src->audio_meta->genre != NULL) {
+				_dst->audio_meta->genre = g_strdup(_src->audio_meta->genre);
 				if (_dst->audio_meta->genre == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->audio_meta->composer)) {
-				_dst->audio_meta->composer = strdup(_src->audio_meta->composer);
+			if (_src->audio_meta->composer != NULL) {
+				_dst->audio_meta->composer = g_strdup(_src->audio_meta->composer);
 				if (_dst->audio_meta->composer == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->audio_meta->year)) {
-				_dst->audio_meta->year = strdup(_src->audio_meta->year);
+			if (_src->audio_meta->year != NULL) {
+				_dst->audio_meta->year = g_strdup(_src->audio_meta->year);
 				if (_dst->audio_meta->year == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->audio_meta->recorded_date)) {
-				_dst->audio_meta->recorded_date = strdup(_src->audio_meta->recorded_date);
+			if (_src->audio_meta->recorded_date != NULL) {
+				_dst->audio_meta->recorded_date = g_strdup(_src->audio_meta->recorded_date);
 				if (_dst->audio_meta->recorded_date == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->audio_meta->copyright)) {
-				_dst->audio_meta->copyright = strdup(_src->audio_meta->copyright);
+			if (_src->audio_meta->copyright != NULL) {
+				_dst->audio_meta->copyright = g_strdup(_src->audio_meta->copyright);
 				if (_dst->audio_meta->copyright == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
 					return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 				}
 			}
-			if (STRING_VALID(_src->audio_meta->track_num)) {
-				_dst->audio_meta->track_num = strdup(_src->audio_meta->track_num);
+			if (_src->audio_meta->track_num != NULL) {
+				_dst->audio_meta->track_num = g_strdup(_src->audio_meta->track_num);
 				if (_dst->audio_meta->track_num == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1376,8 +1376,8 @@ int media_info_get_display_name(media_info_h media, char **name)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_info_s *_media = (media_info_s*)media;
 	if (_media && name) {
-		if (STRING_VALID(_media->display_name)) {
-			*name = strdup(_media->display_name);
+		if (_media->display_name != NULL) {
+			*name = g_strdup(_media->display_name);
 			media_content_retvm_if(*name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*name = NULL;
@@ -1494,8 +1494,8 @@ int media_info_get_thumbnail_path(media_info_h media, char **path)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_info_s *_media = (media_info_s*)media;
 	if (_media && path) {
-		if (STRING_VALID(_media->thumbnail_path)) {
-			*path = strdup(_media->thumbnail_path);
+		if (_media->thumbnail_path != NULL) {
+			*path = g_strdup(_media->thumbnail_path);
 			media_content_retvm_if(*path == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*path = NULL;
@@ -1516,8 +1516,8 @@ int media_info_get_title(media_info_h media, char **title)
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media && title)	{ /*title can be empty string*/
-		if (STRING_VALID(_media->title)) {
-			*title = strdup(_media->title);
+		if (_media->title != NULL) {
+			*title = g_strdup(_media->title);
 			media_content_retvm_if(*title == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*title = NULL;
@@ -1537,8 +1537,8 @@ int media_info_get_description(media_info_h media, char **description)
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media && description) {
-		if (STRING_VALID(_media->description)) {
-			*description = strdup(_media->description);
+		if (_media->description != NULL) {	/*description can be empty string*/
+			*description = g_strdup(_media->description);
 			media_content_retvm_if(*description == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*description = NULL;
@@ -1605,7 +1605,7 @@ int media_info_get_weather(media_info_h media, char **weather)
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media && weather) {
-		if (STRING_VALID(_media->weather)) {
+		if (_media->weather != NULL) {
 			*weather = strdup(_media->weather);
 			media_content_retvm_if(*weather == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
@@ -1658,7 +1658,7 @@ int media_info_get_author(media_info_h media, char **author)
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media && author) {
-		if (STRING_VALID(_media->author)) {
+		if (_media->author != NULL) {
 			*author = strdup(_media->author);
 			media_content_retvm_if(*author == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
@@ -1679,7 +1679,7 @@ int media_info_get_provider(media_info_h media, char **provider)
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media && provider) {
-		if (STRING_VALID(_media->provider)) {
+		if (_media->provider != NULL) {
 			*provider = strdup(_media->provider);
 			media_content_retvm_if(*provider == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
@@ -1700,7 +1700,7 @@ int media_info_get_content_name(media_info_h media, char **content_name)
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media && content_name) {
-		if (STRING_VALID(_media->content_name)) {
+		if (_media->content_name != NULL) {
 			*content_name = strdup(_media->content_name);
 			media_content_retvm_if(*content_name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
@@ -1721,7 +1721,7 @@ int media_info_get_category(media_info_h media, char **category)
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media && category) {
-		if (STRING_VALID(_media->category)) {
+		if (_media->category != NULL) {
 			*category = strdup(_media->category);
 			media_content_retvm_if(*category == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
@@ -1742,7 +1742,7 @@ int media_info_get_location_tag(media_info_h media, char **location_tag)
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media && location_tag) {
-		if (STRING_VALID(_media->location_tag)) {
+		if (_media->location_tag != NULL) {
 			*location_tag = strdup(_media->location_tag);
 			media_content_retvm_if(*location_tag == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
@@ -1763,7 +1763,7 @@ int media_info_get_age_rating(media_info_h media, char **age_rating)
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media && age_rating) {
-		if (STRING_VALID(_media->age_rating)) {
+		if (_media->age_rating != NULL) {
 			*age_rating = strdup(_media->age_rating);
 			media_content_retvm_if(*age_rating == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
@@ -1784,7 +1784,7 @@ int media_info_get_keyword(media_info_h media, char **keyword)
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media && keyword) {
-		if (STRING_VALID(_media->keyword)) {
+		if (_media->keyword != NULL) {
 			*keyword = strdup(_media->keyword);
 			media_content_retvm_if(*keyword == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
