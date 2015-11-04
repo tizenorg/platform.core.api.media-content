@@ -120,12 +120,11 @@ static int __media_playlist_insert_item_to_playlist(int playlist_id, const char 
 
 	++play_order;
 
-	query_str = sqlite3_mprintf("INSERT INTO %q (playlist_id, media_uuid, play_order) values (%d, '%q', %d)",
+	query_str = sqlite3_mprintf("INSERT INTO %q (playlist_id, media_uuid, play_order) values (%d, '%q', %d);",
 			DB_TABLE_PLAYLIST_MAP, playlist_id, media_id, play_order);
-	ret = _content_query_sql(query_str);
-	SQLITE3_SAFE_FREE(query_str);
+	ret = media_svc_append_query(query_str, tzplatform_getuid(TZ_USER_NAME));
 
-	return ret;
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
 static int __media_playlist_remove_item_from_playlist(int playlist_id, int playlist_member_id)
@@ -134,11 +133,9 @@ static int __media_playlist_remove_item_from_playlist(int playlist_id, int playl
 	char *query_str = NULL;
 
 	query_str = sqlite3_mprintf(REMOVE_PLAYLIST_ITEM_FROM_PLAYLIST_MAP, playlist_id, playlist_member_id);
+	ret = media_svc_append_query(query_str, tzplatform_getuid(TZ_USER_NAME));
 
-	ret = _content_query_sql(query_str);
-	SQLITE3_SAFE_FREE(query_str);
-
-	return ret;
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
 static int __media_playlist_update_playlist_name(int playlist_id, const char *playlist_name)
@@ -147,11 +144,9 @@ static int __media_playlist_update_playlist_name(int playlist_id, const char *pl
 	char *query_str = NULL;
 
 	query_str = sqlite3_mprintf(UPDATE_PLAYLIST_NAME_FROM_PLAYLIST, playlist_name, playlist_id);
+	ret = media_svc_append_query(query_str, tzplatform_getuid(TZ_USER_NAME));
 
-	ret = _content_query_sql(query_str);
-	SQLITE3_SAFE_FREE(query_str);
-
-	return ret;
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
 static int __media_playlist_update_thumbnail_path(int playlist_id, const char *path)
@@ -160,11 +155,9 @@ static int __media_playlist_update_thumbnail_path(int playlist_id, const char *p
 	char *query_str = NULL;
 
 	query_str = sqlite3_mprintf(UPDATE_PLAYLIST_THUMBNAIL_FROM_PLAYLIST, path, playlist_id);
+	ret = media_svc_append_query(query_str, tzplatform_getuid(TZ_USER_NAME));
 
-	ret = _content_query_sql(query_str);
-	SQLITE3_SAFE_FREE(query_str);
-
-	return ret;
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
 static int __media_playlist_update_play_order(int playlist_id, int playlist_member_id, int play_order)
@@ -173,11 +166,9 @@ static int __media_playlist_update_play_order(int playlist_id, int playlist_memb
 	char *query_str = NULL;
 
 	query_str = sqlite3_mprintf(UPDATE_PLAYLIST_ORDER_FROM_PLAYLIST_MAP, play_order, playlist_id, playlist_member_id);
+	ret = media_svc_append_query(query_str, tzplatform_getuid(TZ_USER_NAME));
 
-	ret = _content_query_sql(query_str);
-	SQLITE3_SAFE_FREE(query_str);
-
-	return ret;
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
 static bool __media_playlist_media_info_cb(media_info_h media, void *user_data)
@@ -868,10 +859,11 @@ int media_playlist_update_to_db(media_playlist_h playlist)
 			}
 		}
 	}
+	ret = media_svc_send_query(tzplatform_getuid(TZ_USER_NAME));
 
 	__media_playlist_item_release(_playlist);
 
-	return ret;
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
 int media_playlist_import_from_file(const char *path, const char *playlist_name, media_playlist_h *playlist)
