@@ -58,12 +58,10 @@ static int __media_tag_insert_item_to_tag(int tag_id, const char *media_id)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	char *query_str = NULL;
 
-	query_str = sqlite3_mprintf("INSERT INTO %q (tag_id, media_uuid) values (%d, '%q')",
-			DB_TABLE_TAG_MAP, tag_id, media_id);
-	ret = _content_query_sql(query_str);
-	SQLITE3_SAFE_FREE(query_str);
+	query_str = sqlite3_mprintf("INSERT INTO %q (tag_id, media_uuid) values (%d, '%q');", DB_TABLE_TAG_MAP, tag_id, media_id);
+	ret = media_svc_append_query(query_str, tzplatform_getuid(TZ_USER_NAME));
 
-	return ret;
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
 static int __media_tag_remove_item_from_tag(int tag_id, const char *media_id)
@@ -72,11 +70,9 @@ static int __media_tag_remove_item_from_tag(int tag_id, const char *media_id)
 	char *query_str = NULL;
 
 	query_str = sqlite3_mprintf(REMOVE_TAG_ITEM_FROM_TAG_MAP, tag_id, media_id);
+	ret = media_svc_append_query(query_str, tzplatform_getuid(TZ_USER_NAME));
 
-	ret = _content_query_sql(query_str);
-	SQLITE3_SAFE_FREE(query_str);
-
-	return ret;
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
 static int __media_tag_update_tag_name(int tag_id, const char *tag_name)
@@ -85,11 +81,9 @@ static int __media_tag_update_tag_name(int tag_id, const char *tag_name)
 	char *query_str = NULL;
 
 	query_str = sqlite3_mprintf(UPDATE_TAG_NAME_FROM_TAG, tag_name, tag_id);
+	ret = media_svc_append_query(query_str, tzplatform_getuid(TZ_USER_NAME));
 
-	ret = _content_query_sql(query_str);
-	SQLITE3_SAFE_FREE(query_str);
-
-	return ret;
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
 
 static int __media_tag_get_tag_info_from_db(const char *name, media_tag_h tag)
@@ -487,7 +481,9 @@ int media_tag_update_to_db(media_tag_h tag)
 		}
 	}
 
+	ret = media_svc_send_query(tzplatform_getuid(TZ_USER_NAME));
+
 	__media_tag_item_release(_tag);
 
-	return ret;
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
 }
