@@ -2967,19 +2967,19 @@ int media_info_create(const char *path, media_info_h *media)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0, };
 	media_svc_storage_type_e storage_type = 0;
+	bool ignore_file = FALSE;
 
 	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
 	media_content_retvm_if(media == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid media");
 
+	ret = _media_util_check_ignore_file(path, &ignore_file);
+	media_content_retvm_if(ignore_file == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+
 	memset(storage_id, 0x00, sizeof(storage_id));
 
 	if (STRING_VALID(MEDIA_ROOT_PATH_CLOUD) && (strstr(path, MEDIA_ROOT_PATH_CLOUD) == NULL)) {
-		bool ignore_file = FALSE;
 		bool ignore_dir = FALSE;
 		char *folder_path = NULL;
-
-		ret = _media_util_check_ignore_file(path, &ignore_file);
-		media_content_retvm_if(ignore_file == TRUE, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
 
 		ret = _media_util_check_file_exist(path);
 		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
