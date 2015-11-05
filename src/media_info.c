@@ -2973,7 +2973,7 @@ int media_info_create(const char *path, media_info_h *media)
 
 	memset(storage_id, 0x00, sizeof(storage_id));
 
-	if (STRING_VALID(MEDIA_ROOT_PATH_CLOUD) && (strstr(MEDIA_ROOT_PATH_CLOUD, path) == NULL)) {
+	if (STRING_VALID(MEDIA_ROOT_PATH_CLOUD) && (strstr(path, MEDIA_ROOT_PATH_CLOUD) == NULL)) {
 		bool ignore_file = FALSE;
 		bool ignore_dir = FALSE;
 		char *folder_path = NULL;
