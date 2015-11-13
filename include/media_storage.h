@@ -41,6 +41,8 @@ extern "C" {
 * @brief Gets media storage from database.
 * @since_tizen 2.4
 *
+* @remarks You must release the handle using media_storage_destroy(). \n
+*
 * @param[in] storage_id The storage id to get media storage info
 * @param[out] storage The media storage handle
 *
