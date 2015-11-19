@@ -563,13 +563,13 @@ int media_info_delete_batch_from_db(filter_h filter)
 			char *storage_path = NULL;
 			media_svc_get_storage_path(_content_get_db_handle(), _filter->storage_id, &storage_path);
 			if (STRING_VALID(storage_path))
-				media_svc_publish_noti(_content_get_db_handle(), MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, storage_path, -1, NULL, NULL);
+				media_svc_publish_noti(MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, storage_path, -1, NULL, NULL);
 
 			SAFE_FREE(storage_path);
 		} else {
 			/*FIX ME*/
-			media_svc_publish_noti(_content_get_db_handle(), MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, MEDIA_ROOT_PATH_INTERNAL, -1, NULL, NULL);
-			media_svc_publish_noti(_content_get_db_handle(), MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, MEDIA_ROOT_PATH_SDCARD, -1, NULL, NULL);
+			media_svc_publish_noti(MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, MEDIA_ROOT_PATH_INTERNAL, -1, NULL, NULL);
+			media_svc_publish_noti(MS_MEDIA_ITEM_DIRECTORY, MS_MEDIA_ITEM_UPDATE, MEDIA_ROOT_PATH_SDCARD, -1, NULL, NULL);
 		}
 
 		__media_info_delete_thumb_from_list(thumb_list);
@@ -2302,23 +2302,23 @@ int media_info_update_to_db(media_info_h media)
 		media_svc_check_pinyin_support(&pinyin_support);
 		if (pinyin_support) {
 			if (STRING_VALID(_media->display_name))
-				media_svc_get_pinyin(_content_get_db_handle(), _media->display_name, &file_name_pinyin);
+				media_svc_get_pinyin(_media->display_name, &file_name_pinyin);
 			if (STRING_VALID(_media->description))
-				media_svc_get_pinyin(_content_get_db_handle(), _media->description, &description_pinyin);
+				media_svc_get_pinyin(_media->description, &description_pinyin);
 			if (STRING_VALID(_media->author))
-				media_svc_get_pinyin(_content_get_db_handle(), _media->author, &author_pinyin);
+				media_svc_get_pinyin(_media->author, &author_pinyin);
 			if (STRING_VALID(_media->provider))
-				media_svc_get_pinyin(_content_get_db_handle(), _media->provider, &provider_pinyin);
+				media_svc_get_pinyin(_media->provider, &provider_pinyin);
 			if (STRING_VALID(_media->content_name))
-				media_svc_get_pinyin(_content_get_db_handle(), _media->content_name, &content_name_pinyin);
+				media_svc_get_pinyin(_media->content_name, &content_name_pinyin);
 			if (STRING_VALID(_media->category))
-				media_svc_get_pinyin(_content_get_db_handle(), _media->category, &category_pinyin);
+				media_svc_get_pinyin(_media->category, &category_pinyin);
 			if (STRING_VALID(_media->location_tag))
-				media_svc_get_pinyin(_content_get_db_handle(), _media->location_tag, &location_tag_pinyin);
+				media_svc_get_pinyin(_media->location_tag, &location_tag_pinyin);
 			if (STRING_VALID(_media->age_rating))
-				media_svc_get_pinyin(_content_get_db_handle(), _media->age_rating, &age_rating_pinyin);
+				media_svc_get_pinyin(_media->age_rating, &age_rating_pinyin);
 			if (STRING_VALID(_media->keyword))
-				media_svc_get_pinyin(_content_get_db_handle(), _media->keyword, &keyword_pinyin);
+				media_svc_get_pinyin(_media->keyword, &keyword_pinyin);
 		}
 
 		char *album = NULL;
@@ -2404,7 +2404,7 @@ int media_info_update_to_db(media_info_h media)
 			/* Send notification for this update */
 			media_content_debug("Update is successfull. Send notification for this");
 			if (_media->file_path && _media->mime_type)
-				media_svc_publish_noti(_content_get_db_handle(), MS_MEDIA_ITEM_FILE, MS_MEDIA_ITEM_UPDATE, _media->file_path, _media->media_type, _media->media_id, _media->mime_type);
+				media_svc_publish_noti(MS_MEDIA_ITEM_FILE, MS_MEDIA_ITEM_UPDATE, _media->file_path, _media->media_type, _media->media_id, _media->mime_type);
 			else
 				media_content_error("Can't Send Noti : path or mime type is NULL");
 		}

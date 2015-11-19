@@ -396,7 +396,7 @@ int media_folder_update_to_db(media_folder_h folder)
 		/*Update Pinyin If Support Pinyin*/
 		media_svc_check_pinyin_support(&pinyin_support);
 		if (pinyin_support)
-			media_svc_get_pinyin(_content_get_db_handle(), _folder->name, &name_pinyin);
+			media_svc_get_pinyin(_folder->name, &name_pinyin);
 
 		sql = sqlite3_mprintf("UPDATE %Q SET path='%q', name='%q', modified_time=%d, name_pinyin='%q' WHERE folder_uuid=%Q",
 						DB_TABLE_FOLDER, _folder->path, _folder->name, _folder->modified_time, name_pinyin, _folder->folder_id);
