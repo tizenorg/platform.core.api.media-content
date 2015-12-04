@@ -1580,6 +1580,7 @@ int media_info_move_to_db(media_info_h media, const char* dst_path);
  *
  * @remarks If you want to destory media handle before callback invoked, you must cancel thumbnail request by using media_info_cancel_thumbnail() \n
  *          Since 3.0, if creation of a thumbnail is failed, empty string will be passed through media_thumbnail_completed_cb().
+ *          This function does not support external storage except for mmc.
  *
  * @param[in] media     The media info handle
  * @param[in] callback  The callback function to be invoked
