@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <media_content.h>
 #include <media_info_private.h>
+#include <media_content_internal.h>
 #include <dlog.h>
 #include <pthread.h>
 #include <glib.h>
@@ -2916,7 +2917,29 @@ void _noti_cb(media_content_error_e error,
 
 	if (user_data) media_content_debug("String : %s\n", (char *)user_data);
 
-	//g_main_loop_quit(g_loop);
+//	g_main_loop_quit(g_loop);
+	return;
+}
+
+void _noti_cb_2(media_content_error_e error,
+				int pid,
+				media_content_db_update_item_type_e update_item,
+				media_content_db_update_type_e update_type,
+				media_content_type_e media_type,
+				char *uuid,
+				char *path,
+				char *mime_type,
+				void *user_data)
+{
+	if (error == 0) {
+		media_content_debug("noti_2 success! : %d\n", error);
+	} else {
+		media_content_debug("error occured! : %d\n", error);
+	}
+
+	media_content_debug("Noti_2 from PID(%d)\n", pid);
+
+	g_main_loop_quit(g_loop);
 	return;
 }
 
@@ -2926,7 +2949,10 @@ gboolean _send_noti_operations(gpointer data)
 
 	/* First of all, noti subscription */
 	char *user_str = strdup("hi");
-	media_content_set_db_updated_cb(_noti_cb, (void*)user_str);
+	media_content_noti_h noti_h;
+	media_content_noti_h noti_h_2;
+	media_content_add_db_updated_cb(_noti_cb, (void*)user_str, &noti_h);
+	media_content_add_db_updated_cb(_noti_cb_2, (void*)user_str, &noti_h_2);
 
 	/* media_info_insert_to_db */
 	media_info_h media_item = NULL;
@@ -2943,8 +2969,11 @@ gboolean _send_noti_operations(gpointer data)
 
 	/* media_info_delete_batch_from_db */
 	filter_h filter;
-	char *condition = "MEDIA_PATH LIKE \'";
-	strncat(condition, tzplatform_mkpath(TZ_USER_CONTENT, "test/image%%jpg\'"), 17);
+	char condition[2048] = {0,};
+	const char *temp=  NULL;
+	temp = tzplatform_mkpath(TZ_USER_CONTENT, "test/image%%\'");
+	snprintf(condition, sizeof(condition), "MEDIA_PATH LIKE \'%s", temp);
+//	strncat(condition, temp, strlen(temp));
 
 	ret = media_filter_create(&filter);
 	if (ret != MEDIA_CONTENT_ERROR_NONE) {
@@ -2999,7 +3028,7 @@ int test_noti()
 	g_main_loop_unref(g_loop);
 
 	test_filter_destroy();
-	media_content_unset_db_updated_cb();
+//	media_content_remove_db_updated_cb();
 
 	return ret;
 }
