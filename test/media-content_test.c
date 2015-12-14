@@ -2970,7 +2970,7 @@ gboolean _send_noti_operations(gpointer data)
 	/* media_info_delete_batch_from_db */
 	filter_h filter;
 	char condition[2048] = {0,};
-	const char *temp=  NULL;
+	const char *temp = NULL;
 	temp = tzplatform_mkpath(TZ_USER_CONTENT, "test/image%%\'");
 	snprintf(condition, sizeof(condition), "MEDIA_PATH LIKE \'%s", temp);
 //	strncat(condition, temp, strlen(temp));
