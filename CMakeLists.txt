@@ -9,7 +9,7 @@ SET(PREFIX ${CMAKE_INSTALL_PREFIX})
 SET(INC_DIR include)
 INCLUDE_DIRECTORIES(${INC_DIR})
 
-SET(dependents "dlog libmedia-service media-thumbnail libmedia-utils capi-base-common vconf cynara-client cynara-creds-socket cynara-session")
+SET(dependents "dlog libmedia-service media-thumbnail libmedia-utils capi-base-common vconf")
 SET(pc_dependents "dlog capi-base-common")
 
 INCLUDE(FindPkgConfig)
