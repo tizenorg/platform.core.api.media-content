@@ -249,6 +249,7 @@ int media_storage_get_id(media_storage_h storage, char **storage_id);
  * @since_tizen 2.4
  *
  * @remarks You must release @a storage_name using free().
+ *                   If the requested storage is not the cloud storage, this API returns NULL.
  *
  * @param[in]  storage The media storage handle
  * @param[out] storage_name  The storage name of the media storage
