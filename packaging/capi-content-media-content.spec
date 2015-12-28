@@ -39,6 +39,10 @@ MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
 %install
 %make_install
 
+#License
+mkdir -p %{buildroot}/%{_datadir}/license
+cp -rf %{_builddir}/%{name}-%{version}/LICENSE.APLv2.0 %{buildroot}/%{_datadir}/license/%{name}
+
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
@@ -46,8 +50,9 @@ MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
 
 %files
 %manifest %{name}.manifest
-%license LICENSE.APLv2.0
 %{_libdir}/libcapi-content-media-content.so.*
+#License
+%{_datadir}/license/%{name}
 
 %files devel
 %manifest %{name}.manifest
