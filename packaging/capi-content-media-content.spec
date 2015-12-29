@@ -20,7 +20,7 @@ A Media content library in SLP C API package.
 
 %package devel
 Summary:  A Media content library in SLP C API (Development)
-Group:    Development/Multimedia
+Group:    Multimedia/Development
 Requires: %{name} = %{version}-%{release}
 
 %description devel
