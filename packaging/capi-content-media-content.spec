@@ -1,5 +1,5 @@
 Name:       capi-content-media-content
-Summary:    A Media content library in SLP C API
+Summary:    A Media content library in Tizen Native API
 Version:    0.2.75
 Release:    0
 Group:      Multimedia/API
@@ -16,15 +16,15 @@ BuildRequires:  pkgconfig(vconf)
 BuildRequires:  pkgconfig(libtzplatform-config)
 
 %description
-A Media content library in SLP C API package.
+A Media content library in Tizen Native API.
 
 %package devel
-Summary:  A Media content library in SLP C API (Development)
-Group:    Development/Multimedia
+Summary:  A Media content library in Tizen Native API (Development)
+Group:    Multimedia/Development
 Requires: %{name} = %{version}-%{release}
 
 %description devel
-A Media content library in SLP C API (Development) package.
+A Media content library in Tizen Native API. (Development file included)
 %devel_desc
 
 %prep
