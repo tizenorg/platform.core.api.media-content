@@ -580,22 +580,19 @@ int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condit
 	media_content_retvm_if(db_handle == NULL, MEDIA_CONTENT_ERROR_DB_FAILED, "database is not connected");
 	media_content_retvm_if(!STRING_VALID(select_query), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid select_query");
 
-	if (!STRING_VALID(condition_query)) {
+	if (!STRING_VALID(condition_query))
 		condition_query = (char *)" ";
-	}
 
-	if (!STRING_VALID(option_query)) {
+	if (!STRING_VALID(option_query))
 		option_query = (char *)" ";
 
-	}
-
-	//query = sqlite3_mprintf("%s %s %s", select_query, condition_query, option_query);
+	/*query = sqlite3_mprintf("%s %s %s", select_query, condition_query, option_query);*/
 	len = snprintf(query, sizeof(query), "%s %s %s", select_query, condition_query, option_query);
-	if (len > 0 && len < MAX_QUERY_SIZE) {
+	if (len > 0 && len < MAX_QUERY_SIZE)
 		query[len] = '\0';
-	} else if (len >= MAX_QUERY_SIZE) {
+	else if (len >= MAX_QUERY_SIZE)
 		query[MAX_QUERY_SIZE -1] = '\0';
-	} else {
+	else {
 		media_content_error("snprintf failed");
 		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}
@@ -623,9 +620,8 @@ int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condit
 
 int _content_error_capi(int type, int content_error)
 {
-	if (content_error != MEDIA_CONTENT_ERROR_NONE) {
+	if (content_error != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("[type : %d] content_error : %d ", type, content_error);
-	}
 
 	/*Error None*/
 	if (content_error == MS_MEDIA_ERR_NONE)
@@ -667,7 +663,7 @@ int _content_query_sql(char *query_str)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
-	//DB will be updated by Media Server.
+	/*DB will be updated by Media Server.*/
 	ret = media_svc_request_update_db(query_str, tzplatform_getuid(TZ_USER_NAME));
 
 	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
@@ -686,11 +682,11 @@ int media_content_connect(void)
 				if (ret == MEDIA_CONTENT_ERROR_NONE) {
 					ret = media_svc_connect(&db_handle, tzplatform_getuid(TZ_USER_NAME), false);
 					ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
-					if (ret == MEDIA_CONTENT_ERROR_NONE) {
+					if (ret == MEDIA_CONTENT_ERROR_NONE)
 						ref_count++;
-					} else {
+					else
 						__media_content_destroy_attribute_handle();
-					}
+
 				} else {
 					media_content_error("Internal DB Connection Error");
 				}
@@ -877,11 +873,10 @@ static int __media_content_check_dir(const char *path)
 		media_content_sec_error("path [%s]", path);
 		media_content_stderror("open dir fail");
 
-		if (errno == EACCES || errno == EPERM) {
+		if (errno == EACCES || errno == EPERM)
 			return MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
-		} else {
+		else
 			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		}
 	}
 
 	closedir(dp);
@@ -921,9 +916,8 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 	/*FIX ME. need to check ret value?*/
 
 	ret = media_directory_scanning_async(path, storage_id, is_recursive, _media_content_scan_cb, cb_data, tzplatform_getuid(TZ_USER_NAME));
-	if (ret != MS_MEDIA_ERR_NONE) {
+	if (ret != MS_MEDIA_ERR_NONE)
 		media_content_error("media_directory_scanning_async failed : %d", ret);
-	}
 
 	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }
@@ -933,9 +927,8 @@ int media_content_cancel_scan_folder(const char *path)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	ret = media_directory_scanning_cancel(path, tzplatform_getuid(TZ_USER_NAME));
-	if (ret != MS_MEDIA_ERR_NONE) {
+	if (ret != MS_MEDIA_ERR_NONE)
 		media_content_error("media_directory_scanning_async failed : %d", ret);
-	}
 
 	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }

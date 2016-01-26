@@ -457,26 +457,26 @@ int media_tag_update_to_db(media_tag_h tag)
 		_tag_item = (media_tag_item_s*)g_list_nth_data(_tag->item_list, idx);
 		if (_tag_item != NULL) {
 			switch (_tag_item->function) {
-				case MEDIA_TAG_ADD:
-				{
-					ret = __media_tag_insert_item_to_tag(_tag->tag_id, _tag_item->media_id);
-				}
-				break;
+			case MEDIA_TAG_ADD:
+			{
+				ret = __media_tag_insert_item_to_tag(_tag->tag_id, _tag_item->media_id);
+			}
+			break;
 
-				case MEDIA_TAG_REMOVE:
-				{
-					ret = __media_tag_remove_item_from_tag(_tag->tag_id, _tag_item->media_id);
-				}
-				break;
+			case MEDIA_TAG_REMOVE:
+			{
+				ret = __media_tag_remove_item_from_tag(_tag->tag_id, _tag_item->media_id);
+			}
+			break;
 
-				case MEDIA_TAG_UPDATE_TAG_NAME:
-				{
-					ret = __media_tag_update_tag_name(_tag->tag_id, _tag_item->tag_name);
-				}
-				break;
+			case MEDIA_TAG_UPDATE_TAG_NAME:
+			{
+				ret = __media_tag_update_tag_name(_tag->tag_id, _tag_item->tag_name);
+			}
+			break;
 
-				default:
-				break;
+			default:
+			break;
 			}
 		}
 	}

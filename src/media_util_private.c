@@ -32,11 +32,10 @@ int _media_util_check_file_exist(const char *path)
 	if (exist < 0) {
 		media_content_sec_debug("path [%s]", path);
 		media_content_stderror("open file fail");
-		if (errno == EACCES || errno == EPERM) {
+		if (errno == EACCES || errno == EPERM)
 			return MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
-		} else {
+		else
 			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		}
 	}
 
 	close(exist);
@@ -114,7 +113,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 				find = TRUE;
 				break;
 			} else {
-				//media_content_sec_debug("entry.d_name[%s]", entry.d_name);
+				/*media_content_sec_debug("entry.d_name[%s]", entry.d_name);*/
 				continue;
 			}
 		}
@@ -149,7 +148,7 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 			if (leaf_path != NULL) {
 				int seek_len = leaf_path -search_path;
 				search_path[seek_len] = '\0';
-				//media_content_sec_debug("go to other dir [%s]", search_path);
+				/*media_content_sec_debug("go to other dir [%s]", search_path);*/
 			} else {
 				media_content_debug("Fail to find leaf path");
 				break;

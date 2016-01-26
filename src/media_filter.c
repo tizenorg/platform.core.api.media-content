@@ -81,28 +81,28 @@ static bool __is_pinyin_needed(void)
 static char *__get_order_str(media_content_order_e order_enum)
 {
 	switch (order_enum) {
-		case MEDIA_CONTENT_ORDER_ASC:
-			return (char *)"ASC";
-		case MEDIA_CONTENT_ORDER_DESC:
-			return (char *)"DESC";
-		default:
-			return (char *)" ";
+	case MEDIA_CONTENT_ORDER_ASC:
+		return (char *)"ASC";
+	case MEDIA_CONTENT_ORDER_DESC:
+		return (char *)"DESC";
+	default:
+		return (char *)" ";
 	}
 }
 
 static char *__get_collate_str(media_content_collation_e collate_type)
 {
 	switch (collate_type) {
-		case MEDIA_CONTENT_COLLATE_NOCASE:
+	case MEDIA_CONTENT_COLLATE_NOCASE:
+		return (char *)"NOCASE";
+	case MEDIA_CONTENT_COLLATE_RTRIM:
+		return (char *)"RTRIM";
+	case MEDIA_CONTENT_COLLATE_LOCALIZED:
+		if (__is_pinyin_needed())
 			return (char *)"NOCASE";
-		case MEDIA_CONTENT_COLLATE_RTRIM:
-			return (char *)"RTRIM";
-		case MEDIA_CONTENT_COLLATE_LOCALIZED:
-			if (__is_pinyin_needed())
-				return (char *)"NOCASE";
-			else
-				return (char *)"localized";
-		default: return (char *)" ";
+		else
+			return (char *)"localized";
+	default: return (char *)" ";
 	}
 }
 
@@ -119,8 +119,8 @@ static char *__media_filter_replace_attr(attribute_h attr, char *name)
 	attribute_s *_attr = (attribute_s *)attr;
 
 	if (!g_hash_table_lookup_extended(_attr->attr_map, name, (gpointer)&key_temp, (gpointer)&generated_value)) {
-		//can't find the value
-		//media_content_error("NOT_FOUND_VALUE(%s)", name);
+		/* can't find the value */
+		/* media_content_error("NOT_FOUND_VALUE(%s)", name); */
 		return NULL;
 	}
 
@@ -146,7 +146,7 @@ static int __tokenize_operator(token_t *token, const char *str, int op_type)
 		media_content_retvm_if(token->str == NULL, -1, "OUT_OF_MEMORY");
 
 		strncpy(token->str, tmp, token_size);
-		//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
+		/*media_content_debug("type : [%d] str : [%s]", token->type, token->str);*/
 		ret = token_size;
 	} else {
 		ret = -1;
@@ -166,7 +166,7 @@ static int __tokenize_string(token_t *token, const char *str, int size)
 
 		token->type = UNKNOWN_TYPE;
 		strncpy(token->str, tmp, size);
-		//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
+		/*media_content_debug("type : [%d] str : [%s]", token->type, token->str);*/
 	} else {
 		ret = -1;
 	}
@@ -185,9 +185,9 @@ static int __tokenize_attribute(GList **token_list, const char *str)
 	const char *dst_ptr = str + strlen(str);
 
 	for (idx = 0; (*(tmp+idx)) && (tmp < dst_ptr); idx++) {
-		//media_content_debug("[%d] '%c'", idx, tmp[idx]);
-		if (tmp[idx] == ' ') {		//" "
-			if (idx == 0) {		// ignore the space.
+		/*media_content_debug("[%d] '%c'", idx, tmp[idx]);*/
+		if (tmp[idx] == ' ') {		/* " " */
+			if (idx == 0) {		/* ignore the space. */
 				tmp++;
 				idx = -1;
 				continue;
@@ -203,11 +203,11 @@ static int __tokenize_attribute(GList **token_list, const char *str)
 				return -1;
 			}
 			strncpy(token->str, tmp, idx);
-			//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
+			/*media_content_debug("type : [%d] str : [%s]", token->type, token->str);*/
 			*token_list = g_list_append(*token_list, token);
 			tmp = tmp +idx + strlen(media_token[0]);
 			idx = -1;
-		} else if (tmp[idx] == ',') {	// " , "
+		} else if (tmp[idx] == ',') {	/* " , " */
 			if (idx != 0) {
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
@@ -238,7 +238,7 @@ static int __tokenize_attribute(GList **token_list, const char *str)
 		}
 	}
 
-	if (*tmp) {			//remained string
+	if (*tmp) {			/* remained string */
 		token_t *token = (token_t*)calloc(1, sizeof(token_t));
 		media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
 
@@ -272,9 +272,9 @@ static int __tokenize(GList **token_list, const char *str)
 	const char *dst_ptr = str + strlen(str);
 
 	for (idx = 0; (*(tmp+idx)) && (tmp < dst_ptr); idx++) {
-		//media_content_debug("[%d] '%c'", idx, tmp[idx]);
-		if (tmp[idx] == media_token[0][0]) {		//" "
-			if (idx == 0) {		// ignore the space.
+		/* media_content_debug("[%d] '%c'", idx, tmp[idx]); */
+		if (tmp[idx] == media_token[0][0]) {		/* " " */
+			if (idx == 0) {		/* ignore the space. */
 				tmp++;
 				idx = -1;
 				continue;
@@ -291,14 +291,14 @@ static int __tokenize(GList **token_list, const char *str)
 				return -1;
 			}
 			strncpy(token->str, tmp, idx);
-			//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
+			/* media_content_debug("type : [%d] str : [%s]", token->type, token->str); */
 			*token_list = g_list_append(*token_list, token);
 			tmp = tmp +idx + strlen(media_token[0]);
 			idx = -1;
-		} else if (tmp[idx] == media_token[1][0]) {	// " \" "
+		} else if (tmp[idx] == media_token[1][0]) {	/* " \" " */
 			int j;
 			bool flag = false;
-			for (j = idx+1; tmp[j]; j++) {	//find next quotation
+			for (j = idx+1; tmp[j]; j++) {	/* find next quotation */
 				if (tmp[j] == media_token[1][0] && tmp[j+1] == media_token[1][0]) {
 					j += 1;
 					continue;
@@ -315,7 +315,7 @@ static int __tokenize(GList **token_list, const char *str)
 					}
 					token->type = STRING_TYPE;
 					strncpy(token->str, tmp, j+1);
-					//media_content_debug("type : [%d] str : [%s], j : %d", token->type, token->str, j);
+					/* media_content_debug("type : [%d] str : [%s], j : %d", token->type, token->str, j); */
 					*token_list = g_list_append(*token_list, token);
 					tmp = tmp + strlen(token->str);
 					idx = -1;
@@ -336,12 +336,12 @@ static int __tokenize(GList **token_list, const char *str)
 				}
 				token->type = UNKNOWN_TYPE;
 				strncpy(token->str, tmp, j);
-				//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
+				/* media_content_debug("type : [%d] str : [%s]", token->type, token->str);*/
 				*token_list = g_list_append(*token_list, token);
 				tmp = tmp +strlen(token->str);
 				idx = -1;
 			}
-		} else if (tmp[idx] == media_token[2][0]) {	// " \' "
+		} else if (tmp[idx] == media_token[2][0]) {	/* " \' "*/
 			int j;
 			bool flag = false;
 			for (j = idx+1; tmp[j]; j++) {
@@ -361,7 +361,7 @@ static int __tokenize(GList **token_list, const char *str)
 					}
 					token->type = STRING_TYPE;
 					strncpy(token->str, tmp, j+1);
-					//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
+					/* media_content_debug("type : [%d] str : [%s]", token->type, token->str); */
 					*token_list = g_list_append(*token_list, token);
 					tmp = tmp + strlen(token->str);
 					idx = -1;
@@ -382,12 +382,12 @@ static int __tokenize(GList **token_list, const char *str)
 				}
 				token->type = UNKNOWN_TYPE;
 				strncpy(token->str, tmp, j);
-				//media_content_debug("type : [%d] str : [%s]", token->type, token->str);
+				/* media_content_debug("type : [%d] str : [%s]", token->type, token->str); */
 				*token_list = g_list_append(*token_list, token);
 				tmp = tmp + strlen(token->str);
 				idx = -1;
 			}
-		} else if (tmp[idx] == media_token[3][0]) {	//"("
+		} else if (tmp[idx] == media_token[3][0]) {	/* "(" */
 			if (idx != 0) {
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
@@ -415,7 +415,7 @@ static int __tokenize(GList **token_list, const char *str)
 				return -1;
 			}
 
-		} else if (tmp[idx] == media_token[4][0]) {	//")"
+		} else if (tmp[idx] == media_token[4][0]) {	/* ")" */
 			if (idx != 0) {
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
@@ -443,7 +443,7 @@ static int __tokenize(GList **token_list, const char *str)
 				return -1;
 			}
 
-		} else if (tmp[idx] == media_token[5][0]) {	//"="
+		} else if (tmp[idx] == media_token[5][0]) {	/* "=" */
 			if (idx != 0) {
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
@@ -471,7 +471,7 @@ static int __tokenize(GList **token_list, const char *str)
 				return -1;
 			}
 
-		} else if (tmp[idx] == media_token[6][0] && tmp[idx+1] == media_token[6][1]) {	//"<=",
+		} else if (tmp[idx] == media_token[6][0] && tmp[idx+1] == media_token[6][1]) {	/* "<=", */
 			if (idx != 0) {
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
@@ -499,7 +499,7 @@ static int __tokenize(GList **token_list, const char *str)
 				return -1;
 			}
 
-		} else if (tmp[idx] == media_token[7][0]) {	//"<",
+		} else if (tmp[idx] == media_token[7][0]) {	/* "<", */
 			if (idx != 0) {
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
@@ -527,7 +527,7 @@ static int __tokenize(GList **token_list, const char *str)
 				return -1;
 			}
 
-		} else if (tmp[idx] == media_token[8][0] && tmp[idx+1] == media_token[8][1]) {	//">=",
+		} else if (tmp[idx] == media_token[8][0] && tmp[idx+1] == media_token[8][1]) {	/* ">=", */
 			if (idx != 0) {
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
@@ -555,7 +555,7 @@ static int __tokenize(GList **token_list, const char *str)
 				return -1;
 			}
 
-		} else if (tmp[idx] == media_token[9][0]) {	//">",
+		} else if (tmp[idx] == media_token[9][0]) {	/* ">", */
 			if (idx != 0) {
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
@@ -582,7 +582,7 @@ static int __tokenize(GList **token_list, const char *str)
 				media_content_error("tokenize error occured");
 				return -1;
 			}
-		} else if (tmp[idx] == media_token[10][0] && tmp[idx+1] == media_token[10][1]) {	//"!=",
+		} else if (tmp[idx] == media_token[10][0] && tmp[idx+1] == media_token[10][1]) {	/* "!=", */
 			if (idx != 0) {
 				token_t *token = (token_t*)calloc(1, sizeof(token_t));
 				media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
@@ -612,7 +612,7 @@ static int __tokenize(GList **token_list, const char *str)
 		}
 	}
 
-	if (*tmp) {			//remained string
+	if (*tmp) {			/* remained string */
 		token_t *token = (token_t*)calloc(1, sizeof(token_t));
 		media_content_retvm_if(token == NULL, -1, "OUT_OF_MEMORY");
 
@@ -726,10 +726,10 @@ int _media_filter_attribute_generate(attribute_h attr, char *condition, media_co
 		}
 
 		total_str_size += strlen(token->str)+1;
-		//media_content_debug("[%d][type:%d]:%s", idx, token->type, token->str);
+		/* media_content_debug("[%d][type:%d]:%s", idx, token->type, token->str); */
 	}
 
-	//make the statment
+	/* make the statment */
 	size = total_str_size + COLLATE_STR_SIZE + 1;
 	*generated_condition = (char*)calloc(size, sizeof(char));
 
@@ -751,11 +751,11 @@ int _media_filter_attribute_generate(attribute_h attr, char *condition, media_co
 		SAFE_STRLCAT(*generated_condition, SPACE, size);
 	}
 
-	//media_content_debug("statement : %s(%d) (total:%d)", *generated_condition, strlen(*generated_condition), total_str_size);
+	/* media_content_debug("statement : %s(%d) (total:%d)", *generated_condition, strlen(*generated_condition), total_str_size); */
 	media_content_sec_debug("Condition : %s", *generated_condition);
 
-	//if(*generated_condition != NULL)
-	//	res = 1;
+	/* if(*generated_condition != NULL)
+		res = 1; */
 
 	if (token_list != NULL)
 		g_list_free(token_list);
@@ -770,7 +770,6 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 	char option_query[DEFAULT_QUERY_SIZE] = {0, };
 	char condition[DEFAULT_QUERY_SIZE] = {0, };
 	int size = 0;
-	//bool order_by = true;
 
 	media_content_retvm_if(attr == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid attr");
 	media_content_retvm_if(filter == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid filter");
@@ -805,11 +804,10 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 						continue;
 					}
 
-					if (_filter->order_collate_type == MEDIA_CONTENT_COLLATE_NOCASE || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_RTRIM || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_LOCALIZED) {
+					if (_filter->order_collate_type == MEDIA_CONTENT_COLLATE_NOCASE || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_RTRIM || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_LOCALIZED)
 						snprintf(attr_str, strlen(replace_str) + COLLATE_STR_SIZE + 1, "%s COLLATE %s %s", replace_str, __get_collate_str(_filter->order_collate_type), __get_order_str(_filter->order_type));
-					} else {
+					else
 						snprintf(attr_str, strlen(replace_str) + COLLATE_STR_SIZE + 1, "%s %s", replace_str, __get_order_str(_filter->order_type));
-					}
 
 					SAFE_FREE(token->str);
 					token->str = attr_str;
@@ -820,10 +818,10 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 			}
 
 			total_str_size += strlen(token->str) + 1;
-			//media_content_debug("[%d][type:%d]:%s", idx, token->type, token->str);
+			/* media_content_debug("[%d][type:%d]:%s", idx, token->type, token->str); */
 		}
 
-		//make the statment
+		/* make the statment */
 		char *generated_condition = NULL;
 		size = total_str_size + COLLATE_STR_SIZE + 1;
 		generated_condition = (char*)calloc(size, sizeof(char));
@@ -832,7 +830,7 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 			token = (token_t*)g_list_nth_data(token_list, idx);
 
 			if ((token != NULL) && STRING_VALID(token->str)) {
-				//media_content_debug("[%d] %s", idx, token->str);
+				/* media_content_debug("[%d] %s", idx, token->str); */
 				SAFE_STRLCAT(generated_condition, token->str, size);
 				SAFE_STRLCAT(generated_condition, SPACE, size);
 

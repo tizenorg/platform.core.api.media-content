@@ -87,9 +87,8 @@ static int __media_playlist_insert_playlist_record(const char *playlist_name, in
 	SQLITE3_SAFE_FREE(select_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
+	while (sqlite3_step(stmt) == SQLITE_ROW)
 		*playlist_id = (int)sqlite3_column_int(stmt, 0);
-	}
 
 	SQLITE3_FINALIZE(stmt);
 
@@ -112,9 +111,8 @@ static int __media_playlist_insert_item_to_playlist(int playlist_id, const char 
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
+	while (sqlite3_step(stmt) == SQLITE_ROW)
 		play_order = (int)sqlite3_column_int(stmt, 0);
-	}
 
 	SQLITE3_FINALIZE(stmt);
 
@@ -203,7 +201,7 @@ static int __media_playlist_reset_file(const char* playlist_path)
 	fp = fopen(playlist_path, "wb");
 	media_content_retvm_if(fp == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "fopen fail");
 
-	fputs("", fp);	// remove previous playlist
+	fputs("", fp);	/* remove previous playlist */
 
 	fclose(fp);
 
@@ -214,7 +212,7 @@ static int __media_playlist_append_to_file(const char* playlist_path, const char
 {
 	FILE *fp = NULL;
 
-	fp = fopen(playlist_path, "a");	// append only
+	fp = fopen(playlist_path, "a");	/* append only */
 	media_content_retvm_if(fp == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "fopen fail");
 
 	fputs(path, fp);
@@ -228,31 +226,31 @@ static int __media_playlist_append_to_file(const char* playlist_path, const char
 
 static int __media_playlist_import_item_from_file(const char* playlist_path, char*** const item_list, int* item_count)
 {
-	int current_index = 0;						// Current record number
-	int current_max_size = PLAYLIST_ARRAY_SIZE;	// Current max number of records in array
-	int tmp_str_len = 0;						// Length of the string
+	int current_index = 0;
+	int current_max_size = PLAYLIST_ARRAY_SIZE;
+	int tmp_str_len = 0;
 	char *buf = NULL;
 	char *tmp_buf = NULL;
-	char *tmp_str = NULL;						// Next line from buffer, this string is used for parsing
+	char *tmp_str = NULL;
 
 	FILE *fp = NULL;
 	long int file_size = 0;
 
 	*item_list = NULL; *item_count = 0;
 
-	fp = fopen(playlist_path, "rb");		// Open as binary for precise estimation of file length
+	fp = fopen(playlist_path, "rb");
 	media_content_retvm_if(fp == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "fopen fail");
 
-	fseek(fp, 0, SEEK_END);					// Move to the end of file
-	file_size = ftell(fp);				// Here we can find the size of file
-	fseek(fp, 0 , SEEK_SET);					// Return to the beginning of file
+	fseek(fp, 0, SEEK_END);
+	file_size = ftell(fp);
+	fseek(fp, 0 , SEEK_SET);
 
 	if (file_size == 0) {
 		media_content_debug("file is empty.");
 		fclose(fp);
 		return MEDIA_CONTENT_ERROR_NONE;
 	}
-	// Allocate the memory and copy file content there
+
 	if (file_size > 0)
 		buf = malloc(file_size + 1);
 
@@ -273,7 +271,6 @@ static int __media_playlist_import_item_from_file(const char* playlist_path, cha
 	buf[file_size] = 0;
 	fclose(fp);
 
-	// Preliminary memory allocation
 	*item_list = calloc(current_max_size, sizeof(char*));
 	tmp_str = malloc(MAX_TMP_STR);
 	if (tmp_str == NULL || *item_list == NULL) {
@@ -283,26 +280,24 @@ static int __media_playlist_import_item_from_file(const char* playlist_path, cha
 		media_content_error("Out of Memory");
 		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 	}
-	// Here we create format string for sscanf(...) that allows to get a line from buffer
+
 	char format[25];
 	snprintf(format, 25, "%%%d[^\n]", MAX_TMP_STR);
 
-	// This cycle gets lines one by one from buffer till the end of buffer. Empty line ("\n") must be treated specifically
 	while ((sscanf(tmp_buf, format, tmp_str) == 1) || (*tmp_buf == '\n')) {
-		if (*tmp_buf == '\n') {// Check if there is an empty line, skip '\n' symbol
+		if (*tmp_buf == '\n') {
 			tmp_buf += 1;
 
 			if (tmp_buf < (buf + file_size))
-				continue;			// We are still in buffer
+				continue;
 			else
-				break;				// Empty line was in the end of buffer
+				break;
 		}
 
-		tmp_str_len = strlen(tmp_str);		// Save the length of line
+		tmp_str_len = strlen(tmp_str);
 
-		if (tmp_str[0] != '#') {			// Check that the line is not a comment
-			if (!(current_index < (current_max_size - 1))) {				// Check if we have completely filled record array
-				// Expand array size and relocate the array (records will be copied into new one)
+		if (tmp_str[0] != '#') {
+			if (!(current_index < (current_max_size - 1))) {
 				current_max_size += PLAYLIST_ARRAY_EXPAND;
 				char **tmp_ptr = calloc(current_max_size, sizeof(char*));
 				if (tmp_ptr == NULL) {
@@ -317,7 +312,6 @@ static int __media_playlist_import_item_from_file(const char* playlist_path, cha
 				*item_list = tmp_ptr;
 			}
 
-			// Save new file path (current string in tmp_str)
 			(*item_list)[current_index] = malloc(tmp_str_len + 1);
 			if ((*item_list)[current_index] == NULL) {
 				__media_playlist_destroy_import_item(*item_list, current_index);
@@ -328,17 +322,16 @@ static int __media_playlist_import_item_from_file(const char* playlist_path, cha
 			}
 			memmove((*item_list)[current_index], tmp_str, tmp_str_len + 1);
 
-			// Increase the index of buffer
 			current_index += 1;
 		}
 
-		tmp_buf += (tmp_str_len + 1);				// Move position in buffer after the string that was parsed
+		tmp_buf += (tmp_str_len + 1);
 	}
 
-	*item_count = current_index;						// Now we need to save the number of records in array
+	*item_count = current_index;
 
 	SAFE_FREE(buf);
-	SAFE_FREE(tmp_str);						// Free temporary variables
+	SAFE_FREE(tmp_str);
 
 	return MEDIA_CONTENT_ERROR_NONE;
 }
@@ -648,9 +641,8 @@ int media_playlist_get_play_order(media_playlist_h playlist, int playlist_member
 	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
+	while (sqlite3_step(stmt) == SQLITE_ROW)
 		*play_order = (int)sqlite3_column_int(stmt, 0);
-	}
 
 	SQLITE3_FINALIZE(stmt);
 
@@ -824,38 +816,38 @@ int media_playlist_update_to_db(media_playlist_h playlist)
 		_playlist_item = (media_playlist_item_s*)g_list_nth_data(_playlist->item_list, idx);
 		if (_playlist_item != NULL) {
 			switch (_playlist_item->function) {
-				case MEDIA_PLAYLIST_ADD:
-				{
-					ret = __media_playlist_insert_item_to_playlist(_playlist->playlist_id, _playlist_item->media_id);
-				}
-				break;
+			case MEDIA_PLAYLIST_ADD:
+			{
+				ret = __media_playlist_insert_item_to_playlist(_playlist->playlist_id, _playlist_item->media_id);
+			}
+			break;
 
-				case MEDIA_PLAYLIST_REMOVE:
-				{
-					ret = __media_playlist_remove_item_from_playlist(_playlist->playlist_id, _playlist_item->playlist_member_id);
-				}
-				break;
+			case MEDIA_PLAYLIST_REMOVE:
+			{
+				ret = __media_playlist_remove_item_from_playlist(_playlist->playlist_id, _playlist_item->playlist_member_id);
+			}
+			break;
 
-				case MEDIA_PLAYLIST_UPDATE_PLAYLIST_NAME:
-				{
-					ret = __media_playlist_update_playlist_name(_playlist->playlist_id, _playlist_item->playlist_name);
-				}
-				break;
+			case MEDIA_PLAYLIST_UPDATE_PLAYLIST_NAME:
+			{
+				ret = __media_playlist_update_playlist_name(_playlist->playlist_id, _playlist_item->playlist_name);
+			}
+			break;
 
-				case MEDIA_PLAYLIST_UPDATE_THUMBNAIL_PATH:
-				{
-					ret = __media_playlist_update_thumbnail_path(_playlist->playlist_id, _playlist_item->thumbnail_path);
-				}
-				break;
+			case MEDIA_PLAYLIST_UPDATE_THUMBNAIL_PATH:
+			{
+				ret = __media_playlist_update_thumbnail_path(_playlist->playlist_id, _playlist_item->thumbnail_path);
+			}
+			break;
 
-				case MEDIA_PLAYLIST_UPDATE_PLAY_ORDER:
-				{
-					ret = __media_playlist_update_play_order(_playlist->playlist_id, _playlist_item->playlist_member_id, _playlist_item->play_order);
-				}
-				break;
+			case MEDIA_PLAYLIST_UPDATE_PLAY_ORDER:
+			{
+				ret = __media_playlist_update_play_order(_playlist->playlist_id, _playlist_item->playlist_member_id, _playlist_item->play_order);
+			}
+			break;
 
-				default:
-				break;
+			default:
+			break;
 			}
 		}
 	}
@@ -886,9 +878,8 @@ int media_playlist_import_from_file(const char *path, const char *playlist_name,
 		return ret;
 	}
 
-	if (import_item_count == 0) {
+	if (import_item_count == 0)
 		media_content_debug("The playlist from file is empty");
-	}
 
 	for (idx = 0; idx < import_item_count; idx++) {
 		filter_h filter = NULL;

@@ -24,66 +24,66 @@ static int __media_db_make_query(filter_h filter, attribute_h attr, char *select
 static char * __media_db_get_group_name(media_group_e group)
 {
 	switch (group) {
-		case MEDIA_CONTENT_GROUP_DISPLAY_NAME:
-			return (char *)DB_FIELD_MEDIA_DISPLAY_NAME;
-		case MEDIA_CONTENT_GROUP_TYPE:
-			return (char *)DB_FIELD_MEDIA_TYPE;
-		case MEDIA_CONTENT_GROUP_MIME_TYPE:
-			return (char *) DB_FIELD_MEDIA_MIME_TYPE;
-		case MEDIA_CONTENT_GROUP_SIZE:
-			return (char *) DB_FIELD_MEDIA_SIZE;
-		case MEDIA_CONTENT_GROUP_ADDED_TIME:
-			return (char *) DB_FIELD_MEDIA_ADDED_TIME;
-		case MEDIA_CONTENT_GROUP_MODIFIED_TIME:
-			return (char *) DB_FIELD_MEDIA_MODIFIED_TIME;
-		case MEDIA_CONTENT_GROUP_TITLE:
-			return (char *) DB_FIELD_MEDIA_TITLE;
-		case MEDIA_CONTENT_GROUP_ARTIST:
-			return (char *) DB_FIELD_MEDIA_ARTIST;
-		case MEDIA_CONTENT_GROUP_ALBUM_ARTIST:
-			return (char *) DB_FIELD_MEDIA_ALBUM_ARTIST;
-		case MEDIA_CONTENT_GROUP_GENRE:
-			return (char *) DB_FIELD_MEDIA_GENRE;
-		case MEDIA_CONTENT_GROUP_COMPOSER:
-			return (char *) DB_FIELD_MEDIA_COMPOSER;
-		case MEDIA_CONTENT_GROUP_YEAR:
-			return (char *) DB_FIELD_MEDIA_YEAR;
-		case MEDIA_CONTENT_GROUP_RECORDED_DATE:
-			return (char *) DB_FIELD_MEDIA_RECORDED_DATE;
-		case MEDIA_CONTENT_GROUP_COPYRIGHT:
-			return (char *) DB_FIELD_MEDIA_COPYRIGHT;
-		case MEDIA_CONTENT_GROUP_TRACK_NUM:
-			return (char *) DB_FIELD_MEDIA_TRACK_NUM;
-		case MEDIA_CONTENT_GROUP_DESCRIPTION:
-			return (char *) DB_FIELD_MEDIA_DESCRIPTION;
-		case MEDIA_CONTENT_GROUP_LONGITUDE:
-			return (char *) DB_FIELD_MEDIA_LONGITUDE;
-		case MEDIA_CONTENT_GROUP_LATITUDE:
-			return (char *) DB_FIELD_MEDIA_LATITUDE;
-		case MEDIA_CONTENT_GROUP_ALTITUDE:
-			return (char *) DB_FIELD_MEDIA_ALTITUDE;
-		case MEDIA_CONTENT_GROUP_BURST_IMAGE:
-			return (char *) DB_FIELD_MEDIA_BURST_ID;
-		case MEDIA_CONTENT_GROUP_RATING:
-			return (char *) DB_FIELD_MEDIA_RATING;
-		case MEDIA_CONTENT_GROUP_AUTHOR:
-			return (char *) DB_FIELD_MEDIA_AUTHOR;
-		case MEDIA_CONTENT_GROUP_PROVIDER:
-			return (char *) DB_FIELD_MEDIA_PROVIDER;
-		case MEDIA_CONTENT_GROUP_CONTENT_NAME:
-			return (char *) DB_FIELD_MEDIA_CONTENT_NAME;
-		case MEDIA_CONTENT_GROUP_CATEGORY:
-			return (char *) DB_FIELD_MEDIA_CATEGORY;
-		case MEDIA_CONTENT_GROUP_LOCATION_TAG:
-			return (char *) DB_FIELD_MEDIA_LOCATION_TAG;
-		case MEDIA_CONTENT_GROUP_AGE_RATING:
-			return (char *) DB_FIELD_MEDIA_AGE_RATING;
-		case MEDIA_CONTENT_GROUP_KEYWORD:
-			return (char *) DB_FIELD_MEDIA_KEYWORD;
-		case MEDIA_CONTENT_GROUP_WEATHER:
-			return (char *) DB_FIELD_MEDIA_WEATHER;
-		default:
-			return NULL;
+	case MEDIA_CONTENT_GROUP_DISPLAY_NAME:
+		return (char *)DB_FIELD_MEDIA_DISPLAY_NAME;
+	case MEDIA_CONTENT_GROUP_TYPE:
+		return (char *)DB_FIELD_MEDIA_TYPE;
+	case MEDIA_CONTENT_GROUP_MIME_TYPE:
+		return (char *) DB_FIELD_MEDIA_MIME_TYPE;
+	case MEDIA_CONTENT_GROUP_SIZE:
+		return (char *) DB_FIELD_MEDIA_SIZE;
+	case MEDIA_CONTENT_GROUP_ADDED_TIME:
+		return (char *) DB_FIELD_MEDIA_ADDED_TIME;
+	case MEDIA_CONTENT_GROUP_MODIFIED_TIME:
+		return (char *) DB_FIELD_MEDIA_MODIFIED_TIME;
+	case MEDIA_CONTENT_GROUP_TITLE:
+		return (char *) DB_FIELD_MEDIA_TITLE;
+	case MEDIA_CONTENT_GROUP_ARTIST:
+		return (char *) DB_FIELD_MEDIA_ARTIST;
+	case MEDIA_CONTENT_GROUP_ALBUM_ARTIST:
+		return (char *) DB_FIELD_MEDIA_ALBUM_ARTIST;
+	case MEDIA_CONTENT_GROUP_GENRE:
+		return (char *) DB_FIELD_MEDIA_GENRE;
+	case MEDIA_CONTENT_GROUP_COMPOSER:
+		return (char *) DB_FIELD_MEDIA_COMPOSER;
+	case MEDIA_CONTENT_GROUP_YEAR:
+		return (char *) DB_FIELD_MEDIA_YEAR;
+	case MEDIA_CONTENT_GROUP_RECORDED_DATE:
+		return (char *) DB_FIELD_MEDIA_RECORDED_DATE;
+	case MEDIA_CONTENT_GROUP_COPYRIGHT:
+		return (char *) DB_FIELD_MEDIA_COPYRIGHT;
+	case MEDIA_CONTENT_GROUP_TRACK_NUM:
+		return (char *) DB_FIELD_MEDIA_TRACK_NUM;
+	case MEDIA_CONTENT_GROUP_DESCRIPTION:
+		return (char *) DB_FIELD_MEDIA_DESCRIPTION;
+	case MEDIA_CONTENT_GROUP_LONGITUDE:
+		return (char *) DB_FIELD_MEDIA_LONGITUDE;
+	case MEDIA_CONTENT_GROUP_LATITUDE:
+		return (char *) DB_FIELD_MEDIA_LATITUDE;
+	case MEDIA_CONTENT_GROUP_ALTITUDE:
+		return (char *) DB_FIELD_MEDIA_ALTITUDE;
+	case MEDIA_CONTENT_GROUP_BURST_IMAGE:
+		return (char *) DB_FIELD_MEDIA_BURST_ID;
+	case MEDIA_CONTENT_GROUP_RATING:
+		return (char *) DB_FIELD_MEDIA_RATING;
+	case MEDIA_CONTENT_GROUP_AUTHOR:
+		return (char *) DB_FIELD_MEDIA_AUTHOR;
+	case MEDIA_CONTENT_GROUP_PROVIDER:
+		return (char *) DB_FIELD_MEDIA_PROVIDER;
+	case MEDIA_CONTENT_GROUP_CONTENT_NAME:
+		return (char *) DB_FIELD_MEDIA_CONTENT_NAME;
+	case MEDIA_CONTENT_GROUP_CATEGORY:
+		return (char *) DB_FIELD_MEDIA_CATEGORY;
+	case MEDIA_CONTENT_GROUP_LOCATION_TAG:
+		return (char *) DB_FIELD_MEDIA_LOCATION_TAG;
+	case MEDIA_CONTENT_GROUP_AGE_RATING:
+		return (char *) DB_FIELD_MEDIA_AGE_RATING;
+	case MEDIA_CONTENT_GROUP_KEYWORD:
+		return (char *) DB_FIELD_MEDIA_KEYWORD;
+	case MEDIA_CONTENT_GROUP_WEATHER:
+		return (char *) DB_FIELD_MEDIA_WEATHER;
+	default:
+		return NULL;
 	}
 
 	return NULL;
@@ -140,69 +140,69 @@ int _media_db_get_group_count(filter_h filter, group_list_e group_type, int *gro
 	memset(select_query, 0x00, sizeof(select_query));
 
 	switch (group_type) {
-		case MEDIA_GROUP_NONE:
-		case MEDIA_GROUP_TAG_BY_MEDIA_ID:
-		case MEDIA_GROUP_BOOKMARK_BY_MEDIA_ID:
-			{
-				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
-			break;
-		case MEDIA_GROUP_ALBUM:
-			attr = _content_get_alias_attirbute_handle();
+	case MEDIA_GROUP_NONE:
+	case MEDIA_GROUP_TAG_BY_MEDIA_ID:
+	case MEDIA_GROUP_BOOKMARK_BY_MEDIA_ID:
+		{
+			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
+		break;
+	case MEDIA_GROUP_ALBUM:
+		attr = _content_get_alias_attirbute_handle();
 
-			if ((_filter != NULL) && STRING_VALID(_filter->storage_id))
-				snprintf(select_query, sizeof(select_query), SELECT_ALBUM_COUNT, _filter->storage_id);
-			else
-				snprintf(select_query, sizeof(select_query), SELECT_ALBUM_COUNT, DB_TABLE_MEDIA_VIEW);
+		if ((_filter != NULL) && STRING_VALID(_filter->storage_id))
+			snprintf(select_query, sizeof(select_query), SELECT_ALBUM_COUNT, _filter->storage_id);
+		else
+			snprintf(select_query, sizeof(select_query), SELECT_ALBUM_COUNT, DB_TABLE_MEDIA_VIEW);
 
-			break;
-		case MEDIA_GROUP_FOLDER:
-			attr = _content_get_alias_attirbute_handle();
-			if (!SAFE_STRLCPY(select_query, SELECT_FOLDER_COUNT, sizeof(select_query))) {
-				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
+		break;
+	case MEDIA_GROUP_FOLDER:
+		attr = _content_get_alias_attirbute_handle();
+		if (!SAFE_STRLCPY(select_query, SELECT_FOLDER_COUNT, sizeof(select_query))) {
+			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
 
-			if ((_filter != NULL) && STRING_VALID(_filter->storage_id))
-				snprintf(select_query, sizeof(select_query), SELECT_FOLDER_COUNT_BY_STORAGE_ID, _filter->storage_id, _filter->storage_id);
-			else
-				snprintf(select_query, sizeof(select_query), SELECT_FOLDER_COUNT, DB_TABLE_MEDIA_VIEW);
+		if ((_filter != NULL) && STRING_VALID(_filter->storage_id))
+			snprintf(select_query, sizeof(select_query), SELECT_FOLDER_COUNT_BY_STORAGE_ID, _filter->storage_id, _filter->storage_id);
+		else
+			snprintf(select_query, sizeof(select_query), SELECT_FOLDER_COUNT, DB_TABLE_MEDIA_VIEW);
 
-			break;
-		case MEDIA_GROUP_PLAYLIST:
-			if (!SAFE_STRLCPY(select_query, SELECT_PLAYLIST_COUNT, sizeof(select_query))) {
-				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
-			break;
-		case MEDIA_GROUP_TAG:
-			if (!SAFE_STRLCPY(select_query, SELECT_TAG_COUNT, sizeof(select_query))) {
-				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
-			break;
-		case MEDIA_GROUP_BOOKMARK:
-			attr = _content_get_alias_attirbute_handle();
+		break;
+	case MEDIA_GROUP_PLAYLIST:
+		if (!SAFE_STRLCPY(select_query, SELECT_PLAYLIST_COUNT, sizeof(select_query))) {
+			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
+		break;
+	case MEDIA_GROUP_TAG:
+		if (!SAFE_STRLCPY(select_query, SELECT_TAG_COUNT, sizeof(select_query))) {
+			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
+		break;
+	case MEDIA_GROUP_BOOKMARK:
+		attr = _content_get_alias_attirbute_handle();
 
-			if ((_filter != NULL) && STRING_VALID(_filter->storage_id))
-				snprintf(select_query, sizeof(select_query), SELECT_BOOKMARK_COUNT, _filter->storage_id);
-			else
-				snprintf(select_query, sizeof(select_query), SELECT_BOOKMARK_COUNT, DB_TABLE_MEDIA_VIEW);
+		if ((_filter != NULL) && STRING_VALID(_filter->storage_id))
+			snprintf(select_query, sizeof(select_query), SELECT_BOOKMARK_COUNT, _filter->storage_id);
+		else
+			snprintf(select_query, sizeof(select_query), SELECT_BOOKMARK_COUNT, DB_TABLE_MEDIA_VIEW);
 
-			break;
-		case MEDIA_GROUP_STORAGE:
-			if (!SAFE_STRLCPY(select_query, SELECT_STORAGE_COUNT, sizeof(select_query))) {
-				media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
-			break;
-		default:
-			{
-				media_content_error("Invalid group type [%d]", group_type);
-				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-			}
-			break;
+		break;
+	case MEDIA_GROUP_STORAGE:
+		if (!SAFE_STRLCPY(select_query, SELECT_STORAGE_COUNT, sizeof(select_query))) {
+			media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
+		break;
+	default:
+		{
+			media_content_error("Invalid group type [%d]", group_type);
+			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+		}
+		break;
 	}
 
 	ret = __media_db_make_query(filter, attr, select_query, sizeof(select_query), &condition_query, &option_query);
@@ -213,9 +213,8 @@ int _media_db_get_group_count(filter_h filter, group_list_e group_type, int *gro
 	SAFE_FREE(option_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
+	while (sqlite3_step(stmt) == SQLITE_ROW)
 		*group_count = (int)sqlite3_column_int(stmt, 0);
-	}
 
 	SQLITE3_FINALIZE(stmt);
 
@@ -258,9 +257,8 @@ int _media_db_get_media_group_count(media_group_e group, filter_h filter, int *g
 	SAFE_FREE(option_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
+	while (sqlite3_step(stmt) == SQLITE_ROW)
 		*group_count = (int)sqlite3_column_int(stmt, 0);
-	}
 
 	SQLITE3_FINALIZE(stmt);
 
@@ -483,7 +481,7 @@ int _media_db_get_playlist_item(int playlist_id, filter_h filter, playlist_membe
 	attr = _content_get_attirbute_handle();
 	memset(select_query, 0x00, sizeof(select_query));
 
-	//snprintf(select_query, sizeof(select_query), SELECT_PLAYLIST_ITEM_ID_FROM_PLAYLIST_VIEW, playlist_id);
+	/*snprintf(select_query, sizeof(select_query), SELECT_PLAYLIST_ITEM_ID_FROM_PLAYLIST_VIEW, playlist_id);*/
 	snprintf(select_query, sizeof(select_query), SELECT_PLAYLIST_ITEM_ALL_FROM_PLAYLIST_VIEW, playlist_id);
 
 	ret = __media_db_make_query(filter, attr, select_query, sizeof(select_query), &condition_query, &option_query);
@@ -496,7 +494,7 @@ int _media_db_get_playlist_item(int playlist_id, filter_h filter, playlist_membe
 
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
 		int playlist_member_id = 0;
-		playlist_member_id = (int)sqlite3_column_int(stmt, MEDIA_INFO_ITEM_MAX);	//MEDIA_INFO_ITEM_MAX is pm_id
+		playlist_member_id = (int)sqlite3_column_int(stmt, MEDIA_INFO_ITEM_MAX);	/*MEDIA_INFO_ITEM_MAX is pm_id*/
 
 		media_info_s *_media = (media_info_s*)calloc(1, sizeof(media_info_s));
 
@@ -820,9 +818,8 @@ int _media_db_get_group_item_count(const char *group_name, filter_h filter, grou
 	SAFE_FREE(option_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
+	while (sqlite3_step(stmt) == SQLITE_ROW)
 		*item_count = (int)sqlite3_column_int(stmt, 0);
-	}
 
 	SQLITE3_FINALIZE(stmt);
 
@@ -1007,9 +1004,8 @@ int _media_db_get_media_group_item_count(const char *group_name, filter_h filter
 	SAFE_FREE(option_query);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
+	while (sqlite3_step(stmt) == SQLITE_ROW)
 		*item_count = (int)sqlite3_column_int(stmt, 0);
-	}
 
 	SQLITE3_FINALIZE(stmt);
 

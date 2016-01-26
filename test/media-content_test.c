@@ -26,7 +26,7 @@
 #include <tzplatform_config.h>
 
 filter_h g_filter = NULL;
-filter_h g_filter_g = NULL;	//filter for group like folder, tag, playlist, album, year ...
+filter_h g_filter_g = NULL;	/*filter for group like folder, tag, playlist, album, year ... */
 
 GMainLoop *g_loop = NULL;
 static int g_cnt = 0;
@@ -512,8 +512,8 @@ bool media_item_cb(media_info_h media, void *user_data)
 	SAFE_FREE(c_value);
 
 	/* Media server can't update when another db handle holds DB connection by sqlite3_prepare */
-	//ret = media_info_set_location_tag(media, "Test location tag");
-	//media_info_update_to_db(media);
+	/*ret = media_info_set_location_tag(media, "Test location tag");*/
+	/*media_info_update_to_db(media);*/
 	SAFE_FREE(media_id);
 #endif
 	SAFE_FREE(media_id);
@@ -860,7 +860,7 @@ bool playlist_item_cb(int playlist_member_id, media_info_h media, void *user_dat
 
 	*list = g_list_append(*list, (gpointer)playlist_member_id);
 #endif
-	//media_item_cb(media, user_data);
+	/*media_item_cb(media, user_data);*/
 
 	return true;
 }
@@ -873,7 +873,7 @@ int test_filter_create(void)
 
 	/* Filter for media */
 	const char *condition = "MEDIA_TYPE=3";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
-	//const char *condition = "MEDIA_TYPE IS NOT 0 AND MEDIA_DESCRIPTION IS NOT NULL";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
+	/*const char *condition = "MEDIA_TYPE IS NOT 0 AND MEDIA_DESCRIPTION IS NOT NULL"; */	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&g_filter);
 
@@ -895,18 +895,18 @@ int test_filter_create(void)
 	 * call media_filter_set_order(g_filter, MEDIA_CONTENT_ORDER_ASC, MEDIA_ARTIST, MEDIA_CONTENT_COLLATE_DEFAULT);
 	 */
 	/* Able to set multi column to set order */
-	//ret = media_filter_set_order(g_filter, MEDIA_CONTENT_ORDER_ASC, "MEDIA_MODIFIED_TIME, MEDIA_DISPLAY_NAME", MEDIA_CONTENT_COLLATE_DEFAULT);
-	//ret = media_filter_set_order(g_filter, MEDIA_CONTENT_ORDER_ASC, MEDIA_ARTIST, MEDIA_CONTENT_COLLATE_DEFAULT);
-	//ret = media_filter_set_order(g_filter, MEDIA_CONTENT_ORDER_ASC, MEDIA_TRACK_NUM_INT, MEDIA_CONTENT_COLLATE_DEFAULT);
-	//ret = media_filter_set_storage(g_filter, "cfbf3d2c-71c5-4611-bccc-7cbac890146e");
+#if 0
+	ret = media_filter_set_order(g_filter, MEDIA_CONTENT_ORDER_ASC, "MEDIA_MODIFIED_TIME, MEDIA_DISPLAY_NAME", MEDIA_CONTENT_COLLATE_DEFAULT);
+	ret = media_filter_set_order(g_filter, MEDIA_CONTENT_ORDER_ASC, MEDIA_ARTIST, MEDIA_CONTENT_COLLATE_DEFAULT);
+	ret = media_filter_set_order(g_filter, MEDIA_CONTENT_ORDER_ASC, MEDIA_TRACK_NUM_INT, MEDIA_CONTENT_COLLATE_DEFAULT);
+	ret = media_filter_set_storage(g_filter, "cfbf3d2c-71c5-4611-bccc-7cbac890146e");
 
 	/* Filter for group */
-	//const char *g_condition = "TAG_NAME like \"\%my\%\"";
-	//const char *g_condition = "BOOKMARK_MARKED_TIME > 300";
-
+	const char *g_condition = "TAG_NAME like \"\%my\%\"";
+	const char *g_condition = "BOOKMARK_MARKED_TIME > 300";
+#endif
 	ret = media_filter_create(&g_filter_g);
 
-	//ret = media_filter_set_condition(g_filter_g, g_condition, MEDIA_CONTENT_COLLATE_DEFAULT);
 	ret = media_filter_set_order(g_filter_g, MEDIA_CONTENT_ORDER_DESC, TAG_NAME, MEDIA_CONTENT_COLLATE_DEFAULT);
 
 	return ret;
@@ -1123,9 +1123,6 @@ int test_gallery_scenario(void)
 				if (ret != MEDIA_CONTENT_ERROR_NONE)
 					media_content_error("error video_meta_destroy : [%d]", ret);
 			}
-			//media_content_debug("media_id [%d] : %s", i, media_id);
-			//media_content_debug("media_name [%d] : %s", i, media_name);
-			//media_content_debug("media_path [%d] : %s", i, media_path);
 
 			SAFE_FREE(media_id);
 			SAFE_FREE(media_name);
@@ -1576,7 +1573,6 @@ int test_folder_operation(void)
 
 	ret = media_folder_foreach_folder_from_db(filter, folder_list_cb, &folder);
 
-	//test.3 get the media list in first folder
 	filter_h m_filter = NULL;
 
 	ret = media_filter_create(&m_filter);
@@ -1821,8 +1817,10 @@ int test_playlist_operation(void)
 	media_playlist_foreach_playlist_from_db(filter, playlist_list_cb, NULL);
 
 	/* deletes the playlist */
-	//media_playlist_delete_from_db(playlist_id_1);
-	//media_playlist_delete_from_db(playlist_id_2);
+#if 0
+	media_playlist_delete_from_db(playlist_id_1);
+	media_playlist_delete_from_db(playlist_id_2);
+#endif
 
 	if (playlist_1 != NULL)
 		media_playlist_destroy(playlist_1);
@@ -1993,7 +1991,7 @@ int test_tag_operation(void)
 
 int test_bookmark_operation(void)
 {
-	//bookmark is only supported for video information.
+	/* bookmark is only supported for video information. */
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	int bookmark_count = 0;
 	filter_h filter;
@@ -2014,7 +2012,7 @@ int test_bookmark_operation(void)
 	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("error media_filter_set_order : [%d]", ret);
 
-	//insert bookmark to video
+	/* insert bookmark to video */
 	const char *thumbnail_path1 = tzplatform_mkpath(TZ_USER_CONTENT, "Images and videos/My video clips/teat11.jpg");
 	ret = media_bookmark_insert_to_db(test_video_id, 400, thumbnail_path1);
 	if (ret != MEDIA_CONTENT_ERROR_NONE)
@@ -2161,16 +2159,15 @@ int test_update_operation()
 				} else {
 					media_content_debug("media_info_get_image success");
 
-					//update image meta
+					/* update image meta */
 					orientation = MEDIA_CONTENT_ORIENTATION_ROT_180;
 					image_meta_set_orientation(image_handle, orientation);
 
 					ret = image_meta_update_to_db(image_handle);
-					if (ret != MEDIA_CONTENT_ERROR_NONE) {
+					if (ret != MEDIA_CONTENT_ERROR_NONE)
 						media_content_error("image_meta_update_to_db failed: %d", ret);
-					} else {
+					else
 						media_content_debug("image_meta_update_to_db success");
-					}
 				}
 
 			} else if (media_type == MEDIA_CONTENT_TYPE_VIDEO) {
@@ -2182,20 +2179,19 @@ int test_update_operation()
 				} else {
 					media_content_debug("media_info_get_video success");
 
-					//update video meta
+					/* update video meta */
 					video_meta_set_played_count(video_handle, 5);
 					video_meta_set_played_time(video_handle, 5);
 					video_meta_set_played_position(video_handle, 5);
 					video_meta_update_to_db(video_handle);
 
 					ret = video_meta_update_to_db(video_handle);
-					if (ret != MEDIA_CONTENT_ERROR_NONE) {
+					if (ret != MEDIA_CONTENT_ERROR_NONE)
 						media_content_error("video_meta_update_to_db failed: %d", ret);
-					} else {
+					else
 						media_content_debug("video_meta_update_to_db success");
-					}
 				}
-			} else if (media_type == MEDIA_CONTENT_TYPE_MUSIC) {//update audio meta
+			} else if (media_type == MEDIA_CONTENT_TYPE_MUSIC) {
 				audio_meta_h audio_handle = NULL;
 				ret = media_info_get_audio(media_handle, &audio_handle);
 				if (ret != MEDIA_CONTENT_ERROR_NONE) {
@@ -2208,11 +2204,10 @@ int test_update_operation()
 					audio_meta_set_played_position(audio_handle, 180);
 
 					ret = audio_meta_update_to_db(audio_handle);
-					if (ret != MEDIA_CONTENT_ERROR_NONE) {
+					if (ret != MEDIA_CONTENT_ERROR_NONE)
 						media_content_error("audio_meta_update_to_db failed: %d", ret);
-					} else {
+					else
 						media_content_debug("audio_meta_update_to_db success");
-					}
 				}
 
 			}
@@ -2231,8 +2226,10 @@ int test_insert(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	const char *path = "/opt/usr/media/Images/Default.jpg";
-	//const char *path = "/opt/usr/media/Others/other.txt";
-	//char *path = NULL;
+#if 0
+	const char *path = "/opt/usr/media/Others/other.txt";
+	char *path = NULL;
+#endif
 	media_info_h media_item = NULL;
 	media_content_debug("\n============DB Insert Test============\n\n");
 
@@ -2487,7 +2484,6 @@ int test_request_update_db(void)
 	char *content_name = NULL;
 	bool favorite = FALSE;
 
-	//get the content of Over the horizon
 	ret = media_info_get_media_from_db("71b19196-5b38-4ab1-ab34-bfe05c369614", &media);
 	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("media_info_get_media_from_db failed: %d", ret);
@@ -2711,9 +2707,8 @@ int test_batch_operations()
 	}
 
 	ret = media_info_insert_batch_to_db((const char **)file_list, 10, insert_batch_cb, NULL);
-	if (ret != MEDIA_CONTENT_ERROR_NONE) {
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("media_info_insert_batch_to_db failed : %d\n", ret);
-	}
 
 	filter_h filter;
 	char *condition = "MEDIA_PATH LIKE \'";
@@ -2763,9 +2758,8 @@ gboolean test_insert_burst_shot_to_db_start(gpointer data)
 	}
 
 	ret = media_info_insert_burst_shot_to_db((const char **)file_list, 10, insert_burst_shot_cb, NULL);
-	if (ret != MEDIA_CONTENT_ERROR_NONE) {
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		media_content_error("media_info_insert_burst_shot_to_db failed : %d\n", ret);
-	}
 
 	return ret;
 }
@@ -2875,27 +2869,24 @@ void _noti_cb(media_content_error_e error,
 				char *mime_type,
 				void *user_data)
 {
-	if (error == 0) {
+	if (error == 0)
 		media_content_debug("noti success! : %d\n", error);
-	} else {
+	else
 		media_content_debug("error occured! : %d\n", error);
-	}
 
 	media_content_debug("Noti from PID(%d)\n", pid);
 
-	if (update_item == MEDIA_ITEM_FILE) {
+	if (update_item == MEDIA_ITEM_FILE)
 		media_content_debug("Noti item : MEDIA_ITEM_FILE\n");
-	} else if (update_item == MEDIA_ITEM_DIRECTORY) {
+	else if (update_item == MEDIA_ITEM_DIRECTORY)
 		media_content_debug("Noti item : MEDIA_ITEM_DIRECTORY\n");
-	}
 
-	if (update_type == MEDIA_CONTENT_INSERT) {
+	if (update_type == MEDIA_CONTENT_INSERT)
 		media_content_debug("Noti type : MEDIA_CONTENT_INSERT\n");
-	} else if (update_type == MEDIA_CONTENT_DELETE) {
+	else if (update_type == MEDIA_CONTENT_DELETE)
 		media_content_debug("Noti type : MEDIA_CONTENT_DELETE\n");
-	} else if (update_type == MEDIA_CONTENT_UPDATE) {
+	else if (update_type == MEDIA_CONTENT_UPDATE)
 		media_content_debug("Noti type : MEDIA_CONTENT_UPDATE\n");
-	}
 
 	media_content_debug("content type : %d\n", media_type);
 
@@ -2916,7 +2907,6 @@ void _noti_cb(media_content_error_e error,
 
 	if (user_data) media_content_debug("String : %s\n", (char *)user_data);
 
-//	g_main_loop_quit(g_loop);
 	return;
 }
 
@@ -2930,11 +2920,10 @@ void _noti_cb_2(media_content_error_e error,
 				char *mime_type,
 				void *user_data)
 {
-	if (error == 0) {
+	if (error == 0)
 		media_content_debug("noti_2 success! : %d\n", error);
-	} else {
+	else
 		media_content_debug("error occured! : %d\n", error);
-	}
 
 	media_content_debug("Noti_2 from PID(%d)\n", pid);
 
@@ -2973,7 +2962,6 @@ gboolean _send_noti_operations(gpointer data)
 	const char *temp = NULL;
 	temp = tzplatform_mkpath(TZ_USER_CONTENT, "test/image%%\'");
 	snprintf(condition, sizeof(condition), "MEDIA_PATH LIKE \'%s", temp);
-//	strncat(condition, temp, strlen(temp));
 
 	ret = media_filter_create(&filter);
 	if (ret != MEDIA_CONTENT_ERROR_NONE) {
