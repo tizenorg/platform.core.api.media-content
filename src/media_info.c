@@ -39,7 +39,7 @@ static int __media_info_get_media_path_by_id_from_db(const char *media_id, char 
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
-		*path = g_strdup((const char *)sqlite3_column_text(stmt, 0));
+		*path = strdup((const char *)sqlite3_column_text(stmt, 0));
 	} else {
 		media_content_error("There's no media with this ID : %s", media_id);
 		*path = NULL;
@@ -86,7 +86,7 @@ static void __media_info_thumbnail_completed_cb(int error, const char *path, voi
 		media = _thumb_cb->handle;
 		if ((media != NULL) && (path != NULL)) {
 			SAFE_FREE(media->thumbnail_path);
-			media->thumbnail_path = g_strdup(path);
+			media->thumbnail_path = strdup(path);
 		}
 
 		media_content_debug("error [%d], thumbnail_path [%s]", error, path);
@@ -204,7 +204,7 @@ static int __media_info_insert_batch(media_batch_insert_e insert_type, const cha
 
 	_cb_data->insert_completed_cb = completed_cb;
 	_cb_data->user_data = user_data;
-	_cb_data->insert_list_path = g_strdup(list_path);
+	_cb_data->insert_list_path = strdup(list_path);
 
 	if (insert_type == MEDIA_BATCH_INSERT_NORMAL)
 		ret = media_files_register(list_path, __media_info_insert_completed_cb, _cb_data, tzplatform_getuid(TZ_USER_NAME));
@@ -227,25 +227,25 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 {
 	media_info_s *_media = (media_info_s*)media;
 
-	_media->media_id = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_UUID));
-	_media->file_path = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_PATH));
-	_media->display_name = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_FILE_NAME));
+	_media->media_id = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_UUID));
+	_media->file_path = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_PATH));
+	_media->display_name = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_FILE_NAME));
 	_media->media_type = (int)sqlite3_column_int(stmt, MEDIA_INFO_TYPE);
-	_media->mime_type = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_MIME_TYPE));
+	_media->mime_type = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_MIME_TYPE));
 	_media->size = (unsigned long long)sqlite3_column_int64(stmt, MEDIA_INFO_SIZE);
 	_media->added_time = (int)sqlite3_column_int(stmt, MEDIA_INFO_ADDED_TIME);
 	_media->modified_time = (int)sqlite3_column_int(stmt, MEDIA_INFO_MODIFIED_TIME);
-	_media->thumbnail_path = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_THUMBNAIL_PATH));
-	_media->description = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_DESCRIPTION));
+	_media->thumbnail_path = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_THUMBNAIL_PATH));
+	_media->description = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_DESCRIPTION));
 	_media->rating = (int)sqlite3_column_int(stmt, MEDIA_INFO_RATING);
 	_media->favourite = (int)sqlite3_column_int(stmt, MEDIA_INFO_FAVOURITE);
-	_media->author = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_AUTHOR));
-	_media->provider = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_PROVIDER));
-	_media->content_name = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_CONTENT_NAME));
-	_media->category = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_CATEGORY));
-	_media->location_tag = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_LOCATION_TAG));
-	_media->age_rating = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_AGE_RATING));
-	_media->keyword = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_KEYWORD));
+	_media->author = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_AUTHOR));
+	_media->provider = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_PROVIDER));
+	_media->content_name = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_CONTENT_NAME));
+	_media->category = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_CATEGORY));
+	_media->location_tag = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_LOCATION_TAG));
+	_media->age_rating = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_AGE_RATING));
+	_media->keyword = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_KEYWORD));
 	_media->is_drm = (int)sqlite3_column_int(stmt, MEDIA_INFO_IS_DRM);
 	_media->storage_type = (int)sqlite3_column_int(stmt, MEDIA_INFO_STORAGE_TYPE);
 	_media->longitude = (double)sqlite3_column_double(stmt, MEDIA_INFO_LONGITUDE);
@@ -254,44 +254,44 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 	_media->played_count = sqlite3_column_int(stmt, MEDIA_INFO_PLAYED_COUNT);
 	_media->played_time = sqlite3_column_int(stmt, MEDIA_INFO_LAST_PLAYED_TIME);
 	_media->played_position = sqlite3_column_int(stmt, MEDIA_INFO_LAST_PLAYED_POSITION);
-	_media->title = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TITLE));
+	_media->title = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TITLE));
 	_media->timeline = (double)sqlite3_column_double(stmt, MEDIA_INFO_TIMELINE);
-	_media->weather = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_WEATHER));
+	_media->weather = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_WEATHER));
 	_media->sync_status = (int)sqlite3_column_int(stmt, MEDIA_INFO_SYNC_STATUS);
-	_media->storage_uuid = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_STORAGE_UUID));
+	_media->storage_uuid = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_STORAGE_UUID));
 
 	if (_media->media_type == MEDIA_CONTENT_TYPE_IMAGE) {
 		_media->image_meta = (image_meta_s *)calloc(1, sizeof(image_meta_s));
 		if (_media->image_meta) {
-			_media->image_meta->media_id = g_strdup(_media->media_id);
+			_media->image_meta->media_id = strdup(_media->media_id);
 			_media->image_meta->width = sqlite3_column_int(stmt, MEDIA_INFO_WIDTH);
 			_media->image_meta->height = sqlite3_column_int(stmt, MEDIA_INFO_HEIGHT);
 			_media->image_meta->fnumber = (double)sqlite3_column_double(stmt, MEDIA_INFO_FNUMBER);
 			_media->image_meta->iso = sqlite3_column_int(stmt, MEDIA_INFO_ISO);
-			_media->image_meta->date_taken = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_DATETAKEN));
+			_media->image_meta->date_taken = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_DATETAKEN));
 			_media->image_meta->orientation = sqlite3_column_int(stmt, MEDIA_INFO_ORIENTATION);
-			_media->image_meta->title = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TITLE));
-			_media->image_meta->burst_id = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_BURST_ID));
-			_media->image_meta->weather = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_WEATHER));
-			_media->image_meta->exposure_time = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_EXPOSURE_TIME));
-			_media->image_meta->model = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_MODEL));
+			_media->image_meta->title = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TITLE));
+			_media->image_meta->burst_id = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_BURST_ID));
+			_media->image_meta->weather = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_WEATHER));
+			_media->image_meta->exposure_time = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_EXPOSURE_TIME));
+			_media->image_meta->model = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_MODEL));
 		}
 	} else if (_media->media_type == MEDIA_CONTENT_TYPE_VIDEO) {
 		_media->video_meta = (video_meta_s *)calloc(1, sizeof(video_meta_s));
 		if (_media->video_meta) {
-			_media->video_meta->media_id = g_strdup(_media->media_id);
+			_media->video_meta->media_id = strdup(_media->media_id);
 			_media->video_meta->width = sqlite3_column_int(stmt, MEDIA_INFO_WIDTH);
 			_media->video_meta->height = sqlite3_column_int(stmt, MEDIA_INFO_HEIGHT);
-			_media->video_meta->title = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TITLE));
-			_media->video_meta->album = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ALBUM));
-			_media->video_meta->artist = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ARTIST));
-			_media->video_meta->album_artist = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ALBUM_ARTIST));
-			_media->video_meta->genre = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_GENRE));
-			_media->video_meta->composer = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_COMPOSER));
-			_media->video_meta->year = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_YEAR));
-			_media->video_meta->recorded_date = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_RECORDED_DATE));
-			_media->video_meta->copyright = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_COPYRIGHT));
-			_media->video_meta->track_num = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TRACK_NUM));
+			_media->video_meta->title = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TITLE));
+			_media->video_meta->album = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ALBUM));
+			_media->video_meta->artist = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ARTIST));
+			_media->video_meta->album_artist = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ALBUM_ARTIST));
+			_media->video_meta->genre = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_GENRE));
+			_media->video_meta->composer = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_COMPOSER));
+			_media->video_meta->year = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_YEAR));
+			_media->video_meta->recorded_date = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_RECORDED_DATE));
+			_media->video_meta->copyright = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_COPYRIGHT));
+			_media->video_meta->track_num = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TRACK_NUM));
 			_media->video_meta->bitrate = sqlite3_column_int(stmt, MEDIA_INFO_BITRATE);
 			_media->video_meta->duration = sqlite3_column_int(stmt, MEDIA_INFO_DURATION);
 			_media->video_meta->played_count = sqlite3_column_int(stmt, MEDIA_INFO_PLAYED_COUNT);
@@ -302,17 +302,17 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 	} else if ((_media->media_type == MEDIA_CONTENT_TYPE_MUSIC) || (_media->media_type == MEDIA_CONTENT_TYPE_SOUND)) {
 		_media->audio_meta = (audio_meta_s *)calloc(1, sizeof(audio_meta_s));
 		if (_media->audio_meta) {
-			_media->audio_meta->media_id = g_strdup(_media->media_id);
-			_media->audio_meta->title = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TITLE));
-			_media->audio_meta->album = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ALBUM));
-			_media->audio_meta->artist = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ARTIST));
-			_media->audio_meta->album_artist = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ALBUM_ARTIST));
-			_media->audio_meta->genre = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_GENRE));
-			_media->audio_meta->composer = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_COMPOSER));
-			_media->audio_meta->year = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_YEAR));
-			_media->audio_meta->recorded_date = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_RECORDED_DATE));
-			_media->audio_meta->copyright = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_COPYRIGHT));
-			_media->audio_meta->track_num = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TRACK_NUM));
+			_media->audio_meta->media_id = strdup(_media->media_id);
+			_media->audio_meta->title = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TITLE));
+			_media->audio_meta->album = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ALBUM));
+			_media->audio_meta->artist = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ARTIST));
+			_media->audio_meta->album_artist = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_ALBUM_ARTIST));
+			_media->audio_meta->genre = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_GENRE));
+			_media->audio_meta->composer = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_COMPOSER));
+			_media->audio_meta->year = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_YEAR));
+			_media->audio_meta->recorded_date = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_RECORDED_DATE));
+			_media->audio_meta->copyright = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_COPYRIGHT));
+			_media->audio_meta->track_num = strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_TRACK_NUM));
 			_media->audio_meta->bitrate = sqlite3_column_int(stmt, MEDIA_INFO_BITRATE);
 			_media->audio_meta->bitpersample = sqlite3_column_int(stmt, MEDIA_INFO_BITPERSAMPLE);
 			_media->audio_meta->duration = sqlite3_column_int(stmt, MEDIA_INFO_DURATION);
@@ -670,7 +670,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		if (_src->media_id) {
-			_dst->media_id = g_strdup(_src->media_id);
+			_dst->media_id = strdup(_src->media_id);
 			if (_dst->media_id == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -678,7 +678,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->file_path) {
-			_dst->file_path = g_strdup(_src->file_path);
+			_dst->file_path = strdup(_src->file_path);
 			if (_dst->file_path == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -686,7 +686,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->display_name != NULL) {
-			_dst->display_name = g_strdup(_src->display_name);
+			_dst->display_name = strdup(_src->display_name);
 			if (_dst->display_name == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -694,7 +694,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->mime_type) {
-			_dst->mime_type = g_strdup(_src->mime_type);
+			_dst->mime_type = strdup(_src->mime_type);
 			if (_dst->mime_type == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -702,7 +702,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->thumbnail_path != NULL) {
-			_dst->thumbnail_path = g_strdup(_src->thumbnail_path);
+			_dst->thumbnail_path = strdup(_src->thumbnail_path);
 			if (_dst->thumbnail_path == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -710,7 +710,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->description != NULL) {
-			_dst->description = g_strdup(_src->description);
+			_dst->description = strdup(_src->description);
 			if (_dst->description == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -719,7 +719,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		}
 
 		if (_src->weather != NULL) {
-			_dst->weather = g_strdup(_src->weather);
+			_dst->weather = strdup(_src->weather);
 			if (_dst->weather == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -728,7 +728,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		}
 
 		if (_src->title != NULL) {
-			_dst->title = g_strdup(_src->title);
+			_dst->title = strdup(_src->title);
 			if (_dst->title == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -736,7 +736,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->author != NULL) {
-			_dst->author = g_strdup(_src->author);
+			_dst->author = strdup(_src->author);
 			if (_dst->author == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -744,7 +744,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->provider != NULL) {
-			_dst->provider = g_strdup(_src->provider);
+			_dst->provider = strdup(_src->provider);
 			if (_dst->provider == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -752,7 +752,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->content_name != NULL) {
-			_dst->content_name = g_strdup(_src->content_name);
+			_dst->content_name = strdup(_src->content_name);
 			if (_dst->content_name == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -760,7 +760,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->category != NULL) {
-			_dst->category = g_strdup(_src->category);
+			_dst->category = strdup(_src->category);
 			if (_dst->category == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -768,7 +768,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->location_tag != NULL) {
-			_dst->location_tag = g_strdup(_src->location_tag);
+			_dst->location_tag = strdup(_src->location_tag);
 			if (_dst->location_tag == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -776,7 +776,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->age_rating != NULL) {
-			_dst->age_rating = g_strdup(_src->age_rating);
+			_dst->age_rating = strdup(_src->age_rating);
 			if (_dst->age_rating == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -784,7 +784,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 		}
 		if (_src->keyword != NULL) {
-			_dst->keyword = g_strdup(_src->keyword);
+			_dst->keyword = strdup(_src->keyword);
 			if (_dst->keyword == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -793,7 +793,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		}
 
 		if (_src->storage_uuid != NULL) {
-			_dst->storage_uuid = g_strdup(_src->storage_uuid);
+			_dst->storage_uuid = strdup(_src->storage_uuid);
 			if (_dst->storage_uuid == NULL) {
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 				media_info_destroy((media_info_h)_dst);
@@ -827,7 +827,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 
 			if (_src->image_meta->media_id != NULL) {
-				_dst->image_meta->media_id = g_strdup(_src->image_meta->media_id);
+				_dst->image_meta->media_id = strdup(_src->image_meta->media_id);
 				if (_dst->image_meta->media_id == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -836,7 +836,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 
 			if (_src->image_meta->date_taken != NULL) {
-				_dst->image_meta->date_taken = g_strdup(_src->image_meta->date_taken);
+				_dst->image_meta->date_taken = strdup(_src->image_meta->date_taken);
 				if (_dst->image_meta->date_taken == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -845,7 +845,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 
 			if (_src->image_meta->burst_id != NULL) {
-				_dst->image_meta->burst_id = g_strdup(_src->image_meta->burst_id);
+				_dst->image_meta->burst_id = strdup(_src->image_meta->burst_id);
 				if (_dst->image_meta->burst_id == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -854,7 +854,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 
 			if (_src->image_meta->weather != NULL) {
-				_dst->image_meta->weather = g_strdup(_src->image_meta->weather);
+				_dst->image_meta->weather = strdup(_src->image_meta->weather);
 				if (_dst->image_meta->weather == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -863,7 +863,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 
 			if (_src->image_meta->exposure_time != NULL) {
-				_dst->image_meta->exposure_time = g_strdup(_src->image_meta->exposure_time);
+				_dst->image_meta->exposure_time = strdup(_src->image_meta->exposure_time);
 				if (_dst->image_meta->exposure_time == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -872,7 +872,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 
 			if (_src->image_meta->model != NULL) {
-				_dst->image_meta->model = g_strdup(_src->image_meta->model);
+				_dst->image_meta->model = strdup(_src->image_meta->model);
 				if (_dst->image_meta->model == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -895,7 +895,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 
 			if (_src->video_meta->media_id != NULL) {
-				_dst->video_meta->media_id = g_strdup(_src->video_meta->media_id);
+				_dst->video_meta->media_id = strdup(_src->video_meta->media_id);
 				if (_dst->video_meta->media_id == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -903,7 +903,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->video_meta->title != NULL) {
-				_dst->video_meta->title = g_strdup(_src->video_meta->title);
+				_dst->video_meta->title = strdup(_src->video_meta->title);
 				if (_dst->video_meta->title == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -911,7 +911,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->video_meta->album != NULL) {
-				_dst->video_meta->album = g_strdup(_src->video_meta->album);
+				_dst->video_meta->album = strdup(_src->video_meta->album);
 				if (_dst->video_meta->album == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -919,7 +919,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->video_meta->artist != NULL) {
-				_dst->video_meta->artist = g_strdup(_src->video_meta->artist);
+				_dst->video_meta->artist = strdup(_src->video_meta->artist);
 				if (_dst->video_meta->artist == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -927,7 +927,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->video_meta->album_artist != NULL) {
-				_dst->video_meta->album_artist = g_strdup(_src->video_meta->album_artist);
+				_dst->video_meta->album_artist = strdup(_src->video_meta->album_artist);
 				if (_dst->video_meta->album_artist == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -935,7 +935,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->video_meta->genre != NULL) {
-				_dst->video_meta->genre = g_strdup(_src->video_meta->genre);
+				_dst->video_meta->genre = strdup(_src->video_meta->genre);
 				if (_dst->video_meta->genre == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -943,7 +943,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->video_meta->composer != NULL) {
-				_dst->video_meta->composer = g_strdup(_src->video_meta->composer);
+				_dst->video_meta->composer = strdup(_src->video_meta->composer);
 				if (_dst->video_meta->composer == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -951,7 +951,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->video_meta->year != NULL) {
-				_dst->video_meta->year = g_strdup(_src->video_meta->year);
+				_dst->video_meta->year = strdup(_src->video_meta->year);
 				if (_dst->video_meta->year == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -959,7 +959,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->video_meta->recorded_date != NULL) {
-				_dst->video_meta->recorded_date = g_strdup(_src->video_meta->recorded_date);
+				_dst->video_meta->recorded_date = strdup(_src->video_meta->recorded_date);
 				if (_dst->video_meta->recorded_date == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -967,7 +967,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->video_meta->copyright != NULL) {
-				_dst->video_meta->copyright = g_strdup(_src->video_meta->copyright);
+				_dst->video_meta->copyright = strdup(_src->video_meta->copyright);
 				if (_dst->video_meta->copyright == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -975,7 +975,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->video_meta->track_num != NULL) {
-				_dst->video_meta->track_num = g_strdup(_src->video_meta->track_num);
+				_dst->video_meta->track_num = strdup(_src->video_meta->track_num);
 				if (_dst->video_meta->track_num == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1000,7 +1000,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			}
 
 			if (_src->audio_meta->media_id != NULL) {
-				_dst->audio_meta->media_id = g_strdup(_src->audio_meta->media_id);
+				_dst->audio_meta->media_id = strdup(_src->audio_meta->media_id);
 				if (_dst->audio_meta->media_id == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1008,7 +1008,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->audio_meta->title != NULL) {
-				_dst->audio_meta->title = g_strdup(_src->audio_meta->title);
+				_dst->audio_meta->title = strdup(_src->audio_meta->title);
 				if (_dst->audio_meta->title == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1016,7 +1016,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->audio_meta->album != NULL) {
-				_dst->audio_meta->album = g_strdup(_src->audio_meta->album);
+				_dst->audio_meta->album = strdup(_src->audio_meta->album);
 				if (_dst->audio_meta->album == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1024,7 +1024,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->audio_meta->artist != NULL) {
-				_dst->audio_meta->artist = g_strdup(_src->audio_meta->artist);
+				_dst->audio_meta->artist = strdup(_src->audio_meta->artist);
 				if (_dst->audio_meta->artist == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1032,7 +1032,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->audio_meta->album_artist != NULL) {
-				_dst->audio_meta->album_artist = g_strdup(_src->audio_meta->album_artist);
+				_dst->audio_meta->album_artist = strdup(_src->audio_meta->album_artist);
 				if (_dst->audio_meta->album_artist == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1040,7 +1040,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->audio_meta->genre != NULL) {
-				_dst->audio_meta->genre = g_strdup(_src->audio_meta->genre);
+				_dst->audio_meta->genre = strdup(_src->audio_meta->genre);
 				if (_dst->audio_meta->genre == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1048,7 +1048,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->audio_meta->composer != NULL) {
-				_dst->audio_meta->composer = g_strdup(_src->audio_meta->composer);
+				_dst->audio_meta->composer = strdup(_src->audio_meta->composer);
 				if (_dst->audio_meta->composer == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1056,7 +1056,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->audio_meta->year != NULL) {
-				_dst->audio_meta->year = g_strdup(_src->audio_meta->year);
+				_dst->audio_meta->year = strdup(_src->audio_meta->year);
 				if (_dst->audio_meta->year == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1064,7 +1064,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->audio_meta->recorded_date != NULL) {
-				_dst->audio_meta->recorded_date = g_strdup(_src->audio_meta->recorded_date);
+				_dst->audio_meta->recorded_date = strdup(_src->audio_meta->recorded_date);
 				if (_dst->audio_meta->recorded_date == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1072,7 +1072,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->audio_meta->copyright != NULL) {
-				_dst->audio_meta->copyright = g_strdup(_src->audio_meta->copyright);
+				_dst->audio_meta->copyright = strdup(_src->audio_meta->copyright);
 				if (_dst->audio_meta->copyright == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1080,7 +1080,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				}
 			}
 			if (_src->audio_meta->track_num != NULL) {
-				_dst->audio_meta->track_num = g_strdup(_src->audio_meta->track_num);
+				_dst->audio_meta->track_num = strdup(_src->audio_meta->track_num);
 				if (_dst->audio_meta->track_num == NULL) {
 					media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
 					media_info_destroy((media_info_h)_dst);
@@ -1233,18 +1233,18 @@ int media_info_get_image(media_info_h media, image_meta_h *image)
 	image_meta_s *_image = (image_meta_s*)calloc(1, sizeof(image_meta_s));
 	media_content_retvm_if(_image == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
-	_image->media_id = g_strdup(_media->media_id);
+	_image->media_id = strdup(_media->media_id);
 	_image->width = _media->image_meta->width;
 	_image->height = _media->image_meta->height;
 	_image->orientation = _media->image_meta->orientation;
 	_image->fnumber = _media->image_meta->fnumber;
 	_image->iso = _media->image_meta->iso;
-	_image->date_taken = g_strdup(_media->image_meta->date_taken);
-	_image->title = g_strdup(_media->image_meta->title);
-	_image->burst_id = g_strdup(_media->image_meta->burst_id);
-	_image->weather = g_strdup(_media->image_meta->weather);
-	_image->exposure_time = g_strdup(_media->image_meta->exposure_time);
-	_image->model = g_strdup(_media->image_meta->model);
+	_image->date_taken = strdup(_media->image_meta->date_taken);
+	_image->title = strdup(_media->image_meta->title);
+	_image->burst_id = strdup(_media->image_meta->burst_id);
+	_image->weather = strdup(_media->image_meta->weather);
+	_image->exposure_time = strdup(_media->image_meta->exposure_time);
+	_image->model = strdup(_media->image_meta->model);
 
 	*image = (image_meta_h)_image;
 
@@ -1264,17 +1264,17 @@ int media_info_get_video(media_info_h media, video_meta_h *video)
 	video_meta_s *_video = (video_meta_s*)calloc(1, sizeof(video_meta_s));
 	media_content_retvm_if(_video == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
-	_video->media_id = g_strdup(_media->media_id);
-	_video->title = g_strdup(_media->video_meta->title);
-	_video->album = g_strdup(_media->video_meta->album);
-	_video->artist = g_strdup(_media->video_meta->artist);
-	_video->album_artist = g_strdup(_media->video_meta->album_artist);
-	_video->genre = g_strdup(_media->video_meta->genre);
-	_video->composer = g_strdup(_media->video_meta->composer);
-	_video->year = g_strdup(_media->video_meta->year);
-	_video->recorded_date = g_strdup(_media->video_meta->recorded_date);
-	_video->copyright = g_strdup(_media->video_meta->copyright);
-	_video->track_num = g_strdup(_media->video_meta->track_num);
+	_video->media_id = strdup(_media->media_id);
+	_video->title = strdup(_media->video_meta->title);
+	_video->album = strdup(_media->video_meta->album);
+	_video->artist = strdup(_media->video_meta->artist);
+	_video->album_artist = strdup(_media->video_meta->album_artist);
+	_video->genre = strdup(_media->video_meta->genre);
+	_video->composer = strdup(_media->video_meta->composer);
+	_video->year = strdup(_media->video_meta->year);
+	_video->recorded_date = strdup(_media->video_meta->recorded_date);
+	_video->copyright = strdup(_media->video_meta->copyright);
+	_video->track_num = strdup(_media->video_meta->track_num);
 
 	_video->width = _media->video_meta->width;
 	_video->height = _media->video_meta->height;
@@ -1302,17 +1302,17 @@ int media_info_get_audio(media_info_h media, audio_meta_h *audio)
 	audio_meta_s *_audio = (audio_meta_s*)calloc(1, sizeof(audio_meta_s));
 	media_content_retvm_if(_audio == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
-	_audio->media_id = g_strdup(_media->media_id);
-	_audio->title = g_strdup(_media->audio_meta->title);
-	_audio->album = g_strdup(_media->audio_meta->album);
-	_audio->artist = g_strdup(_media->audio_meta->artist);
-	_audio->album_artist = g_strdup(_media->audio_meta->album_artist);
-	_audio->genre = g_strdup(_media->audio_meta->genre);
-	_audio->composer = g_strdup(_media->audio_meta->composer);
-	_audio->year = g_strdup(_media->audio_meta->year);
-	_audio->recorded_date = g_strdup(_media->audio_meta->recorded_date);
-	_audio->copyright = g_strdup(_media->audio_meta->copyright);
-	_audio->track_num = g_strdup(_media->audio_meta->track_num);
+	_audio->media_id = strdup(_media->media_id);
+	_audio->title = strdup(_media->audio_meta->title);
+	_audio->album = strdup(_media->audio_meta->album);
+	_audio->artist = strdup(_media->audio_meta->artist);
+	_audio->album_artist = strdup(_media->audio_meta->album_artist);
+	_audio->genre = strdup(_media->audio_meta->genre);
+	_audio->composer = strdup(_media->audio_meta->composer);
+	_audio->year = strdup(_media->audio_meta->year);
+	_audio->recorded_date = strdup(_media->audio_meta->recorded_date);
+	_audio->copyright = strdup(_media->audio_meta->copyright);
+	_audio->track_num = strdup(_media->audio_meta->track_num);
 
 	_audio->duration = _media->audio_meta->duration;
 	_audio->bitrate = _media->audio_meta->bitrate;
@@ -1377,7 +1377,7 @@ int media_info_get_display_name(media_info_h media, char **name)
 	media_info_s *_media = (media_info_s*)media;
 	if (_media && name) {
 		if (_media->display_name != NULL) {
-			*name = g_strdup(_media->display_name);
+			*name = strdup(_media->display_name);
 			media_content_retvm_if(*name == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*name = NULL;
@@ -1495,7 +1495,7 @@ int media_info_get_thumbnail_path(media_info_h media, char **path)
 	media_info_s *_media = (media_info_s*)media;
 	if (_media && path) {
 		if (_media->thumbnail_path != NULL) {
-			*path = g_strdup(_media->thumbnail_path);
+			*path = strdup(_media->thumbnail_path);
 			media_content_retvm_if(*path == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*path = NULL;
@@ -1517,7 +1517,7 @@ int media_info_get_title(media_info_h media, char **title)
 
 	if (_media && title)	{ /*title can be empty string*/
 		if (_media->title != NULL) {
-			*title = g_strdup(_media->title);
+			*title = strdup(_media->title);
 			media_content_retvm_if(*title == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*title = NULL;
@@ -1538,7 +1538,7 @@ int media_info_get_description(media_info_h media, char **description)
 
 	if (_media && description) {
 		if (_media->description != NULL) {	/*description can be empty string*/
-			*description = g_strdup(_media->description);
+			*description = strdup(_media->description);
 			media_content_retvm_if(*description == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*description = NULL;
@@ -2575,56 +2575,56 @@ static int __media_info_map_data_usr_to_svc(media_info_s *media, media_svc_conte
 	media_svc_content_info_s *svc_content_info = calloc(1, sizeof(media_svc_content_info_s));
 	media_content_retvm_if(svc_content_info == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
-	svc_content_info->path = g_strdup(media->file_path);
-	svc_content_info->file_name = g_strdup(media->display_name);
+	svc_content_info->path = strdup(media->file_path);
+	svc_content_info->file_name = strdup(media->display_name);
 	svc_content_info->media_type = media->media_type;
-	svc_content_info->mime_type = g_strdup(media->mime_type);
+	svc_content_info->mime_type = strdup(media->mime_type);
 	svc_content_info->size = media->size;
 	svc_content_info->storage_type = storage_type;
-	svc_content_info->storage_uuid = g_strdup(media->storage_uuid);
+	svc_content_info->storage_uuid = strdup(media->storage_uuid);
 
 	svc_content_info->added_time = media->added_time;
 	svc_content_info->modified_time = media->modified_time;
-	svc_content_info->thumbnail_path = g_strdup(media->thumbnail_path);
+	svc_content_info->thumbnail_path = strdup(media->thumbnail_path);
 	svc_content_info->is_drm = media->is_drm;
 	svc_content_info->last_played_time = media->played_time;
 	svc_content_info->played_count = media->played_count;
 	svc_content_info->favourate = media->favourite;
 
-	svc_content_info->media_meta.title = g_strdup(media->title);
+	svc_content_info->media_meta.title = strdup(media->title);
 	svc_content_info->media_meta.rating = media->rating;
-	svc_content_info->media_meta.description = g_strdup(media->description);
+	svc_content_info->media_meta.description = strdup(media->description);
 	svc_content_info->media_meta.longitude = media->longitude;
 	svc_content_info->media_meta.latitude = media->latitude;
 	svc_content_info->media_meta.altitude = media->altitude;
-	svc_content_info->media_meta.weather = g_strdup(media->weather);
-	svc_content_info->media_meta.category = g_strdup(media->category);
-	svc_content_info->media_meta.keyword = g_strdup(media->keyword);
-	svc_content_info->media_meta.location_tag = g_strdup(media->location_tag);
-	svc_content_info->media_meta.content_name = g_strdup(media->content_name);
-	svc_content_info->media_meta.age_rating = g_strdup(media->age_rating);
-	svc_content_info->media_meta.author = g_strdup(media->author);
-	svc_content_info->media_meta.provider = g_strdup(media->provider);
+	svc_content_info->media_meta.weather = strdup(media->weather);
+	svc_content_info->media_meta.category = strdup(media->category);
+	svc_content_info->media_meta.keyword = strdup(media->keyword);
+	svc_content_info->media_meta.location_tag = strdup(media->location_tag);
+	svc_content_info->media_meta.content_name = strdup(media->content_name);
+	svc_content_info->media_meta.age_rating = strdup(media->age_rating);
+	svc_content_info->media_meta.author = strdup(media->author);
+	svc_content_info->media_meta.provider = strdup(media->provider);
 
-	svc_content_info->media_meta.album = g_strdup(media->audio_meta->album);
-	svc_content_info->media_meta.artist = g_strdup(media->audio_meta->artist);
-	svc_content_info->media_meta.genre = g_strdup(media->audio_meta->genre);
-	svc_content_info->media_meta.recorded_date = g_strdup(media->audio_meta->recorded_date);
+	svc_content_info->media_meta.album = strdup(media->audio_meta->album);
+	svc_content_info->media_meta.artist = strdup(media->audio_meta->artist);
+	svc_content_info->media_meta.genre = strdup(media->audio_meta->genre);
+	svc_content_info->media_meta.recorded_date = strdup(media->audio_meta->recorded_date);
 
 	if (storage_type == MEDIA_CONTENT_STORAGE_CLOUD) {
 		switch (media->media_type) {
 		case MEDIA_CONTENT_TYPE_IMAGE:
 			svc_content_info->media_meta.width = media->image_meta->width;
 			svc_content_info->media_meta.height = media->image_meta->height;
-			svc_content_info->media_meta.datetaken = g_strdup(media->image_meta->date_taken);
+			svc_content_info->media_meta.datetaken = strdup(media->image_meta->date_taken);
 			svc_content_info->media_meta.orientation = media->image_meta->orientation;
 			break;
 		case MEDIA_CONTENT_TYPE_VIDEO:
-			svc_content_info->media_meta.album_artist = g_strdup(media->audio_meta->album_artist);
-			svc_content_info->media_meta.composer = g_strdup(media->audio_meta->composer);
-			svc_content_info->media_meta.year = g_strdup(media->audio_meta->year);
-			svc_content_info->media_meta.copyright = g_strdup(media->audio_meta->copyright);
-			svc_content_info->media_meta.track_num = g_strdup(media->audio_meta->track_num);
+			svc_content_info->media_meta.album_artist = strdup(media->audio_meta->album_artist);
+			svc_content_info->media_meta.composer = strdup(media->audio_meta->composer);
+			svc_content_info->media_meta.year = strdup(media->audio_meta->year);
+			svc_content_info->media_meta.copyright = strdup(media->audio_meta->copyright);
+			svc_content_info->media_meta.track_num = strdup(media->audio_meta->track_num);
 			svc_content_info->media_meta.bitrate = media->audio_meta->bitrate;
 			svc_content_info->media_meta.duration = media->audio_meta->duration;
 			svc_content_info->media_meta.width = media->image_meta->width;
@@ -2632,11 +2632,11 @@ static int __media_info_map_data_usr_to_svc(media_info_s *media, media_svc_conte
 			break;
 		case MEDIA_CONTENT_TYPE_SOUND:
 		case MEDIA_CONTENT_TYPE_MUSIC:
-			svc_content_info->media_meta.album_artist = g_strdup(media->audio_meta->album_artist);
-			svc_content_info->media_meta.composer = g_strdup(media->audio_meta->composer);
-			svc_content_info->media_meta.year = g_strdup(media->audio_meta->year);
-			svc_content_info->media_meta.copyright = g_strdup(media->audio_meta->copyright);
-			svc_content_info->media_meta.track_num = g_strdup(media->audio_meta->track_num);
+			svc_content_info->media_meta.album_artist = strdup(media->audio_meta->album_artist);
+			svc_content_info->media_meta.composer = strdup(media->audio_meta->composer);
+			svc_content_info->media_meta.year = strdup(media->audio_meta->year);
+			svc_content_info->media_meta.copyright = strdup(media->audio_meta->copyright);
+			svc_content_info->media_meta.track_num = strdup(media->audio_meta->track_num);
 			svc_content_info->media_meta.bitrate = media->audio_meta->bitrate;
 			svc_content_info->media_meta.duration = media->audio_meta->duration;
 			svc_content_info->media_meta.channel = media->audio_meta->channel;
@@ -2948,8 +2948,8 @@ int media_info_insert_to_db_with_data(media_info_h media)
 	SAFE_FREE(svc_content_info);
 
 	/*Fill out the handle*/
-	char *media_file_path = g_strdup(_media->file_path);
-	char *media_string_uuid = g_strdup(_media->storage_uuid);
+	char *media_file_path = strdup(_media->file_path);
+	char *media_string_uuid = strdup(_media->storage_uuid);
 
 	__media_info_destroy(media);
 	ret = _media_info_get_media_info_from_db(media_file_path, media_string_uuid, media);
@@ -3029,7 +3029,7 @@ int media_info_create(const char *path, media_info_h *media)
 		return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 	}
 
-	_media->file_path = g_strdup(path);
+	_media->file_path = strdup(path);
 	_media->storage_type = -1;
 	_media->media_type = 0;
 	_media->modified_time = 0;
@@ -3039,7 +3039,7 @@ int media_info_create(const char *path, media_info_h *media)
 	_media->altitude = MEDIA_SVC_DEFAULT_GPS_VALUE;
 
 	if (STRING_VALID(storage_id)) {
-		_media->storage_uuid = g_strdup(storage_id);
+		_media->storage_uuid = strdup(storage_id);
 		_media->storage_type = storage_type;
 	}
 

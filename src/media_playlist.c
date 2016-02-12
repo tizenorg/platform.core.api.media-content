@@ -546,8 +546,8 @@ int media_playlist_get_playlist_from_db(int playlist_id, media_playlist_h *playl
 			}
 
 			_playlist->playlist_id = (int)sqlite3_column_int(stmt, 0);
-			_playlist->name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
-			_playlist->thumbnail_path = g_strdup((const char *)sqlite3_column_text(stmt, 3));
+			_playlist->name = strdup((const char *)sqlite3_column_text(stmt, 1));
+			_playlist->thumbnail_path = strdup((const char *)sqlite3_column_text(stmt, 3));
 
 			*playlist = (media_playlist_h)_playlist;
 		}

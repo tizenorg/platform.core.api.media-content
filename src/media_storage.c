@@ -23,10 +23,10 @@ static void __media_storage_get_detail(sqlite3_stmt* stmt, media_storage_h stora
 {
 	media_storage_s *_storage = (media_storage_s*)storage;
 
-	_storage->storage_id = g_strdup((const char *)sqlite3_column_text(stmt, 0));
-	_storage->storage_name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
-	_storage->storage_path = g_strdup((const char *)sqlite3_column_text(stmt, 2));
-	_storage->storage_account = g_strdup((const char *)sqlite3_column_text(stmt, 3));
+	_storage->storage_id = strdup((const char *)sqlite3_column_text(stmt, 0));
+	_storage->storage_name = strdup((const char *)sqlite3_column_text(stmt, 1));
+	_storage->storage_path = strdup((const char *)sqlite3_column_text(stmt, 2));
+	_storage->storage_account = strdup((const char *)sqlite3_column_text(stmt, 3));
 	_storage->storage_type = (int)sqlite3_column_int(stmt, 4);
 
 	return;

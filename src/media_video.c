@@ -56,7 +56,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		media_content_retvm_if(_dst == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 
 		if (_src->media_id != NULL) {
-			_dst->media_id = g_strdup(_src->media_id);
+			_dst->media_id = strdup(_src->media_id);
 			if (_dst->media_id == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -65,7 +65,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		}
 
 		if (_src->title != NULL) {
-			_dst->title = g_strdup(_src->title);
+			_dst->title = strdup(_src->title);
 			if (_dst->title == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -74,7 +74,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		}
 
 		if (_src->album != NULL) {
-			_dst->album = g_strdup(_src->album);
+			_dst->album = strdup(_src->album);
 			if (_dst->album == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -83,7 +83,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		}
 
 		if (_src->artist != NULL) {
-			_dst->artist = g_strdup(_src->artist);
+			_dst->artist = strdup(_src->artist);
 			if (_dst->artist == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -92,7 +92,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		}
 
 		if (_src->album_artist != NULL) {
-			_dst->album_artist = g_strdup(_src->album_artist);
+			_dst->album_artist = strdup(_src->album_artist);
 			if (_dst->album_artist == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -101,7 +101,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		}
 
 		if (_src->genre != NULL) {
-			_dst->genre = g_strdup(_src->genre);
+			_dst->genre = strdup(_src->genre);
 			if (_dst->genre == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -110,7 +110,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		}
 
 		if (_src->composer != NULL) {
-			_dst->composer = g_strdup(_src->composer);
+			_dst->composer = strdup(_src->composer);
 			if (_dst->composer == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -119,7 +119,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		}
 
 		if (_src->year != NULL) {
-			_dst->year = g_strdup(_src->year);
+			_dst->year = strdup(_src->year);
 			if (_dst->year == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -128,7 +128,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		}
 
 		if (_src->recorded_date != NULL) {
-			_dst->recorded_date = g_strdup(_src->recorded_date);
+			_dst->recorded_date = strdup(_src->recorded_date);
 			if (_dst->recorded_date == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -137,7 +137,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		}
 
 		if (_src->copyright != NULL) {
-			_dst->copyright = g_strdup(_src->copyright);
+			_dst->copyright = strdup(_src->copyright);
 			if (_dst->copyright == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
@@ -146,7 +146,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src)
 		}
 
 		if (_src->track_num != NULL) {
-			_dst->track_num = g_strdup(_src->track_num);
+			_dst->track_num = strdup(_src->track_num);
 			if (_dst->track_num == NULL) {
 				video_meta_destroy((video_meta_h)_dst);
 				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);

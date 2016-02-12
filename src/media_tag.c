@@ -107,7 +107,7 @@ static int __media_tag_get_tag_info_from_db(const char *name, media_tag_h tag)
 		SAFE_FREE(tag_name);
 
 		id = (int)sqlite3_column_int(stmt, 0);
-		tag_name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
+		tag_name = strdup((const char *)sqlite3_column_text(stmt, 1));
 	}
 
 	_tag->tag_id = id;
@@ -332,7 +332,7 @@ int media_tag_get_tag_from_db(int tag_id, media_tag_h *tag)
 		}
 
 		_tag->tag_id = (int)sqlite3_column_int(stmt, 0);
-		_tag->name = g_strdup((const char *)sqlite3_column_text(stmt, 1));
+		_tag->name = strdup((const char *)sqlite3_column_text(stmt, 1));
 
 		*tag = (media_tag_h)_tag;
 	}
