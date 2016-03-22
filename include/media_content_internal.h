@@ -35,7 +35,7 @@ extern "C" {
 /**
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Enumeration for a media storage scan status.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  */
 typedef enum{
 	MEDIA_STORAGE_SCAN_NONE	= 0,				/**< Media Scanner not detect storage yet*/
@@ -51,7 +51,7 @@ typedef enum{
 /**
 * @internal
 * @brief Insert media storage to database.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @remarks You must release @a storage using media_storage_destroy().
 *
@@ -79,7 +79,7 @@ int media_storage_insert_to_db(const char *storage_name, const char *storage_pat
 /**
 * @internal
 * @brief Deletes the database for media storage.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @privlevel platform
 * @privilege %http://tizen.org/privilege/content.write
@@ -100,7 +100,7 @@ int media_storage_delete_from_db(const char *storage_id);
 
 /**
  * @brief Gets the storage account of media storage.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks You must release @a storage_account using free().
  *
@@ -119,7 +119,7 @@ int media_storage_get_storage_account(media_storage_h storage, char **storage_ac
 /**
 * @internal
 * @brief Sets the MIME type of media info handle.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] media The media info handle
 * @param[in] mime_type The MIME type of the media info
@@ -139,7 +139,7 @@ int media_info_set_mime_type(media_info_h media, const char *mime_type);
 /**
 * @internal
 * @brief Sets the thumbnail path of media info handle.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] media The media info handle
 * @param[in] thumbnail_path The thumbnail path of media info handle
@@ -159,7 +159,7 @@ int media_info_set_thumbnail_path(media_info_h media, const char *thumbnail_path
 /**
 * @internal
 * @brief Sets the size of media info handle.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] media The media info handle
 * @param[in] size The size of media info handle
@@ -179,7 +179,7 @@ int media_info_set_size(media_info_h media, unsigned long long size);
 /**
 * @internal
 * @brief Sets the modified time of media info handle.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] media The media info handle
 * @param[in] modified_time The modified time of media info handle
@@ -199,7 +199,7 @@ int media_info_set_modified_time(media_info_h media, time_t modified_time);
 /**
 * @internal
 * @brief Sets the media type of media info handle.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] media The media info handle
 * @param[in] type The media type of media info handle
@@ -219,7 +219,7 @@ int media_info_set_media_type(media_info_h media, media_content_type_e type);
 /**
 * @internal
 * @brief Sets the duration of media info handle.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] media The media info handle
 * @param[in] duration The duration of media info handle
@@ -239,7 +239,7 @@ int media_info_set_duration(media_info_h media, int duration);
 /**
 * @internal
 * @brief Sets the width of media info handle.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] media The media info handle
 * @param[in] width The width of media info handle
@@ -259,7 +259,7 @@ int media_info_set_width(media_info_h media, int width);
 /**
 * @internal
 * @brief Sets the height of media info handle.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] media The media info handle
 * @param[in] height The height of media info handle
@@ -279,7 +279,7 @@ int media_info_set_height(media_info_h media, int height);
 /**
 * @internal
 * @brief Sets the storage type of media info handle.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] media The media info handle
 * @param[in] storage_type The storage type of media info handle
@@ -299,7 +299,7 @@ int media_info_set_storage_type(media_info_h media, media_content_storage_e stor
 /**
 * @internal
 * @brief Sets the storage type of media info handle.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] media The media info handle
 * @param[in] storage_id The storage id of media info handle
@@ -318,7 +318,7 @@ int media_info_set_storage_id(media_info_h media, const char *storage_id);
 
 /**
  * @brief Gets the storage scan status of media storage.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in]  storage The media storage handle
  * @param[out] scan_status  The storage type of the media storage
@@ -336,7 +336,7 @@ int media_storage_get_scan_status(const char *storage_uuid, media_storage_scan_s
  * @details This function subscribes notifications of the media DB change which are published by the media server or other apps.
  *          media_content_db_update_cb() function will be called when notification of the media DB change is subscribed.
  *
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in] callback  The callback to be invoked when the scanning is finished
  * @param[in] user_data The user data to be passed to the callback function
@@ -360,7 +360,7 @@ int media_content_set_db_updated_cb_v2(media_content_noti_h *noti_handle, media_
  * @brief Unsubscribes notifications of the media DB change.
  * @details This function unsubscribes notifications of the media DB change which are published by the media server or other apps.
  *
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @return @c 0 on success,
  *         otherwise a negative error value

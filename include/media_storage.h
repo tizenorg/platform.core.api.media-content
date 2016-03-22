@@ -39,7 +39,7 @@ extern "C" {
 
 /**
 * @brief Gets media storage from database.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @remarks You must release the handle using media_storage_destroy(). \n
 *
@@ -65,7 +65,7 @@ int media_storage_get_storage_info_from_db(const char *storage_id, media_storage
 
 /**
 * @brief Gets the count of media storage for the passed @a filter from the media database.
-* @since_tizen 2.4
+* @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
 *
 * @param[in] filter The handle to filter
 * @param[out] storage_count The count of storage
@@ -92,7 +92,7 @@ int media_storage_get_storage_count_from_db(filter_h filter, int *storage_count)
  *          The @a callback function will be invoked for every retrieved media storage.
  *          If @c NULL is passed to the @a filter, then no filtering is applied.
  *
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in] filter    The media storage handle filter
  * @param[in] callback  The callback function to be invoked
@@ -118,7 +118,7 @@ int media_storage_foreach_storage_from_db(filter_h filter, media_storage_cb call
 
 /**
  * @brief Gets the count of media files for the passed @a filter in the given @a storage from the media database.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in] storage_id    The ID of the media storage
  * @param[in] filter       The filter of the media content
@@ -145,7 +145,7 @@ int media_storage_get_media_count_from_db(const char *storage_id, filter_h filte
  *          meeting desired filter option and calls registered callback function for
  *          every retrieved media item. If @c NULL is passed to the @a filter, no filtering is applied.
  *
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks   Do not call updating DB function like media_info_update_to_db(), media_info_refresh_metadata_to_db(), audio_meta_update_to_db(), image_meta_update_to_db() and video_meta_update_to_db()  in your callback function,
  *                    your callback function is invoked as inline function. \n
@@ -182,7 +182,7 @@ int media_storage_foreach_media_from_db(const char *storage_id, filter_h filter,
  *          can no longer be used to perform any operation. New media storage handle has to
  *          be created before the next usage.
  *
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in]  storage  The media storage handle
  *
@@ -206,7 +206,7 @@ int media_storage_destroy(media_storage_h storage);
  *          available through media storage foreach function such as media_storage_foreach_storage_from_db().
  *          To use this handle outside of these foreach functions, use this function.
  *
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks You must release the destination handle using media_storage_destroy().
  *
@@ -228,7 +228,7 @@ int media_storage_clone(media_storage_h *dst, media_storage_h src);
 
 /**
  * @brief Gets the storage id of media storage.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks You must release @a storage_id using free().
  *
@@ -246,7 +246,7 @@ int media_storage_get_id(media_storage_h storage, char **storage_id);
 
 /**
  * @brief Gets the storage name of media storage.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks You must release @a storage_name using free().
  *                   If the requested storage is not the cloud storage, this API returns NULL.
@@ -265,7 +265,7 @@ int media_storage_get_name(media_storage_h storage, char **storage_name);
 
 /**
  * @brief Gets the storage path of media storage.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks You must release @a storage_path using free().
  *
@@ -283,7 +283,7 @@ int media_storage_get_path(media_storage_h storage, char **storage_path);
 
 /**
  * @brief Gets the storage type of media storage.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in]  storage The media storage handle
  * @param[out] storage_type  The storage type of the media storage

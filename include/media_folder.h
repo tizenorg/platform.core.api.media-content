@@ -229,7 +229,7 @@ int media_folder_get_folder_id(media_folder_h folder, char **folder_id);
 
 /**
  * @brief Gets the parent folder ID.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks You must release @a parent_folder_id using free().
  *
@@ -317,7 +317,7 @@ int media_folder_get_storage_type(media_folder_h folder, media_content_storage_e
 
 /**
  * @brief Gets the storage id of the folder.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks You must release @a storage_id using free().
  *
@@ -336,7 +336,7 @@ int media_folder_get_storage_id(media_folder_h folder, char **storage_id);
 
 /**
  * @brief Gets the folder viewing order.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in] folder The handle to the media folder
  * @param[out] order   The viewing order of the media folder
@@ -404,7 +404,7 @@ int media_folder_set_name(media_folder_h folder, const char *name);
  * @details If you set the order value for each folder, you can sort in ascending or descending order as the set order values using the filter. \n
  *                 Moreover, more detailed settings are possible when used with the filter. \n
  *
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  * @remarks  If you don't set the order value, the order value will be set default value. Default is 0. \n
  *                    If you don't use the filter, the set order value does not effect the folder viewing order.
  *

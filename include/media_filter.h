@@ -152,7 +152,7 @@ int media_filter_set_order(filter_h filter, media_content_order_e order_type, co
  * @brief Sets the @a storage id for the given @a filter.
  * @details You can use this API when you want to search items only in the specific storage
  *
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in] filter       The handle to the media filter
  * @param[in] storage_id    The storage_id for browsing or searching
@@ -238,7 +238,7 @@ int media_filter_get_order(filter_h filter, media_content_order_e* order_type, c
 
 /**
  * @brief Get the @a storage id for given @a filter.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks You must release @a storage_id using free().
  *

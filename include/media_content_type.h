@@ -260,7 +260,7 @@ typedef struct filter_s *filter_h;
 /**
  * @ingroup CAPI_CONTENT_MEDIA_STORAGE_MODULE
  * @brief The structure type for the Media storage handle.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  */
 typedef void *media_storage_h;
 
@@ -556,7 +556,7 @@ typedef bool (*media_group_cb)(const char *group_name, void *user_data);
 /**
  * @ingroup CAPI_CONTENT_MEDIA_STORAGE_MODULE
  * @brief Called for every storage in the obtained list of storages.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @details Iterates over a media storage list.
  *
@@ -950,28 +950,28 @@ typedef bool (*media_face_cb)(media_face_h face, void *user_data);
 
 /**
  * @brief You can use above define to set the condition of media filter and order keyword.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  */
 #define MEDIA_EXPOSURE_TIME "MEDIA_EXPOSURE_TIME"	/**< media exposure_time*/
 
 /**
  * @brief You can use above define to set the condition of media filter and order keyword.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  */
 #define MEDIA_FNUMBER "MEDIA_FNUMBER"	/**< media fnumber*/
 
 /**
  * @brief You can use above define to set the condition of media filter and order keyword.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  */
 #define MEDIA_ISO "MEDIA_ISO"	/**< media iso*/
 
 /**
  * @brief You can use above define to set the condition of media filter and order keyword.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  */
 #define MEDIA_MODEL "MEDIA_MODEL"	/**< media model*/
@@ -1136,13 +1136,13 @@ typedef bool (*media_face_cb)(media_face_h face, void *user_data);
 
 /**
  * @brief You can use above define to set the condition of folder filter and order keyword.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  */
 #define FOLDER_ORDER "FOLDER_ORDER"  /**< Folder order info */
 
 /**
  * @brief You can use above define to set the condition of folder filter and order keyword.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  */
 #define FOLDER_PARENT_FOLDER_ID "FOLDER_PARENT_FOLDER_ID"	/**< parent folder id */
 
@@ -1208,13 +1208,13 @@ typedef bool (*media_face_cb)(media_face_h face, void *user_data);
  * @addtogroup CAPI_CONTENT_MEDIA_STORAGE_MODULE
  * @{
  * @brief You can use above define to set the condition of storage filter and order keyword.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  */
 #define MEDIA_STORAGE_ID					"STORAGE_ID"  /**< Storage ID */
 
 /**
  * @brief You can use above define to set the condition of storage filter and order keyword.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  */
 #define MEDIA_STORAGE_PATH				"STORAGE_PATH"  /**< Storage path */
 

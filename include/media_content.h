@@ -155,7 +155,7 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 
 /**
  * @brief Requests to cancel the media folder scanning.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in] path         The folder path
  *

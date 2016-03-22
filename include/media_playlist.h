@@ -502,7 +502,7 @@ int media_playlist_update_to_db(media_playlist_h playlist);
 /**
  * @brief Imports the playlist from m3u playlist file.
  * @details This api reads a playlist from the m3u playlist file and insert into the db.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
@@ -531,7 +531,7 @@ int media_playlist_import_from_file(const char *playlist_name, const char *path,
 
 /**
  * @brief Exports the playlist to m3u playlist file.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks   http://tizen.org/privilege/mediastorage is needed if input or output path are relevant to media storage. \n
  *                     http://tizen.org/privilege/externalstorage is needed if input or output path are relevant to external storage. \n

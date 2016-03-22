@@ -183,7 +183,7 @@ int image_meta_get_burst_id(image_meta_h image, char **burst_id);
 
 /**
  * @brief Gets the exposure time from exif.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks @a exposure time must be released with free() by you.
  *
@@ -202,7 +202,7 @@ int image_meta_get_exposure_time(image_meta_h image, char **exposure_time);
 
 /**
  * @brief Gets the fnumber from exif.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in] media The handle toimage metadata
  * @param[out] fnumber The value of fnumber, getting from exif
@@ -219,7 +219,7 @@ int image_meta_get_fnumber(image_meta_h image, double *fnumber);
 
 /**
  * @brief Gets the iso from exif.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param[in] media The handle toimage metadata
  * @param[out] iso The value of iso, getting from exif
@@ -236,7 +236,7 @@ int image_meta_get_iso(image_meta_h image, int *iso);
 
 /**
  * @brief Gets the model from exif.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks @a model must be released with free() by you.
  *

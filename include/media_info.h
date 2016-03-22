@@ -1005,7 +1005,7 @@ int media_info_get_keyword(media_info_h media, char **keyword);
 
 /**
  * @brief Gets the storage id of media info.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @remarks You must release @a storage_id using free().
  *
@@ -1057,7 +1057,7 @@ int media_info_get_storage_type(media_info_h media, media_content_storage_e *sto
 
 /**
  * @brief Gets number which represents how many times given content has been played.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param [in] media The handle to media info
  * @param [out] count_played The counter of content played
@@ -1074,7 +1074,7 @@ int media_info_get_played_count(media_info_h media, int *played_count);
  * @brief Gets the content's played time parameter.
  * @details Function returns content's elapsed playback time parameter as period
  *          starting from the beginning of the track.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param [in] media The handle to media info
  * @param [out] played_time The elapsed time of the content
@@ -1117,7 +1117,7 @@ int media_info_get_media_from_db(const char *media_id, media_info_h *media);
 /**
  * @brief Increments the played count to content meta handle.
  * @detalis You can increase the played(opened) count of the media file.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param [in] media The handle to media info
  *
@@ -1134,7 +1134,7 @@ int media_info_increase_played_count(media_info_h media);
 /**
  * @brief Sets the played time to content meta handle.
  * @detalis You can set the latest played(opened) time of the media file. the latest played time to be set the current time on the system.
- * @since_tizen 2.4
+ * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  *
  * @param [in] media The handle to media info
  *
