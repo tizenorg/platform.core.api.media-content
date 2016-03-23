@@ -319,6 +319,7 @@ typedef struct
 	int played_position;
 	char *storage_uuid;
 	int sync_status;
+	unsigned int request_id;
 	image_meta_s *image_meta;
 	video_meta_s *video_meta;
 	audio_meta_s *audio_meta;
