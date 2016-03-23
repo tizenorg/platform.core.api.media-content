@@ -27,12 +27,25 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <fcntl.h>
+#include <grp.h>
+#include <pwd.h>
+
+#include <cynara-client.h>
+#include <cynara-session.h>
+#include <cynara-error.h>
+#include <cynara-creds-socket.h>
 
 static attribute_h g_attr_handle = NULL;
 static attribute_h g_alias_attr_handle = NULL;
 static MediaSvcHandle *db_handle = NULL;
 static int ref_count = 0;
 static GMutex db_mutex;
+#ifndef SCM_SECURITY
+#define SCM_SECURITY 0x03
+#endif
+
+static cynara *_cynara = NULL;
+G_LOCK_DEFINE_STATIC(cynara_mutex);
 
 static __thread media_noti_cb_s *g_noti_info = NULL;
 
@@ -555,6 +568,59 @@ static int __media_content_destroy_attribute_handle(void)
 	return ret;
 }
 
+/* Temporary Code [remove after inserted gid patch by security part] */
+int __media_content_cynara_check(const char *privilege)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int result;
+	char *session = NULL;
+	pid_t pid;
+	char c_uid[20] = {0, };
+	char *smack = NULL;
+	FILE *pFile = NULL;
+	char buf[255] = {0, };
+
+	ret = cynara_initialize(&_cynara, NULL);
+	if (ret != CYNARA_API_SUCCESS) {
+		media_content_error("cynara_initialize", ret);
+		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+	}
+
+	snprintf(c_uid, sizeof(c_uid), "%d", tzplatform_getuid(TZ_USER_NAME));
+
+	pid = getpid();
+
+	session = cynara_session_from_pid(pid);
+	if (session == NULL) {
+		media_content_error("cynara_session_from_pid failed");
+		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+	}
+
+	pFile = fopen("/proc/self/attr/current", "r");
+	if (pFile != NULL) {
+		smack = fgets(buf, sizeof(buf), pFile);
+		fclose(pFile);
+	} else {
+		SAFE_FREE(session);
+		media_content_error("current info read failed");
+		return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+	}
+
+	G_LOCK(cynara_mutex);
+	result = cynara_check(_cynara, smack, session, c_uid, privilege);
+	G_UNLOCK(cynara_mutex);
+
+	if (result != CYNARA_API_ACCESS_ALLOWED)
+		media_content_error("cynara_check", result);
+
+	SAFE_FREE(session);
+
+	cynara_finish(_cynara);
+	_cynara = NULL;
+
+	return result == CYNARA_API_ACCESS_ALLOWED ? MEDIA_CONTENT_ERROR_NONE : MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
+}
+
 attribute_h _content_get_attirbute_handle(void)
 {
 	return g_attr_handle;
@@ -891,6 +957,16 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0, };
 
 	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+
+	/* Temporary Code [remove after inserted gid patch by security part] */
+	if (strncmp(path, "/opt/media", strlen("/opt/media")) == 0) {
+		ret = __media_content_cynara_check("http://tizen.org/privilege/externalstorage");
+		media_content_retvm_if(ret == MEDIA_CONTENT_ERROR_PERMISSION_DENIED, ret, "Permission Denied");
+	} else {
+		ret = __media_content_cynara_check("http://tizen.org/privilege/mediastorage");
+		media_content_retvm_if(ret == MEDIA_CONTENT_ERROR_PERMISSION_DENIED, ret, "Permission Denied");
+	}
+
 	memset(storage_id, 0x00, sizeof(storage_id));
 
 	ret = __media_content_check_dir(path);
