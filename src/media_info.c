@@ -817,6 +817,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		_dst->played_time = _src->played_time;
 		_dst->played_position = _src->played_position;
 		_dst->sync_status = _src->sync_status;
+		_dst->request_id = _src->request_id;
 
 		if (_src->media_type == MEDIA_CONTENT_TYPE_IMAGE && _src->image_meta) {
 			_dst->image_meta = (image_meta_s *)calloc(1, sizeof(image_meta_s));
@@ -1096,7 +1097,6 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 			_dst->audio_meta->played_count = _src->audio_meta->played_count;
 			_dst->audio_meta->played_time = _src->audio_meta->played_time;
 			_dst->audio_meta->played_position = _src->audio_meta->played_position;
-
 		}
 		*dst = (media_info_h)_dst;
 
@@ -2532,17 +2532,20 @@ int media_info_move_to_db(media_info_h media, const char* dst_path)
 int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
+	static unsigned int req_id = 0;
 	media_info_s *_media = (media_info_s*)media;
 
 	if (_media != NULL && STRING_VALID(_media->media_id) && STRING_VALID(_media->file_path)) {
 		media_thumbnail_cb_s *_thumb_cb = (media_thumbnail_cb_s*)calloc(1, sizeof(media_thumbnail_cb_s));
 		media_content_retvm_if(_thumb_cb == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+		req_id++;
+		_media->request_id = req_id;
 
 		_thumb_cb->handle = _media;
 		_thumb_cb->user_data = user_data;
 		_thumb_cb->thumbnail_completed_cb = callback;
 
-		ret = thumbnail_request_from_db_async(_media->file_path, (ThumbFunc)__media_info_thumbnail_completed_cb, (void *)_thumb_cb, tzplatform_getuid(TZ_USER_NAME));
+		ret = thumbnail_request_from_db_async(_media->request_id, _media->file_path, (ThumbFunc)__media_info_thumbnail_completed_cb, (void *)_thumb_cb, tzplatform_getuid(TZ_USER_NAME));
 		ret = _content_error_capi(MEDIA_THUMBNAIL_TYPE, ret);
 	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
@@ -2557,8 +2560,8 @@ int media_info_cancel_thumbnail(media_info_h media)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 	media_info_s *_media = (media_info_s*)media;
 
-	if (_media != NULL && STRING_VALID(_media->media_id) && STRING_VALID(_media->file_path)) {
-		ret = thumbnail_request_cancel_media(_media->file_path);
+	if (_media != NULL && STRING_VALID(_media->media_id) && STRING_VALID(_media->file_path) && _media->request_id > 0) {
+		ret = thumbnail_request_cancel_media(_media->request_id, _media->file_path);
 		ret = _content_error_capi(MEDIA_THUMBNAIL_TYPE, ret);
 	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
@@ -3034,6 +3037,7 @@ int media_info_create(const char *path, media_info_h *media)
 	_media->media_type = 0;
 	_media->modified_time = 0;
 	_media->size = 0;
+	_media->request_id = 0;
 	_media->longitude = MEDIA_SVC_DEFAULT_GPS_VALUE;
 	_media->latitude = MEDIA_SVC_DEFAULT_GPS_VALUE;
 	_media->altitude = MEDIA_SVC_DEFAULT_GPS_VALUE;
