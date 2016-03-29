@@ -1,6 +1,6 @@
 Name:       capi-content-media-content
 Summary:    A Media content library in Tizen Native API
-Version:    0.2.76
+Version:    0.2.77
 Release:    0
 Group:      Multimedia/API
 License:    Apache-2.0
