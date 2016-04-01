@@ -49,7 +49,7 @@ extern "C" {
 * @return @c 0 on success,
 *           otherwise a negative error value
 *
-* @retval #MEDIA_CONTENT_ERROR_NONE 			 Successful
+* @retval #MEDIA_CONTENT_ERROR_NONE              Successful
 * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
 * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY	 Out of memory
 * @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB Operation failed
@@ -73,7 +73,7 @@ int media_storage_get_storage_info_from_db(const char *storage_id, media_storage
 * @return @c 0 on success,
 *           otherwise a negative error value
 *
-* @retval #MEDIA_CONTENT_ERROR_NONE 			 Successful
+* @retval #MEDIA_CONTENT_ERROR_NONE              Successful
 * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
 * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
 * @retval #MEDIA_CONTENT_ERROR_DB_FAILED		 DB Operation failed
