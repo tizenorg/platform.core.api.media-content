@@ -58,12 +58,12 @@ extern "C" {
 
 #define SAFE_STRLCPY(dst, src, n)	((g_strlcpy(dst, src, n) < n) ? TRUE : FALSE)
 #define SAFE_STRLCAT(dst, src, n)	g_strlcat(dst, src, n);
-#define SAFE_FREE(src)		{if(src) {free(src); src = NULL;}}
+#define SAFE_FREE(src)		{if (src) {free(src); src = NULL; } }
 #define STRING_VALID(str)		((str != NULL && strlen(str) > 0) ? TRUE : FALSE)
-#define SQLITE3_FINALIZE(x)	{if(x != NULL) {sqlite3_finalize(x);}}
-#define SQLITE3_SAFE_FREE(x)	{if(x != NULL) {sqlite3_free(x);x = NULL;}}
+#define SQLITE3_FINALIZE(x)	{if (x != NULL) sqlite3_finalize(x); }
+#define SQLITE3_SAFE_FREE(x)	{if (x != NULL) {sqlite3_free(x); x = NULL; } }
 
-#define MEDIA_CONTENT_THUMB_DEFAULT_PATH 	tzplatform_mkpath(TZ_USER_SHARE, "media/.thumb/thumb_default.png")
+#define MEDIA_CONTENT_THUMB_DEFAULT_PATH		tzplatform_mkpath(TZ_USER_SHARE, "media/.thumb/thumb_default.png")
 #define MEDIA_CONTENT_INSERT_FILES_PATH		tzplatform_getenv(TZ_USER_SHARE)
 
 #define MAX_QUERY_SIZE 4096
@@ -83,7 +83,7 @@ typedef enum {
 	MEDIA_INFO_MODIFIED_TIME,
 	MEDIA_INFO_THUMBNAIL_PATH,
 	MEDIA_INFO_DESCRIPTION,
-	MEDIA_INFO_RATING,			//10
+	MEDIA_INFO_RATING,
 	MEDIA_INFO_FAVOURITE,
 	MEDIA_INFO_AUTHOR,
 	MEDIA_INFO_PROVIDER,
@@ -93,7 +93,7 @@ typedef enum {
 	MEDIA_INFO_AGE_RATING,
 	MEDIA_INFO_KEYWORD,
 	MEDIA_INFO_IS_DRM,
-	MEDIA_INFO_STORAGE_TYPE,	//20
+	MEDIA_INFO_STORAGE_TYPE,
 	MEDIA_INFO_LONGITUDE,
 	MEDIA_INFO_LATITUDE,
 	MEDIA_INFO_ALTITUDE,
@@ -103,7 +103,7 @@ typedef enum {
 	MEDIA_INFO_MODEL,
 	MEDIA_INFO_WIDTH,
 	MEDIA_INFO_HEIGHT,
-	MEDIA_INFO_DATETAKEN,		//30
+	MEDIA_INFO_DATETAKEN,
 	MEDIA_INFO_ORIENTATION,
 	MEDIA_INFO_TITLE,
 	MEDIA_INFO_ALBUM,
@@ -113,7 +113,7 @@ typedef enum {
 	MEDIA_INFO_COMPOSER,
 	MEDIA_INFO_YEAR,
 	MEDIA_INFO_RECORDED_DATE,
-	MEDIA_INFO_COPYRIGHT,		//40
+	MEDIA_INFO_COPYRIGHT,
 	MEDIA_INFO_TRACK_NUM,
 	MEDIA_INFO_BITRATE,
 	MEDIA_INFO_BITPERSAMPLE,
@@ -123,7 +123,7 @@ typedef enum {
 	MEDIA_INFO_LAST_PLAYED_POSITION,
 	MEDIA_INFO_SAMPLERATE,
 	MEDIA_INFO_CHANNEL,
-	MEDIA_INFO_BURST_ID,		//50
+	MEDIA_INFO_BURST_ID,
 	MEDIA_INFO_TIMELINE,
 	MEDIA_INFO_WEATHER,
 	MEDIA_INFO_SYNC_STATUS,
@@ -169,8 +169,7 @@ typedef enum {
 	MEDIA_BATCH_INSERT_BURSTSHOT,
 } media_batch_insert_e;
 
-typedef struct _filter_s
-{
+typedef struct _filter_s {
 	char *storage_id;
 	char *condition;
 	char *order_keyword;
@@ -179,11 +178,10 @@ typedef struct _filter_s
 	media_content_collation_e order_collate_type;
 	int offset;
 	int count;
-}filter_s;
+} filter_s;
 
-typedef struct
-{
-	char *folder_id;				//image id, audio id, video id
+typedef struct {
+	char *folder_id;
 	char *parent_folder_id;
 	char *path;
 	char *name;
@@ -191,41 +189,36 @@ typedef struct
 	media_content_storage_e storage_type;
 	char *storage_uuid;
 	int folder_order;
-}media_folder_s;
+} media_folder_s;
 
-typedef struct
-{
+typedef struct {
 	int tag_id;
 	char *name;
 	GList *item_list;
-}media_tag_s;
+} media_tag_s;
 
-typedef struct
-{
+typedef struct {
 	int bookmark_id;
 	char *media_id;
 	time_t marked_time;
 	char *thumbnail_path;
-}media_bookmark_s;
+} media_bookmark_s;
 
-typedef struct
-{
+typedef struct {
 	int album_id;
 	char *name;
 	char *artist;
 	char *album_art_path;
-}media_album_s;
+} media_album_s;
 
-typedef struct
-{
-	int playlist_id;	//playlist id
-	char *name;		// playlist name
-	char *thumbnail_path;		//playlist thumbnail path
+typedef struct {
+	int playlist_id;
+	char *name;
+	char *thumbnail_path;
 	GList *item_list;
-}media_playlist_s;
+} media_playlist_s;
 
-typedef struct
-{
+typedef struct {
 	char *media_id;
 	int width;
 	int height;
@@ -238,10 +231,9 @@ typedef struct
 	int iso;
 	char *model;
 	media_content_orientation_e orientation;
-}image_meta_s;
+} image_meta_s;
 
-typedef struct
-{
+typedef struct {
 	char *media_id;
 	char *title;
 	char *album;
@@ -260,10 +252,9 @@ typedef struct
 	int played_count;
 	time_t played_time;
 	int played_position;
-}video_meta_s;
+} video_meta_s;
 
-typedef struct
-{
+typedef struct {
 	char *media_id;
 	char *title;
 	char *album;
@@ -283,10 +274,9 @@ typedef struct
 	int played_count;
 	time_t played_time;
 	int played_position;
-}audio_meta_s;
+} audio_meta_s;
 
-typedef struct
-{
+typedef struct {
 	char *media_id;
 	char *file_path;
 	char *display_name;
@@ -322,36 +312,32 @@ typedef struct
 	image_meta_s *image_meta;
 	video_meta_s *video_meta;
 	audio_meta_s *audio_meta;
-}media_info_s;
+} media_info_s;
 
-typedef struct
-{
-	char *media_id;		// media_uuid
-	int function;			// Add, remove, modify
-	char *tag_name;		// tag_name
-}media_tag_item_s;
+typedef struct {
+	char *media_id;
+	int function;
+	char *tag_name;
+} media_tag_item_s;
 
-typedef struct
-{
-	char *media_id;		// media_uuid
-	int function;			// Add, remove, modify
-	char *playlist_name;	// playlist_name
-	char *thumbnail_path;		//playlist thumbnail path
-	int playlist_member_id;	// playlist unique id of media. Same content which has same media_id can be added to Playlist
-	int play_order;		//play_order
-}media_playlist_item_s;
+typedef struct {
+	char *media_id;
+	int function;
+	char *playlist_name;
+	char *thumbnail_path;
+	int playlist_member_id;
+	int play_order;
+} media_playlist_item_s;
 
-typedef struct
-{
+typedef struct {
 	char *storage_id;
 	char *storage_name;
 	char *storage_path;
 	char *storage_account;
 	int storage_type;
-}media_storage_s;
+} media_storage_s;
 
-typedef struct
-{
+typedef struct {
 	char *face_id;				/* face uuid */
 	char *media_id;			/* media uuid */
 	unsigned int face_rect_x;	/* x position of face */
@@ -360,29 +346,25 @@ typedef struct
 	unsigned int face_rect_h;	/* height of face */
 	int orientation;			/* orientation */
 	char *face_tag;			/* face tag */
-}media_face_s;
+} media_face_s;
 
-typedef struct _attribute_map_s
-{
+typedef struct _attribute_map_s {
 	GHashTable *attr_map;
-}attribute_s;
+} attribute_s;
 
-typedef struct
-{
+typedef struct {
 	media_info_s *handle;
 	void *user_data;
 	media_thumbnail_completed_cb thumbnail_completed_cb;
-}media_thumbnail_cb_s;
+} media_thumbnail_cb_s;
 
-typedef struct
-{
+typedef struct {
 	media_insert_completed_cb insert_completed_cb;
 	char *insert_list_path;
 	void *user_data;
 } media_insert_cb_s;
 
-typedef struct
-{
+typedef struct {
 	media_content_db_update_cb update_noti_cb;
 	void *user_data;
 } media_noti_cb_s;
@@ -542,7 +524,7 @@ typedef struct _media_content_cb_data {
 #define QUERY_KEYWORD_BRACKET ")"
 
 /* DB TABLE JOIN */
-//#define FOLDER_MEDIA_JOIN					"("DB_TABLE_FOLDER" AS f LEFT OUTER JOIN '%s' AS m ON f.folder_uuid=m.folder_uuid AND m.validity=1) WHERE f.storage_uuid IN (SELECT storage_uuid FROM "DB_TABLE_STORAGE" WHERE validity=1) "
+/*#define FOLDER_MEDIA_JOIN					"("DB_TABLE_FOLDER" AS f LEFT OUTER JOIN '%s' AS m ON f.folder_uuid=m.folder_uuid AND m.validity=1) WHERE f.storage_uuid IN (SELECT storage_uuid FROM "DB_TABLE_STORAGE" WHERE validity=1) " */
 #define FOLDER_MEDIA_JOIN					"("DB_TABLE_FOLDER" AS f LEFT OUTER JOIN '%s' AS m ON f.folder_uuid=m.folder_uuid AND m.validity=1) WHERE f.validity=1 "
 #define BOOKMARK_MEDIA_JOIN				"("DB_TABLE_BOOKMARK" AS b INNER JOIN '%s' AS m \
 											ON (b.media_uuid = m.media_uuid)) WHERE m.validity=1"
@@ -555,7 +537,7 @@ typedef struct _media_content_cb_data {
 #define SELECT_ALBUM_LIST			"SELECT DISTINCT a.album_id, a.name, a.artist, a.album_art FROM "ALBUM_MEDIA_JOIN
 #define SELECT_MEDIA_GROUP_LIST	"SELECT DISTINCT %s FROM '%s' WHERE validity=1 "
 
-#define SELECT_FOLDER_LIST 			"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time, f.storage_uuid, f.folder_order, f.parent_folder_uuid FROM "FOLDER_MEDIA_JOIN
+#define SELECT_FOLDER_LIST			"SELECT DISTINCT f.folder_uuid, f.path, f.name, f.storage_type, f.modified_time, f.storage_uuid, f.folder_order, f.parent_folder_uuid FROM "FOLDER_MEDIA_JOIN
 #define SELECT_FOLDER_LIST_BY_STORAGE_ID	SELECT_FOLDER_LIST"AND f.storage_uuid='%s' "
 #define SELECT_TAG_LIST				"SELECT DISTINCT tag_id, name FROM "DB_VIEW_TAG" WHERE 1 "
 #define SELECT_PLAYLIST_LIST			"SELECT DISTINCT playlist_id, name, p_thumbnail_path FROM "DB_VIEW_PLAYLIST" WHERE 1 "
@@ -571,11 +553,11 @@ typedef struct _media_content_cb_data {
 /*count(distinct x) count only non-null values, but select distinct X returns include null. so sync the result of count and list, don't use count(distinct x)*/
 
 /* Get Media Count of Group */
-#define SELECT_MEDIA_COUNT_FROM_MEDIA			"SELECT COUNT(*) FROM ("SELECT_MEDIA_ITEM		//to apply limit condition. "SELECT COUNT(*) FROM "DB_TABLE_MEDIA" WHERE validity=1"
+#define SELECT_MEDIA_COUNT_FROM_MEDIA			"SELECT COUNT(*) FROM ("SELECT_MEDIA_ITEM		/*to apply limit condition. "SELECT COUNT(*) FROM "DB_TABLE_MEDIA" WHERE validity=1" */
 #define SELECT_MEDIA_COUNT_FROM_MEDIA_SIMPLE	"SELECT COUNT(*) FROM '%s' WHERE validity=1 "
 #define SELECT_MEDIA_COUNT_FROM_ALBUM			"SELECT COUNT(*) FROM '%s' WHERE validity=1 AND album_id='%d'"
-#define SELECT_MEDIA_COUNT_FROM_GROUP			"SELECT COUNT(*) FROM ("SELECT_MEDIA_FROM_GROUP		//to apply limit condition.
-#define SELECT_MEDIA_COUNT_FROM_GROUP_NULL		"SELECT COUNT(*) FROM ("SELECT_MEDIA_FROM_GROUP_NULL	//to apply limit condition.
+#define SELECT_MEDIA_COUNT_FROM_GROUP			"SELECT COUNT(*) FROM ("SELECT_MEDIA_FROM_GROUP		/*to apply limit condition. */
+#define SELECT_MEDIA_COUNT_FROM_GROUP_NULL		"SELECT COUNT(*) FROM ("SELECT_MEDIA_FROM_GROUP_NULL	/* to apply limit condition. */
 #define SELECT_MEDIA_COUNT_FROM_FOLDER			"SELECT COUNT(*) FROM '%s' WHERE validity=1 AND folder_uuid='%q'"
 #define SELECT_MEDIA_COUNT_FROM_STORAGE			"SELECT COUNT(*) FROM '%s' WHERE validity=1 AND storage_uuid='%q'"
 #define SELECT_MEDIA_COUNT_FROM_TAG				"SELECT COUNT(*) FROM "DB_VIEW_TAG" WHERE (tag_id=%d AND media_count>0) "
@@ -624,7 +606,7 @@ typedef struct _media_content_cb_data {
 #define UPDATE_AV_META_FROM_MEDIA	"UPDATE '%s' SET played_count=%d, last_played_time=%d, last_played_position=%d WHERE media_uuid='%q'"
 #define UPDATE_IMAGE_META_FROM_MEDIA	"UPDATE '%s' SET orientation=%d, weather=%Q WHERE media_uuid='%q'"
 
-#define SELECT_MEDIA_ITEM 					"SELECT "MEDIA_INFO_ITEM" FROM '%s' WHERE validity=1"
+#define SELECT_MEDIA_ITEM					"SELECT "MEDIA_INFO_ITEM" FROM '%s' WHERE validity=1"
 #define SELECT_MEDIA_FROM_MEDIA			"SELECT "MEDIA_INFO_ITEM" FROM '%s' WHERE validity=1 AND media_uuid='%s'"
 #define SELECT_MEDIA_BY_PATH				"SELECT "MEDIA_INFO_ITEM" FROM '%s' WHERE validity=1 AND path='%q'"
 #define SELECT_MEDIA_FROM_ALBUM			"SELECT "MEDIA_INFO_ITEM" FROM '%s' WHERE validity=1 AND album_id=%d"
@@ -644,8 +626,8 @@ typedef struct _media_content_cb_data {
 #define DELETE_BOOKMARK_FROM_BOOKMARK	"DELETE FROM "DB_TABLE_BOOKMARK" WHERE bookmark_id=%d"
 
 /* Storage*/
-#define SELECT_STORAGE_COUNT 				"SELECT COUNT(*) FROM "DB_TABLE_STORAGE" WHERE validity=1"
-#define SELECT_STORAGE_LIST 				"SELECT * FROM "DB_TABLE_STORAGE" WHERE validity=1"
+#define SELECT_STORAGE_COUNT				"SELECT COUNT(*) FROM "DB_TABLE_STORAGE" WHERE validity=1"
+#define SELECT_STORAGE_LIST					"SELECT * FROM "DB_TABLE_STORAGE" WHERE validity=1"
 #define SELECT_STORAGE_INFO_FROM_STORAGE	"SELECT * FROM "DB_TABLE_STORAGE" WHERE validity=1 AND storage_uuid='%s'"
 
 /* Face */
@@ -656,7 +638,7 @@ typedef struct _media_content_cb_data {
 #define SELECT_FACE_COUNT_BY_MEDIA_ID		"SELECT COUNT(*) FROM "FACE_MEDIA_JOIN" AND fa.media_uuid='%s'"
 #define SELECT_FACE_LIST_BY_MEDIA_ID		"SELECT fa.face_uuid, fa.media_uuid, fa.face_rect_x, fa.face_rect_y, fa.face_rect_w, fa.face_rect_h, fa.orientation, fa.face_tag FROM "FACE_MEDIA_JOIN" AND fa.media_uuid='%s'"
 
-#define DEFAULT_MEDIA_STORAGE_ID 			"media"
+#define DEFAULT_MEDIA_STORAGE_ID			"media"
 
 int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condition_query, char *option_query);
 int _content_error_capi(int type, int cotent_error);
@@ -786,15 +768,15 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 #define media_content_gettid() syscall(__NR_gettid)
 
 #define media_content_retv_if(expr, val) do { \
-			if(expr) { \
+			if (expr) { \
 				LOGE(FONT_COLOR_RED"[%d]", media_content_gettid());    \
 				return (val); \
 			} \
 		} while (0)
 
 #define media_content_retvm_if(expr, val, fmt, arg...) do { \
-			if(expr) { \
-				LOGE(FONT_COLOR_RED"[%d]"fmt"",media_content_gettid(), ##arg);     \
+			if (expr) { \
+				LOGE(FONT_COLOR_RED"[%d]"fmt"", media_content_gettid(), ##arg);     \
 				return (val); \
 			} \
 		} while (0)
@@ -804,11 +786,11 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 		} while (0)
 
 #define media_content_info(fmt, arg...) do { \
-			LOGI(FONT_COLOR_GREEN"[%d]"fmt"", media_content_gettid() ,##arg);     \
+			LOGI(FONT_COLOR_GREEN"[%d]"fmt"", media_content_gettid(), ##arg);     \
 		} while (0)
 
 #define media_content_error(fmt, arg...) do { \
-			LOGE(FONT_COLOR_RED"[%d]"fmt"",media_content_gettid(), ##arg);     \
+			LOGE(FONT_COLOR_RED"[%d]"fmt"", media_content_gettid(), ##arg);     \
 		} while (0)
 
 #define media_content_debug_func() do { \
@@ -820,11 +802,11 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 		} while (0)
 
 #define media_content_sec_warn(fmt, arg...) do { \
-			SECURE_LOGW(FONT_COLOR_GREEN"[%d]"fmt"",media_content_gettid(), ##arg);     \
+			SECURE_LOGW(FONT_COLOR_GREEN"[%d]"fmt"", media_content_gettid(), ##arg);     \
 		} while (0)
 
 #define media_content_sec_error(fmt, arg...) do { \
-			SECURE_LOGE(FONT_COLOR_RED"[%d]"fmt"",media_content_gettid(), ##arg);     \
+			SECURE_LOGE(FONT_COLOR_RED"[%d]"fmt"", media_content_gettid(), ##arg);     \
 		} while (0)
 
 #define ERR_BUF_LENGTH 256

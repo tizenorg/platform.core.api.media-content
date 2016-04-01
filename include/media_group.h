@@ -114,7 +114,7 @@ int media_album_foreach_album_from_db(filter_h filter, media_album_cb callback, 
  *
  * @see media_content_connect()
  */
-int media_album_get_media_count_from_db (int album_id, filter_h filter, int *media_count);
+int media_album_get_media_count_from_db(int album_id, filter_h filter, int *media_count);
 
 /**
  * @brief Iterates through the media files with an optional @a filter in the given media album from the media database.

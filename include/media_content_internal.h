@@ -37,7 +37,7 @@ extern "C" {
  * @brief Enumeration for a media storage scan status.
  * @since_tizen @if MOBILE 2.4 @elseif WEARABLE 3.0 @endif
  */
-typedef enum{
+typedef enum {
 	MEDIA_STORAGE_SCAN_NONE	= 0,				/**< Media Scanner not detect storage yet*/
 	MEDIA_STORAGE_SCAN_PREPARE,				/**< Media Scanner detect storage but not scanning yet*/
 	MEDIA_STORAGE_SCAN_PROCESSING,			/**< Media Scanner Start Scanning storage*/
@@ -46,7 +46,7 @@ typedef enum{
 	MEDIA_STORAGE_SCAN_META_PROCESSING,		/**< Scanning Done and start to extract metadata*/
 	MEDIA_STORAGE_SCAN_META_STOP,			/**< Stop extract metadata*/
 	MEDIA_STORAGE_SCAN_COMPLETE	,			/**< Complete scanning*/
-}media_storage_scan_status_e;
+} media_storage_scan_status_e;
 
 /**
 * @internal
