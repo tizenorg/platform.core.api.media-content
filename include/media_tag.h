@@ -51,7 +51,7 @@ extern "C" {
  * @param[in]  tag_name The tag name to be inserted
  * @param[out] tag      The created handle to the media tag
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -80,7 +80,7 @@ int media_tag_insert_to_db(const char *tag_name, media_tag_h *tag);
  *
  * @param[in] tag_id The ID of media tag
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -105,7 +105,7 @@ int media_tag_delete_from_db(int tag_id);
  * @param[in]  filter    The handle to the filter
  * @param[out] tag_count The count of the media tag
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -132,7 +132,7 @@ int media_tag_get_tag_count_from_db(filter_h filter, int *tag_count);
  * @param[in] callback  The callback function to be invoked
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -159,7 +159,7 @@ int media_tag_foreach_tag_from_db(filter_h filter, media_tag_cb callback, void *
  * @param[in]  filter      The handle to the media filter
  * @param[out] media_count The count of media items
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -187,7 +187,7 @@ int media_tag_get_media_count_from_db(int tag_id, filter_h filter, int *media_co
  * @param[in] callback  The callback function to be invoked
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -220,7 +220,7 @@ int media_tag_foreach_media_from_db(int tag_id, filter_h filter, media_info_cb c
  * @param[out] dst The destination handle to the media tag
  * @param[in]  src The source handle to the media tag
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -241,7 +241,7 @@ int media_tag_clone(media_tag_h *dst, media_tag_h src);
  *
  * @param[in] tag The media tag handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -262,7 +262,7 @@ int media_tag_destroy(media_tag_h tag);
  * @param[in]  tag     The media tag handle
  * @param[out] tag_id  The ID of the media tag
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -280,7 +280,7 @@ int media_tag_get_tag_id(media_tag_h tag, int *tag_id);
  * @param[in]  tag      The media tag handle
  * @param[out] tag_name The name of the tag
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -303,7 +303,7 @@ int media_tag_get_name(media_tag_h tag, char **tag_name);
  * @param[in]  tag_id The ID of the media tag
  * @param[out] tag    The media tag handle associated with the tag ID
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -327,7 +327,7 @@ int media_tag_get_tag_from_db(int tag_id, media_tag_h *tag);
  * @param[in] tag      The media tag handle
  * @param[in] media_id The ID to the media info which is added
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -350,7 +350,7 @@ int media_tag_add_media(media_tag_h tag, const char *media_id);
  * @param[in] tag      The media tag handle
  * @param[in] media_id The ID to the media info which is removed
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -373,7 +373,7 @@ int media_tag_remove_media(media_tag_h tag, const char *media_id);
  * @param[in] tag      The media tag handle
  * @param[in] tag_name The name of the media tag
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -399,7 +399,7 @@ int media_tag_set_name(media_tag_h tag, char *tag_name);
  *
  * @param[in] tag The media tag handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful

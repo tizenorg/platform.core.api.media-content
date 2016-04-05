@@ -50,7 +50,7 @@ extern "C" {
  *
  * @param[out] filter A handle to the media filter
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -72,7 +72,7 @@ int media_filter_create(filter_h *filter);
  *
  * @param[in] filter The handle to the media filter
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -94,7 +94,7 @@ int media_filter_destroy(filter_h filter);
  * @param[in] offset The start position of the given filter (Starting from zero)
  * @param[in] count  The number of items to be searched with respect to the offset
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -114,7 +114,7 @@ int media_filter_set_offset(filter_h filter, int offset, int count);
  * @param[in] condition    The condition which is used WHERE clause on a query
  * @param[in] collate_type The collate type for comparing two strings
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -136,7 +136,7 @@ int media_filter_set_condition(filter_h filter, const char *condition, media_con
  * @param[in] order_keyword The search order keyword
  * @param[in] collate_type  The collate type for comparing two strings
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -200,7 +200,7 @@ int media_filter_get_offset(filter_h filter, int *offset, int *count);
  * @param[out] condition    The condition which is used WHERE clause on a query
  * @param[out] collate_type The collate type for comparing two strings
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -224,7 +224,7 @@ int media_filter_get_condition(filter_h filter, char **condition, media_content_
  * @param[out] order_keyword The search order keyword
  * @param[out] collate_type  The collate type for comparing two strings
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -246,7 +246,7 @@ int media_filter_get_order(filter_h filter, media_content_order_e* order_type, c
  * @param[out] storage_id The storage_id which is used in filter
  *
  * @return @c 0 on success,
- * 		otherwise a negative error value
+ *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
  * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter

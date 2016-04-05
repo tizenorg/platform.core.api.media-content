@@ -46,7 +46,7 @@ extern "C" {
  * @param[in]  filter      The media filter handle
  * @param[out] album_count The count of the media album
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -73,7 +73,7 @@ int media_album_get_album_count_from_db(filter_h filter, int *album_count);
  * @param[in] callback  The callback function to be invoked
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -100,7 +100,7 @@ int media_album_foreach_album_from_db(filter_h filter, media_album_cb callback, 
  * @param[in]  filter      The media filter handle
  * @param[out] media_count The count of the album
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -129,7 +129,7 @@ int media_album_get_media_count_from_db(int album_id, filter_h filter, int *medi
  * @param[in] callback  The callback function to be invoked
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -158,7 +158,7 @@ int media_album_foreach_media_from_db(int album_id, filter_h filter, media_info_
  *
  * @param[in] album The media album handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -185,7 +185,7 @@ int media_album_destroy(media_album_h album);
  * @param[in]  src  The source handle to the media album
  * @param[out] dst  The destination handle to the media album
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -205,7 +205,7 @@ int media_album_clone(media_album_h *dst, media_album_h src);
  * @param[in]  album    The media album handle
  * @param[out] album_id The media album ID
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -226,7 +226,7 @@ int media_album_get_album_id(media_album_h album, int *album_id);
  * @param[in]  album       The media album handle
  * @param[out] album_name  The name of the media album handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -245,7 +245,7 @@ int media_album_get_name(media_album_h album, char **album_name);
  * @param[in]  album  The media album handle
  * @param[out] artist The name of the media artist
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -264,7 +264,7 @@ int media_album_get_artist(media_album_h album, char **artist);
  * @param[in]  album     The media album handle
  * @param[out] album_art The path of the media album_art
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -287,7 +287,7 @@ int media_album_get_album_art(media_album_h album, char **album_art);
  * @param[in]  album_id The ID of the media album
  * @param[out] album    The album handle associated with the album ID
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -323,7 +323,7 @@ int media_album_get_album_from_db(int album_id, media_album_h *album);
  * @param[in]  group        The type of the media group
  * @param[out] group_count  The count of the media group
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -351,7 +351,7 @@ int media_group_get_group_count_from_db(filter_h filter, media_group_e group, in
  * @param[in] callback  The callback function to be invoked
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -379,7 +379,7 @@ int media_group_foreach_group_from_db(filter_h filter, media_group_e group, medi
  * @param[in]  filter      The media filter handle
  * @param[out] media_count The count of the media
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -409,7 +409,7 @@ int media_group_get_media_count_from_db(const char *group_name, media_group_e gr
  * @param[in] callback   The callback function to be invoked
  * @param[in] user_data  The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -433,7 +433,7 @@ int media_group_foreach_media_from_db(const char *group_name, media_group_e grou
   */
 
 #ifdef __cplusplus
- }
+}
 #endif /* __cplusplus */
 
 #endif /* __TIZEN_MEDIA_GROUP_H__ */

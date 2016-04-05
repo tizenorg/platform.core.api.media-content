@@ -44,7 +44,7 @@ extern "C" {
  * @param[in]  filter         The handle to the filter
  * @param[out] playlist_count The count of the media playlist
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -71,7 +71,7 @@ int media_playlist_get_playlist_count_from_db(filter_h filter, int *playlist_cou
  * @param[in] callback  The callback function to be invoked
  * @param[in] user_data The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -98,7 +98,7 @@ int media_playlist_foreach_playlist_from_db(filter_h filter, media_playlist_cb c
  * @param[in]  filter       The media filter handle
  * @param[out] media_count  The number of media items
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -126,7 +126,7 @@ int media_playlist_get_media_count_from_db(int playlist_id, filter_h filter, int
  * @param[in] callback    The callback function to be invoked
  * @param[in] user_data   The user data to be passed to the callback function
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -157,7 +157,7 @@ int media_playlist_foreach_media_from_db(int playlist_id, filter_h filter, playl
  * @param[in]  name     The name of the inserted playlist
  * @param[out] playlist A created handle to media playlist
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -185,7 +185,7 @@ int media_playlist_insert_to_db(const char *name, media_playlist_h *playlist);
  *
  * @param[in] playlist_id The ID of media playlist
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -216,7 +216,7 @@ int media_playlist_delete_from_db(int playlist_id);
  * @param[in]  playlist_id The ID of the media playlist
  * @param[out] playlist    The media playlist handle associated with the playlist ID
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -243,7 +243,7 @@ int media_playlist_get_playlist_from_db(int playlist_id, media_playlist_h *playl
  *
  * @param[in] playlist The media playlist handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -270,7 +270,7 @@ int media_playlist_destroy(media_playlist_h playlist);
  * @param[in]  src  The source handle of a media playlist
  * @param[out] dst  The destination handle to a media playlist
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -290,7 +290,7 @@ int media_playlist_clone(media_playlist_h *dst, media_playlist_h src);
  * @param[in]  playlist    The media playlist handle
  * @param[out] playlist_id The ID of the media playlist
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -308,7 +308,7 @@ int media_playlist_get_playlist_id(media_playlist_h playlist, int *playlist_id);
  * @param[in]  playlist      The media playlist handle
  * @param[out] playlist_name The playlist name
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -325,7 +325,7 @@ int media_playlist_get_name(media_playlist_h playlist, char **playlist_name);
  * @param[in] playlist      The media playlist handle
  * @param[in] playlist_name The name of the media playlist
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -347,7 +347,7 @@ int media_playlist_set_name(media_playlist_h playlist, const char *playlist_name
  * @param[in]  playlist The media playlist handle
  * @param[out] path     The path of the thumbnail
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -364,7 +364,7 @@ int media_playlist_get_thumbnail_path(media_playlist_h playlist, char **path);
  * @param[in] playlist The media playlist handle
  * @param[in] path     The path of the thumbnail
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -385,7 +385,7 @@ int media_playlist_set_thumbnail_path(media_playlist_h playlist, const char *pat
  * @param[in] playlist_member_id The playlist member ID
  * @param[in] play_order         The playing order
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -404,7 +404,7 @@ int media_playlist_set_play_order(media_playlist_h playlist, int playlist_member
  * @param[in] playlist The media playlist handle
  * @param[in] media_id The ID to the media info which is added
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -427,7 +427,7 @@ int media_playlist_add_media(media_playlist_h playlist, const char *media_id);
  * @param[in] playlist           The media playlist handle
  * @param[in] playlist_member_id The playlist member ID
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -451,7 +451,7 @@ int media_playlist_remove_media(media_playlist_h playlist, int playlist_member_i
  * @param[in] playlist_member_id The playlist member ID
  * @param[out] play_order        The played order
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -476,7 +476,7 @@ int media_playlist_get_play_order(media_playlist_h playlist, int playlist_member
  *
  * @param[in] playlist The media playlist handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful

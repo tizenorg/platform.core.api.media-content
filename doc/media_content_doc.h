@@ -11,7 +11,7 @@
  * distributed under the License is distributed on an AS IS BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 
@@ -38,7 +38,7 @@
  * The API provides functions for connecting (#media_content_connect()) and disconnecting (#media_content_disconnect()) from the media content service.
  *
  * The API consists of @ref CAPI_CONTENT_MEDIA_FOLDER_MODULE,@ref CAPI_CONTENT_MEDIA_TAG_MODULE,@ref CAPI_CONTENT_MEDIA_FILTER_MODULE, @ref CAPI_CONTENT_MEDIA_INFO_MODULE API and others.
- * 
+ *
  * <table>
  * <tr>
  *    <th>API</th>
@@ -82,8 +82,8 @@
  * <tr>
  *    <td>@ref CAPI_CONTENT_MEDIA_BOOKMARK_MODULE </td>
  *    <td> Provide information about the media bookmark. </td>
- * </tr> 
- * 
+ * </tr>
+ *
  * </table>
  *
  */
@@ -191,7 +191,7 @@
  * - Offset - Used to set starting position of the filter's search
  * - Count - Used to set number of items to be searched from offset
  * - Condition - Used to set keyword which user want to search
- * - Order - Used to set type of media to be ordered by the filter 
+ * - Order - Used to set type of media to be ordered by the filter
  *
  *\n
  * The Media Filter API provides functions for creating and destroying media filters.\n
@@ -217,19 +217,19 @@
  * - column NOT IN (value)
  * - column NOT IN (value-list)
  * - column LIKE value
- * - expression1 AND expression2 OR expression3 
- * 
+ * - expression1 AND expression2 OR expression3
+ *
  *\n
- * 
+ *
  * Note that if you want to set qoutation(" ' " or " " ") as value of LIKE operator, you should use two times.(" '' " or " "" ") \n
  * And the optional ESCAPE clause is supported. Both percent symbol("%") and underscore symbol("_") are used in the LIKE pattern.\n
  * If these characters are used as value of LIKE operation, then the expression following the ESCAPE caluse of sqlite. \n
  *
  * For example, 
- * - column LIKE ('#%') ESCAPE('#') - "#" is escape character, it will be ignored. 
+ * - column LIKE ('#%') ESCAPE('#') - "#" is escape character, it will be ignored.
  *\n
  *
- *  
+ *
  * Similarly, call respective get function to get filter properties e.g. call #media_filter_get_condition() function 
  * to get condition of the media filter and call #media_filter_get_order() function to get order (#media_content_order_e) of the filtered items and so on.
  *
@@ -299,21 +299,21 @@
  * - artist
  * - genre
  * - composer
- * - year 
+ * - year
  * - recorded_date
  * - copyright
  * - track number
  * - sample rate
  * - played count
  * - played time
- * - played position 
+ * - played position
  * - bitrate
  *
  * <p>
  * For getting the audio handle (#audio_meta_h) from the media information (#media_info_h), call #media_info_get_audio() function.\n
  * For getting the information related to audio files stored in the device, call the respective get functions e.g. to get the artist of a audio, call #audio_meta_get_artist() function and 
  * to get bitrate of a audio, call #audio_meta_get_bit_rate() function and so on.\n
- * When the audio handle is no longer needed, it should be destroyed by calling #audio_meta_destroy() function.\n 
+ * When the audio handle is no longer needed, it should be destroyed by calling #audio_meta_destroy() function.\n
  *
  *
  *
@@ -332,7 +332,7 @@
  * @section CAPI_CONTENT_MEDIA_PLAYLIST_MODULE_OVERVIEW Overview
  * A Playlist is a list of songs which can be played in some sequence i.e. sequential or shuffled order.
  * The Media Playlist API provides functions to insert, delete or updates a media playlist in the database.
- * 
+ *
  * For inserting new playlist (#media_playlist_h) in the database, call  #media_playlist_insert_to_db() function and call #media_playlist_delete_from_db() function
  * to delete a playlist from the database.\n
  * For adding a media item to the playlist, call #media_playlist_add_media() function, for removing a media item from the playlist, call 
@@ -462,7 +462,7 @@
  * For getting the image handle (#image_meta_h) from the media information (#media_info_h), call #media_info_get_image() function.\n
  * For getting the information related to image files stored in the device call the respective get functions e.g. to get the width of a image, call #image_meta_get_width() function and 
  * to get orientation (#media_content_orientation_e) of a image, call #image_meta_get_orientation() function and so on.\n
- * When the image handle is no longer needed, it should be destroyed by calling #image_meta_destroy() function.\n 
+ * When the image handle is no longer needed, it should be destroyed by calling #image_meta_destroy() function.\n
  *
  */
 
@@ -491,7 +491,7 @@
  * - track number
  * - bit rate
  * - width
- * - height 
+ * - height
  * - played count
  * - played time
  * - played position
@@ -501,7 +501,7 @@
  * For getting the video handle (#video_meta_h) from the media information (#media_info_h), call the media_info_get_video() function.\n
  * For getting the information related to video files stored in the device call the respective get functions e.g. to get duration of the video file
  * call #video_meta_get_duration() function  and so on.\n
- * When the video handle is no longer needed, it should be destroyed by calling #video_meta_destroy() function. 
+ * When the video handle is no longer needed, it should be destroyed by calling #video_meta_destroy() function.
  *
  *
  *
@@ -591,9 +591,9 @@
  * </table>
  *
  * Video and Audio information can be further processed with respect to its properties i.e. playlist, album, using their respective APIs.
- * - @ref CAPI_CONTENT_MEDIA_PLAYLIST_MODULE 
- * - @ref CAPI_CONTENT_MEDIA_ALBUM_MODULE 
- * - @ref CAPI_CONTENT_MEDIA_BOOKMARK_MODULE  
+ * - @ref CAPI_CONTENT_MEDIA_PLAYLIST_MODULE
+ * - @ref CAPI_CONTENT_MEDIA_ALBUM_MODULE
+ * - @ref CAPI_CONTENT_MEDIA_BOOKMARK_MODULE
  *
  *
  * @subsection CAPI_CONTENT_MEDIA_INFO_FOREACH_OPERATIONS Foreach Operations
@@ -617,7 +617,7 @@
  *        <td>media_info_foreach_bookmark_from_db()</td>
  *        <td>media_bookmark_cb()</td>
  *        <td>Iterate through bookmark</td>
- *     </tr> 
+ *     </tr>
  * </table></div>
  *
  *
@@ -651,9 +651,9 @@
  *
  * @section CAPI_CONTENT_MEDIA_FACE_MODULE_OVERVIEW Overview
  * The Face Information API provides functions to manage the face information such as face id, face coordinates in the image files.\n
- * 
+ *
  *
  */
- 
+
 
 #endif /* __TIZEN_MEDIA_CONTENT_DOC_H__ */

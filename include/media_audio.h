@@ -47,7 +47,7 @@ extern "C" {
  * @param[out] dst The destination handle to the audio metadata
  * @param[in]  src The source handle to the audio metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -69,7 +69,7 @@ int audio_meta_clone(audio_meta_h *dst, audio_meta_h src);
  *
  * @param[in] audio The audio metadata handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -91,7 +91,7 @@ int audio_meta_destroy(audio_meta_h audio);
  * @param[in]  audio    The audio metadata handle
  * @param[out] media_id The ID of the audio
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -113,7 +113,7 @@ int audio_meta_get_media_id(audio_meta_h audio, char **media_id);
  * @param[in]  audio The audio metadata handle
  * @param[out] album The album of the audio metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -135,7 +135,7 @@ int audio_meta_get_album(audio_meta_h audio, char **album);
  * @param[in]  audio  The audio metadata handle
  * @param[out] artist The artist of the audio metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -157,7 +157,7 @@ int audio_meta_get_artist(audio_meta_h audio, char **artist);
  * @param[in]  audio        The audio metadata handle
  * @param[out] album_artist The album artist of the audio metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -179,7 +179,7 @@ int audio_meta_get_album_artist(audio_meta_h audio, char **album_artist);
  * @param[in]  audio The audio metadata handle
  * @param[out] genre The genre of the audio metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -201,7 +201,7 @@ int audio_meta_get_genre(audio_meta_h audio, char **genre);
  * @param[in]  audio    The audio metadata handle
  * @param[out] composer The composer of the audio metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -223,7 +223,7 @@ int audio_meta_get_composer(audio_meta_h audio, char **composer);
  * @param[in]  audio The audio metadata handle
  * @param[out] year  The year of the audio metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -242,7 +242,7 @@ int audio_meta_get_year(audio_meta_h audio, char **year);
  * @param[in]  audio         The audio metadata handle
  * @param[out] recorded_date The recorded date of the audio metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -263,7 +263,7 @@ int audio_meta_get_recorded_date(audio_meta_h audio, char **recorded_date);
  * @param[in]  audio     The audio metadata handle
  * @param[out] copyright The copyright of the audio metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -285,7 +285,7 @@ int audio_meta_get_copyright(audio_meta_h audio, char **copyright);
  * @param[in]  audio     The audio metadata handle
  * @param[out] track_num The audio track number of the audio metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -302,7 +302,7 @@ int audio_meta_get_track_num(audio_meta_h audio, char **track_num);
  * @param[in]  audio    The audio metadata handle
  * @param[out] bit_rate The audio bitrate in bit per second [bps]
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -318,7 +318,7 @@ int audio_meta_get_bit_rate(audio_meta_h audio, int *bit_rate);
  * @param [in]  audio        The handle to the audio metadata
  * @param [out] bitpersample The audio bit per sample
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -334,7 +334,7 @@ int audio_meta_get_bitpersample(audio_meta_h audio, int *bitpersample);
  * @param[in]  audio       The audio metadata handle
  * @param[out] sample_rate The audio sample rate[hz]
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -350,7 +350,7 @@ int audio_meta_get_sample_rate(audio_meta_h audio, int *sample_rate);
  * @param[in]  audio   The audio metadata handle
  * @param[out] channel The channel of the audio
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -366,7 +366,7 @@ int audio_meta_get_channel(audio_meta_h audio, int *channel);
  * @param[in]  audio    The audio metadata handle
  * @param[out] duration The audio file duration
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -383,7 +383,7 @@ int audio_meta_get_duration(audio_meta_h audio, int *duration);
  * @param[in]  audio        The audio metadata handle
  * @param[out] played_count The counter of the audio played
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -401,7 +401,7 @@ int audio_meta_get_played_count(audio_meta_h audio, int *played_count);
  * @param[in]  audio       The audio metadata handle
  * @param[out] played_time The last played time of the audio
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -421,7 +421,7 @@ int audio_meta_get_played_time(audio_meta_h audio, time_t *played_time);
  * @param[in]  audio           The audio metadata handle
  * @param[out] played_position The elapsed time of the audio
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -438,7 +438,7 @@ int audio_meta_get_played_position(audio_meta_h audio, int *played_position);
  * @param[in] audio        The audio metadata handle
  * @param[in] played_count The played count of the audio
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -457,7 +457,7 @@ int audio_meta_set_played_count(audio_meta_h audio, int played_count);
  * @param[in] audio       The audio metadata handle
  * @param[in] played_time The last played time of the audio
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -479,7 +479,7 @@ int audio_meta_set_played_time(audio_meta_h audio, time_t played_time);
  * @param[in] audio           The audio metadata handle
  * @param[in] played_position The played position of the audio
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -504,7 +504,7 @@ int audio_meta_set_played_position(audio_meta_h audio, int played_position);
  *
  * @param[in] audio The audio metadata handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful

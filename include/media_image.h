@@ -48,7 +48,7 @@ extern "C" {
  * @param[out] dst  The destination handle to the image metadata
  * @param[in]  src  The source handle to the image metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -70,7 +70,7 @@ int image_meta_clone(image_meta_h *dst, image_meta_h src);
  *
  * @param[in] image The image metadata handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -89,7 +89,7 @@ int image_meta_destroy(image_meta_h image);
  * @param[in]  image    The image metadata handle
  * @param[out] media_id The ID of an image
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -105,7 +105,7 @@ int image_meta_get_media_id(image_meta_h image, char **media_id);
  * @param[in]  image The image metadata handle
  * @param[out] width The image width in pixels
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -121,7 +121,7 @@ int image_meta_get_width(image_meta_h image, int *width);
  * @param[in]  image  The image metadata handle
  * @param[out] height The image height in pixels
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -137,7 +137,7 @@ int image_meta_get_height(image_meta_h image, int *height);
  * @param[in]  image       The image metadata handle
  * @param[out] orientation The image orientation
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -153,7 +153,7 @@ int image_meta_get_orientation(image_meta_h image, media_content_orientation_e *
  * @param[in]  image      The image metadata handle
  * @param[out] date_taken The time, when image was taken (in seconds, since the Epoch)
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -172,7 +172,7 @@ int image_meta_get_date_taken(image_meta_h image, char **date_taken);
  * @param[out] burst_id The ID of burst shot\ n
  *                      If @a burst_id is @c NULL, this is not burst shot
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -261,7 +261,7 @@ int image_meta_get_model(image_meta_h image, char **model);
  * @param[out] is_burst_shot @c true if the media is a burst shot image,
  *                           otherwise @c false if the media is not a burst shot image
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -277,7 +277,7 @@ int image_meta_is_burst_shot(image_meta_h image, bool *is_burst_shot);
  * @param[in] image       The image metadata handle
  * @param[in] orientation The image orientation
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -304,7 +304,7 @@ int image_meta_set_orientation(image_meta_h image, media_content_orientation_e o
  *
  * @param[in] image The handle to the image
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful

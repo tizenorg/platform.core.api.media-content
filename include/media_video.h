@@ -47,7 +47,7 @@ extern "C" {
  * @param[out] dst The destination handle to the video metadata
  * @param[in]  src The source handle to the video metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE Successful
@@ -69,7 +69,7 @@ int video_meta_clone(video_meta_h *dst, video_meta_h src);
  *
  * @param[in] video The video metadata handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -91,7 +91,7 @@ int video_meta_destroy(video_meta_h video);
  * @param[in]  video    The video metadata handle
  * @param[out] media_id The ID of the video
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -113,7 +113,7 @@ int video_meta_get_media_id(video_meta_h video, char **media_id);
  * @param[in]  video The video metadata handle
  * @param[out] album The album of the video metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -135,7 +135,7 @@ int video_meta_get_album(video_meta_h video, char **album);
  * @param[in]  video  The video metadata handle
  * @param[out] artist The artist of the video metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -157,7 +157,7 @@ int video_meta_get_artist(video_meta_h video, char **artist);
  * @param[in]  video        The video metadata handle
  * @param[out] album_artist The album artist of the video metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -179,7 +179,7 @@ int video_meta_get_album_artist(video_meta_h video, char **album_artist);
  * @param[in]  video The video metadata handle
  * @param[out] genre The genre of the video metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -201,7 +201,7 @@ int video_meta_get_genre(video_meta_h video, char **genre);
  * @param[in]  video    The video metadata handle
  * @param[out] composer The composer of the video metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -223,7 +223,7 @@ int video_meta_get_composer(video_meta_h video, char **composer);
  * @param[in]  video The video metadata handle
  * @param[out] year  The year of the video metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -242,7 +242,7 @@ int video_meta_get_year(video_meta_h video, char **year);
  * @param[in]  video         The video metadata handle
  * @param[out] recorded_date The recorded date of the video metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -264,7 +264,7 @@ int video_meta_get_recorded_date(video_meta_h video, char **recorded_date);
  * @param[in]  video     The video metadata handle
  * @param[out] copyright The copyright of the video metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -286,7 +286,7 @@ int video_meta_get_copyright(video_meta_h video, char **copyright);
  * @param[in]  video     The video metadata handle
  * @param[out] track_num The track number of the video metadata
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -303,7 +303,7 @@ int video_meta_get_track_num(video_meta_h video, char **track_num);
  * @param[in]  video    The video metadata handle
  * @param[out] bit_rate The video bit rate in bit per second [bps]
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -319,7 +319,7 @@ int video_meta_get_bit_rate(video_meta_h video, int *bit_rate);
  * @param[in]  video    The video metadata handle
  * @param[out] duration The video duration in milliseconds
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -335,7 +335,7 @@ int video_meta_get_duration(video_meta_h video, int *duration);
  * @param[in]  video The video metadata handle
  * @param[out] width The video width in pixels
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -351,7 +351,7 @@ int video_meta_get_width(video_meta_h video, int *width);
  * @param[in]  video  The video metadata handle
  * @param[out] height The video height in pixels
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -368,7 +368,7 @@ int video_meta_get_height(video_meta_h video, int *height);
  * @param[in]  video        The video metadata handle
  * @param[out] played_count The counter of the video played
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -385,7 +385,7 @@ int video_meta_get_played_count(video_meta_h video, int *played_count);
  * @param[in]  video       The video metadata handle
  * @param[out] played_time The last played time of the video
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -405,7 +405,7 @@ int video_meta_get_played_time(video_meta_h video, time_t *played_time);
  * @param[in]  video           The video metadata handle
  * @param[out] played_position The elapsed time of the video
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -422,7 +422,7 @@ int video_meta_get_played_position(video_meta_h video, int *played_position);
  * @param[in] video        The video metadata handle
  * @param[in] played_count The number of played
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -441,7 +441,7 @@ int video_meta_set_played_count(video_meta_h video, int played_count);
  * @param[in] video       The video metadata handle
  * @param[in] played_time The last played time of the video
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -463,7 +463,7 @@ int video_meta_set_played_time(video_meta_h video, time_t played_time);
  * @param[in] video           The video metadata handle
  * @param[in] played_position The position from the beginning of the video (in milliseconds)
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
@@ -488,7 +488,7 @@ int video_meta_set_played_position(video_meta_h video, int played_position);
  *
  * @param[in] video The video metadata handle
  *
- * @return @c 0 on success, 
+ * @return @c 0 on success,
  *         otherwise a negative error value
  *
  * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
