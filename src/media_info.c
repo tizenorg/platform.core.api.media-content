@@ -3052,11 +3052,6 @@ int media_info_create(const char *path, media_info_h *media)
 	return ret;
 }
 
-int media_info_set_path(media_info_h media, const char *path)
-{
-	return __media_info_set_str_data(media, MEDIA_INFO_PATH, path);
-}
-
 int media_info_set_mime_type(media_info_h media, const char *mime_type)
 {
 	return __media_info_set_str_data(media, MEDIA_INFO_MIME_TYPE, mime_type);
