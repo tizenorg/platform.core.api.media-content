@@ -556,7 +556,7 @@ int media_info_get_audio(media_info_h media, audio_meta_h *audio);
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @param[in]  media The media info handle
- * @param[out] media_id     The ID of the media tag
+ * @param[out] media_id     The ID of the media
  *
  * @return @c 0 on success,
  *         otherwise a negative error value
