@@ -57,7 +57,7 @@ extern "C" {
  * @remarks You must release the handle using media_info_destroy(). \n
  *                   You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage by using  this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you must add all privilege.
  *
  * @param[in]  path The path to the media file
@@ -96,7 +96,7 @@ int media_info_insert_to_db(const char *path, media_info_h *info);
  *
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage by using  this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you must add all privilege.
  *
  * @param[in] path_array   The path array to the media files
@@ -137,7 +137,7 @@ int media_info_insert_batch_to_db(const char **path_array, unsigned int array_le
  *
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage with this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage with this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage with this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you must add all privilege.
  *
  * @param[in] path_array   The path array to the burst shot images
@@ -1489,7 +1489,7 @@ int media_info_update_to_db(media_info_h media);
  *
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage by using  this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you should add all privilege.
  *
  * @param[in] media_id The ID of the media info
@@ -1542,7 +1542,7 @@ int media_info_set_added_time(media_info_h media, time_t added_time);
  *
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage by using this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage by using this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you should add all privilege.
  *
  * @param[in] media    The media info handle
@@ -1578,7 +1578,7 @@ int media_info_move_to_db(media_info_h media, const char* dst_path);
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
  *
- * @remarks If you want to destory media handle before callback invoked, you must cancel thumbnail request by using media_info_cancel_thumbnail() \n
+ * @remarks If you want to destroy media handle before callback invoked, you must cancel thumbnail request by using media_info_cancel_thumbnail() \n
  *          Since 3.0, if creation of a thumbnail is failed, empty string will be passed through media_thumbnail_completed_cb().
  *          Items in external storage except MMC not supported.
  *
@@ -1611,7 +1611,7 @@ int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
  *
- * @remarks If you request cancel for the alreay thumbnail created media, this API return MEDIA_CONTENT_ERROR_INVALID_OPERATION
+ * @remarks If you request cancel for the already thumbnail created media, this API return MEDIA_CONTENT_ERROR_INVALID_OPERATION
  *
  * @param[in] media The media info handle
  *
@@ -1629,6 +1629,77 @@ int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb
 int media_info_cancel_thumbnail(media_info_h media);
 
 /**
+ * @ingroup CAPI_CONTENT_MEDIA_FACE_DETECTION_MODULE
+ * @brief Starts face detection for the given image, asynchronously.
+ * @details This function detects faces for given image item and calls the given callback function when the detection is completed. \n
+ *          If faces have already been detected, then the given callback function is called when the detection is completed. \n
+ *          To obtain the detected faces, call the media_info_foreach_face_from_db() function.
+ *
+ * @since_tizen 3.0
+ *
+ * @privlevel public
+ * @privilege %http://tizen.org/privilege/content.write \n
+ *                   %http://tizen.org/privilege/mediastorage
+ *
+ * @remarks If you want to destroy the media handle before callback invoked, you must cancel the face detection request by using media_info_cancel_face_detection(). \n
+ *          If face detection fails, the @a face_count argument in media_face_detection_completed_cb() will be set to 0.
+ *          Media items in external storage are not supported, with the exception of MMC items.
+ *
+ * @param[in] media     The media info handle
+ * @param[in] callback  The callback function to be invoked when detection is completed
+ * @param[in] user_data The user data to be passed to the callback function
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
+ * @retval #MEDIA_CONTENT_ERROR_NETWORK           Network fail
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_NOT_SUPPORTED     Not supported
+ *
+ * @pre This function requires opened connection to content service by media_content_connect().
+ *
+ * @see media_content_connect()
+ * @see media_info_cancel_face_detection()
+ */
+int media_info_start_face_detection(media_info_h media, media_face_detection_completed_cb callback, void *user_data);
+
+/**
+ * @ingroup CAPI_CONTENT_MEDIA_FACE_DETECTION_MODULE
+ * @brief Cancels face detection of image for the given media.
+ * @details This function cancels face detection for given media item. \n
+ *          If you cancel face detection request before callback is invoked, the callback registered by media_info_start_face_detection() API will not be invoked.
+ *
+ * @since_tizen 3.0
+ *
+ * @privlevel public
+ * @privilege %http://tizen.org/privilege/content.write
+ *
+ * @remarks If face detection is already done when you request the cancellation, this API return MEDIA_CONTENT_ERROR_INVALID_OPERATION
+ *
+ * @param[in] media The media info handle
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ *
+ * @pre This function requires opened connection to content service by media_content_connect().
+ *
+ * @see media_content_connect()
+ * @see media_info_start_face_detection()
+ */
+int media_info_cancel_face_detection(media_info_h media);
+
+/**
 * @brief Creates the media info handle.
 * @details If the information about the file that is already known, you can use this API to generate empty handler.
 *          And you can add the information to the generated handler using media_info_set_XXX() API.
@@ -1640,7 +1711,7 @@ int media_info_cancel_thumbnail(media_info_h media);
 *			%http://tizen.org/privilege/externalstorage
 *
 * @remarks If you want to access only internal storage with this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
-*                   Or if you want to access only external storage with this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+*                   Or if you want to access only external storage with this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
 *                   If you can access both storage, you must add all privilege.
 *
 * @param[in] path The path to create the media info handle
