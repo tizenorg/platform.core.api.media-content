@@ -27,7 +27,7 @@ extern "C" {
  * @file media_face.h
  * @brief This file contains the media face API and related to all operations with the face information of the image in Media DB. \n
  *             Functions include cloning and destroying the face handler, getting face information such as face id, face coordinates in file, \n
- *             face tag. Face information detected and managed by DB automatically when image contents scanning.  \n
+ *             face tag. Face information detected and managed by DB. To extract faces, you should use media_info_extract_face() API. \n
  *             And you can insert,update,delete face information manually.
  */
 

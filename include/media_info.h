@@ -1629,6 +1629,69 @@ int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb
 int media_info_cancel_thumbnail(media_info_h media);
 
 /**
+ * @brief Extracts faces for the given media, asynchronously.
+ * @details This function extracts faces  for given media item and calls registered callback function for completion of extracting faces.
+ *          If faces already exists for the given media, then the count of face will be returned in callback function. \n
+ *          If there exists no face for the given media, you MUST call this function to extract faces.
+ *
+ * @since_tizen 3.0
+ *
+ * @privlevel public
+ * @privilege %http://tizen.org/privilege/content.write
+ *
+ * @remarks If you want to destory media handle before callback invoked, you must cancel face request by using media_info_cancel_face() \n
+ *          If extraction of faces is failed, 0 will be passed through media_face_completed_cb().
+ *          Items in external storage except MMC not supported.
+ *
+ * @param[in] media     The media info handle
+ * @param[in] callback  The callback function to be invoked
+ * @param[in] user_data The user data to be passed to the callback function
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
+ * @retval #MEDIA_CONTENT_ERROR_NETWORK           Network fail
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ *
+ * @pre This function requires opened connection to content service by media_content_connect().
+ *
+ * @see media_content_connect()
+ * @see media_info_cancel_face()
+ */
+int media_info_extract_face(media_info_h media, media_face_completed_cb callback, void *user_data);
+
+/**
+ * @brief Cancels the extraction of image's faces for the given media.
+ * @since_tizen 3.0
+ *
+ * @privlevel public
+ * @privilege %http://tizen.org/privilege/content.write
+ *
+ * @remarks If you request cancel for the alreay faces extracted media, this API return MEDIA_CONTENT_ERROR_INVALID_OPERATION
+ *
+ * @param[in] media The media info handle
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ *
+ * @pre This function requires opened connection to content service by media_content_connect().
+ * @see media_content_connect()
+ * @see media_info_extract_face()
+ */
+int media_info_cancel_face(media_info_h media);
+
+/**
 * @brief Creates the media info handle.
 * @details If the information about the file that is already known, you can use this API to generate empty handler.
 *          And you can add the information to the generated handler using media_info_set_XXX() API.
