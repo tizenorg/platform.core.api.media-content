@@ -399,6 +399,30 @@ typedef void (*media_insert_burst_shot_completed_cb)(media_content_error_e error
  */
 typedef void (*media_thumbnail_completed_cb)(media_content_error_e error, const char *path, void *user_data);
 
+/**
+ * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
+ * @brief Called when creating faces information image.
+ * @since_tizen 3.0
+ *
+ * @details This callback is called for completion of extracting the face information on the image. \n
+ *         The following error codes can be delivered. \n
+ *         #MEDIA_CONTENT_ERROR_NONE, \n
+ *         #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, \n
+ *         #MEDIA_CONTENT_ERROR_INVALID_OPERATION, \n
+ *         #MEDIA_CONTENT_ERROR_DB_FAILED, \n
+ *         #MEDIA_CONTENT_ERROR_DB_BUSY, \n
+ *         #MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT
+ *
+ * @param[in] error     The error code
+ * @param[in] face_count      The number of the face which is detected
+ * @param[in] user_data The user data passed from the foreach function
+ *
+ * @pre media_info_extract_face()
+ *
+ * @see media_info_extract_face()
+ */
+typedef void (*media_face_completed_cb)(media_content_error_e error, const int face_count, void *user_data);
+
 
 /**
  * @ingroup CAPI_CONTENT_MEDIA_FOLDER_MODULE
