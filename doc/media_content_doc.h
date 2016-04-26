@@ -507,6 +507,39 @@
  *
  */
 
+/**
+ * @defgroup CAPI_CONTENT_MEDIA_FACE_DETECTION_MODULE Face Detection
+ * @brief The Face Detection API provides functions to detect face information about stored image files.
+ *
+ * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
+ *
+ * @section CAPI_CONTENT_MEDIA_FACE_DETECTION_MODULE_HEADER Required Header
+ *   \#include <media_content.h>
+ *
+ * @section CAPI_CONTENT_MEDIA_FACE_DETECTION_MODULE_FEATURE Related Features
+ * This API is related with the following feature: \n
+ * - http://tizen.org/feature/vision.face_recognition
+ * It is recommended to design feature related codes in your application for reliability. \n
+ *
+ * You can check if a device supports the related features for this API by using @ref CAPI_SYSTEM_SYSTEM_INFO_MODULE, thereby controlling the procedure of your application. \n
+ *
+ * To ensure your application is only running on the device with specific features, please define the features in your manifest file using the manifest editor in the SDK. \n
+ *
+ * More details on featuring your application can be found from <a href="https://developer.tizen.org/development/getting-started/native-application/understanding-tizen-programming/application-filtering"><b>Feature Element</b>.</a>
+ *
+ * @section CAPI_CONTENT_MEDIA_FACE_DETECTION_MODULE_OVERVIEW Overview
+ * The Face Detection API provides functions to detect face information associated with image files. \n
+ * Face information detected by mediavision API. To detect faces, you should use media_info_start_face_detection() API. \n
+ *
+ * API allows to:
+ * - start and cancel face detection with image files
+ *
+ *<p>
+ * For getting the media handle (#media_info_h), call #media_info_create() function.\n
+ * For getting the information related to image files stored in the device, call #media_info_start_face_detection() function.\n
+ * When cancelling face detection is needed after start face detection, it can be cancelled by calling #media_info_cancel_face_detection() function.\n
+ *
+ */
 
 /**
  * @defgroup CAPI_CONTENT_MEDIA_BOOKMARK_MODULE Media Bookmark
