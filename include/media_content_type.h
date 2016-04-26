@@ -147,6 +147,7 @@ typedef enum {
 	MEDIA_CONTENT_ERROR_DB_BUSY                 = MEDIA_CONTENT_ERROR_CLASS | 0x02,    /**< DB operation BUSY */
 	MEDIA_CONTENT_ERROR_NETWORK                 = MEDIA_CONTENT_ERROR_CLASS | 0x03,    /**< Network Fail */
 	MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT     = MEDIA_CONTENT_ERROR_CLASS | 0x04,    /**< Unsupported Content */
+	MEDIA_CONTENT_ERROR_NOT_SUPPORTED           = TIZEN_ERROR_NOT_SUPPORTED,           /**< Not supported */
 } media_content_error_e;
 
 /**
@@ -398,6 +399,32 @@ typedef void (*media_insert_burst_shot_completed_cb)(media_content_error_e error
  * @see media_info_create_thumbnail()
  */
 typedef void (*media_thumbnail_completed_cb)(media_content_error_e error, const char *path, void *user_data);
+
+/**
+ * @ingroup CAPI_CONTENT_MEDIA_FACE_DETECTION_MODULE
+ * @brief Called when face detection on the image is completed.
+ *
+ * @details The following error codes can be delivered. \n
+ *         #MEDIA_CONTENT_ERROR_NONE, \n
+ *         #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, \n
+ *         #MEDIA_CONTENT_ERROR_INVALID_OPERATION, \n
+ *         #MEDIA_CONTENT_ERROR_DB_FAILED, \n
+ *         #MEDIA_CONTENT_ERROR_DB_BUSY, \n
+ *         #MEDIA_CONTENT_ERROR_UNSUPPORTED_CONTENT
+ *
+ * @since_tizen 3.0
+ *
+ * @remarks The callback is called in a separate thread(not in the main loop).
+ *
+ * @param[in] error     The error code
+ * @param[in] face_count      The number of all detected faces
+ * @param[in] user_data The user data passed from the foreach function
+ *
+ * @pre media_info_start_face_detection()
+ *
+ * @see media_info_start_face_detection()
+ */
+typedef void (*media_face_detection_completed_cb)(media_content_error_e error, const int face_count, void *user_data);
 
 
 /**
