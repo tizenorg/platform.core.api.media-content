@@ -1089,6 +1089,13 @@ typedef bool (*media_face_cb)(media_face_h face, void *user_data);
 #define MEDIA_KEYWORD_PINYIN "MEDIA_KEYWORD_PINYIN"  /**< Media keyword pinyin*/
 
 /**
+ *
+ *
+ *
+ */
+#define MEDIA_360 "MEDIA_360"
+
+/**
  * @}
  */
 

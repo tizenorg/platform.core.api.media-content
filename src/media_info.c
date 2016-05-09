@@ -260,6 +260,9 @@ void _media_info_item_get_detail(sqlite3_stmt* stmt, media_info_h media)
 	_media->sync_status = (int)sqlite3_column_int(stmt, MEDIA_INFO_SYNC_STATUS);
 	_media->storage_uuid = g_strdup((const char *)sqlite3_column_text(stmt, MEDIA_INFO_STORAGE_UUID));
 
+
+	_media->is_360 = (int)sqlite3_column_int(stmt, MEDIA_INFO_IS_360);
+
 	if (_media->media_type == MEDIA_CONTENT_TYPE_IMAGE) {
 		_media->image_meta = (image_meta_s *)calloc(1, sizeof(image_meta_s));
 		if (_media->image_meta) {
@@ -818,6 +821,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		_dst->played_position = _src->played_position;
 		_dst->sync_status = _src->sync_status;
 		_dst->request_id = _src->request_id;
+		_dst->is_360= _src->is_360;
 
 		if (_src->media_type == MEDIA_CONTENT_TYPE_IMAGE && _src->image_meta) {
 			_dst->image_meta = (image_meta_s *)calloc(1, sizeof(image_meta_s));
@@ -1829,6 +1833,25 @@ int media_info_is_drm(media_info_h media, bool *is_drm)
 		*is_drm = _media->is_drm;
 		ret = MEDIA_CONTENT_ERROR_NONE;
 	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_is_360(media_info_h media, bool *is_360)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if(_media)
+	{
+		*is_360 = _media->is_360;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	}
+	else
+	{
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	}

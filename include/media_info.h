@@ -1038,6 +1038,7 @@ int media_info_get_storage_id(media_info_h media, char **storage_id);
  * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
  */
 int media_info_is_drm(media_info_h media, bool *is_drm);
+int media_info_is_360(media_info_h media, bool *is_360);
 
 /**
  * @brief Gets the storage type of media info.
