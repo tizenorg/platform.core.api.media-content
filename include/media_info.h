@@ -57,7 +57,7 @@ extern "C" {
  * @remarks You must release the handle using media_info_destroy(). \n
  *                   You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage by using  this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you must add all privilege.
  *
  * @param[in]  path The path to the media file
@@ -96,7 +96,7 @@ int media_info_insert_to_db(const char *path, media_info_h *info);
  *
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage by using  this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you must add all privilege.
  *
  * @param[in] path_array   The path array to the media files
@@ -137,7 +137,7 @@ int media_info_insert_batch_to_db(const char **path_array, unsigned int array_le
  *
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage with this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage with this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage with this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you must add all privilege.
  *
  * @param[in] path_array   The path array to the burst shot images
@@ -1040,6 +1040,22 @@ int media_info_get_storage_id(media_info_h media, char **storage_id);
 int media_info_is_drm(media_info_h media, bool *is_drm);
 
 /**
+ * @brief Checks whether the media is 360 content.
+ * @since_tizen 3.0
+ *
+ * @param[in]  media  The media info handle
+ * @param[out] is_360 @c true if media is 360 content,
+ *                    otherwise @c false if media is not 360 content
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ */
+int media_info_is_360(media_info_h media, bool *is_360);
+
+/**
  * @brief Gets the storage type of media info.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -1489,7 +1505,7 @@ int media_info_update_to_db(media_info_h media);
  *
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage by using  this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you should add all privilege.
  *
  * @param[in] media_id The ID of the media info
@@ -1542,7 +1558,7 @@ int media_info_set_added_time(media_info_h media, time_t added_time);
  *
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage by using this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage by using this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you should add all privilege.
  *
  * @param[in] media    The media info handle
@@ -1611,7 +1627,7 @@ int media_info_create_thumbnail(media_info_h media, media_thumbnail_completed_cb
  * @privlevel public
  * @privilege %http://tizen.org/privilege/content.write
  *
- * @remarks If you request cancel for the alreay thumbnail created media, this API return MEDIA_CONTENT_ERROR_INVALID_OPERATION
+ * @remarks If you request cancel for the already thumbnail created media, this API return MEDIA_CONTENT_ERROR_INVALID_OPERATION
  *
  * @param[in] media The media info handle
  *
@@ -1640,7 +1656,7 @@ int media_info_cancel_thumbnail(media_info_h media);
 *			%http://tizen.org/privilege/externalstorage
 *
 * @remarks If you want to access only internal storage with this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
-*                   Or if you want to access only external storage with this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+*                   Or if you want to access only external storage with this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
 *                   If you can access both storage, you must add all privilege.
 *
 * @param[in] path The path to create the media info handle
