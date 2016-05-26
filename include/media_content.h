@@ -102,7 +102,7 @@ int media_content_disconnect(void);
  *
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage by using  this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you must add all privilege.
  *
  * @param[in] path The file path
@@ -134,7 +134,7 @@ int media_content_scan_file(const char *path);
  *
  * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
  *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
- *                   Or if you want to access only external storage by using  this API, you shold add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   Or if you want to access only external storage by using  this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
  *                   If you can access both storage, you must add all privilege.
  *
  * @param[in] path         The folder path
