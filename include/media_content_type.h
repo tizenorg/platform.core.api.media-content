@@ -1089,6 +1089,13 @@ typedef bool (*media_face_cb)(media_face_h face, void *user_data);
 #define MEDIA_KEYWORD_PINYIN "MEDIA_KEYWORD_PINYIN"  /**< Media keyword pinyin*/
 
 /**
+ * @brief You can use above define to set the condition of media filter and order keyword.
+ * @since_tizen 3.0
+ *
+ */
+#define MEDIA_360 "MEDIA_360"
+
+/**
  * @}
  */
 

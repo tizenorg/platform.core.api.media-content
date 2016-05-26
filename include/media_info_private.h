@@ -128,6 +128,7 @@ typedef enum {
 	MEDIA_INFO_WEATHER,
 	MEDIA_INFO_SYNC_STATUS,
 	MEDIA_INFO_STORAGE_UUID,
+	MEDIA_INFO_IS_360,
 	MEDIA_INFO_ITEM_MAX,
 } media_info_item_e;
 
@@ -310,6 +311,7 @@ typedef struct {
 	char *storage_uuid;
 	int sync_status;
 	unsigned int request_id;
+	int is_360;
 	image_meta_s *image_meta;
 	video_meta_s *video_meta;
 	audio_meta_s *audio_meta;
@@ -476,6 +478,7 @@ typedef struct _media_content_cb_data {
 #define DB_FIELD_MEDIA_LOCATION_TAG_PINYIN		"location_tag_pinyin"
 #define DB_FIELD_MEDIA_AGE_RATING_PINYIN			"age_rating_pinyin"
 #define DB_FIELD_MEDIA_KEYWORD_PINYIN				"keyword_pinyin"
+#define DB_FIELD_MEDIA_360							"is_360"
 
 /* DB field for folder */
 #define DB_FIELD_FOLDER_ID				"folder_uuid"
@@ -581,7 +584,7 @@ typedef struct _media_content_cb_data {
 
 /* Get Media list of Group */
 #define MEDIA_INFO_ITEM "media_uuid, path, file_name, media_type, mime_type, size, added_time, modified_time, thumbnail_path, description, \
-							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, exposure_time, fnumber, iso, model, width, height, datetaken, orientation, title, album, artist, album_artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, bitpersample, duration, played_count, last_played_time, last_played_position, samplerate, channel, burst_id, timeline, weather, sync_status, storage_uuid"
+							rating, favourite, author, provider, content_name, category, location_tag, age_rating, keyword, is_drm, storage_type, longitude, latitude, altitude, exposure_time, fnumber, iso, model, width, height, datetaken, orientation, title, album, artist, album_artist, genre, composer, year, recorded_date, copyright, track_num, bitrate, bitpersample, duration, played_count, last_played_time, last_played_position, samplerate, channel, burst_id, timeline, weather, sync_status, storage_uuid, is_360"
 
 /*Folder info*/
 #define UPDATE_FOLDER_ORDER					"UPDATE "DB_TABLE_FOLDER" SET folder_order=%d WHERE folder_uuid=%Q"
