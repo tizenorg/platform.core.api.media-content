@@ -1040,6 +1040,23 @@ int media_info_get_storage_id(media_info_h media, char **storage_id);
 int media_info_is_drm(media_info_h media, bool *is_drm);
 
 /**
+ * @brief Checks whether the media is 360 content.
+ * @since_tizen 3.0
+ *
+ * @param[in]  media  The media info handle
+ * @param[out] is_360 @c true if media is 360 content,
+ *                    otherwise @c false if media is not 360 content
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ */
+int media_info_is_360(media_info_h media, bool *is_360);
+
+/**
  * @brief Gets the storage type of media info.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *

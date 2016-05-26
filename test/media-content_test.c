@@ -500,6 +500,11 @@ bool media_item_cb(media_info_h media, void *user_data)
 		media_content_error("error when get info : [%d]", ret);
 	media_content_debug("is_drm : [%d]", b_value);
 
+	ret = media_info_is_360(media, &b_value);
+	if(ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("error when get info : [%d]", ret);
+	media_content_debug("is_360 : [%d]", b_value);
+
 	ret = media_info_set_weather(media, "Sunny");
 	if (ret != MEDIA_CONTENT_ERROR_NONE) {
 		media_content_error("Fail to set weather");

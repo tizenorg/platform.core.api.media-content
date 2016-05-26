@@ -281,6 +281,9 @@ static int __media_content_create_attr_handle(void)
 	ret = _media_filter_attribute_add(g_attr_handle, BOOKMARK_MARKED_TIME, DB_FIELD_BOOKMARK_MARKED_TIME);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_360, DB_FIELD_MEDIA_360);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
 	/* Storage*/
 	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_STORAGE_ID, DB_FIELD_STORAGE_ID);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
@@ -448,6 +451,9 @@ static int __media_content_create_alias_attr_handle(void)
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_STORAGE_TYPE, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_STORAGE_TYPE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_360, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_360);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
 	/* Pinyin*/
