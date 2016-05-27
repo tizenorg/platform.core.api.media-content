@@ -65,8 +65,8 @@ typedef enum {
 typedef enum {
 	MEDIA_CONTENT_STORAGE_INTERNAL	= 0,	/**< The device's internal storage */
 	MEDIA_CONTENT_STORAGE_EXTERNAL	= 1,	/**< The device's external storage like sd card*/
-	MEDIA_CONTENT_STORAGE_EXTERNAL_USB = 2, /**< The external USB storage (Since 2.4) */
-	MEDIA_CONTENT_STORAGE_CLOUD	= 100,	/**< The Cloud storage (Since 2.4) */
+	MEDIA_CONTENT_STORAGE_EXTERNAL_USB = 2, /**< The external USB storage (Since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif) */
+	MEDIA_CONTENT_STORAGE_CLOUD	= 100,	/**< The Cloud storage (Since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif) */
 } media_content_storage_e;
 
 /**

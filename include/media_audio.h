@@ -376,7 +376,7 @@ int audio_meta_get_channel(audio_meta_h audio, int *channel);
 int audio_meta_get_duration(audio_meta_h audio, int *duration);
 
 /**
- * @deprecated Deprecated since 2.4. [Use media_info_get_played_count() instead]
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif. [Use media_info_get_played_count() instead]
  * @brief Gets the number of times the given audio has been played.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -393,7 +393,7 @@ int audio_meta_get_duration(audio_meta_h audio, int *duration);
 int audio_meta_get_played_count(audio_meta_h audio, int *played_count);
 
 /**
- * @deprecated Deprecated since 2.4. [Use media_info_get_played_time() instead]
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif. [Use media_info_get_played_time() instead]
  * @brief Gets the last played time parameter of the audio.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -411,7 +411,7 @@ int audio_meta_get_played_count(audio_meta_h audio, int *played_count);
 int audio_meta_get_played_time(audio_meta_h audio, time_t *played_time);
 
 /**
- * @deprecated Deprecated since 2.4.
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif.
  * @brief Gets the played position parameter of the audio.
  * @details This function returns the elapsed playback position parameter of the audio as a period
  *          starting from the beginning of the track.
@@ -431,7 +431,7 @@ int audio_meta_get_played_time(audio_meta_h audio, time_t *played_time);
 int audio_meta_get_played_position(audio_meta_h audio, int *played_position);
 
 /**
- * @deprecated Deprecated since 2.4. [Use media_info_increase_played_count() instead]
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif. [Use media_info_increase_played_count() instead]
  * @brief Sets the played count of the audio.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -450,7 +450,7 @@ int audio_meta_get_played_position(audio_meta_h audio, int *played_position);
 int audio_meta_set_played_count(audio_meta_h audio, int played_count);
 
 /**
- * @deprecated Deprecated since 2.4. [Use media_info_set_played_time() instead]
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif. [Use media_info_set_played_time() instead]
  * @brief Sets the last played time of the audio.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -469,7 +469,7 @@ int audio_meta_set_played_count(audio_meta_h audio, int played_count);
 int audio_meta_set_played_time(audio_meta_h audio, time_t played_time);
 
 /**
- * @deprecated Deprecated since 2.4.
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif.
  * @brief Sets the played position of the audio.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif

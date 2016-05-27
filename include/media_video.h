@@ -361,7 +361,7 @@ int video_meta_get_width(video_meta_h video, int *width);
 int video_meta_get_height(video_meta_h video, int *height);
 
 /**
- * @deprecated Deprecated since 2.4. [Use media_info_get_played_count() instead]
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif. [Use media_info_get_played_count() instead]
  * @brief Gets the played count of the video.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -378,7 +378,7 @@ int video_meta_get_height(video_meta_h video, int *height);
 int video_meta_get_played_count(video_meta_h video, int *played_count);
 
 /**
- * @deprecated Deprecated since 2.4. [Use media_info_get_played_time() instead]
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif. [Use media_info_get_played_time() instead]
  * @brief Gets the last played time parameter of the video.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -395,7 +395,7 @@ int video_meta_get_played_count(video_meta_h video, int *played_count);
 int video_meta_get_played_time(video_meta_h video, time_t *played_time);
 
 /**
- * @deprecated Deprecated since 2.4.
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif.
  * @brief Gets the played position parameter of the video.
  * @details This function returns the elapsed playback position parameter of the video as period
  *          starting from the beginning of the movie.
@@ -415,7 +415,7 @@ int video_meta_get_played_time(video_meta_h video, time_t *played_time);
 int video_meta_get_played_position(video_meta_h video, int *played_position);
 
 /**
- * @deprecated Deprecated since 2.4. [Use media_info_increase_played_count() instead]
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif. [Use media_info_increase_played_count() instead]
  * @brief Sets the played count of the video.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -434,7 +434,7 @@ int video_meta_get_played_position(video_meta_h video, int *played_position);
 int video_meta_set_played_count(video_meta_h video, int played_count);
 
 /**
- * @deprecated Deprecated since 2.4. [Use media_info_set_played_time() instead]
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif. [Use media_info_set_played_time() instead]
  * @brief Sets the last played time of the video.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
@@ -453,7 +453,7 @@ int video_meta_set_played_count(video_meta_h video, int played_count);
 int video_meta_set_played_time(video_meta_h video, time_t played_time);
 
 /**
- * @deprecated Deprecated since 2.4.
+ * @deprecated Deprecated since @if Mobile 2.4 @elseif WEARABLE 3.0 @endif.
  * @brief Sets the played position of the video.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
