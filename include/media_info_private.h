@@ -64,7 +64,7 @@ extern "C" {
 #define SQLITE3_SAFE_FREE(x)	{if (x != NULL) {sqlite3_free(x); x = NULL; } }
 
 #define MEDIA_CONTENT_THUMB_DEFAULT_PATH		tzplatform_mkpath(TZ_USER_SHARE, "media/.thumb/thumb_default.png")
-#define MEDIA_CONTENT_INSERT_FILES_PATH		tzplatform_getenv(TZ_USER_SHARE)
+#define MEDIA_CONTENT_INSERT_FILES_PATH		"/tmp"
 
 #define MAX_QUERY_SIZE 4096
 #define DEFAULT_QUERY_SIZE 1024
