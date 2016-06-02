@@ -115,6 +115,7 @@ typedef enum {
 typedef enum {
 	MEDIA_CONTENT_ORDER_ASC   = 0,      /**< Ascending order*/
 	MEDIA_CONTENT_ORDER_DESC  = 1,      /**< Descending order*/
+	MEDIA_CONTENT_ORDER_OTHER = 2,		/** order by order key**/
 } media_content_order_e;
 
 /**

@@ -779,73 +779,78 @@ int _media_filter_attribute_option_generate(attribute_h attr, filter_h filter, c
 	memset(option_query, 0x00, sizeof(option_query));
 
 	/* Order by*/
-	if (STRING_VALID(_filter->order_keyword) && ((_filter->order_type == MEDIA_CONTENT_ORDER_ASC) || (_filter->order_type == MEDIA_CONTENT_ORDER_DESC))) {
-		unsigned int idx = 0;
-		int total_str_size = 0;
-		GList *token_list = NULL;
-		token_t *token;
-		char *attr_str;
+	if (STRING_VALID(_filter->order_keyword)) {
+		if ((_filter->order_type == MEDIA_CONTENT_ORDER_ASC) || (_filter->order_type == MEDIA_CONTENT_ORDER_DESC)) {
+			unsigned int idx = 0;
+			int total_str_size = 0;
+			GList *token_list = NULL;
+			token_t *token;
+			char *attr_str;
 
-		if (__tokenize_attribute(&token_list, _filter->order_keyword) < 0) {
-			media_content_error("INVALID_PARAMETER(0x%08x):Invalid the condition", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
-			return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
-		}
+			if (__tokenize_attribute(&token_list, _filter->order_keyword) < 0) {
+				media_content_error("INVALID_PARAMETER(0x%08x):Invalid the condition", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+			}
 
-		for (idx = 0; idx < g_list_length(token_list); idx++) {
-			token = (token_t*)g_list_nth_data(token_list, idx);
+			for (idx = 0; idx < g_list_length(token_list); idx++) {
+				token = (token_t*)g_list_nth_data(token_list, idx);
 
-			if (token->type == UNKNOWN_TYPE) {
-				char *replace_str = __media_filter_replace_attr(attr, token->str);
-				if (STRING_VALID(replace_str)) {
-					attr_str = (char*)calloc(strlen(replace_str) + COLLATE_STR_SIZE + 1, sizeof(char));
-					if (attr_str == NULL) {
-						media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				if (token->type == UNKNOWN_TYPE) {
+					char *replace_str = __media_filter_replace_attr(attr, token->str);
+					if (STRING_VALID(replace_str)) {
+						attr_str = (char*)calloc(strlen(replace_str) + COLLATE_STR_SIZE + 1, sizeof(char));
+						if (attr_str == NULL) {
+							media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+							SAFE_FREE(replace_str);
+							continue;
+						}
+
+						if (_filter->order_collate_type == MEDIA_CONTENT_COLLATE_NOCASE || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_RTRIM || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_LOCALIZED)
+							snprintf(attr_str, strlen(replace_str) + COLLATE_STR_SIZE + 1, "%s COLLATE %s %s", replace_str, __get_collate_str(_filter->order_collate_type), __get_order_str(_filter->order_type));
+						else
+							snprintf(attr_str, strlen(replace_str) + COLLATE_STR_SIZE + 1, "%s %s", replace_str, __get_order_str(_filter->order_type));
+
+						SAFE_FREE(token->str);
+						token->str = attr_str;
 						SAFE_FREE(replace_str);
-						continue;
+					} else {
+						media_content_error("There is no matched db field for %s", token->str);
 					}
+				}
 
-					if (_filter->order_collate_type == MEDIA_CONTENT_COLLATE_NOCASE || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_RTRIM || _filter->order_collate_type == MEDIA_CONTENT_COLLATE_LOCALIZED)
-						snprintf(attr_str, strlen(replace_str) + COLLATE_STR_SIZE + 1, "%s COLLATE %s %s", replace_str, __get_collate_str(_filter->order_collate_type), __get_order_str(_filter->order_type));
-					else
-						snprintf(attr_str, strlen(replace_str) + COLLATE_STR_SIZE + 1, "%s %s", replace_str, __get_order_str(_filter->order_type));
+				total_str_size += strlen(token->str) + 1;
+				/* media_content_debug("[%d][type:%d]:%s", idx, token->type, token->str); */
+			}
+
+			/* make the statment */
+			char *generated_condition = NULL;
+			size = total_str_size + COLLATE_STR_SIZE + 1;
+			generated_condition = (char*)calloc(size, sizeof(char));
+
+			for (idx = 0; idx < g_list_length(token_list); idx++) {
+				token = (token_t*)g_list_nth_data(token_list, idx);
+
+				if ((token != NULL) && STRING_VALID(token->str)) {
+					/* media_content_debug("[%d] %s", idx, token->str); */
+					SAFE_STRLCAT(generated_condition, token->str, size);
+					SAFE_STRLCAT(generated_condition, SPACE, size);
 
 					SAFE_FREE(token->str);
-					token->str = attr_str;
-					SAFE_FREE(replace_str);
-				} else {
-					media_content_error("There is no matched db field for %s", token->str);
+					SAFE_FREE(token);
 				}
 			}
 
-			total_str_size += strlen(token->str) + 1;
-			/* media_content_debug("[%d][type:%d]:%s", idx, token->type, token->str); */
+			snprintf(condition, sizeof(condition), "ORDER BY %s", generated_condition);
+			SAFE_STRLCAT(option_query, condition, sizeof(option_query));
+
+			if (token_list != NULL)
+				g_list_free(token_list);
+
+			SAFE_FREE(generated_condition);
+		} else {
+			SAFE_STRLCAT(option_query, _filter->order_keyword, sizeof(option_query));
+			media_content_error("option_query [%s]", option_query);
 		}
-
-		/* make the statment */
-		char *generated_condition = NULL;
-		size = total_str_size + COLLATE_STR_SIZE + 1;
-		generated_condition = (char*)calloc(size, sizeof(char));
-
-		for (idx = 0; idx < g_list_length(token_list); idx++) {
-			token = (token_t*)g_list_nth_data(token_list, idx);
-
-			if ((token != NULL) && STRING_VALID(token->str)) {
-				/* media_content_debug("[%d] %s", idx, token->str); */
-				SAFE_STRLCAT(generated_condition, token->str, size);
-				SAFE_STRLCAT(generated_condition, SPACE, size);
-
-				SAFE_FREE(token->str);
-				SAFE_FREE(token);
-			}
-		}
-
-		snprintf(condition, sizeof(condition), "ORDER BY %s", generated_condition);
-		SAFE_STRLCAT(option_query, condition, sizeof(option_query));
-
-		if (token_list != NULL)
-			g_list_free(token_list);
-
-		SAFE_FREE(generated_condition);
 	}
 
 	/* offset */
