@@ -313,6 +313,7 @@ static int __media_playlist_import_item_from_file(const char* playlist_path, cha
 			}
 
 			(*item_list)[current_index] = malloc(tmp_str_len + 1);
+			memset((*item_list)[current_index], 0, tmp_str_len + 1);
 			if ((*item_list)[current_index] == NULL) {
 				__media_playlist_destroy_import_item(*item_list, current_index);
 				SAFE_FREE(buf);
@@ -320,12 +321,12 @@ static int __media_playlist_import_item_from_file(const char* playlist_path, cha
 				media_content_error("Out of Memory");
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
-			memmove((*item_list)[current_index], tmp_str, tmp_str_len + 1);
+			memmove((*item_list)[current_index], tmp_str, tmp_str_len);
 
 			current_index += 1;
 		}
 
-		tmp_buf += (tmp_str_len + 1);
+		tmp_buf += (tmp_str_len);
 	}
 
 	*item_count = current_index;
