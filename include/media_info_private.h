@@ -59,6 +59,7 @@ extern "C" {
 #define SAFE_STRLCPY(dst, src, n)	((g_strlcpy(dst, src, n) < n) ? TRUE : FALSE)
 #define SAFE_STRLCAT(dst, src, n)	g_strlcat(dst, src, n);
 #define SAFE_FREE(src)		{if (src) {free(src); src = NULL; } }
+#define SAFE_G_FREE(src)	{if (src) {g_free(src); src = NULL; } }
 #define STRING_VALID(str)		((str != NULL && strlen(str) > 0) ? TRUE : FALSE)
 #define SQLITE3_FINALIZE(x)	{if (x != NULL) sqlite3_finalize(x); }
 #define SQLITE3_SAFE_FREE(x)	{if (x != NULL) {sqlite3_free(x); x = NULL; } }

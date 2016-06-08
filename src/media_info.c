@@ -1812,6 +1812,7 @@ int media_info_get_storage_id(media_info_h media, char **storage_id)
 			media_content_retvm_if(*storage_id == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
 		} else {
 			*storage_id = NULL;
+			ret = MEDIA_CONTENT_ERROR_DB_FAILED;
 		}
 		ret = MEDIA_CONTENT_ERROR_NONE;
 	} else {
