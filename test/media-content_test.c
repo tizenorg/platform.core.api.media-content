@@ -877,7 +877,7 @@ int test_filter_create(void)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	/* Filter for media */
-	const char *condition = "MEDIA_TYPE=3";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
+	const char *condition = "MEDIA_TYPE=0";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 	/*const char *condition = "MEDIA_TYPE IS NOT 0 AND MEDIA_DESCRIPTION IS NOT NULL"; */	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&g_filter);
@@ -2467,6 +2467,190 @@ int test_create_thumbnail(int cancel)
 	return ret;
 }
 
+bool face_cb(media_face_h face, void *user_data)
+{
+	if (user_data != NULL) {
+		unsigned x, y, rect_w, rect_h;
+		media_face_get_face_rect(face, &x, &y, &rect_w, &rect_h);
+		media_content_debug("face(%p) x = %d, y = %d [%d, %d]", face, x, y, rect_w, rect_h);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+void face_detection_complete_cb(media_content_error_e error, int count, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	g_cnt++;
+
+	media_content_debug("=================[%d][%d]", g_media_cnt, g_cnt);
+	media_content_debug("error_code [%d]", error);
+	media_content_debug("face_count [%d]", count);
+	if (count == 0) {
+		media_content_debug("No faces are detected!");
+	} else if (user_data != NULL) {
+		media_info_h media = (media_info_h)user_data;
+		char *media_id = NULL;
+		ret = media_info_get_media_id(media, &media_id);
+		if (ret != MEDIA_CONTENT_ERROR_NONE)
+			media_content_error("media_info_get_media_id failed: %d", ret);
+		if (media_id != NULL) {
+			ret = media_info_foreach_face_from_db(media_id, NULL, face_cb, NULL);
+			if (ret != MEDIA_CONTENT_ERROR_NONE)
+				media_content_error("media_info_foreach_face_from_db failed: %d", ret);
+		}
+		ret = media_info_destroy(media);
+		if (ret != MEDIA_CONTENT_ERROR_NONE)
+			media_content_error("media_info_destroy failed: %d", ret);
+	}
+
+	if (g_cnt == g_media_cnt)
+		g_main_loop_quit(g_loop);
+
+	return;
+}
+
+bool start_face_detection_cb(media_info_h media, void *user_data)
+{
+	char *media_id = NULL;
+	media_info_h dst = NULL;
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	if (media == NULL) {
+		media_content_debug("NO Item");
+		return true;
+	}
+
+	ret = media_info_get_media_id(media, &media_id);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("media_info_get_media_id failed: %d", ret);
+	else
+		media_content_debug("media_id : [%s]", media_id);
+
+	ret = media_info_clone(&dst, media);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("media_info_clone failed: %d", ret);
+	else {
+		ret = media_info_start_face_detection(dst, face_detection_complete_cb, dst);
+		if (ret != MEDIA_CONTENT_ERROR_NONE)
+			media_content_error("media_info_start_face_detection failed: %d", ret);
+	}
+
+	/* fix prevent: Resource leak */
+	SAFE_FREE(media_id);
+
+	return true;
+}
+
+bool cancel_face_detection_cb(media_info_h media, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	char *media_id = NULL;
+	media_info_h dst = NULL;
+
+	g_cnt++;
+
+	if (media == NULL) {
+		media_content_debug("NO Item");
+		return true;
+	}
+
+	ret = media_info_get_media_id(media, &media_id);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("media_info_get_media_id failed: %d", ret);
+	else
+		media_content_debug("media_id : [%s]", media_id);
+
+	ret = media_info_clone(&dst, media);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("media_info_clone failed: %d", ret);
+
+	ret = media_info_cancel_face_detection(dst);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("media_info_cancel_face_detection failed: %d", ret);
+
+	ret = media_info_destroy(dst);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+			media_content_error("media_info_destroy failed: %d", ret);
+
+	if (g_cnt == g_media_cnt)
+		g_main_loop_quit(g_loop);
+
+	/* fix prevent: Resource leak */
+	SAFE_FREE(media_id);
+
+	return true;
+}
+
+gboolean face_detection_start(gpointer data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	ret = media_info_foreach_media_from_db(g_filter, start_face_detection_cb, NULL);
+
+	if (ret == MEDIA_CONTENT_ERROR_NONE)
+		media_content_debug("media_info_foreach_media_from_db is success");
+	else
+		media_content_error("media_info_foreach_media_from_db is failed");
+
+	return false;
+}
+
+gboolean face_detection_cancel(gpointer data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	ret = media_info_foreach_media_from_db(g_filter, cancel_face_detection_cb, NULL);
+
+	if (ret == MEDIA_CONTENT_ERROR_NONE)
+		media_content_debug("media_info_foreach_media_from_db is success");
+	else
+		media_content_error("media_info_foreach_media_from_db is failed");
+
+	return false;
+}
+
+int test_start_face_detection(int cancel)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	GSource *source = NULL;
+	GMainContext *context = NULL;
+
+	test_filter_create();
+
+	ret = media_info_get_media_count_from_db(g_filter, &g_media_cnt);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("media_info_get_media_count_from_db failed: %d", ret);
+	else
+		media_content_debug("media_count : [%d]", g_media_cnt);
+
+	if (g_media_cnt == 0) {
+		goto END;
+	}
+	g_loop = g_main_loop_new(NULL, FALSE);
+	context = g_main_loop_get_context(g_loop);
+	source = g_idle_source_new();
+	g_source_set_callback(source, face_detection_start, NULL, NULL);
+	g_source_attach(source, context);
+
+	/* Logic to cancel */
+	if (cancel) {
+		GSource *cancel_src = NULL;
+		cancel_src = g_idle_source_new();
+		g_source_set_callback(cancel_src, face_detection_cancel, NULL, NULL);
+		g_source_attach(cancel_src, context);
+	}
+
+	g_main_loop_run(g_loop);
+	g_main_loop_unref(g_loop);
+
+END:
+	test_filter_destroy();
+
+	return ret;
+}
+
 int test_disconnect_database(void)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -3325,6 +3509,10 @@ int main(int argc, char *argv[])
 	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		return MEDIA_CONTENT_ERROR_NONE;
 
+	ret = test_start_face_detection(FALSE);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		return ret;
+
 #if 0
 	ret = test_move();
 	if (ret != MEDIA_CONTENT_ERROR_NONE)
@@ -3383,6 +3571,10 @@ int main(int argc, char *argv[])
 		return ret;
 
 	ret = test_create_thumbnail(TRUE);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		return ret;
+
+	ret = test_extrace_face(TRUE);
 	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		return ret;
 

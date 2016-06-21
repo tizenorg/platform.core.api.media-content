@@ -16,11 +16,14 @@
 
 #include <media_info.h>
 #include <media-thumbnail.h>
+#include <media-util-dcm.h>
 #include <media_info_private.h>
 #include <media_util_private.h>
+#include <system_info.h>
 
 static void __media_info_insert_completed_cb(media_request_result_s *result, void *user_data);
 static void __media_info_thumbnail_completed_cb(int error, const char *path, void *user_data);
+static void __media_info_face_completed_cb(int error, const int face_count, void *user_data);
 static bool __media_info_delete_batch_cb(media_info_h media, void *user_data);
 static int __media_info_insert_batch(media_batch_insert_e insert_type, const char **path_array, unsigned int array_length, media_insert_completed_cb completed_cb, void *user_data);
 
@@ -96,6 +99,38 @@ static void __media_info_thumbnail_completed_cb(int error, const char *path, voi
 	}
 
 	SAFE_FREE(_thumb_cb);
+
+	return;
+}
+
+static bool __media_info_isFaceRecognition_feature_supported()
+{
+	bool isFaceRecognitionSupported = false;
+
+	const int nRetVal = system_info_get_platform_bool("http://tizen.org/feature/vision.face_recognition", &isFaceRecognitionSupported);
+
+	if (nRetVal != SYSTEM_INFO_ERROR_NONE) {
+		media_content_debug("SYSTEM_INFO_ERROR: vision.face_recognition [%d]", nRetVal);
+		return false;
+	}
+
+	return isFaceRecognitionSupported;
+}
+
+static void __media_info_face_completed_cb(int error, const int face_count, void *user_data)
+{
+	int error_value = MEDIA_CONTENT_ERROR_NONE;
+
+	media_face_cb_s *_face_cb = (media_face_cb_s *)user_data;
+
+	if (_face_cb != NULL) {
+		media_content_debug("error [%d], face_count [%d]", error, face_count);
+		error_value = _content_error_capi(MEDIA_THUMBNAIL_TYPE, error);
+		if (_face_cb->face_completed_cb)
+			_face_cb->face_completed_cb(error_value, face_count, _face_cb->user_data);
+	}
+
+	SAFE_FREE(_face_cb);
 
 	return;
 }
@@ -819,6 +854,7 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		_dst->played_position = _src->played_position;
 		_dst->sync_status = _src->sync_status;
 		_dst->request_id = _src->request_id;
+		_dst->face_request_id = _src->face_request_id;
 		_dst->is_360 = _src->is_360;
 
 		if (_src->media_type == MEDIA_CONTENT_TYPE_IMAGE && _src->image_meta) {
@@ -2581,6 +2617,58 @@ int media_info_cancel_thumbnail(media_info_h media)
 
 	if (_media != NULL && STRING_VALID(_media->media_id) && STRING_VALID(_media->file_path) && _media->request_id > 0) {
 		ret = thumbnail_request_cancel_media(_media->request_id, _media->file_path);
+		ret = _content_error_capi(MEDIA_THUMBNAIL_TYPE, ret);
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_start_face_detection(media_info_h media, media_face_detection_completed_cb callback, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	static unsigned int req_id = 0;
+	media_info_s *_media = (media_info_s*)media;
+
+	if (!__media_info_isFaceRecognition_feature_supported()) {
+		media_content_error("NOT_SUPPORTED(0x%08x)", MEDIA_CONTENT_ERROR_NOT_SUPPORTED);
+		return MEDIA_CONTENT_ERROR_NOT_SUPPORTED;
+	}
+
+	if (_media != NULL && STRING_VALID(_media->media_id) && STRING_VALID(_media->file_path)) {
+		media_face_cb_s *_face_cb = (media_face_cb_s*)calloc(1, sizeof(media_face_cb_s));
+		media_content_retvm_if(_face_cb == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+		req_id++;
+		_media->face_request_id = req_id;
+
+		_face_cb->handle = _media;
+		_face_cb->user_data = user_data;
+		_face_cb->face_completed_cb = callback;
+
+		ret = dcm_request_extract_face_async(_media->face_request_id, _media->file_path, (FaceFunc)__media_info_face_completed_cb, (void *)_face_cb, tzplatform_getuid(TZ_USER_NAME));
+		ret = _content_error_capi(MEDIA_THUMBNAIL_TYPE, ret);
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_cancel_face_detection(media_info_h media)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if (!__media_info_isFaceRecognition_feature_supported()) {
+		media_content_error("NOT_SUPPORTED(0x%08x)", MEDIA_CONTENT_ERROR_NOT_SUPPORTED);
+		return MEDIA_CONTENT_ERROR_NOT_SUPPORTED;
+	}
+
+	if (_media != NULL && STRING_VALID(_media->media_id) && STRING_VALID(_media->file_path) && _media->face_request_id > 0) {
+		ret = dcm_request_cancel_face(_media->face_request_id, _media->file_path);
 		ret = _content_error_capi(MEDIA_THUMBNAIL_TYPE, ret);
 	} else {
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);

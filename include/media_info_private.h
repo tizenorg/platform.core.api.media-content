@@ -312,6 +312,7 @@ typedef struct {
 	char *storage_uuid;
 	int sync_status;
 	unsigned int request_id;
+	unsigned int face_request_id;
 	int is_360;
 	image_meta_s *image_meta;
 	video_meta_s *video_meta;
@@ -361,6 +362,12 @@ typedef struct {
 	void *user_data;
 	media_thumbnail_completed_cb thumbnail_completed_cb;
 } media_thumbnail_cb_s;
+
+typedef struct {
+	media_info_s *handle;
+	void *user_data;
+	media_face_detection_completed_cb face_completed_cb;
+} media_face_cb_s;
 
 typedef struct {
 	media_insert_completed_cb insert_completed_cb;
@@ -642,6 +649,7 @@ typedef struct _media_content_cb_data {
 #define SELECT_MEDIA_COUNT_FROM_MEDIA_BY_ID		"SELECT COUNT(*) FROM "DB_TABLE_MEDIA_VIEW" WHERE media_uuid='%q' AND validity=1"
 #define SELECT_FACE_COUNT_BY_MEDIA_ID		"SELECT COUNT(*) FROM "FACE_MEDIA_JOIN" AND fa.media_uuid='%s'"
 #define SELECT_FACE_LIST_BY_MEDIA_ID		"SELECT fa.face_uuid, fa.media_uuid, fa.face_rect_x, fa.face_rect_y, fa.face_rect_w, fa.face_rect_h, fa.orientation, fa.face_tag FROM "FACE_MEDIA_JOIN" AND fa.media_uuid='%s'"
+#define SELECT_FACE_PATH_FROM_MEDIA		"SELECT path FROM "DB_TABLE_MEDIA_VIEW" media_uuid='%s'"
 
 #define DEFAULT_MEDIA_STORAGE_ID			"media"
 

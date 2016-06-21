@@ -1,6 +1,6 @@
 Name:       capi-content-media-content
 Summary:    A Media content library in Tizen Native API
-Version:    0.2.79
+Version:    0.2.80
 Release:    0
 Group:      Multimedia/API
 License:    Apache-2.0
@@ -9,6 +9,7 @@ Source1001:     capi-content-media-content.manifest
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(capi-base-common)
+BuildRequires:  pkgconfig(capi-system-info)
 BuildRequires:  pkgconfig(libmedia-service)
 BuildRequires:  pkgconfig(media-thumbnail)
 BuildRequires:  pkgconfig(libmedia-utils)
@@ -55,6 +56,7 @@ cp -rf %{_builddir}/%{name}-%{version}/LICENSE.APLv2.0 %{buildroot}/%{_datadir}/
 %{_libdir}/libcapi-content-media-content.so.*
 #License
 %{_datadir}/license/%{name}
+%{_bindir}/*
 
 %files devel
 %manifest %{name}.manifest
