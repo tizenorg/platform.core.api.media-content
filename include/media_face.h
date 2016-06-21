@@ -27,8 +27,8 @@ extern "C" {
  * @file media_face.h
  * @brief This file contains the media face API and related to all operations with the face information of the image in Media DB. \n
  *             Functions include cloning and destroying the face handler, getting face information such as face id, face coordinates in file, \n
- *             face tag. Face information detected and managed by DB automatically when image contents scanning.  \n
- *             And you can insert,update,delete face information manually.
+ *             face tag. Face information will be managed by DB. To insert face information, you should use media_face_insert_to_db() \n
+ *             or media_info_start_face_detection() API. And you can insert,update,delete face information manually.
  */
 
 /**
@@ -269,7 +269,7 @@ int media_face_insert_to_db(media_face_h face);
  *
  * @details The function updates the given media face in the media database. The function should be called after any change in face, to be updated to the media
  * database. For example, after using media_face_set_orientation() for setting the orientation of the face, media_face_update_to_db() function should be called so as to update
- * the given face attibutes in the media database.
+ * the given face attributes in the media database.
  * @since_tizen 3.0
  *
  * @privlevel public
