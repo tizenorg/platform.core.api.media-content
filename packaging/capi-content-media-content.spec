@@ -56,7 +56,7 @@ cp -rf %{_builddir}/%{name}-%{version}/LICENSE.APLv2.0 %{buildroot}/%{_datadir}/
 %{_libdir}/libcapi-content-media-content.so.*
 #License
 %{_datadir}/license/%{name}
-%{_bindir}/*
+#%{_bindir}/*
 
 %files devel
 %manifest %{name}.manifest
