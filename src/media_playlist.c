@@ -282,7 +282,7 @@ static int __media_playlist_import_item_from_file(const char* playlist_path, cha
 	}
 
 	char format[25];
-	snprintf(format, 25, "%%%d[^\n]", MAX_TMP_STR);
+	snprintf(format, 25, "%%%d[^\n]", MAX_TMP_STR - 1);
 
 	while ((sscanf(tmp_buf, format, tmp_str) == 1) || (*tmp_buf == '\n')) {
 		if (*tmp_buf == '\n') {
