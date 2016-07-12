@@ -877,7 +877,7 @@ int test_filter_create(void)
 	int ret = MEDIA_CONTENT_ERROR_NONE;
 
 	/* Filter for media */
-	const char *condition = "MEDIA_TYPE=0";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
+	const char *condition = "MEDIA_TYPE=3";	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 	/*const char *condition = "MEDIA_TYPE IS NOT 0 AND MEDIA_DESCRIPTION IS NOT NULL"; */	/*MEDIA_TYPE 0-image, 1-video, 2-sound, 3-music, 4-other*/
 
 	ret = media_filter_create(&g_filter);
@@ -3508,12 +3508,11 @@ int main(int argc, char *argv[])
 	ret = test_connect_database();
 	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		return MEDIA_CONTENT_ERROR_NONE;
-
+#if 0
 	ret = test_start_face_detection(FALSE);
 	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		return ret;
 
-#if 0
 	ret = test_move();
 	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		return ret;
