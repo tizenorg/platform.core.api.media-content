@@ -36,7 +36,13 @@ cp %{SOURCE1001} .
 
 %build
 MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
-%cmake . -DFULLVER=%{version} -DMAJORVER=${MAJORVER}
+%cmake . -DFULLVER=%{version} -DMAJORVER=${MAJORVER} \
+%if 0%{?TIZEN_PRODUCT_TV}
+ -DTIZEN_PRODUCT_TV=YES
+%else
+ -DTIZEN_PRODUCT_TV=NO
+%endif
+
 %__make %{?jobs:-j%jobs}
 
 %install
@@ -56,7 +62,6 @@ cp -rf %{_builddir}/%{name}-%{version}/LICENSE.APLv2.0 %{buildroot}/%{_datadir}/
 %{_libdir}/libcapi-content-media-content.so.*
 #License
 %{_datadir}/license/%{name}
-#%{_bindir}/*
 
 %files devel
 %manifest %{name}.manifest
