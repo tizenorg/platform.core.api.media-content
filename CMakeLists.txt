@@ -5,8 +5,11 @@ PROJECT(${fw_name})
 
 SET(CMAKE_INSTALL_PREFIX /usr)
 SET(PREFIX ${CMAKE_INSTALL_PREFIX})
-
-SET(INC_DIR include)
+IF(TIZEN_PRODUCT_TV)
+    SET(INC_DIR include_product)
+ELSE()
+    SET(INC_DIR include)
+ENDIF(TIZEN_PRODUCT_TV)
 INCLUDE_DIRECTORIES(${INC_DIR})
 
 SET(dependents "dlog libmedia-service media-thumbnail libmedia-utils capi-base-common capi-system-info vconf cynara-client cynara-creds-socket cynara-session")
@@ -27,13 +30,21 @@ ENDIF("${ARCH}" STREQUAL "arm")
 
 ADD_DEFINITIONS("-DPREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
 ADD_DEFINITIONS("-DTIZEN_DEBUG")
+IF(TIZEN_PRODUCT_TV)
+    ADD_DEFINITIONS("-D_USE_TV_PROFILE")
+ENDIF(TIZEN_PRODUCT_TV)
 
 SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--rpath=${LIB_INSTALL_DIR}")
 
 aux_source_directory(src SOURCES)
 ADD_LIBRARY(${fw_name} SHARED ${SOURCES})
 
-TARGET_LINK_LIBRARIES(${fw_name} ${${fw_name}_LDFLAGS})
+IF(TIZEN_PRODUCT_TV)
+    TARGET_LINK_LIBRARIES(${fw_name} ${${fw_name}_LDFLAGS} capi-system-info)
+ELSE()
+    TARGET_LINK_LIBRARIES(${fw_name} ${${fw_name}_LDFLAGS})
+ENDIF(TIZEN_PRODUCT_TV)
+
 
 SET_TARGET_PROPERTIES(${fw_name}
      PROPERTIES
