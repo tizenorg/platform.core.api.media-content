@@ -22,6 +22,9 @@
 #include <media_util_private.h>
 #include <media_info_private.h>
 #include <media_content_type.h>
+#ifdef _USE_TV_PROFILE
+#include <system_info.h>
+#endif
 
 int _media_util_check_file_exist(const char *path)
 {
@@ -146,6 +149,12 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 				if (is_root == TRUE)
 					break;
 			}
+#ifdef _USE_SENIOR_MODE
+			if (_media_content_is_support_senior_mode()) {
+				if ((storage_type == MEDIA_SVC_STORAGE_EXTERNAL) && (strcmp(search_path, MEDIA_ROOT_PATH_SENIOR_MODE) == 0))
+					break;
+			}
+#endif
 
 			leaf_path = strrchr(search_path, '/');
 			if (leaf_path != NULL) {
@@ -161,3 +170,18 @@ int _media_util_check_ignore_dir(const char *dir_path, bool *ignore)
 
 	return MEDIA_CONTENT_ERROR_NONE;
 }
+
+#ifdef _USE_SENIOR_MODE
+bool _media_content_is_support_senior_mode()
+{
+	bool bSupportSeniorMode = false;
+
+	if (system_info_get_value_bool(SYSTEM_INFO_KEY_GET_SENIOR_MODE_SUPPORTED, &bSupportSeniorMode) != SYSTEM_INFO_ERROR_NONE) {
+		media_content_debug("Get senior mode support failed");
+		return false;
+	}
+	/* media_content_debug("Senior mode Support : [%d]", bSupportSeniorMode); */
+	return bSupportSeniorMode;
+}
+#endif
+

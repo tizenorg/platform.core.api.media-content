@@ -98,7 +98,7 @@
  *   \#include <media_content.h>
  *
  * @section CAPI_CONTENT_MEDIA_FOLDER_MODULE_OVERVIEW Overview
- * A Folder is used to organize media content files i.e. image, audio, video files, in the physical storage of the device.  
+ * A Folder is used to organize media content files i.e. image, audio, video files, in the physical storage of the device.
  * The Media Folder API provides functions to get basic information about existing folders e.g. folder name, path and storage type.
  * It also provides functions to get information related to media items present in the folder.
  *
@@ -138,10 +138,10 @@
  *
  * @section CAPI_CONTENT_MEDIA_TAG_MODULE_OVERVIEW Overview
  * A Tag is a special piece of information that may be associated with media content items.
- * Tagging allows a user to organize large number of items into logical groups providing a simplified 
+ * Tagging allows a user to organize large number of items into logical groups providing a simplified
  * and faster way of accessing media content items.\n\n
- * Media Tag API provides functions to get basic information about existing tags and manage tags 
- * associated with Media Information (#media_info_h). 
+ * Media Tag API provides functions to get basic information about existing tags and manage tags
+ * associated with Media Information (#media_info_h).
  * For inserting a new tag to the database call #media_tag_insert_to_db() function and for deleting existing tag from database
  * call media_tag_delete_from_db() function.\n
  * A Media item can be associated and dissociated from tags by calling #media_tag_add_media() and #media_tag_remove_media() function respectively.

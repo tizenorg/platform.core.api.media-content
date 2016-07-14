@@ -23,6 +23,9 @@
 #include <unicode/uscript.h>
 #include <unicode/uloc.h>
 #include <unicode/ucol.h>
+#ifdef _USE_TV_PROFILE
+#include <vconf.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -34,6 +37,10 @@
 #include <cynara-session.h>
 #include <cynara-error.h>
 #include <cynara-creds-socket.h>
+#ifdef _USE_TV_PROFILE
+#include <media_pvr.h>
+#include <media_uhd.h>
+#endif
 
 static attribute_h g_attr_handle = NULL;
 static attribute_h g_alias_attr_handle = NULL;
@@ -88,7 +95,10 @@ static int __media_content_create_attr_handle(void)
 
 	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_TIMELINE, DB_FIELD_MEDIA_TIMELINE);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
-
+#ifdef _USE_TV_PROFILE
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_FOLDER_ID, DB_FIELD_MEDIA_FOLDER_ID);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+#endif
 	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_THUMBNAIL_PATH, DB_FIELD_MEDIA_THUMBNAIL_PATH);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
@@ -294,7 +304,172 @@ static int __media_content_create_attr_handle(void)
 	/* Face */
 	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_FACE_TAG, DB_FIELD_FACE_TAG);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+#ifdef _USE_TV_PROFILE
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_MODIFIED_MONTH, DB_FIELD_MEDIA_MODIFIED_DATE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
 
+	ret = _media_filter_attribute_add(g_attr_handle, MEDIA_MODIFIED_DATE, DB_FIELD_MEDIA_MODIFIED_DATE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+#endif
+#ifdef _USE_SENIOR_MODE
+	if (_media_content_is_support_senior_mode()) {
+		ret = _media_filter_attribute_add(g_attr_handle, MEDIA_CONTACT, DB_FIELD_MEDIA_CONTACT);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+		ret = _media_filter_attribute_add(g_attr_handle, MEDIA_APP_DATA, DB_FIELD_MEDIA_APP_DATA);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+	}
+#endif
+#ifdef _USE_TV_PROFILE
+	/* PVR*/
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_DURATION, DB_FIELD_PVR_DURATION);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_TIME_ZONE, DB_FIELD_PVR_TIME_ZONE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_PTC, DB_FIELD_PVR_PTC);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_MAJOR, DB_FIELD_PVR_MAJOR);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_MINOR, DB_FIELD_PVR_MINOR);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_CHANNEL_TYPE, DB_FIELD_PVR_CHANNEL_TYPE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_CHANNEL_NAME, DB_FIELD_PVR_CHANNEL_NAME);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_CHANNEL_NUM, DB_FIELD_PVR_CHANNEL_NUM);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_PROGRAM_TITLE, DB_FIELD_PVR_PROGRAM_TITLE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_PROGRAM_NUM, DB_FIELD_PVR_PROGRAM_NUM);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_PROGRAM_CRID, DB_FIELD_PVR_PROGRAM_CRID);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_GUIDANCE, DB_FIELD_PVR_GUIDANCE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_SYNOPSIS, DB_FIELD_PVR_SYNOPSIS);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_GENRE, DB_FIELD_PVR_GENRE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_LANGUAGE, DB_FIELD_PVR_LANGUAGE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_EMBARGO_TIME, DB_FIELD_PVR_EMBARGO_TIME);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_EXPIRY_TIME, DB_FIELD_PVR_EXPIRY_TIME);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_START_TIME, DB_FIELD_PVR_START_TIME);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_PROGRAM_START_TIME, DB_FIELD_PVR_PROGRAM_START_TIME);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_PROGRAM_END_TIME, DB_FIELD_PVR_PROGRAM_END_TIME);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_PROGRAM_DATE, DB_FIELD_PVR_PROGRAM_DATE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_PARENTAL_RATING, DB_FIELD_PVR_PARENTAL_RATING);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_TIMER_RECORD, DB_FIELD_PVR_TIMER_RECORD);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_SERIES_RECORD, DB_FIELD_PVR_SERIES_RECORD);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_HD, DB_FIELD_PVR_HD);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_SUBTITLE, DB_FIELD_PVR_SUBTITLE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_TTX, DB_FIELD_PVR_TTX);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_AD, DB_FIELD_PVR_AD);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_TTX, DB_FIELD_PVR_TTX);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_DATA_SERVICE, DB_FIELD_PVR_DATA_SERVICE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_CONTENT_LOCK, DB_FIELD_PVR_CONTENT_LOCK);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_CONTENT_WATCH, DB_FIELD_PVR_CONTENT_WATCH);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_CONTENT_HAS_AUDIO_ONLY, DB_FIELD_PVR_HAS_AUDIO_ONLY);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_CONTENT_IS_LOCAL_RECORD, DB_FIELD_PVR_IS_LOCAL_RECORD);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_CONTENT_RESOLUTION, DB_FIELD_PVR_RESOLUTION);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_CONTENT_ASPECTRATIO, DB_FIELD_PVR_ASPECTRATIO);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_MODIFIED_MONTH, DB_FIELD_PVR_MODIFIED_DATE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_MODIFIED_DATE, DB_FIELD_PVR_MODIFIED_DATE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_SPORTS_TYPE, DB_FIELD_PVR_SPORTS_TYPE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_GUIDANCE_LENGTH, DB_FIELD_PVR_GUIDANCE_LENGTH);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_TVMODE, DB_FIELD_PVR_TVMODE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_PLAY_COUNT, DB_FIELD_PVR_PLAY_COUNT);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, PVR_PRIVATE_DATA, DB_FIELD_PVR_PRIVATE_DATA);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	/* UHD*/
+	ret = _media_filter_attribute_add(g_attr_handle, UHD_CONTENT_TITLE, DB_FIELD_UHD_CONTENT_TITLE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, UHD_RELEASE_DATE, DB_FIELD_UHD_RELEASE_DATE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, UHD_SUB_TYPE, DB_FIELD_UHD_SUB_TYPE);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, UHD_FILE_NAME, DB_FIELD_UHD_FILE_NAME);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, UHD_FOLDER_ID, DB_FIELD_FOLDER_ID);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	ret = _media_filter_attribute_add(g_attr_handle, UHD_PLAYED_COUNT, DB_FIELD_UHD_PLAYED_COUNT);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+#endif
 	return ret;
 }
 
@@ -332,6 +507,10 @@ static int __media_content_create_alias_attr_handle(void)
 
 	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_TIMELINE, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_TIMELINE);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+#ifdef _USE_TV_PROFILE
+	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_FOLDER_ID, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_FOLDER_ID);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+#endif
 
 	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_THUMBNAIL_PATH, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_THUMBNAIL_PATH);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
@@ -455,6 +634,16 @@ static int __media_content_create_alias_attr_handle(void)
 
 	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_360, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_360);
 	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+#ifdef _USE_SENIOR_MODE
+	if (_media_content_is_support_senior_mode()) {
+		ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_CONTACT, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_CONTACT);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+		ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_APP_DATA, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_APP_DATA);
+		media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+	}
+#endif
 
 	/* Pinyin*/
 	ret = _media_filter_attribute_add(g_alias_attr_handle, MEDIA_FILE_NAME_PINYIN, DB_TABLE_ALIAS_MEDIA"."DB_FIELD_MEDIA_FILE_NAME_PINYIN);
@@ -689,6 +878,63 @@ int _content_query_prepare(sqlite3_stmt **stmt, char *select_query, char *condit
 
 	return MEDIA_CONTENT_ERROR_NONE;
 }
+
+#ifdef _USE_SENIOR_MODE
+int _content_query_prepare_by_union_select(sqlite3_stmt **stmt, char *select_query1, char *condition_query1, char *option_query1, char *select_query2, char *condition_query2, char *option_query2)
+{
+	int len = 0;
+	int err = MEDIA_CONTENT_ERROR_NONE;
+	char query[MAX_QUERY_SIZE] = {0, };
+	memset(query, '\0', sizeof(query));
+
+	media_content_retvm_if(db_handle == NULL, MEDIA_CONTENT_ERROR_DB_FAILED, "database is not connected");
+	media_content_retvm_if(!STRING_VALID(select_query1), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid select_query1");
+	media_content_retvm_if(!STRING_VALID(select_query2), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid select_query2");
+
+	if (!STRING_VALID(condition_query1))
+		condition_query1 = (char *)" ";
+
+	if (!STRING_VALID(option_query1))
+		option_query1 = (char *)" ";
+
+	if (!STRING_VALID(condition_query2))
+		condition_query2 = (char *)" ";
+
+	if (!STRING_VALID(option_query2))
+		option_query2 = (char *)" ";
+
+	len = snprintf(query, sizeof(query), "SELECT * FROM (%s %s %s) as table1 UNION ALL SELECT * FROM (%s %s %s) as table2",
+			select_query1, condition_query1, option_query1, select_query2, condition_query2, option_query2);
+	if (len > 0 && len < MAX_QUERY_SIZE) {
+		query[len] = '\0';
+	} else if (len >= MAX_QUERY_SIZE) {
+		query[MAX_QUERY_SIZE -1] = '\0';
+	} else {
+		media_content_error("snprintf failed");
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	media_content_sec_debug("Query : [%s]", query);
+
+	err = sqlite3_prepare_v2((sqlite3*)db_handle, query, strlen(query), stmt, NULL);
+	if (err != SQLITE_OK) {
+		media_content_error("DB_FAILED(0x%08x) fail to sqlite3_prepare(), %s", MEDIA_CONTENT_ERROR_DB_FAILED, sqlite3_errmsg((sqlite3*)db_handle));
+
+		if (err == SQLITE_BUSY) {
+			media_content_error(" BUSY ERROR");
+			return MEDIA_CONTENT_ERROR_DB_BUSY;
+		} else if (err == SQLITE_PERM) {
+			media_content_error("PERMISSION EROR");
+			return MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
+		} else {
+			media_content_error("OTHER ERROR");
+			return MEDIA_CONTENT_ERROR_DB_FAILED;
+		}
+	}
+
+	return MEDIA_CONTENT_ERROR_NONE;
+}
+#endif
 
 int _content_error_capi(int type, int content_error)
 {
@@ -925,16 +1171,59 @@ void _media_content_scan_cb(media_request_result_s* result, void *user_data)
 	media_content_scan_cb_data *cb_data = user_data;
 
 	err = result->result;
+#ifdef _USE_TV_PROFILE
+	if (result->request_type != MEDIA_REQUEST_SCAN_COMPLETE &&
+		result->request_type != MEDIA_REQUEST_SCAN_PARTIAL) {
+		if (cb_data && cb_data->callback) {
+			media_content_debug("begin:User callback is being called now, result=%d", err);
+			cb_data->callback(err, cb_data->user_data);
+			media_content_debug("end:User callback is being called now, result=%d", err);
+		}
 
+		SAFE_FREE(cb_data);
+	}
+#else
 	if (cb_data && cb_data->callback) {
 		media_content_debug("User callback is being called now");
 		cb_data->callback(err, cb_data->user_data);
 	}
 
 	SAFE_FREE(cb_data);
+#endif
 
 	return;
 }
+
+#ifdef _USE_TV_PROFILE
+void _media_content_scan_cb_v2(media_request_result_s* result, void *user_data)
+{
+	int err = -1;
+	media_content_scan_cb_data_v2 *cb_data = user_data;
+	media_content_complete_phase_e complete_phase = -1;
+	if (!cb_data)
+		media_content_debug("cb_data is NULL");
+	err = result->result;
+	media_content_debug("result is %d", err);
+
+	if (result->request_type == MEDIA_REQUEST_SCAN_PARTIAL)
+		complete_phase = MEDIA_CONTENT_SCAN_PARTIAL_COMPLETE;
+	else if (result->request_type == MEDIA_REQUEST_SCAN_COMPLETE)
+		complete_phase = MEDIA_CONTENT_SCAN_COMPLETE;
+	else if (result->request_type == MEDIA_REQUEST_EXTRACT_COMPLETE)
+		complete_phase = MEDIA_CONTENT_EXTRACT_COMPLETE;
+
+	if (cb_data && cb_data->callback)
+		cb_data->callback(err, complete_phase, cb_data->user_data);
+	else
+		media_content_debug("run error");
+
+	if ((result->request_type != MEDIA_REQUEST_SCAN_COMPLETE) &&
+	(result->request_type != MEDIA_REQUEST_SCAN_PARTIAL))
+		SAFE_FREE(cb_data);
+
+	return;
+}
+#endif
 
 static int __media_content_check_dir(const char *path)
 {
@@ -1003,6 +1292,40 @@ int media_content_scan_folder(const char *path, bool is_recursive, media_scan_co
 
 	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }
+
+#ifdef _USE_TV_PROFILE
+int media_content_scan_folder_v2(const char *path, bool is_recursive, media_scan_completed_cb_v2 callback, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	bool ignore_dir = FALSE;
+	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0, };
+
+	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid path");
+	memset(storage_id, 0x00, sizeof(storage_id));
+
+	ret = _media_util_check_ignore_dir(path, &ignore_dir);
+	media_content_retvm_if(ignore_dir, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "Invalid folder path");
+
+	ret = __media_content_check_dir(path);
+	media_content_retvm_if(ret == MEDIA_CONTENT_ERROR_PERMISSION_DENIED, ret, "Permission Denied");
+
+	media_content_scan_cb_data_v2* cb_data = NULL;
+	cb_data = (media_content_scan_cb_data_v2*)malloc(sizeof(media_content_scan_cb_data_v2));
+	media_content_retvm_if(cb_data == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+
+	cb_data->callback = callback;
+	cb_data->user_data = user_data;
+
+	ret = media_svc_get_storage_id(_content_get_db_handle(), path, storage_id);
+	/*FIX ME. need to check ret value?*/
+
+	ret = media_directory_scanning_async(path, storage_id, is_recursive, _media_content_scan_cb_v2, cb_data, tzplatform_getuid(TZ_USER_NAME));
+	if (ret != MS_MEDIA_ERR_NONE)
+		media_content_error("media_directory_scanning_async failed : %d", ret);
+
+	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
+}
+#endif
 
 int media_content_cancel_scan_folder(const char *path)
 {
@@ -1150,4 +1473,9 @@ int media_content_remove_db_updated_cb(media_content_noti_h noti_handle)
 
 	return _content_error_capi(MEDIA_REGISTER_TYPE, ret);
 }
-
+#ifdef _USE_TV_PROFILE
+GMutex* _content_get_db_mutex(void)
+{
+	return &db_mutex;
+}
+#endif
