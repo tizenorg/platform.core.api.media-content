@@ -268,8 +268,11 @@ int media_album_get_album_art(media_album_h album, char **album_art)
 int media_group_get_group_count_from_db(filter_h filter, media_group_e group, int *group_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
+#ifdef _USE_TV_PROFILE
+	if ((group < MEDIA_CONTENT_GROUP_DISPLAY_NAME) || (group >= MEDIA_GROUP_MAX) || (group_count == NULL)) {
+#else
 	if ((group < MEDIA_CONTENT_GROUP_DISPLAY_NAME) || (group >= MEDIA_CONTENT_GROUP_MAX) || (group_count == NULL)) {
+#endif
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	} else {
@@ -278,12 +281,30 @@ int media_group_get_group_count_from_db(filter_h filter, media_group_e group, in
 
 	return ret;
 }
+#ifdef _USE_TV_PROFILE
+int media_group_foreach_group_and_count_from_db(filter_h filter, media_group_e group, media_group_and_count_cb callback, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	if ((callback == NULL) || (group < MEDIA_CONTENT_GROUP_DISPLAY_NAME) || (group >= MEDIA_GROUP_MAX)) {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	} else {
+		ret = _media_db_get_media_group_and_count(group, filter, callback, user_data);
+	}
+
+	return ret;
+}
+#endif
 
 int media_group_foreach_group_from_db(filter_h filter, media_group_e group, media_group_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
+#ifdef _USE_TV_PROFILE
+	if ((callback == NULL) || (group < MEDIA_CONTENT_GROUP_DISPLAY_NAME) || (group >= MEDIA_GROUP_MAX)) {
+#else
 	if ((callback == NULL) || (group < MEDIA_CONTENT_GROUP_DISPLAY_NAME) || (group >= MEDIA_CONTENT_GROUP_MAX)) {
+#endif
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	} else {
@@ -296,8 +317,11 @@ int media_group_foreach_group_from_db(filter_h filter, media_group_e group, medi
 int media_group_get_media_count_from_db(const char *group_name, media_group_e group, filter_h filter, int *media_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
+#ifdef _USE_TV_PROFILE
+	if ((media_count == NULL) || (group < MEDIA_CONTENT_GROUP_DISPLAY_NAME) || (group >= MEDIA_GROUP_MAX)) {
+#else
 	if ((media_count == NULL) || (group < MEDIA_CONTENT_GROUP_DISPLAY_NAME) || (group >= MEDIA_CONTENT_GROUP_MAX)) {
+#endif
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	} else {
@@ -310,8 +334,11 @@ int media_group_get_media_count_from_db(const char *group_name, media_group_e gr
 int media_group_foreach_media_from_db(const char *group_name, media_group_e group, filter_h filter, media_info_cb callback, void *user_data)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
-
+#ifdef _USE_TV_PROFILE
+	if ((callback == NULL) || (group < MEDIA_CONTENT_GROUP_DISPLAY_NAME) || (group >= MEDIA_GROUP_MAX)) {
+#else
 	if ((callback == NULL) || (group < MEDIA_CONTENT_GROUP_DISPLAY_NAME) || (group >= MEDIA_CONTENT_GROUP_MAX)) {
+#endif
 		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
 		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
 	} else {

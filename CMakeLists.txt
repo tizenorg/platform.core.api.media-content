@@ -39,12 +39,7 @@ SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--rpath=${LIB_INSTALL_DIR}")
 aux_source_directory(src SOURCES)
 ADD_LIBRARY(${fw_name} SHARED ${SOURCES})
 
-IF(TIZEN_PRODUCT_TV)
-    TARGET_LINK_LIBRARIES(${fw_name} ${${fw_name}_LDFLAGS} capi-system-info)
-ELSE()
-    TARGET_LINK_LIBRARIES(${fw_name} ${${fw_name}_LDFLAGS})
-ENDIF(TIZEN_PRODUCT_TV)
-
+TARGET_LINK_LIBRARIES(${fw_name} ${${fw_name}_LDFLAGS})
 
 SET_TARGET_PROPERTIES(${fw_name}
      PROPERTIES
@@ -64,9 +59,14 @@ INSTALL(
 SET(PC_NAME ${fw_name})
 SET(PC_REQUIRED ${pc_dependents})
 SET(PC_LDFLAGS -l${fw_name})
+IF(TIZEN_PRODUCT_TV)
+    SET(PC_FILE_NAME ${fw_name}-product.pc.in)
+ELSE()
+    SET(PC_FILE_NAME ${fw_name}.pc.in)
+ENDIF(TIZEN_PRODUCT_TV)
 
 CONFIGURE_FILE(
-    ${fw_name}.pc.in
+    ${PC_FILE_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/${fw_name}.pc
     @ONLY
 )
