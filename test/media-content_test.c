@@ -2625,9 +2625,9 @@ int test_start_face_detection(int cancel)
 	else
 		media_content_debug("media_count : [%d]", g_media_cnt);
 
-	if (g_media_cnt == 0) {
+	if (g_media_cnt == 0)
 		goto END;
-	}
+
 	g_loop = g_main_loop_new(NULL, FALSE);
 	context = g_main_loop_get_context(g_loop);
 	source = g_idle_source_new();
@@ -3499,6 +3499,322 @@ int test_face_add_del(void)
 	return ret;
 }
 
+#ifdef _USE_TV_PROFILE
+filter_h g_tv_filter = NULL;
+
+int test_tv_filter_create(void)
+{
+	media_content_debug("\n============Filter Create============\n\n");
+
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	ret = media_filter_create(&g_tv_filter);
+
+	ret = media_filter_set_storage(g_tv_filter, "0a22a163-e634-4a2e-ba14-0469a969eea0");
+
+	ret = media_filter_set_order(g_tv_filter, MEDIA_CONTENT_ORDER_ASC, MEDIA_STORAGE_ID, MEDIA_CONTENT_COLLATE_DEFAULT);
+
+	return ret;
+}
+
+int test_tv_filter_destroy(void)
+{
+	media_content_debug("\n============Filter Destroy============\n\n");
+
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	ret = media_filter_destroy(g_tv_filter);
+
+	return ret;
+}
+
+bool pvr_item_cb(media_pvr_h pvr, void *user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char *c_value = NULL;
+	int i_value = 0;
+	bool b_value = false;
+	unsigned long long l_value = 0;
+
+	if (pvr == NULL) {
+		media_content_debug("NO Item");
+		return true;
+	}
+
+	ret = media_pvr_get_media_id(pvr, &c_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_media_id");
+	media_content_debug("media_id [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = media_pvr_get_channel_name(pvr, &c_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_channel_name");
+	media_content_debug("channel_name [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = media_pvr_get_program_title(pvr, &c_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_program_title");
+	media_content_debug("program_title [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = media_pvr_get_program_crid(pvr, &c_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_program_crid");
+	media_content_debug("program_crid [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = media_pvr_get_guidance(pvr, &c_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_guidance");
+	media_content_debug("guidance [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = media_pvr_get_synopsis(pvr, &c_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_synopsis");
+	media_content_debug("synopsis [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = media_pvr_get_genre(pvr, &c_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_synopsis");
+	media_content_debug("genre [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = media_pvr_get_language(pvr, &c_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_language");
+	media_content_debug("language [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = media_pvr_get_path(pvr, &c_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_path");
+	media_content_debug("path [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = media_pvr_get_storage_id(pvr, &c_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_storage_id");
+	media_content_debug("storage_id [%s]", c_value);
+	SAFE_FREE(c_value);
+
+	ret = media_pvr_get_size(pvr, &l_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_size");
+	media_content_debug("size [%ld]", l_value);
+
+	ret = media_pvr_get_timezone(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_timezone");
+	media_content_debug("timezone [%d]", i_value);
+
+	ret = media_pvr_get_ptc(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_ptc");
+	media_content_debug("ptc [%d]", i_value);
+
+	ret = media_pvr_get_major(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_major");
+	media_content_debug("[%d]", i_value);
+
+	ret = media_pvr_get_minor(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_minor");
+	media_content_debug("minor [%d]", i_value);
+
+	ret = media_pvr_get_channel_type(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_channel_type");
+	media_content_debug("channel_type [%d]", i_value);
+
+	ret = media_pvr_get_program_num(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_program_num");
+	media_content_debug("program_num [%d]", i_value);
+
+	ret = media_pvr_get_duration(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_duration");
+	media_content_debug("duration [%d]", i_value);
+
+	ret = media_pvr_get_embargo_time(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_embargo_time");
+	media_content_debug("embargo_time [%d]", i_value);
+
+	ret = media_pvr_get_expiry_time(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_expiry_time");
+	media_content_debug("expiry_time [%d]", i_value);
+
+	ret = media_pvr_get_parental_rating(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_parental_rating");
+	media_content_debug("parental_rating [%d]", i_value);
+
+	ret = media_pvr_get_start_time(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_start_time");
+	media_content_debug("start_time [%d]", i_value);
+
+	ret = media_pvr_get_program_start_time(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_program_start_time");
+	media_content_debug("program_start_time [%d]", i_value);
+
+	ret = media_pvr_get_program_end_time(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_program_end_time");
+	media_content_debug("program_end_time [%d]", i_value);
+
+	ret = media_pvr_get_program_date(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_program_date");
+	media_content_debug("program_date [%d]", i_value);
+
+	ret = media_pvr_get_timer_record(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_timer_record");
+	media_content_debug("timer_record [%d]", b_value);
+
+	ret = media_pvr_get_series_record(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_series_record");
+	media_content_debug("series_record [%d]", b_value);
+
+	ret = media_pvr_get_hd(pvr, &i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_hd");
+	media_content_debug("hd [%d]", i_value);
+
+	ret = media_pvr_get_subtitle(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_subtitle");
+	media_content_debug("subtitle [%d]", b_value);
+
+	ret = media_pvr_get_ttx(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_ttx");
+	media_content_debug("ttx [%d]", b_value);
+
+	ret = media_pvr_get_ad(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_ad");
+	media_content_debug("ad [%d]", b_value);
+
+	ret = media_pvr_get_hard_of_hearing_radio(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_hard_of_hearing_radio");
+	media_content_debug("hard_of_hearing_radio [%d]", b_value);
+
+	ret = media_pvr_get_data_service(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_data_service");
+	media_content_debug("data_service [%d]", b_value);
+
+	ret = media_pvr_get_content_lock(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_content_lock");
+	media_content_debug("content_lock [%d]", b_value);
+
+	ret = media_pvr_get_content_watch(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_content_watch");
+	media_content_debug("content_watch [%d]", b_value);
+
+	ret = media_pvr_get_has_audio_only(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_has_audio_only");
+	media_content_debug("has_audio_only [%d]", b_value);
+
+	ret = media_pvr_get_is_local_record(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_is_local_record");
+	media_content_debug("is_local_record [%d]", b_value);
+
+	ret = media_pvr_get_resolution(pvr, (media_pvr_resolution_e*)&i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_resolution");
+	media_content_debug("resolution [%d]", i_value);
+
+	ret = media_pvr_get_aspectratio(pvr, (media_pvr_aspectratio_e*)&i_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_aspectratio");
+	media_content_debug("aspectratio [%d]", i_value);
+
+	ret = media_pvr_get_highlight(pvr, &b_value);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_get_highlight");
+	media_content_debug("highlight [%d]", b_value);
+
+
+	return TRUE;
+}
+
+int test_pvr()
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int media_count = 0;
+
+	media_content_debug("\n============PVR Test============\n\n");
+
+	test_tv_filter_create();
+
+	ret = media_pvr_get_media_count_from_db(g_tv_filter, &media_count);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("media_pvr_get_media_count_from_db failed: %d", ret);
+	else
+		media_content_debug("media_count : [%d]", media_count);
+
+	ret = media_pvr_foreach_media_from_db(g_tv_filter, pvr_item_cb, NULL);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("media_pvr_foreach_media_from_db is failed");
+
+	test_tv_filter_destroy();
+
+	return ret;
+}
+
+int test_pvr_update_db(void)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_pvr_h pvr = NULL;
+
+	ret = media_pvr_get_pvr_from_db("ff9b5a9a-a7b4-47f4-8255-84e007e25f13", &pvr);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("media_pvr_get_pvr_from_db failed: %d", ret);
+
+	ret = media_pvr_set_content_lock(pvr, TRUE);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_set_content_lock");
+
+	ret = media_pvr_set_content_watch(pvr, TRUE);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_set_content_watch");
+
+	ret = media_pvr_set_program_title(pvr, "TEST TITLE");
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_set_program_title");
+
+	ret = media_pvr_set_highlight(pvr, TRUE);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_set_highlight");
+
+	ret = media_pvr_update_to_db(pvr);
+	if (ret != MEDIA_CONTENT_ERROR_NONE)
+		media_content_error("Fail to media_pvr_update_to_db");
+
+	if (pvr != NULL)
+		media_pvr_destroy(pvr);
+
+	return ret;
+}
+#endif
+
 int main(int argc, char *argv[])
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -3508,6 +3824,14 @@ int main(int argc, char *argv[])
 	ret = test_connect_database();
 	if (ret != MEDIA_CONTENT_ERROR_NONE)
 		return MEDIA_CONTENT_ERROR_NONE;
+#ifdef _USE_TV_PROFILE
+	test_pvr();
+
+	test_pvr_update_db();
+
+	test_pvr();
+#endif
+
 #if 0
 	ret = test_start_face_detection(FALSE);
 	if (ret != MEDIA_CONTENT_ERROR_NONE)

@@ -20,6 +20,9 @@
 #include <media_info_private.h>
 #include <media_util_private.h>
 #include <system_info.h>
+#ifdef _USE_TV_PROFILE
+#include <media_content_internal.h>
+#endif
 
 static void __media_info_insert_completed_cb(media_request_result_s *result, void *user_data);
 static void __media_info_thumbnail_completed_cb(int error, const char *path, void *user_data);
@@ -476,6 +479,120 @@ int media_info_insert_burst_shot_to_db(const char **path_array, unsigned int arr
 	return __media_info_insert_batch(MEDIA_BATCH_INSERT_BURSTSHOT, path_array, array_length, callback, user_data);
 }
 
+#ifdef _USE_SENIOR_MODE
+int media_info_insert_to_db_with_contact_data(const char *path, const char* contact, const char* app_data, media_info_h *info)
+{
+	int ret = media_info_insert_to_db(path, info);
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "media_info_insert_to_db [%s] failed", path);
+
+	ret = media_info_set_contact(*info, contact);
+	if (ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_content_error("media_info_set_contact [%s] failed", contact);
+
+		media_info_s* _media_info = (media_info_s*)*info;
+		ret = media_info_delete_from_db(_media_info->media_id);
+		media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "media_info_delete_from_db [%s] failed", _media_info->media_id);
+
+		media_info_destroy(*info);
+		return ret;
+	}
+
+	ret = media_info_set_app_data(*info, app_data);
+	if (ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_content_error("media_info_set_app_data [%s] failed", app_data);
+
+		media_info_s* _media_info = (media_info_s*)*info;
+		ret = media_info_delete_from_db(_media_info->media_id);
+		media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "media_info_delete_from_db [%s] failed", _media_info->media_id);
+
+		media_info_destroy(*info);
+		return ret;
+	}
+
+	ret = media_info_update_to_db(*info);
+	if (ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_content_error("media_info_update_to_db [] failed");
+
+		media_info_s* _media_info = (media_info_s*)*info;
+		ret = media_info_delete_from_db(_media_info->media_id);
+		media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "media_info_delete_from_db [%s] failed", _media_info->media_id);
+
+		media_info_destroy(*info);
+		return ret;
+	}
+
+	return ret;
+}
+
+int media_info_delete_contact_from_db(const char* contact, const char* storage_id)
+{
+	return -1;
+}
+
+int media_info_get_media_info_by_path_from_db(const char* path, media_info_h* media)
+{
+	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_content_retvm_if(!STRING_VALID(path), MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid path");
+	media_content_retvm_if(media == NULL, MEDIA_CONTENT_ERROR_INVALID_PARAMETER, "invalid info");
+
+	memset(storage_id, 0x00, sizeof(storage_id));
+	ret = media_svc_get_storage_id(_content_get_db_handle(), path, storage_id);
+	if (ret != MS_MEDIA_ERR_NONE) {
+		media_content_error("media_svc_get_storage_id failed : %d", ret);
+		return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+	}
+
+	media_info_s *_media = (media_info_s*)calloc(1, sizeof(media_info_s));
+	media_content_retvm_if(_media == NULL, MEDIA_CONTENT_ERROR_OUT_OF_MEMORY, "OUT_OF_MEMORY");
+
+	ret =  _media_info_get_media_info_from_db(path, storage_id, (media_info_h)_media);
+	*media = (media_info_h)_media;
+
+	return ret;
+}
+
+int media_info_delete_item(const char *media_id)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	char *path = NULL;
+	char storage_id[MEDIA_CONTENT_UUID_SIZE+1] = {0,};
+
+	if (!STRING_VALID(media_id)) {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	memset(storage_id, 0x00, sizeof(storage_id));
+
+	ret = __media_info_get_media_path_by_id_from_db(media_id, &path);
+	if (ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_content_error("__media_info_get_media_path_by_id_from_db failed : %d", ret);
+		SAFE_FREE(path);
+		return ret;
+	}
+
+	ret = _media_db_get_storage_id_by_media_id(media_id, storage_id);
+	if (ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_content_error("_media_db_get_storage_id_by_media_id failed : %d", ret);
+		SAFE_FREE(path);
+		return ret;
+	}
+
+	ret = media_svc_delete_item_by_path(_content_get_db_handle(), storage_id, path, tzplatform_getuid(TZ_USER_NAME));
+	if (ret != MEDIA_CONTENT_ERROR_NONE) {
+		media_content_error("remove from DB failed : %d", ret);
+		SAFE_FREE(path);
+		return ret;
+	}
+
+	ret = media_svc_remove_file(path);
+	SAFE_FREE(path);
+	return _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+}
+
+#endif
+
 int media_info_delete_from_db(const char *media_id)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -638,8 +755,15 @@ int media_info_destroy(media_info_h media)
 		SAFE_FREE(_media->age_rating);
 		SAFE_FREE(_media->keyword);
 		SAFE_FREE(_media->title);
+#ifdef _USE_TV_PROFILE
+		SAFE_FREE(_media->modified_month);
+#endif
 		SAFE_FREE(_media->weather);
 		SAFE_FREE(_media->storage_uuid);
+#ifdef _USE_SENIOR_MODE
+		SAFE_FREE(_media->contact);
+		SAFE_FREE(_media->app_data);
+#endif
 
 		if (_media->image_meta) {
 			SAFE_FREE(_media->image_meta->media_id);
@@ -836,6 +960,35 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
 			}
 		}
+#ifdef _USE_TV_PROFILE
+		if (STRING_VALID(_src->modified_month)) {
+			_dst->modified_month = strdup(_src->modified_month);
+			if (_dst->modified_month == NULL) {
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				media_info_destroy((media_info_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+#endif
+#ifdef _USE_SENIOR_MODE
+		if (STRING_VALID(_src->contact)) {
+			_dst->contact = strdup(_src->contact);
+			if (_dst->contact == NULL) {
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				media_info_destroy((media_info_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+
+		if (STRING_VALID(_src->app_data)) {
+			_dst->app_data = strdup(_src->app_data);
+			if (_dst->app_data == NULL) {
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				media_info_destroy((media_info_h)_dst);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		}
+#endif
 
 		_dst->media_type = _src->media_type;
 		_dst->size = _src->size;
@@ -856,6 +1009,9 @@ int media_info_clone(media_info_h *dst, media_info_h src)
 		_dst->request_id = _src->request_id;
 		_dst->face_request_id = _src->face_request_id;
 		_dst->is_360 = _src->is_360;
+#ifdef _USE_TV_PROFILE
+		_dst->extract_flag = _src->extract_flag;
+#endif
 
 		if (_src->media_type == MEDIA_CONTENT_TYPE_IMAGE && _src->image_meta) {
 			_dst->image_meta = (image_meta_s *)calloc(1, sizeof(image_meta_s));
@@ -1568,6 +1724,23 @@ int media_info_get_title(media_info_h media, char **title)
 
 	return ret;
 }
+#ifdef _USE_TV_PROFILE
+int media_info_get_extract_flag(media_info_h media, int *extract_flag)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s *)media;
+
+	if (_media && extract_flag) {
+		*extract_flag = _media->extract_flag;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+#endif
 
 int media_info_get_description(media_info_h media, char **description)
 {
@@ -1907,6 +2080,24 @@ int media_info_get_storage_type(media_info_h media, media_content_storage_e *sto
 	return ret;
 }
 
+#ifdef _USE_TV_PROFILE
+int media_info_get_played_position(media_info_h media, int *played_position)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if (_media) {
+		*played_position = _media->played_position;
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+#endif
+
 int media_info_get_played_count(media_info_h media, int *played_count)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -1955,6 +2146,98 @@ int media_info_increase_played_count(media_info_h media)
 	return ret;
 }
 
+#ifdef _USE_TV_PROFILE
+int media_info_get_modified_month(media_info_h media, char **modified_month)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if (_media && modified_month) {
+		if (STRING_VALID(_media->modified_month)) {
+			*modified_month = strdup(_media->modified_month);
+			if (*modified_month == NULL) {
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		} else {
+			*modified_month = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+#endif
+#ifdef _USE_SENIOR_MODE
+int media_info_get_contact(media_info_h media, char **contact)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if (_media && contact) {
+		if (STRING_VALID(_media->contact)) {
+			*contact = strdup(_media->contact);
+			if (*contact == NULL) {
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		} else {
+			*contact = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+
+int media_info_get_app_data(media_info_h media, char **app_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if (_media && app_data) {
+		if (STRING_VALID(_media->app_data)) {
+			*app_data = strdup(_media->app_data);
+			if (*app_data == NULL) {
+				media_content_error("OUT_OF_MEMORY(0x%08x)", MEDIA_CONTENT_ERROR_OUT_OF_MEMORY);
+				return MEDIA_CONTENT_ERROR_OUT_OF_MEMORY;
+			}
+		} else {
+			*app_data = NULL;
+		}
+		ret = MEDIA_CONTENT_ERROR_NONE;
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+#endif
+#ifdef _USE_TV_PROFILE
+int media_info_set_played_count(media_info_h media, int played_count)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	media_info_s *_media = (media_info_s*)media;
+
+	if (_media) {
+		_media->played_count = played_count;
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+#endif
+
 int media_info_set_played_time(media_info_h media)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -1972,6 +2255,22 @@ int media_info_set_played_time(media_info_h media)
 
 	return ret;
 }
+#ifdef _USE_TV_PROFILE
+int media_info_set_played_position(media_info_h media, int played_position)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_info_s *_media = (media_info_s*)media;
+
+	if ((_media != NULL) && (played_position >= 0)) {
+		_media->played_position = played_position;
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+#endif
 
 int media_info_get_media_from_db(const char *media_id, media_info_h *media)
 {
@@ -2401,15 +2700,28 @@ int media_info_update_to_db(media_info_h media)
 				recorded_date = strdup(_media->audio_meta->recorded_date);
 		}
 
-		set_sql = sqlite3_mprintf("file_name=%Q, added_time=%d, description=%Q, longitude=%f, latitude=%f, altitude=%f, \
-			played_count=%d, last_played_time=%d, last_played_position=%d, \
-			rating=%d, favourite=%d, author=%Q, provider=%Q, content_name=%Q, category=%Q, location_tag=%Q, age_rating=%Q, keyword=%Q, weather=%Q, sync_status=%d, \
-			file_name_pinyin=%Q, description_pinyin=%Q, author_pinyin=%Q, provider_pinyin=%Q, content_name_pinyin=%Q, category_pinyin=%Q, location_tag_pinyin=%Q, age_rating_pinyin=%Q, keyword_pinyin=%Q, title=%Q, \
-			album=%Q, artist=%Q, genre=%Q, recorded_date=%Q",
-			_media->display_name, _media->added_time, _media->description, _media->longitude, _media->latitude, _media->altitude, _media->played_count, _media->played_time, _media->played_position, _media->rating, _media->favourite,
-			_media->author, _media->provider, _media->content_name, _media->category, _media->location_tag, _media->age_rating, _media->keyword, _media->weather, _media->sync_status,
-			file_name_pinyin, description_pinyin, author_pinyin, provider_pinyin, content_name_pinyin, category_pinyin, location_tag_pinyin, age_rating_pinyin, keyword_pinyin, _media->title,
-			album, artist, genre, recorded_date);
+#ifdef _USE_SENIOR_MODE
+		if (_media_content_is_support_senior_mode()) {
+			set_sql = sqlite3_mprintf("file_name=%Q, added_time=%d, description=%Q, longitude=%f, latitude=%f, altitude=%f, \
+				played_count=%d, last_played_time=%d, last_played_position=%d, \
+				rating=%d, favourite=%d, author=%Q, provider=%Q, content_name=%Q, category=%Q, location_tag=%Q, age_rating=%Q, keyword=%Q, weather=%Q, sync_status=%d, \
+				file_name_pinyin=%Q, description_pinyin=%Q, author_pinyin=%Q, provider_pinyin=%Q, content_name_pinyin=%Q, category_pinyin=%Q, location_tag_pinyin=%Q, age_rating_pinyin=%Q, keyword_pinyin=%Q, title=%Q, contact=%Q, app_data=%Q",
+				_media->display_name, _media->added_time, _media->description, _media->longitude, _media->latitude, _media->altitude, _media->played_count, _media->played_time, _media->played_position, _media->rating, _media->favourite,
+				_media->author, _media->provider, _media->content_name, _media->category, _media->location_tag, _media->age_rating, _media->keyword, _media->weather, _media->sync_status,
+				file_name_pinyin, description_pinyin, author_pinyin, provider_pinyin, content_name_pinyin, category_pinyin, location_tag_pinyin, age_rating_pinyin, keyword_pinyin, _media->title, _media->contact, _media->app_data);
+		} else
+#endif
+		{
+			set_sql = sqlite3_mprintf("file_name=%Q, added_time=%d, description=%Q, longitude=%f, latitude=%f, altitude=%f, \
+				played_count=%d, last_played_time=%d, last_played_position=%d, \
+				rating=%d, favourite=%d, author=%Q, provider=%Q, content_name=%Q, category=%Q, location_tag=%Q, age_rating=%Q, keyword=%Q, weather=%Q, sync_status=%d, \
+				file_name_pinyin=%Q, description_pinyin=%Q, author_pinyin=%Q, provider_pinyin=%Q, content_name_pinyin=%Q, category_pinyin=%Q, location_tag_pinyin=%Q, age_rating_pinyin=%Q, keyword_pinyin=%Q, title=%Q, \
+				album=%Q, artist=%Q, genre=%Q, recorded_date=%Q",
+				_media->display_name, _media->added_time, _media->description, _media->longitude, _media->latitude, _media->altitude, _media->played_count, _media->played_time, _media->played_position, _media->rating, _media->favourite,
+				_media->author, _media->provider, _media->content_name, _media->category, _media->location_tag, _media->age_rating, _media->keyword, _media->weather, _media->sync_status,
+				file_name_pinyin, description_pinyin, author_pinyin, provider_pinyin, content_name_pinyin, category_pinyin, location_tag_pinyin, age_rating_pinyin, keyword_pinyin, _media->title,
+				album, artist, genre, recorded_date);
+		}
 
 		sql = sqlite3_mprintf("UPDATE %Q SET %s WHERE media_uuid=%Q", _media->storage_uuid, set_sql, _media->media_id);
 
@@ -2700,6 +3012,13 @@ static int __media_info_map_data_usr_to_svc(media_info_s *media, media_svc_conte
 	svc_content_info->last_played_time = media->played_time;
 	svc_content_info->played_count = media->played_count;
 	svc_content_info->favourate = media->favourite;
+
+#ifdef _USE_SENIOR_MODE
+	if (_media_content_is_support_senior_mode()) {
+		svc_content_info->contact = g_strdup(media->contact);
+		svc_content_info->app_data = g_strdup(media->app_data);
+	}
+#endif
 
 	svc_content_info->media_meta.title = g_strdup(media->title);
 	svc_content_info->media_meta.rating = media->rating;
@@ -3296,3 +3615,16 @@ int media_info_set_storage_type(media_info_h media, media_content_storage_e stor
 
 	return MEDIA_CONTENT_ERROR_NONE;
 }
+
+#ifdef _USE_SENIOR_MODE
+int media_info_set_contact(media_info_h media, const char *contact)
+{
+	return __media_info_set_str_data(media, MEDIA_INFO_CONTACT, contact);
+}
+
+int media_info_set_app_data(media_info_h media, const char *app_data)
+{
+	return __media_info_set_str_data(media, MEDIA_INFO_APP_DATA, app_data);
+}
+#endif
+

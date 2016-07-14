@@ -76,6 +76,22 @@ int media_folder_foreach_media_from_db(const char *folder_id, filter_h filter, m
 	return ret;
 }
 
+#ifdef _USE_SENIOR_MODE
+int media_folder_foreach_media_from_db_by_union_select(const char* folder_id, filter_h filter1, filter_h filter2, media_info_cb callback, void* user_data)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+
+	if ((callback != NULL) && STRING_VALID(folder_id)) {
+		ret = _media_db_get_group_item_by_union_select(folder_id, filter1, filter2, callback, user_data);
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+#endif
+
 int media_folder_destroy(media_folder_h folder)
 {
 	int ret = MEDIA_CONTENT_ERROR_NONE;
@@ -496,3 +512,25 @@ int media_folder_set_order(media_folder_h folder, int order)
 
 	return ret;
 }
+#ifdef _USE_TV_PROFILE
+int media_folder_get_scan_status(const char *storage_uuid, char* path, media_folder_scan_status_e *scan_status)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	int status = MEDIA_DIR_SCAN_NONE;
+
+	if (STRING_VALID(storage_uuid) && STRING_VALID(path)) {
+		ret = media_svc_get_folder_scan_status(_content_get_db_handle(), storage_uuid, path, &status);
+		if (ret != MS_MEDIA_ERR_NONE) {
+			media_content_error("media_svc_get_folder_scan_status failed");
+			ret = _content_error_capi(MEDIA_CONTENT_TYPE, ret);
+		} else {
+			*scan_status = status;
+		}
+	} else {
+		media_content_error("INVALID_PARAMETER(0x%08x)", MEDIA_CONTENT_ERROR_INVALID_PARAMETER);
+		ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	}
+
+	return ret;
+}
+#endif
