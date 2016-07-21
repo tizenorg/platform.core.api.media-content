@@ -91,7 +91,7 @@ static void __media_info_thumbnail_completed_cb(int error, const char *path, voi
 	if (_thumb_cb != NULL) {
 		media = _thumb_cb->handle;
 		if ((media != NULL) && STRING_VALID(path)) {
-			SAFE_FREE(media->thumbnail_path);
+			media->thumbnail_path = NULL;
 			media->thumbnail_path = g_strdup(path);
 		}
 
