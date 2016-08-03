@@ -424,6 +424,44 @@ int media_folder_set_name(media_folder_h folder, const char *name);
 int media_folder_set_order(media_folder_h folder, int order);
 
 /**
+ * @brief Moves the media folder to the given destination path in the media database.
+ * @details This function can move the media folder to a given destination path in the media database. \n
+ *                The information of the media folder can also be changed @a parent_folder_id, and @a storage_type depending on the destination path. \n
+ *                And if you are using the media information in the media folder, you need to refresh it after moving the media folder. \n
+ *
+ * @since_tizen 3.0
+ *
+ * @privlevel public
+ * @privilege %http://tizen.org/privilege/content.write
+ *
+ * @remarks You must add privilege http://tizen.org/privilege/content.write. And You add more privilege depending on your choice of contents path. \n
+ *                   If you want to access only internal storage by using  this API, you should add privilege http://tizen.org/privilege/mediastorage. \n
+ *                   Or if you want to access only external storage by using this API, you should add privilege http://tizen.org/privilege/externalstorage. \n
+ *                   If you can access both storage, you should add all privilege. \n
+ *                   In addition, this API can be used only if the same storage. But, exceptionally, there can be used to move folder between the SD card and internal storage.
+ *
+ * @param[in] folder The handle to the media folder
+ *
+ * @return @c 0 on success,
+ *         otherwise a negative error value
+ *
+ * @retval #MEDIA_CONTENT_ERROR_NONE              Successful
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_PARAMETER Invalid parameter
+ * @retval #MEDIA_CONTENT_ERROR_OUT_OF_MEMORY     Out of memory
+ * @retval #MEDIA_CONTENT_ERROR_INVALID_OPERATION Invalid operation
+ * @retval #MEDIA_CONTENT_ERROR_DB_FAILED         DB Operation failed
+ * @retval #MEDIA_CONTENT_ERROR_DB_BUSY           DB Operation busy
+ * @retval #MEDIA_CONTENT_ERROR_NETWORK           Network fail
+ * @retval #MEDIA_CONTENT_ERROR_PERMISSION_DENIED Permission denied
+ *
+ * @pre This function requires opened connection to content service by media_content_connect().
+ *
+ * @see media_content_connect()
+ * @see media_folder_destroy()
+ */
+int media_folder_move_to_db(media_folder_h folder, const char *dst_path);
+
+/**
  * @brief Updates the media folder to the media database.
  *
  * @details The function updates the given media folder in the media database. The function should be called after any change in folder attributes, to be updated to the media
