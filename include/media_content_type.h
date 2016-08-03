@@ -284,6 +284,7 @@ typedef void *media_content_noti_h;
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Called when the media scanning is finished.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
+ * @remarks The callback is called in a separate thread(not in the main loop).
  *
  * @param[in] error     The error code
  * @param[in] user_data The user data passed from the foreach function
@@ -299,6 +300,8 @@ typedef void (*media_scan_completed_cb)(media_content_error_e error, void * user
  * @ingroup CAPI_MEDIA_CONTENT_MODULE
  * @brief Called when the notification of the media DB change is subscribed.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
+ *
+ * @remarks The callback is called in a separate thread(not in the main loop).
  *
  * @param[in] error       The error code
  * @param[in] pid         The PID which publishes notification
@@ -332,7 +335,8 @@ typedef void (*media_content_db_update_cb)(
  *
  * @details Iterates over a list of media info.
  *
- * @remarks To use the @a media outside this function, copy the handle with media_info_clone() function.
+ * @remarks To use the @a media outside this function, copy the handle with media_info_clone() function. \n
+ *                  The callback is called in the main loop.
  *
  * @param[in] media     The handle to the media info
  * @param[in] user_data The user data passed from the foreach function
@@ -358,6 +362,8 @@ typedef bool (*media_info_cb)(media_info_h media, void *user_data);
  * @brief Called when media items are inserted completely.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
+ * @remarks The callback is called in a separate thread(not in the main loop).
+ *
  * @param[in] media     The handle to the media info
  * @param[in] user_data The user data passed from the foreach function
  *
@@ -372,6 +378,8 @@ typedef void (*media_insert_completed_cb)(media_content_error_e error, void * us
  * @ingroup CAPI_CONTENT_MEDIA_INFO_MODULE
  * @brief Called when the burst shot is inserted completely.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
+ *
+ * @remarks The callback is called in a separate thread(not in the main loop).
  *
  * @param[in] media     The handle to the media info
  * @param[in] user_data The user data passed from the foreach function
@@ -390,6 +398,8 @@ typedef void (*media_insert_burst_shot_completed_cb)(media_content_error_e error
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  *
  * @details This callback is called for completion of generating the thumbnail image.
+ *
+ * @remarks The callback is called in a separate thread(not in the main loop).
  *
  * @param[in] error     The error code
  * @param[in] path      The path of the thumbnail which is generated
@@ -435,7 +445,8 @@ typedef void (*media_face_detection_completed_cb)(media_content_error_e error, c
  *
  * @details Iterates over a list of folders.
  *
- * @remarks To use the @a folder outside this function, copy the handle with the media_folder_clone() function.
+ * @remarks To use the @a folder outside this function, copy the handle with the media_folder_clone() function. \n
+ *                  The callback is called in the main loop.
  *
  * @param[in] folder    The handle to the media folder
  * @param[in] user_data The user data passed from the foreach function
@@ -456,7 +467,8 @@ typedef bool (*media_folder_cb)(media_folder_h folder, void *user_data);
  *
  * @details Iterates over a playlist list.
  *
- * @remarks To use the @a playlist outside this function, copy the handle with the media_playlist_clone() function.
+ * @remarks To use the @a playlist outside this function, copy the handle with the media_playlist_clone() function. \n
+ *                  The callback is called in the main loop.
  *
  * @param[in] playlist  The handle to the media playlist
  * @param[in] user_data The user data passed from the foreach function
@@ -478,7 +490,8 @@ typedef bool (*media_playlist_cb)(media_playlist_h playlist, void *user_data);
  *
  * @details Iterates over playlist members.
  *
- * @remarks To use the @a media outside this function, copy the handle with the media_info_clone() function.
+ * @remarks To use the @a media outside this function, copy the handle with the media_info_clone() function. \n
+ *                  The callback is called in the main loop.
  *
  * @param[in] playlist_member_id The ID to member of the playlist
  * @param[in] media              The handle to the media info
@@ -501,7 +514,8 @@ typedef bool (*playlist_member_cb)(int playlist_member_id, media_info_h media, v
  *
  * @details Iterates over a list of tags.
  *
- * @remarks To use the @a tag outside this function, copy the handle with the media_tag_clone() function.
+ * @remarks To use the @a tag outside this function, copy the handle with the media_tag_clone() function. \n
+ *                  The callback is called in the main loop.
  *
  * @param[in] tag       The handle to the media tag
  * @param[in] user_data The user data passed from the foreach function
@@ -524,7 +538,8 @@ typedef bool (*media_tag_cb)(media_tag_h tag, void *user_data);
  *
  * @details Iterates over a bookmark list.
  *
- * @remarks To use the @a bookmark outside this function, copy the handle with the media_bookmark_clone() function.
+ * @remarks To use the @a bookmark outside this function, copy the handle with the media_bookmark_clone() function. \n
+ *                  The callback is called in the main loop.
  *
  * @param[in] bookmark  The handle to the video bookmark
  * @param[in] user_data The user data passed from the foreach function
@@ -545,7 +560,8 @@ typedef bool (*media_bookmark_cb)(media_bookmark_h bookmark, void *user_data);
  *
  * @details Iterates over an album list.
  *
- * @remarks To use the @a album outside this function, copy the handle with the media_album_clone() function.
+ * @remarks To use the @a album outside this function, copy the handle with the media_album_clone() function. \n
+ *                  The callback is called in the main loop.
  *
  * @param[in] album     The handle to the media album
  * @param[in] user_data The user data passed from the foreach function
@@ -567,7 +583,8 @@ typedef bool (*media_album_cb)(media_album_h album, void *user_data);
  *
  * @details Iterates over a media group list.
  *
- * @remarks You should not free @a group_name returned by this function.
+ * @remarks You should not free @a group_name returned by this function. \n
+ *                  The callback is called in the main loop.
  *
  * @param[in] group_name The name of the media group
  * @param[in] user_data  The user data passed from the foreach function
@@ -588,7 +605,8 @@ typedef bool (*media_group_cb)(const char *group_name, void *user_data);
  *
  * @details Iterates over a media storage list.
  *
- * @remarks You should not destroy @a storage returned by this function.
+ * @remarks You should not destroy @a storage returned by this function. \n
+ *                  The callback is called in the main loop.
  *
  * @param[in] storage     The handle of the media storage
  * @param[in] user_data  The user data passed from the foreach function
@@ -609,7 +627,8 @@ typedef bool (*media_storage_cb)(media_storage_h storage, void *user_data);
  *
  * @details Iterates over a media face list.
  *
- * @remarks You should not destroy @a face returned by this function.
+ * @remarks You should not destroy @a face returned by this function. \n
+ *                  The callback is called in the main loop.
  *
  * @param[in] face     The handle of the media face
  * @param[in] user_data  The user data passed from the foreach function
