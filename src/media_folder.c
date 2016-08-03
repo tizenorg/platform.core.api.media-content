@@ -17,6 +17,7 @@
 
 #include <media_info_private.h>
 #include <media_util_private.h>
+#include <sys/stat.h>
 
 static char *g_src_path = NULL;
 
@@ -384,6 +385,128 @@ int media_folder_get_folder_from_db(const char *folder_id, media_folder_h *folde
 	}
 
 	SQLITE3_FINALIZE(stmt);
+
+	return ret;
+}
+
+int media_folder_move_to_db(media_folder_h folder, const char *dst_path)
+{
+	int ret = MEDIA_CONTENT_ERROR_NONE;
+	media_folder_s *_folder = (media_folder_s*)folder;
+	DIR *dp = NULL;
+	char tmp_path[MAX_QUERY_SIZE] = {0, };
+	char select_query[DEFAULT_QUERY_SIZE] = {0, };
+	char dst_parent_uuid[MEDIA_CONTENT_UUID_SIZE + 1] = {0, };
+	sqlite3_stmt *stmt = NULL;
+	char *sql = NULL;
+	time_t modified_time = 0;
+	media_svc_storage_type_e storage_type;
+	char *org_parent_path = NULL;
+	unsigned long long get_size;
+	char *get_path = NULL;
+	time_t get_modified_time = 0;
+	struct stat st;
+
+	/* Check previous folder path */
+	dp = opendir(_folder->path);
+	if (dp != NULL) {
+		media_content_sec_error("path [%s] exists", _folder->path);
+		closedir(dp);
+		return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+	} else {
+		if (errno == EACCES || errno == EPERM)
+			return MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
+	}
+
+	/* Check new folder path */
+	snprintf(tmp_path, sizeof(tmp_path), "%s/%s", dst_path, _folder->name);
+	dp = opendir(tmp_path);
+	if (dp == NULL) {
+		if (errno == EACCES || errno == EPERM)
+			ret = MEDIA_CONTENT_ERROR_PERMISSION_DENIED;
+		else
+			ret = MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+
+		media_content_sec_error("path [%s] not exists or can not open[%d]", tmp_path, ret);	
+		return ret;
+	}
+	closedir(dp);
+
+	/* Get parent modified time for update modified_time*/
+	memset(&st, 0, sizeof(struct stat));
+	if (stat(dst_path, &st) == 0)
+		modified_time = st.st_mtime;
+	else
+		media_content_retvm_if(modified_time == 0, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "stat failed");
+
+	ret = media_svc_get_storage_type(dst_path, &storage_type, tzplatform_getuid(TZ_USER_NAME));
+	media_content_retvm_if(ret != MEDIA_CONTENT_ERROR_NONE, ret, "media_svc_get_storage_type failed [%d]", ret);
+
+	/* Check size, and modified time of media files in dst folder */
+	memset(select_query, 0x00, sizeof(select_query));
+
+	snprintf(select_query, sizeof(select_query), "SELECT REPLACE(path,'%s','%s'), size, modified_time FROM '%s' WHERE path LIKE '%s/%%'", _folder->path, tmp_path, _folder->storage_uuid, _folder->path);
+	ret = _content_query_prepare(&stmt, select_query, NULL, NULL);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		get_path = g_strdup((const char *)sqlite3_column_text(stmt, 0));
+		get_size = (unsigned long long)sqlite3_column_int64(stmt, 1);
+		get_modified_time = (int)sqlite3_column_int(stmt, 2);
+
+		memset(&st, 0, sizeof(struct stat));
+		if (stat(get_path, &st) == 0) {
+			if (get_size != st.st_size || get_modified_time != st.st_mtime) {
+				media_content_error("different database info with stat info");
+				SAFE_G_FREE(get_path);
+				SQLITE3_FINALIZE(stmt);
+
+				return MEDIA_CONTENT_ERROR_INVALID_PARAMETER;
+			}
+		} else {
+			media_content_error("stat failed");
+			SAFE_G_FREE(get_path);
+			SQLITE3_FINALIZE(stmt);
+
+			return MEDIA_CONTENT_ERROR_INVALID_OPERATION;
+		}
+
+		SAFE_G_FREE(get_path);
+	}
+
+	SQLITE3_FINALIZE(stmt);
+
+	/** SEND ONE QUERY **/
+	/* 1. update (dst, org_parent) modified_time */
+	/* 2. update org_parent_folder_uuid */
+	/* 3. update path, storage_type (org to dst/org/..) */
+	ret = media_svc_get_folder_id(_content_get_db_handle(), _folder->storage_uuid, dst_path, dst_parent_uuid);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	org_parent_path = g_path_get_dirname(_folder->path);
+	media_content_retvm_if(org_parent_path == NULL, MEDIA_CONTENT_ERROR_INVALID_OPERATION, "g_path_get_dirname failed");
+
+	sql = sqlite3_mprintf("UPDATE '%q' SET modified_time=%d WHERE path='%q' OR path='%q'; \
+		UPDATE '%q' SET parent_folder_uuid='%q' WHERE path='%q'; \
+		UPDATE '%q' SET path=REPLACE(path, '%q', '%q'), storage_type=%d WHERE path='%q' OR path LIKE '%q/%%'; \
+		UPDATE '%q' SET path=REPLACE(path, '%q', '%q'), storage_type=%d WHERE path LIKE '%q/%%';",
+		DB_TABLE_FOLDER, modified_time, dst_path, org_parent_path,
+		DB_TABLE_FOLDER, dst_parent_uuid, _folder->path,
+		DB_TABLE_FOLDER, _folder->path, tmp_path, storage_type, _folder->path, _folder->path,
+		_folder->storage_uuid, _folder->path, tmp_path, storage_type, _folder->path);
+
+	ret = _content_query_sql(sql);
+	SQLITE3_SAFE_FREE(sql);
+	SAFE_G_FREE(org_parent_path);
+	media_content_retv_if(ret != MEDIA_CONTENT_ERROR_NONE, ret);
+
+	/* 4. Modify handler */
+	SAFE_FREE(_folder->parent_folder_id);
+	SAFE_FREE(_folder->path);
+
+	_folder->parent_folder_id = strndup(dst_parent_uuid, strlen(dst_parent_uuid));
+	_folder->path = strndup(tmp_path, strlen(tmp_path));
+	_folder->storage_type = storage_type;
 
 	return ret;
 }
